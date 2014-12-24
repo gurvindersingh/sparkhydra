@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="pepXML_std.xsl"?>
+
+<msms_pipeline_analysis date="2014:11:11:14:15:54"  xmlns="http://regis-web.systemsbiology.net/pepXML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://sashimi.sourceforge.net/schema_revision/pepXML/pepXML_v115.xsd">
+   <msms_run_summary base_name="spectra" search_engine="Hydra(KScore)" msManufacturer="Thermo Scientific" msModel="LTQ" msIonization="NSI" msMassAnalyzer="ITMS" msDetector="unknown" raw_data_type="raw" raw_data=".mzXML">
+      <sample_enzyme name="trypsin">
+         <specificity cut="KR" no_cut="P" sense="C"/>
+      </sample_enzyme>
+<search_summary base_name="spectra" search_engine="Hydra(KScore)" precursor_mass_type="monoisotopic" fragment_mass_type="monoisotopic" search_id="1">
+         <search_database local_path="yeast_orfs_all_REV.20060126.short" type="AA" />
+        <enzymatic_search_constraint enzyme="trypsin" max_num_internal_cleavages="2" />
+ <aminoacid_modification aminoacid="C" massdiff="57.0215" mass="160.0306"variable="N" />
+ <aminoacid_modification aminoacid="H" massdiff="79.9663" mass="217.0252"variable="Y" />
+ <aminoacid_modification aminoacid="K" massdiff="79.9663" mass="208.0613"variable="Y" />
+ <aminoacid_modification aminoacid="R" massdiff="79.9663" mass="236.0674"variable="Y" />
+ <aminoacid_modification aminoacid="T" massdiff="79.9663" mass="181.0140"variable="Y" />
+ <aminoacid_modification aminoacid="Y" massdiff="79.9663" mass="243.0296"variable="Y" />
+ <aminoacid_modification aminoacid="E" massdiff="-18.0106" mass="111.0320"variable="Y" /><!--X! Tandem n-terminal AA variable modification-->
+ <aminoacid_modification aminoacid="C" massdiff="-17.0265" mass="143.0041"variable="Y" /><!--X! Tandem n-terminal AA variable modification-->
+ <aminoacid_modification aminoacid="Q" massdiff="-17.0265" mass="111.0320"variable="Y" /><!--X! Tandem n-terminal AA variable modification-->
+        <!-- Input parameters -->
+        <parameter name="com.lordjoe.distributed.PathPrepend" value="E:/distributed-tools/data/Sample2/" />
+        <parameter name="list path, taxonomy information" value="taxonomy.xml" />
+        <parameter name="output, histogram column width" value="30" />
+        <parameter name="output, histograms" value="yes" />
+        <parameter name="output, log path" value="" />
+        <parameter name="output, maximum valid expectation value" value="0.1" />
+        <parameter name="output, message" value="1234567890" />
+        <parameter name="output, one sequence copy" value="no" />
+        <parameter name="output, parameters" value="yes" />
+        <parameter name="output, path" value="full_tandem_output_path" />
+        <parameter name="output, path hashing" value="yes" />
+        <parameter name="output, performance" value="yes" />
+        <parameter name="output, proteins" value="yes" />
+        <parameter name="output, results" value="all" />
+        <parameter name="output, sequence path" value="full_tandem_output_sequence_path" />
+        <parameter name="output, sequences" value="no" />
+        <parameter name="output, sort results by" value="spectrum" />
+        <parameter name="output, spectra" value="yes" />
+        <parameter name="output, xsl path" value="tandem-style.xsl" />
+        <parameter name="protein, C-terminal residue modification mass" value="" />
+        <parameter name="protein, N-terminal residue modification mass" value="" />
+        <parameter name="protein, cleavage semi" value="no" />
+        <parameter name="protein, cleavage site" value="[K]" />
+        <parameter name="protein, homolog management" value="no" />
+        <parameter name="protein, modified residue mass file" value="" />
+        <parameter name="protein, taxon" value="yeast_orfs_all_REV.20060126.short.fasta" />
+        <parameter name="refine" value="no" />
+        <parameter name="refine, maximum valid expectation value" value="0.1" />
+        <parameter name="refine, potential modification mass" value="15.994915@M,8.014199@K,10.008269@R,79.9663@H,79.9663@R,79.9663@T,79.9663@Y,79.9663@K" />
+        <parameter name="refine, sequence path" value="" />
+        <parameter name="refine, spectrum synthesis" value="yes" />
+        <parameter name="residue, modification mass" value="57.021464@C" />
+        <parameter name="residue, potential modification mass" value="79.9663@H,79.9663@R,79.9663@T,79.9663@Y,79.9663@K" />
+        <parameter name="residue, potential modification motif" value="" />
+        <parameter name="scoring, a ions" value="no" />
+        <parameter name="scoring, algorithm" value="k-score" />
+        <parameter name="scoring, b ions" value="yes" />
+        <parameter name="scoring, c ions" value="no" />
+        <parameter name="scoring, cyclic permutation" value="no" />
+        <parameter name="scoring, include reverse" value="no" />
+        <parameter name="scoring, maximum missed cleavage sites" value="2" />
+        <parameter name="scoring, minimum ion count" value="1" />
+        <parameter name="scoring, x ions" value="no" />
+        <parameter name="scoring, y ions" value="yes" />
+        <parameter name="scoring, z ions" value="no" />
+        <parameter name="spectrum, dynamic range" value="10000.0" />
+        <parameter name="spectrum, fragment mass type" value="monoisotopic" />
+        <parameter name="spectrum, fragment monoisotopic mass error" value="0.4" />
+        <parameter name="spectrum, fragment monoisotopic mass error units" value="Daltons" />
+        <parameter name="spectrum, maximum parent charge" value="5" />
+        <parameter name="spectrum, minimum fragment mz" value="125.0" />
+        <parameter name="spectrum, minimum parent m+h" value="600.0" />
+        <parameter name="spectrum, minimum peaks" value="10" />
+        <parameter name="spectrum, parent monoisotopic mass error minus" value="2.0" />
+        <parameter name="spectrum, parent monoisotopic mass error plus" value="4.1" />
+        <parameter name="spectrum, parent monoisotopic mass error units" value="Daltons" />
+        <parameter name="spectrum, parent monoisotopic mass isotope error" value="no" />
+        <parameter name="spectrum, path" value="spectra" />
+        <parameter name="spectrum, sequence batch size" value="1000" />
+        <parameter name="spectrum, threads" value="1" />
+        <parameter name="spectrum, total peaks" value="400" />
+        <parameter name="spectrum, use conditioning" value="no" />
+        <parameter name="spectrum, use noise suppression" value="yes" />
+      </search_summary>
+      <spectrum_query  spectrum=".00000022.00000022.3" start_scan="000000000022" end_scan="000000000022"  precursor_neutral_mass="1015.0629" retention_time_sec="21.820" assumed_charge="3" >
+         <search_result>
+            <search_hit hit_rank="1" peptide="ELETSTEK" protein="YKR028W"
+                       protein_descr="YKR028W"
+                         peptide_prev_aa="K" peptide_next_aa="E"
+                                      num_tot_proteins="1"  num_matched_ions="8" tot_num_ions="42" calc_neutral_pep_mass="42"  massdiff="-0.3482" num_missed_cleavages="0"  >
+             <modification_info modified_peptide="ELET[79.966]STEK" >
+             <mod_aminoacid_mass position="4" mass="181.014" />
+             </modification_info>
+             <search_score name="hyperscore" value="352.1133"/>
+             <search_score name="bscore" value="0.4717"/>
+             <search_score name="yscore" value="0.9651"/>
+             <search_score name="expect" value="2.1428"/>
+              </search_hit>
+            <search_hit hit_rank="2" peptide="ELETSTEK" protein="YKR028W"
+                       protein_descr="YKR028W"
+                         peptide_prev_aa="K" peptide_next_aa="E"
+                                      num_tot_proteins="1"  num_matched_ions="8" tot_num_ions="42" calc_neutral_pep_mass="42"  massdiff="-0.3482" num_missed_cleavages="0"  >
+             <modification_info modified_peptide="ELET[79.966]STEK" >
+             <mod_aminoacid_mass position="4" mass="181.014" />
+             </modification_info>
+             <search_score name="hyperscore" value="352.1133"/>
+             <search_score name="bscore" value="0.4717"/>
+             <search_score name="yscore" value="0.9651"/>
+             <search_score name="expect" value="2.1428"/>
+              </search_hit>
+         </search_result>
+      </spectrum_query>
+      <spectrum_query  spectrum=".00000095.00000095.3" start_scan="000000000095" end_scan="000000000095"  precursor_neutral_mass="1015.0637" retention_time_sec="99.493" assumed_charge="3" >
+         <search_result>
+            <search_hit hit_rank="1" peptide="RGLPISSK" protein="YPL205C"
+                       protein_descr="YPL205C"
+                         peptide_prev_aa="K" peptide_next_aa="Y"
+                                      num_tot_proteins="1"  num_matched_ions="6" tot_num_ions="50" calc_neutral_pep_mass="50"  massdiff="-1.3819" num_missed_cleavages="0"  >
+             <modification_info modified_peptide="R[79.966]GLPISSK[79.966]" >
+             <mod_aminoacid_mass position="1" mass="236.067" />
+             <mod_aminoacid_mass position="8" mass="208.061" />
+             </modification_info>
+             <search_score name="hyperscore" value="280.1364"/>
+             <search_score name="bscore" value="0.3413"/>
+             <search_score name="yscore" value="0.8018"/>
+             <search_score name="expect" value="6.1358"/>
+              </search_hit>
+            <search_hit hit_rank="2" peptide="RGLPISSK" protein="YPL205C"
+                       protein_descr="YPL205C"
+                         peptide_prev_aa="K" peptide_next_aa="Y"
+                                      num_tot_proteins="1"  num_matched_ions="6" tot_num_ions="50" calc_neutral_pep_mass="50"  massdiff="-1.3819" num_missed_cleavages="0"  >
+             <modification_info modified_peptide="R[79.966]GLPISSK[79.966]" >
+             <mod_aminoacid_mass position="1" mass="236.067" />
+             <mod_aminoacid_mass position="8" mass="208.061" />
+             </modification_info>
+             <search_score name="hyperscore" value="280.1364"/>
+             <search_score name="bscore" value="0.3413"/>
+             <search_score name="yscore" value="0.8018"/>
+             <search_score name="expect" value="6.1358"/>
+              </search_hit>
+         </search_result>
+      </spectrum_query>
+      <spectrum_query  spectrum=".00000355.00000355.3" start_scan="000000000355" end_scan="000000000355"  precursor_neutral_mass="1950.4173" retention_time_sec="352.909" assumed_charge="3" >
+         <search_result>
+            <search_hit hit_rank="1" peptide="AAAPPIADSAAKDIPADAK" protein="REV1_YBR011C"
+                       protein_descr="REV1_YBR011C"
+                         peptide_prev_aa="K" peptide_next_aa="D"
+                                      num_tot_proteins="1"  num_matched_ions="4" tot_num_ions="14" calc_neutral_pep_mass="14"  massdiff="-1.4520" num_missed_cleavages="1"  >
+             <modification_info modified_peptide="AAAPPIADSAAK[79.966]DIPADAK[79.966]" >
+             <mod_aminoacid_mass position="12" mass="208.061" />
+             <mod_aminoacid_mass position="19" mass="208.061" />
+             </modification_info>
+             <search_score name="hyperscore" value="322.2259"/>
+             <search_score name="bscore" value="0.4687"/>
+             <search_score name="yscore" value="0.9624"/>
+             <search_score name="expect" value="3.9808"/>
+              </search_hit>
+            <search_hit hit_rank="2" peptide="AAAPPIADSAAKDIPADAK" protein="REV1_YBR011C"
+                       protein_descr="REV1_YBR011C"
+                         peptide_prev_aa="K" peptide_next_aa="D"
+                                      num_tot_proteins="1"  num_matched_ions="4" tot_num_ions="14" calc_neutral_pep_mass="14"  massdiff="-1.4520" num_missed_cleavages="1"  >
+             <modification_info modified_peptide="AAAPPIADSAAK[79.966]DIPADAK[79.966]" >
+             <mod_aminoacid_mass position="12" mass="208.061" />
+             <mod_aminoacid_mass position="19" mass="208.061" />
+             </modification_info>
+             <search_score name="hyperscore" value="322.2259"/>
+             <search_score name="bscore" value="0.4687"/>
+             <search_score name="yscore" value="0.9624"/>
+             <search_score name="expect" value="3.9808"/>
+              </search_hit>
+         </search_result>
+      </spectrum_query>
+     </msms_run_summary>
+</msms_pipeline_analysis>

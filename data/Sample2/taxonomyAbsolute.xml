@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<bioml label="x! taxon-to-file matching list">
+     <taxon label="yeast_orfs_all_REV.20060126.short.fasta">
+          <file format="peptide" URL="E:/ForSteven/Sample2/SmallSample/yeast_orfs_pruned.fasta" />
+     </taxon>
+</bioml>

@@ -1,0 +1,35 @@
+<mzXML xmlns="http://sashimi.sourceforge.net/schema_revision/mzXML_3.0"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"    >
+ <msRun scanCount="13839"  startTime="PT0.179S"  endTime="PT6179.68S"  >
+  <parentFile fileName="OR20080317_S_SILAC-LH_1-1_01.RAW"  fileType="RAWData"  fileSha1="caf0fd7535120ea82cf8ae42815952a625053518"  />
+
+  <msInstrument >
+   <msManufacturer category="msManufacturer"  value="Thermo Scientific"  />
+
+   <msModel category="msModel"  value="LTQ Orbitrap"  />
+
+   <msIonisation category="msIonisation"  value="NSI"  />
+
+   <msMassAnalyzer category="msMassAnalyzer"  value="FTMS"  />
+
+   <msDetector category="msDetector"  value="unknown"  />
+
+   <software type="acquisition"  name="Xcalibur"  version="2.2 SP1"  />
+
+  </msInstrument>
+
+  <dataProcessing >
+   <software type="conversion"  name="ReAdW"  version="4.0.2(build Jul  1 2008 14:23:37)"  />
+
+  </dataProcessing>
+
+
+   <scan num="13"  msLevel="2"  peaksCount="45"  polarity="+"  scanType="Full"  filterLine="ITMS + c NSI d Full ms2 369.12@cid35.00 [90.00-1490.00]"  retentionTime="PT12.9863S"  lowMz="131.151"  highMz="633.628"  basePeakMz="281.158"  basePeakIntensity="1099.2"  totIonCurrent="1822.15"  collisionEnergy="35"  >
+    <precursorMz precursorIntensity="11580.4"  precursorCharge="4"  activationMethod="CID"  >369.12173462</precursorMz>
+
+    <peaks precision="32"  byteOrder="network"  pairOrder="m/z-int"  >QwMmmUEKnvNDB0QgQMjIGkMTN89DFGfsQxVhsEGgLpVDJyQUQIp5R0MzQKtABEypQ0TX/kAUf9FDSO++QMFh40NPH0xCE/aZQ1+CBkA78iZDY2LwQInmm0NzSkxAneUyQ3Vz5j/rDjdDd28GQEkhrUOBFoJAWSTAQ4F6FUDUw0FDgncFQB9m+kOFgWJABFQeQ4ubGEBIg35DjJQrRIlmg0OSf5xBDTDBQ5PK/0CAwBJDlIcDQLTNjUOVILZBWBs6Q5WBWkHyBG5DlrhlQHLc9EOZwOdAWKg9Q5rRD0Ds4IRDnAj3QGTTJEOclzhBr93yQ58NzUF8KXBDoYsSQXczfkOilRBBHS87Q6OZwENhlR9DpAsIQYA7CkOmkLRAZ69RQ6b54EDh7K9DqK+7QDrExUOuXyNBMVdIQ6+CmEDYUe9Dr+LsQUXWGUO0L/ZBFN9wQ7SGrUCWHV1DuHYNQARdM0QeaDJBAFPw</peaks>
+
+   </scan>
+
+ 
+</msRun>
+</mzXML>

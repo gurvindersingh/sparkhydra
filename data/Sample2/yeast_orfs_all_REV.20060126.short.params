@@ -1,0 +1,11 @@
+<digester  version="1" hasDecoys="false" rules="[K]" semityptic="false" numberMissedCleavages="2" >
+    <modifications  >
+        <modification  aminoacid="H" massChange="79.9663" restriction="Global" />
+        <modification  aminoacid="R" massChange="79.9663" restriction="Global" />
+        <modification  aminoacid="T" massChange="79.9663" restriction="Global" />
+        <modification  aminoacid="Y" massChange="79.9663" restriction="Global" />
+        <modification  aminoacid="K" massChange="79.9663" restriction="Global" />
+        <modification  aminoacid="C" massChange="57.0215" restriction="Global" />
+    </modifications>
+</digester>
+

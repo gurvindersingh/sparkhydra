@@ -1,0 +1,22 @@
+<MultiScorer  >
+    <score  id="379" version ="1.0" charge="2" numberScoredPeptides="1" >
+        <scan  num="379" mslevel="2" peaksCount="50" polarity="+" scantype="Full" filterLine="ITMS + c NSI d Full ms2 321.17@cid35.00 [75.00-655.00]" retentionTime="PT372.652S" lowMz="99.154" highMz="654.239"  basePeakMz="247.195"  basePeakIntensity="139.666" totIonCurrent="544.726" collisionEnergy="0.0" >    <precursorMz  precursorIntensity="3550.9" precursorCharge="2" activationMethod="CID" >321.165</precursorMz>
+            <peaks  precision ="32 " byteOrder ="network " contentType ="m/z-int " compressionType ="none " compressedLen ="0" >QsZOpECAHXtC29RnQDyA1UMTVLxBHsDCQxU8KkFQSddDFvwsQBT3sEMZNa5AErHaQxslNkAgiIRDMPinQASzx0M1Ok1Ax8QUQziemUC2jNpDOzXRQFe12EM/E3BCBcooQ0kYsEDGij9DS0JoQSodNUNNRyZAh+skQ1EJzkFUVdxDUwcoQSE/D0NhvHRA35kbQ2V+TEBkgCRDZwx0QFeWYkNq5RBAINYMQ3cx/EMLqmZDeTnoQYNookN6Ez5AgR4uQ3rg7EFDL1dDgMS2QGYRNUOBuoBA9apXQ4J9y0D+K1BDg8nJQaHO3kOEcDJAIEP7Q4fEnUEoaUVDibbKQQyiSkOK9AhALrfBQ46avkFb7dZDkR9kQJ71IkORmHJA9lalQ5TVBEA8l8FDlpRWQDDc/EOXqJpCgV4RQ5jkc0DoQTFDm9JcQDydaUOcKrZA+5BwQ51blkDZu59DuLzbQSu2akPFqgtAkRgMQ9V1JUEWpxJD7kJJP9InqkPu1bpAtgZSRAfZrUBOrbREI49RQDD2gg==</peaks>
+        </scan>
+        <ConditionedScan  >
+            <MeasuredSpectrum  PrecursorCharge="2" PrecursorMass="641.323" >
+                <peaks  >QsZOpD4apGRC29RnPfqwm0MTVLw+aC9qQxU8Kj6HNgVDFvwsPc+j5kMZNa49zJDnQxslNj3WKGdDMPinPbxKwkM1Ok0+Me/TQziemT4pIR1DOzXRPfkTgUM/E3A97ddBQ0kYsD0fkWFDS0JoPW+UYUNNRyY8/sHjQ1EJzj2MDftDUwcoPWTxT0NhvHQ9JSgAQ2V+TDy875NDZwx0PLJZ70Nq5RA8oHM9Q3cx/D6G4I5DeTnoPZ70XUN6Ez487F+HQ3rg7D2Dlp1DgMS2PMI2jEOBuoA9OhiBQ4J9yz0+vb1Dg8nJPa+3UEOEcDI8e7xHQ4fEnT1hTbJDibbKPUX8TkOK9Ag8kJ+DQ46avj3gJRtDkR9kPWv+oUORmHI9nSycQ5TVBD0t5fdDlpRWPS9aj0OXqJo+iGrgQ5jkcz2hu/9Dm9JcPT5lUUOcKrY9rTu3Q51blj2hYvRDuLzbPo35E0PFqgs+NDw3Q9V1JT6EJ8xD7kJJPhQDJEPu1bo+jiJRRAfZrT5XWF8=</peaks>
+            </MeasuredSpectrum>
+        </ConditionedScan>
+        <NormalizedRawScan  >
+            <MeasuredSpectrum  PrecursorCharge="2" PrecursorMass="641.323" >
+                <peaks  >QsZOpD4apGRC29RnPfqwm0MTVLw+aC9qQxU8Kj6HNgVDFvwsPc+j5kMZNa49zJDnQxslNj3WKGdDMPinPbxKwkM1Ok0+Me/TQziemT4pIR1DOzXRPfkTgUM/E3A97ddBQ0kYsD0fkWFDS0JoPW+UYUNNRyY8/sHjQ1EJzj2MDftDUwcoPWTxT0NhvHQ9JSgAQ2V+TDy875NDZwx0PLJZ70Nq5RA8oHM9Q3cx/D6G4I5DeTnoPZ70XUN6Ez487F+HQ3rg7D2Dlp1DgMS2PMI2jEOBuoA9OhiBQ4J9yz0+vb1Dg8nJPa+3UEOEcDI8e7xHQ4fEnT1hTbJDibbKPUX8TkOK9Ag8kJ+DQ46avj3gJRtDkR9kPWv+oUORmHI9nSycQ5TVBD0t5fdDlpRWPS9aj0OXqJo+iGrgQ5jkcz2hu/9Dm9JcPT5lUUOcKrY9rTu3Q51blj2hYvRDuLzbPo35E0PFqgs+NDw3Q9V1JT6EJ8xD7kJJPhQDJEPu1bo+jiJRRAfZrT5XWF8=</peaks>
+            </MeasuredSpectrum>
+        </NormalizedRawScan>
+        <HyperScoreStatistics  >0,0,1</HyperScoreStatistics>
+        <match  peak="CPVCL" score="36.40662115682338" hyperscore="36.40662115682338" raw_score="0.1517443060874939" >
+            <usage  >QxKSCj3oL2pDkhEJPR0snA==</usage>
+            <IonScore  A_count="0" A_score="0" B_count="0" B_score="0" C_count="0" C_score="0" Y_count="0" Y_score="0.15174" X_count="0" X_score="0" Z_count="0" Z_score="0" />
+        </match>
+    </score>
+</MultiScorer>
