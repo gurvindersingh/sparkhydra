@@ -12,39 +12,54 @@ import java.io.*;
  */
 public class BinChargeKey implements Serializable, Comparable<BinChargeKey> {
 
-    public static int mzAsInt(double mz)  {
-          return (int)(mz / QUANTIZATION);
+    public static final double QUANTIZATION = 0.1;
+
+    public static int mzAsInt(double mz) {
+        return (int) (0.5 + (mz / QUANTIZATION));
     }
+
+    public static double intToMz(int mzInt) {
+        return QUANTIZATION * mzInt;
+    }
+
     public static Partitioner getPartitioner() {
         return new BinChargeKeyPartitioner();
     }
 
     protected static class BinChargeKeyPartitioner extends Partitioner {
-           @Override
-           public int numPartitions() {
-               return SparkUtilities.getDefaultNumberPartitions();
-           }
+        @Override
+        public int numPartitions() {
+            return SparkUtilities.getDefaultNumberPartitions();
+        }
 
-           @Override
-           public int getPartition(final Object key) {
-               int pp = ((BinChargeKey) key).mzAsInt();
-               return Math.abs(pp % numPartitions());
-           }
-       }
+        @Override
+        public int getPartition(final Object key) {
+            int pp = ((BinChargeKey) key).mzInt;
+            return Math.abs(pp % numPartitions());
+        }
+    }
 
 
-
-    public static final double QUANTIZATION = 0.001;
     public final int charge;
-    public final double mz;
+    public final int mzInt;
 
     public BinChargeKey(final int pCharge, final double pMz) {
         charge = pCharge;
-        mz = pMz;
+        mzInt = mzAsInt(pMz);
     }
 
-    protected int mzAsInt() {
-       return mzAsInt(mz);
+    @SuppressWarnings("UnusedDeclaration")
+    public int getMzInt() {
+        return mzInt;
+    }
+
+    public double getMz() {
+          return intToMz(mzInt);
+    }
+
+
+    public int getCharge() {
+        return charge;
     }
 
     @Override
@@ -56,7 +71,7 @@ public class BinChargeKey implements Serializable, Comparable<BinChargeKey> {
 
         if (charge != that.charge) return false;
 
-        if (Integer.compare(that.mzAsInt(), mzAsInt()) != 0) return false;
+        if (Integer.compare(mzInt, that.mzInt) != 0) return false;
 
         return true;
     }
@@ -64,10 +79,8 @@ public class BinChargeKey implements Serializable, Comparable<BinChargeKey> {
     @Override
     public int hashCode() {
         int result;
-        long temp;
         result = charge;
-        temp = mzAsInt();
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (mzInt ^ (mzInt >>> 32));
         return result;
     }
 
@@ -76,14 +89,14 @@ public class BinChargeKey implements Serializable, Comparable<BinChargeKey> {
         int ret = Integer.compare(charge, o.charge);
         if (ret != 0)
             return ret;
-        int x = mzAsInt();
-        int y = o.mzAsInt();
+        int x = mzInt;
+        int y = o.mzInt;
         if (x == y)
             return 0;
         return Integer.compare(x, y);
     }
 
     public String toString() {
-        return Integer.toString(charge) + ":" + String.format("%10.3f", mz);
+        return Integer.toString(charge) + ":" + String.format("%10.3f", getMz()) + ":" + getMzInt();
     }
 }

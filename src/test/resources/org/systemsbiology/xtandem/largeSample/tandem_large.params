@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><bioml>
+<!-- This version will load the large mzxml file -->
+ <note type="input" label="list path, default parameters">res://largeSample/default_input.xml</note>
+ <note type="input" label="org.systemsbiology.xtandem.TaxonomyTranch">1,20</note>
+ <note type="input" label="org.systemsbiology.xtandem.MaxScoredScans">200</note>
+ <note type="input" label="list path, taxonomy information">res://largeSample/taxonomy.xml</note>
+ <note type="input" label="user, name">jmcbee</note>
+ <note type="input" label="scoring, algorithm">k-score</note>
+ <note type="input" label="spectrum, use conditioning">no</note>
+ <note type="input" label="scoring, minimum ion count">1</note>
+ <note type="input" label="spectrum, path">res://largeSample/OutFile.mzXML</note>
+ <note type="input" label="output, path">LT20100217SCX4.xml</note>
+<note type="input" label="output, path hashing">yes</note>
+<note type="input" label="output, sequence path">LT20100217SCX4.output_sequences</note>
+<!--  <note type="input" label="spectrum, threads">8</note> -->
+
+ <note type="input" label="output, email">jmcbee@systemsbiology.org</note>
+ <note type="input" label="protein, taxon">Halobacterium-20080205_TargDecoy.fasta</note>
+ <!-- <note type="input" label="protein, cleavage semi">yes</note> -->
+
+ <note type="input" label="spectrum, parent monoisotopic mass error minus">2.1</note>
+ <note type="input" label="spectrum, parent monoisotopic mass error plus">4.1</note>
+ <note type="input" label="spectrum, fragment mass type">average</note>
+
+ <note type="input" label="residue, modification mass">57.021464@C</note>
+ <note type="input" label="residue, potential modification mass">15.994915@M</note>
+ <note type="input" label="refine, potential modification mass">15.994915@M</note>
+
+ <note type="input" label="refine">no</note>
+<!-- <note type="input" label="refine, cleavage semi">yes</note> -->
+ <!-- <note type="input" label="refine, unanticipated cleavage">no</note> -->
+ <note type="input" label="refine, potential N-terminus modification"></note>
+ <note type="input" label="protein, N-terminal residue modification mass"></note>
+ <note type="input" label="protein, C-terminal residue modification mass"></note>
+
+
+<!--  These parameters define access to a database -->
+<!-- <note type="input" label="org.systemsbiology.xtandem.Datasource.Host">localhost</note>
+<note type="input" label="org.systemsbiology.xtandem.Datasource.Host">cook</note>
+<note type="input" label="org.systemsbiology.xtandem.Datasource.Database">uniprothum</note>
+<note type="input" label="org.systemsbiology.xtandem.Datasource.User">proteomics</note>
+<note type="input" label="org.systemsbiology.xtandem.Datasource.Password">tandem</note>
+<note type="input" label="org.systemsbiology.xtandem.Datasource.DriverClass">com.mysql.jdbc.Driver</note>
+ -->
+
+
+</bioml>

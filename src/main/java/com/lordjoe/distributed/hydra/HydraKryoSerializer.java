@@ -153,6 +153,7 @@ public class HydraKryoSerializer implements KryoRegistrator, Serializable {
         doRegistration(kryo,"org.systemsbiology.xtandem.scoring.Scorer",handler);
         doRegistration(kryo,"org.systemsbiology.xtandem.scoring.ScoringModifications",handler);
         doRegistration(kryo,"org.systemsbiology.xtandem.taxonomy.Taxonomy",handler);
+        doRegistration(kryo,"com.lordjoe.distributed.database.PeptideDatabase",handler);
      }
 
 

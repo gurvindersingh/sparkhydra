@@ -3,7 +3,6 @@ package com.lordjoe.distributed.hydra;
 import com.lordjoe.distributed.*;
 import com.lordjoe.distributed.hydra.scoring.*;
 import com.lordjoe.distributed.spectrum.*;
-import org.apache.log4j.*;
 import org.apache.spark.api.java.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.hadoop.*;
@@ -114,9 +113,7 @@ public class ScanScorer {
             return;
         }
 
-        System.out.println("Set Log to Warn");
-        Logger rootLogger = Logger.getRootLogger();
-        rootLogger.setLevel(Level.WARN);
+        SparkUtilities.setLogToWarn();
 
         SparkUtilities.readSparkProperties(args[SPARK_CONFIG_INDEX]);
 

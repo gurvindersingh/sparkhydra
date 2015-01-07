@@ -1,0 +1,180 @@
+<mzXML xmlns="http://sashimi.sourceforge.net/schema_revision/mzXML_3.0"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"    >
+ <msRun scanCount="13839"  startTime="PT0.179S"  endTime="PT6179.68S"  >
+  <parentFile fileName="OR20080317_S_SILAC-LH_1-1_01.RAW"  fileType="RAWData"  fileSha1="caf0fd7535120ea82cf8ae42815952a625053518"  />
+
+  <msInstrument >
+   <msManufacturer category="msManufacturer"  value="Thermo Scientific"  />
+
+   <msModel category="msModel"  value="LTQ Orbitrap"  />
+
+   <msIonisation category="msIonisation"  value="NSI"  />
+
+   <msMassAnalyzer category="msMassAnalyzer"  value="FTMS"  />
+
+   <msDetector category="msDetector"  value="unknown"  />
+
+   <software type="acquisition"  name="Xcalibur"  version="2.2 SP1"  />
+
+  </msInstrument>
+
+  <dataProcessing >
+   <software type="conversion"  name="ReAdW"  version="4.0.2(build Jul  1 2008 14:23:37)"  />
+
+  </dataProcessing>
+
+
+   <scan num="13"  msLevel="2"  peaksCount="45"  polarity="+"  scanType="Full"  filterLine="ITMS + c NSI d Full ms2 369.12@cid35.00 [90.00-1490.00]"  retentionTime="PT12.9863S"  lowMz="131.151"  highMz="633.628"  basePeakMz="281.158"  basePeakIntensity="1099.2"  totIonCurrent="1822.15"  collisionEnergy="35"  >
+    <precursorMz precursorIntensity="11580.4"  precursorCharge="4"  activationMethod="CID"  >369.12173462</precursorMz>
+
+    <peaks precision="32"  byteOrder="network"  pairOrder="m/z-int"  >QwMmmUEKnvNDB0QgQMjIGkMTN89DFGfsQxVhsEGgLpVDJyQUQIp5R0MzQKtABEypQ0TX/kAUf9FDSO++QMFh40NPH0xCE/aZQ1+CBkA78iZDY2LwQInmm0NzSkxAneUyQ3Vz5j/rDjdDd28GQEkhrUOBFoJAWSTAQ4F6FUDUw0FDgncFQB9m+kOFgWJABFQeQ4ubGEBIg35DjJQrRIlmg0OSf5xBDTDBQ5PK/0CAwBJDlIcDQLTNjUOVILZBWBs6Q5WBWkHyBG5DlrhlQHLc9EOZwOdAWKg9Q5rRD0Ds4IRDnAj3QGTTJEOclzhBr93yQ58NzUF8KXBDoYsSQXczfkOilRBBHS87Q6OZwENhlR9DpAsIQYA7CkOmkLRAZ69RQ6b54EDh7K9DqK+7QDrExUOuXyNBMVdIQ6+CmEDYUe9Dr+LsQUXWGUO0L/ZBFN9wQ7SGrUCWHV1DuHYNQARdM0QeaDJBAFPw</peaks>
+
+   </scan>
+
+
+  
+   <scan num="22"  msLevel="2"  peaksCount="42"  polarity="+"  scanType="Full"  filterLine="ITMS + c NSI d Full ms2 339.36@cid35.00 [80.00-1030.00]"  retentionTime="PT21.8203S"  lowMz="109.364"  highMz="411.829"  basePeakMz="298.291"  basePeakIntensity="68.161"  totIonCurrent="396.475"  collisionEnergy="35"  >
+    <precursorMz precursorIntensity="2957.62"  precursorCharge="3"  activationMethod="CID"  >339.36157227</precursorMz>
+
+    <peaks precision="32"  byteOrder="network"  pairOrder="m/z-int"  >Qtq6IUA7SWxC9rBxQJ/5I0MBQEJA/A5/QwdH8kAD1nxDC3gJQLIJQUMTUkZA3q4kQyMfVkCWK4RDL04OQLKDeEM5dCFAnew6Qz0HzkDAiyhDRSkHQCNdzENHClBAVz27Q0ssoT/r4AdDTW6UQRiGGENXLhRAEa0tQ2M24EDbndZDaR7MQOMTdEN3Ml5BYfw4Q38yFEARpuBDggJ/QO+snkODhKJApmTLQ4Qo70Cs4qJDh5pMQAOsFkOI0tg/6yEwQ4n1tUBzMDpDionIQRDEDUOMsEhAMINvQ42U1EFmKZhDkoJwQahvVEOTa91BAYhBQ5SOBkCBWkJDlSVIQohSakOVl6BBS6dyQ5d81kFpPmdDm5jhQZjVBkOcHrJAgzbsQ56DMEFPYuxDn/m/QIiD30OgoPBCYy8YQ6RzrEEL+IJDpZuMQJUfE0PN6itAarl6</peaks>
+
+   </scan>
+
+   <scan num="68"
+    msLevel="2"
+    peaksCount="45"
+    polarity="+"
+    scanType="Full"
+    filterLine="ITMS + c NSI d Full ms2 399.35@cid35.00 [95.00-2000.00]"
+    retentionTime="PT72.752S"
+    lowMz="126.759"
+    highMz="549.303"
+    basePeakMz="299.248"
+    basePeakIntensity="60.7656"
+    totIonCurrent="496.352"
+    collisionEnergy="35" >
+    <precursorMz precursorIntensity="2904.88" precursorCharge="10" activationMethod="CID" >399.24905396</precursorMz>
+    <peaks precision="32"
+     byteOrder="network"
+     pairOrder="m/z-int" >Qv2EmT/tn/xDATauQT2u1kMB9XlAzhY1QxtOc0AlckZDRyEhQM4FBENZJPw/82FbQ3FK8kBzH7tDfawqQEm8hEN/Ma5B3vLOQ4NwLkCysI1Dhp62QTHKzEOHnjVAsVUlQ4iFGkEnDCpDjRL2QGWB/EOOktpAezQjQ5WfwkJzD/BDlhUEQEkqAkOWnD5AO6N3Q5z0rj/rZrVDoZSqQYmveUOilJBCOhG+Q6fpD0DuAE9DqEb+P+rvfkOonaBBGFWvQ6p/rED8sApDq7kyQT03ykOwlFNAo3Q9Q7EFH0EGVu5DsX/uQSXHh0O0TE9BKef8Q7VAA0EvbQpDthmxQP2FBEO3EYVAUHIyQ7gw0UAD3olDuW54QQAAmkO6C0lAH/+tQ7vSgkDXx5dDvX7dQgh6xEO+c0ZB+v+wQ77SfUHqfI5DwsYtQbYgikPHTpFApZc2Q8wLSUDkvpND2re1QAVi3kQJU2tBNukP</peaks>
+   </scan>
+   <scan num="95"  msLevel="2"  peaksCount="50"  polarity="+"  scanType="Full"  filterLine="ITMS + c NSI d Full ms2 339.36@cid35.00 [80.00-1030.00]"  retentionTime="PT99.4933S"  lowMz="113.19"  highMz="603.685"  basePeakMz="298.091"  basePeakIntensity="72.956"  totIonCurrent="519.246"  collisionEnergy="35"  >
+    <precursorMz precursorIntensity="2901.56"  precursorCharge="3"  activationMethod="CID"  >339.36184692</precursorMz>
+
+    <peaks precision="32"  byteOrder="network"  pairOrder="m/z-int"  >QuJhEUBpVBRC6aihP8KJPUL57Z1ATKPCQv48IkCuaxNDFTRKQHsXzkMhXclAtSg7Qz8Q+EAJQL1DSDZ2P/Klh0NZUm5AvnwIQ19KOkEJ9BZDYTqwQOq33kNn2CpAiZlOQ21EaEAV7QZDcy4YQTUZJ0N5Eu5AFjdxQ3sxREA12dxDe/LAQYg5LkODu9RAIwkDQ4RtdT/0PVBDhZpkQJIGeUOGnJxApTDUQ4eXCkCUxpxDiKMnQJdegUOJt4BArDL8Q4oF5EFk4HlDinfLQQEF1kOLiG5BGX2IQ4y8SECJYo9DjX7sQSyDKUOPnAxAP3FgQ5KTUkKEAT5DkvH7QChG7EOTeGhAd0eOQ5QmlkEd9HxDlQumQpHpc0OVn/JBNf0yQ5einEGPR/xDmi7CQHrbZ0ObBVZAovJEQ5uXAkE3bfBDn1kWQQPpt0OgLgNBW1mQQ6ChnkKMi+ZDoXiEQYXiAkOkiVtAI1vmQ6UGRECZ5uVDpwarQLfHy0OpKBZATr7KQ6n7h0E4Hj1EFuvbQQ3FFw==</peaks>
+
+   </scan>
+
+  <scan num="243"
+    msLevel="2"
+    peaksCount="56"
+    polarity="+"
+    scanType="Full"
+    filterLine="ITMS + c NSI d Full ms2 399.35@cid35.00 [95.00-2000.00]"
+    retentionTime="PT261.634S"
+    lowMz="129.049"
+    highMz="741.909"
+    basePeakMz="325.14"
+    basePeakIntensity="165.485"
+    totIonCurrent="808.439"
+    collisionEnergy="35" >
+    <precursorMz precursorIntensity="4317.06" precursorCharge="10" activationMethod="CID" >399.34698486</precursorMz>
+    <peaks precision="32"
+     byteOrder="network"
+     pairOrder="m/z-int" >QwEMfUCu6A9DIyICP+6VUkNHVkxBFy6cQ17B7kDN58lDYPYQP+685kNtB5xA0yoUQ3EwMkFr9ipDcjBwQLE8kUN440RAWMJRQ3xIEEBzHIhDfxEOQj0BZkOFZvVAE1GMQ4aIEkGaYGpDiJwgQOJni0OKgQNA/skNQ44BgkE+KCRDkW1XQI9A3UOVjs5CNflfQ52HiUCjYNNDoK9vQJUuZUOikflDJXwvQ6OKCUERu6JDpA/TQNsEbUOlmxlBYrfeQ6d/EECWfOtDqgE4QD0n3kOq7jJBGr9TQ7BMDUCdMoNDsK+gQNrdBkOxJMRBijdFQ7GkG0GZtmpDshl/QYhYgkOy3WZBbWZEQ7Rn9kCPJwBDtRgzQS5Kk0O2BqNAiCMEQ7eKdUDsAHVDvBdXQWWBJEO9OHVBtUyRQ72m50Gex+BDviDOQLpLHkO+rR9B5xI+Q78DdEFfX0VDwJ75QR+thUPBa41ASzpBQ8HsB0GyNX5DwurqQrHqvkPDTSpAhPo1Q8W8O0CPF/RDxh5aQSTuakPHTjlAgI3RQ8fV/kCeg2pD5b6FQDGQIUP2O1VAqs0hRBgh9UATpFFEOXo1QK+W5Q==</peaks>
+   </scan>
+
+   <scan num="326"
+    msLevel="2"
+    peaksCount="40"
+    polarity="+"
+    scanType="Full"
+    filterLine="ITMS + c NSI d Full ms2 418.19@cid35.00 [105.00-850.00]"
+    retentionTime="PT328.709S"
+    lowMz="136.299"
+    highMz="673.601"
+    basePeakMz="408.577"
+    basePeakIntensity="44.0425"
+    totIonCurrent="362.097"
+    collisionEnergy="35" >
+    <precursorMz precursorIntensity="4297.41" precursorCharge="2" activationMethod="CID" >418.18692017</precursorMz>
+    <peaks precision="32"
+     byteOrder="network"
+     pairOrder="m/z-int" >QwhMkkCPRSdDH3i0QBHZkkNMZlRAj469Q13iY0CjLPJDZP4mQBRVhkNn97hA+U1hQ2k7/kEX8+xDeygQQSQ1uEOClzlAo2ZYQ4uQOkGdfUxDn3ccQTsLUkOj4nZAsUPmQ6UbikCmO4JDpYdyQBHitUOoU1ZAdWoiQ63Im0AhxrdDs4bSQQc7qUO1PoxANDQ8Q7iaqz+1DKxDuRbvQGVhdUO5vQlAjmmEQ7p/A0CxQ8lDvITZQRWxgUPBomdAuDn+Q8JbIkB+54xDwsyxQTK4DUPDoANBkinSQ8ZHdkCArndDx3M9QAckg0PIA4dB2QeuQ8iTrUFqFApDyn/UQT4y1kPMSehCMCt7Q8z6yUGiZ3ND4jMJQE1gCkPraOJAabriRAtgbkIvvE5EGsjFQEloRUQg1vZABCPBRChmdkCjbwA=</peaks>
+   </scan>
+
+   <scan num="355"
+    msLevel="2"
+    peaksCount="14"
+    polarity="+"
+    scanType="Full"
+    filterLine="ITMS + c NSI d Full ms2 651.15@cid35.00 [165.00-1965.00]"
+    retentionTime="PT352.909S"
+    lowMz="287.979"
+    highMz="988.899"
+    basePeakMz="630.408"
+    basePeakIntensity="11.8478"
+    totIonCurrent="71.8135"
+    collisionEnergy="35" >
+    <precursorMz precursorIntensity="3395.49" precursorCharge="3" activationMethod="CID" >651.1463623</precursorMz>
+    <peaks precision="32"
+     byteOrder="network"
+     pairOrder="m/z-int" >Q4/9SkB/NVpDnA6dQGUJmkPWqMRBJc5+Q/qk/kEqbUtD/QFuQDzJwEQI8ZlAooZiRArOnkBYXWNEDCtAQC3zz0QVS1VABIy7RBdPB0ADzVNEGHn/QI5gg0QZqgtAnSp7RB2aI0E9kJBEdzmEQHEIkw==</peaks>
+   </scan>
+
+  <scan num="373"
+    msLevel="2"
+    peaksCount="53"
+    polarity="+"
+    scanType="Full"
+    filterLine="ITMS + c NSI d Full ms2 377.72@cid35.00 [90.00-770.00]"
+    retentionTime="PT368.091S"
+    lowMz="123.325"
+    highMz="605.18"
+    basePeakMz="302.121"
+    basePeakIntensity="45.2798"
+    totIonCurrent="394.508"
+    collisionEnergy="35" >
+    <precursorMz precursorIntensity="2626.01" precursorCharge="2" activationMethod="CID" >377.71984863</precursorMz>
+    <peaks precision="32"
+     byteOrder="network"
+     pairOrder="m/z-int" >QvamcUA7tOpDAkBTQBI4skMvS9xALUHlQ0TrZ0FWJuRDVEpvQB96o0NiFFZBMKIOQ2RkzkAR7sNDbueUQEmRIUN1yxxASRZBQ3bjbkAT7I9DeBosQBIY4kOBBppAVtPUQ4MovkBlXMVDhTKRQPlVtEOKhL9AH56gQ4wSrECqZmZDkBjmQJRQhEOQoUFAy7+tQ5GIDEDSP2ZDlw9yQjUeiEOXjuBBkiBcQ5glw0Bysx9DmKelQIWK5EOclGJBCCyfQ51ykEDmXCFDnz0uQJfrnUOgfQxBtu86Q6EUbkDnidpDpaZTQXCz9UOmEDpA65dPQ6ZzYEA7s0lDqYWuQFUTnEOq/kxA/B8zQ65A4EASNqVDrtMhQJxdz0OykKlAy5g7Q7Ok1UGHjHlDtAsSQQG4F0O0jLRAq/CeQ7cKb0CI2NVDuJeqQbjFaUPW9dlBUD9pQ93OlkCxDRlD5sVtQS8JykP6j75BZS1pQ/8dkUAtvONEAl+MQARO3UQC4uxAjUOFRAX2FEAf/XtEDrFcQPc4P0QQ2SBAlXuARBOlkUDOueFEF0t/QAQtaA==</peaks>
+   </scan>
+   <scan num="379"
+    msLevel="2"
+    peaksCount="50"
+    polarity="+"
+    scanType="Full"
+    filterLine="ITMS + c NSI d Full ms2 321.17@cid35.00 [75.00-655.00]"
+    retentionTime="PT372.652S"
+    lowMz="99.1536"
+    highMz="654.239"
+    basePeakMz="247.195"
+    basePeakIntensity="139.666"
+    totIonCurrent="544.726"
+    collisionEnergy="35" >
+    <precursorMz precursorIntensity="3550.91" precursorCharge="2" activationMethod="CID" >321.16519165</precursorMz>
+    <peaks precision="32"
+     byteOrder="network"
+     pairOrder="m/z-int" >QsZOpECAHXtC29RnQDyA1UMTVLxBHsDCQxU8KkFQSddDFvwsQBT3sEMZNa5AErHaQxslNkAgiIRDMPinQASzx0M1Ok1Ax8QUQziemUC2jNpDOzXRQFe12EM/E3BCBcooQ0kYsEDGij9DS0JoQSodNUNNRyZAh+skQ1EJzkFUVdxDUwcoQSE/D0NhvHRA35kbQ2V+TEBkgCRDZwx0QFeWYkNq5RBAINYMQ3cx/EMLqmZDeTnoQYNookN6Ez5AgR4uQ3rg7EFDL1dDgMS2QGYRNUOBuoBA9apXQ4J9y0D+K1BDg8nJQaHO3kOEcDJAIEP7Q4fEnUEoaUVDibbKQQyiSkOK9AhALrfBQ46avkFb7dZDkR9kQJ71IkORmHJA9lalQ5TVBEA8l8FDlpRWQDDc/EOXqJpCgV4RQ5jkc0DoQTFDm9JcQDydaUOcKrZA+5BwQ51blkDZu59DuLzbQSu2akPFqgtAkRgMQ9V1JUEWpxJD7kJJP9InqkPu1bpAtgZSRAfZrUBOrbREI49RQDD2gg==</peaks>
+   </scan>
+  <scan num="609"
+    msLevel="2"
+    peaksCount="77"
+    polarity="+"
+    scanType="Full"
+    filterLine="ITMS + c NSI d Full ms2 302.16@cid35.00 [70.00-920.00]"
+    retentionTime="PT580.687S"
+    lowMz="99.4469"
+    highMz="706.483"
+    basePeakMz="417.56"
+    basePeakIntensity="174.375"
+    totIonCurrent="930.409"
+    collisionEnergy="35" >
+    <precursorMz precursorIntensity="6849.78" precursorCharge="3" activationMethod="CID" >302.16265869</precursorMz>
+    <peaks precision="32"
+     byteOrder="network"
+     pairOrder="m/z-int" >Qsbk0ECkm5pC1IHSQOvknELgnBJAdoYOQvCEZj/zYU5C9BpgQKxjQEMBTjhA3AheQwkP00D4VHVDHep6QCUxPUMfM65BP4n5QyA0lkErDXpDIRnmQAeHw0MkKkxBAvOkQygD8kDxjjFDK6OaQCMsxUMuQBZBEEBNQy9fZkEvevZDONrwQIk+JENCrmxBUL+4Q0UgZEA+MPNDRyJUQBTIL0NH1gpAP084Q0lc6EEv2adDSzeIQRCdA0NMedRA1ZSiQ1Ri6kA+8QVDVS2IQK1UvENXSr5AIvKLQ1jjOkCyzoxDYjSAQD37LUNlpe5ATO5pQ2o7+kDdBMRDbkXoQM65TUNwFOxBHGoiQ3EtSEBo+rFDdCBMQI9BgkN14thBDB17Q4Afy0BfU85DgSEjQZ6i7UOBpbhBkextQ4J5PUE04BJDhP5FQOm9C0OGF/pAlmDkQ4a+TUCs7ElDiAlSQGqrYkOLk1pBGZRxQ44MJkJ2Q9xDjoOeQV09O0OPM8FAkEQGQ5GSdECXFQpDkpoaQjc7NkOT1HxAzKskQ55LTEBo7/lDoDJZQOps8UOwxc1CFIG2Q7ay1kE3gl1DuesdQYLV+kO7AttCiTeuQ8VxyUBM2LJDyb6IQaXSzEPMJj9Bvx5oQ9DHoUMuX+5D0TTdQNHkvUPRxtJA8XQUQ9Mpp0IBHwpD08etQLnLZkPYGyM/x4H8Q+u8cUEeM1FD7Zi3QLLf5kPxlQFATAygQ/Sqj0E9jStD94qSQTH3LUQAij9AQsp/RAUkYECnUGdEDFxHQRB6PUQanxxAn2MmRCvU8UB5WYxEMJ7wQDMRTw==</peaks>
+   </scan>
+
+</msRun>
+</mzXML>

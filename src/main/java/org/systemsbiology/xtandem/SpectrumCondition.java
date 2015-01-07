@@ -171,113 +171,13 @@ public class SpectrumCondition implements Serializable {
      * @param in !null spectrum
      * @return null if the spectrum is to be ignored otherwise a conditioned spectrum
      */
-    public IMeasuredSpectrum conditionSpectrum(IScoredScan pScan, double minMass) {
-        OriginatingScoredScan scan = (OriginatingScoredScan) pScan;
-        MutableMeasuredSpectrum in = new MutableMeasuredSpectrum(scan.getRaw());
-        if (!isSpectrumScored(in))
-            return null;
-
-        /*
-        * if conditioning is turned off, then simply accept the spectrum.
-        */
-        if (!isSpectrumConditioned()) {
-            //    doWindowedNormalization(in);
-            final IMeasuredSpectrum ret = in.asImmutable();
-
-            if (XTandemDebugging.isDebugging()) {
-                XTandemDebugging.getLocalValues().addMeasuredSpectrums(ret.getId(), "do not condition", ret);
-            }
-
-            scan.setNormalizedRawScan(ret);
-            return ret;
-        }
-
-        /*
-        * this method doesn't really remove isotopes: it cleans up multiple intensities within one Dalton
-        * of each other.
-        */
-//	sort(_s.m_vMI.begin(),_s.m_vMI.end(),lessThanMImz);
-        remove_isotopes(in, minMass);
-
-        if (XTandemDebugging.isDebugging()) {
-            XTandemDebugging.getLocalValues().addMeasuredSpectrums(in.getId(), "remove_isotopes", in.asImmutable());
-        }
-/*
- * remove ions near the m_ParentStream ion m/z
- */
-        if (isbUseParent()) {
-            remove_parent(in);
-
-            if (XTandemDebugging.isDebugging()) {
-                XTandemDebugging.getLocalValues().addMeasuredSpectrums(in.getId(), "remove_parent", in.asImmutable());
-            }
-        }
-/*
-* remove low mass ammonium ions prior to normalization
-*/
-        if (isUseLowestMass()) {
-            final float maxMass = getfMaxMass();
-            final IPeakFilter peakFilter = ScoringUtilities.buildMassLessThanFilter(maxMass);
-            ScoringUtilities.applyFilter(in, peakFilter);
-            if (XTandemDebugging.isDebugging()) {
-                XTandemDebugging.getLocalValues().addMeasuredSpectrums(in.getId(), "isUseLowestMass", in.asImmutable());
-            }
-        }
-        // now that we have dropped the highest (maybe) peaks regather statistics
-        SpectrumStatistics stat = new SpectrumStatistics(in);
-          if (isbUseDynamicRange()) {
-            double maxPeak = XTandemUtilities.getMaxPeak(in);
-            scan.setNormalizationFactor(100 / maxPeak);
-            normalize(in, stat);
-            SpectrumStatistics stat2 = new SpectrumStatistics(in);
-            if (XTandemDebugging.isDebugging()) {
-                XTandemDebugging.getLocalValues().addMeasuredSpectrums(in.getId(), "normalize", in.asImmutable());
-            }
-
-        }
-        if (isbUseNeutralLoss()) {
-
-        }
-
-/*
-* reject the spectrum if there aren't enough peaks
-*/
-        if (isUseMinSize()) {
-            int nPeaks = in.getPeaks().length;
-            final long minSIze = getlMinSize();
-            if (nPeaks < minSIze)
-                return null; // ignore
-        }
-/*
-* check to see if the spectrum has the characteristics of noise
-*/
-        if (isbUseNoiseSuppression()) {
-            if (is_noise(in)) {
-                return null;
-            }
-        }
-
-        // Drop peaks from Carbon 13
-        clean_isotopes(in);
-        if (XTandemDebugging.isDebugging()) {
-            XTandemDebugging.getLocalValues().addMeasuredSpectrums(in.getId(), "clean_isotopes", in.asImmutable());
-        }
-
-///*
-//* retrieve the N most intense peaks
-//*/
-        if (isbUseMaxPeaks()) {
-            final int maxAllowedPeaks = gettMaxPeaks();
-            ScoringUtilities.getMaxNPeaks(in, maxAllowedPeaks);
-            if (XTandemDebugging.isDebugging()) {
-                XTandemDebugging.getLocalValues().addMeasuredSpectrums(in.getId(), "isbUseMaxPeaks", in.asImmutable());
-            }
-        }
-        IMeasuredSpectrum ret = in.asImmutable();
+    public IMeasuredSpectrum conditionSpectrum(IScoredScan pScanx, double minMass) {
+        OriginatingScoredScan scan = (OriginatingScoredScan) pScanx;
+        IMeasuredSpectrum raw = scan.getRaw();
+        IMeasuredSpectrum ret = normalizeSpectrum(raw, minMass);
         scan.setNormalizedRawScan(ret);
-
         return ret;
-
+    }
 ///*
 //* normalize the spectrum
 //*/
@@ -327,7 +227,108 @@ public class SpectrumCondition implements Serializable {
 ////        _s.m_vdStats[2] = m_fFactor;
 //        return true;
 
-    }
+
+
+
+    public IMeasuredSpectrum normalizeSpectrum(IMeasuredSpectrum raw, double minMass )
+    {
+         /*
+        * if conditioning is turned off, then simply accept the spectrum.
+        */
+        if (!isSpectrumConditioned()) {
+                return raw;
+        }
+        MutableMeasuredSpectrum in = new MutableMeasuredSpectrum(raw);
+        if (!isSpectrumScored(in))
+            return null;
+
+
+        /*
+        * this method doesn't really remove isotopes: it cleans up multiple intensities within one Dalton
+        * of each other.
+        */
+//	sort(_s.m_vMI.begin(),_s.m_vMI.end(),lessThanMImz);
+        remove_isotopes(in, minMass);
+
+        if (XTandemDebugging.isDebugging()) {
+            XTandemDebugging.getLocalValues().addMeasuredSpectrums(in.getId(), "remove_isotopes", in.asImmutable());
+        }
+/*
+ * remove ions near the m_ParentStream ion m/z
+ */
+        if (isbUseParent()) {
+            remove_parent(in);
+
+            if (XTandemDebugging.isDebugging()) {
+                XTandemDebugging.getLocalValues().addMeasuredSpectrums(in.getId(), "remove_parent", in.asImmutable());
+            }
+        }
+/*
+* remove low mass ammonium ions prior to normalization
+*/
+        if (isUseLowestMass()) {
+            final float maxMass = getfMaxMass();
+            final IPeakFilter peakFilter = ScoringUtilities.buildMassLessThanFilter(maxMass);
+            ScoringUtilities.applyFilter(in, peakFilter);
+            if (XTandemDebugging.isDebugging()) {
+                XTandemDebugging.getLocalValues().addMeasuredSpectrums(in.getId(), "isUseLowestMass", in.asImmutable());
+            }
+        }
+        // now that we have dropped the highest (maybe) peaks regather statistics
+        SpectrumStatistics stat = new SpectrumStatistics(in);
+          if (isbUseDynamicRange()) {
+            double maxPeak = XTandemUtilities.getMaxPeak(in);
+          //  scan.setNormalizationFactor(100 / maxPeak);
+            normalize(in, stat);
+            SpectrumStatistics stat2 = new SpectrumStatistics(in);
+            if (XTandemDebugging.isDebugging()) {
+                XTandemDebugging.getLocalValues().addMeasuredSpectrums(in.getId(), "normalize", in.asImmutable());
+            }
+
+        }
+        if (isbUseNeutralLoss()) {
+
+        }
+
+/*
+* reject the spectrum if there aren't enough peaks
+*/
+        if (isUseMinSize()) {
+            int nPeaks = in.getPeaks().length;
+            final long minSIze = getlMinSize();
+            if (nPeaks < minSIze)
+                return null; // ignore
+        }
+/*
+* check to see if the spectrum has the characteristics of noise
+*/
+        if (isbUseNoiseSuppression()) {
+            if (is_noise(in)) {
+                return null;
+            }
+        }
+
+        // Drop peaks from Carbon 13
+        clean_isotopes(in);
+        if (XTandemDebugging.isDebugging()) {
+            XTandemDebugging.getLocalValues().addMeasuredSpectrums(in.getId(), "clean_isotopes", in.asImmutable());
+        }
+
+///*
+//* retrieve the N most intense peaks
+//*/
+        if (isbUseMaxPeaks()) {
+            final int maxAllowedPeaks = gettMaxPeaks();
+            ScoringUtilities.getMaxNPeaks(in, maxAllowedPeaks);
+            if (XTandemDebugging.isDebugging()) {
+                XTandemDebugging.getLocalValues().addMeasuredSpectrums(in.getId(), "isbUseMaxPeaks", in.asImmutable());
+            }
+        }
+        IMeasuredSpectrum ret = in.asImmutable();
+
+        return ret;
+      }
+
 
     /*
     * Perform mix-range modification to input spectrum

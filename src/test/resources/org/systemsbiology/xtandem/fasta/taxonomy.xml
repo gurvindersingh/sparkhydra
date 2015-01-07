@@ -1,0 +1,558 @@
+<?xml version="1.0"?>
+<bioml label="x! taxon-to-file matching list">
+
+	<taxon label="ipi.RAT.fasta.v1.11">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.RAT.fasta.v1.11" />
+	</taxon>
+	<taxon label="ipi.HUMAN.fasta.v2.28">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.HUMAN.fasta.v2.28" />
+	</taxon>
+	<taxon label="ipi.MOUSERAT.fasta.20040804">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.MOUSERAT.fasta.20040804" />
+	</taxon>
+	<taxon label="ipi.HUMAN.fasta.v2.21.orig">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.HUMAN.fasta.v2.21.orig" />
+	</taxon>
+	<taxon label="ipi.HUMAN.fasta.v2.21">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.HUMAN.fasta.v2.21" />
+	</taxon>
+	<taxon label="ipi.HUMAN.fasta.20050429">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.HUMAN.fasta.20050429" />
+	</taxon>
+	<taxon label="ipi.MOUSERAT.fasta.v1.21.v1.11">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.MOUSERAT.fasta.v1.21.v1.11" />
+	</taxon>
+	<taxon label="ipi.MOUSERAT.fasta.v1.17.v1.7"> <file format="peptide" URL="/regis/dbase/IPI/ipi.MOUSERAT.fasta.v1.17.v1.7" />
+	</taxon>
+	<taxon label="ipi.RAT.fasta.v3.01">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.RAT.fasta.v3.01" />
+	</taxon>
+	<taxon label="ipi.HUMANMOUSE.fasta.20040121">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.HUMANMOUSE.fasta.20040121" />
+	</taxon>
+	<taxon label="ipi.MOUSE.fasta.v1.28">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.MOUSE.fasta.v1.28" />
+	</taxon>
+	<taxon label="ipi.HUMANMOUSE.fasta.20040401">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.HUMANMOUSE.fasta.20040401" />
+	</taxon>
+	<taxon label="hiv_hcv.ipi.HUMAN.v2.26">
+		<file format="peptide" URL="/regis/dbase/IPI/hiv_hcv.ipi.HUMAN.v2.26" />
+	</taxon>
+	<taxon label="ipi.HUMAN.fasta.v3.03">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.HUMAN.fasta.v3.03" />
+	</taxon>
+	<taxon label="ipi.MOUSE.fasta.v1.21">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.MOUSE.fasta.v1.21" />
+	</taxon>
+	<taxon label="ipi.HUMAN.v3.21.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.HUMAN.v3.21.fasta" />
+	</taxon>
+	<taxon label="ipi.MOUSE.fasta.v1.17">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.MOUSE.fasta.v1.17" />
+	</taxon>
+	<taxon label="ipi.MOUSERAT.fasta.v1.19.v1.9">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.MOUSERAT.fasta.v1.19.v1.9" />
+	</taxon>
+	<taxon label="ipi.HUMANMOUSE.fasta.20040804">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.HUMANMOUSE.fasta.20040804" />
+	</taxon>
+	<taxon label="ipi.RAT.fasta.v1.14">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.RAT.fasta.v1.14" />
+	</taxon>
+	<taxon label="ipi.HUMAN.fasta.v2.35">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.HUMAN.fasta.v2.35" />
+	</taxon>
+	<taxon label="ipi.RAT.fasta.v1.9">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.RAT.fasta.v1.9" />
+	</taxon>
+	<taxon label="ipi.RAT.fasta.v1.7">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.RAT.fasta.v1.7" />
+	</taxon>
+	<taxon label="ipi.MOUSE.fasta.20050429">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.MOUSE.fasta.20050429" />
+	</taxon>
+	<taxon label="ipi.MOUSE.fasta.v1.24">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.MOUSE.fasta.v1.24" />
+	</taxon>
+	<taxon label="ipi.MOUSE.fasta.v1.19">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.MOUSE.fasta.v1.19" />
+	</taxon>
+	<taxon label="ipi.HUMANMOUSERAT.fasta.20031111">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.HUMANMOUSERAT.fasta.20031111" />
+	</taxon>
+	<taxon label="ipi.HUMAN.v3.03.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.HUMAN.v3.03.fasta" />
+	</taxon>
+	<taxon label="ipi.RAT.fasta.v1.18">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.RAT.fasta.v1.18" />
+	</taxon>
+	<taxon label="ipi.HUMAN.fasta.v2.31">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.HUMAN.fasta.v2.31" />
+	</taxon>
+	<taxon label="hiv_hcv.ipi.HUMAN.v2.24">
+		<file format="peptide" URL="/regis/dbase/IPI/hiv_hcv.ipi.HUMAN.v2.24" />
+	</taxon>
+	<taxon label="ipi.MOUSERAT.fasta.v1.24.v1.14">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.MOUSERAT.fasta.v1.24.v1.14" />
+	</taxon>
+	<taxon label="ipi.RAT.fasta.20050429">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.RAT.fasta.20050429" />
+	</taxon>
+	<taxon label="ipi.HUMAN.fasta.v2.24">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.HUMAN.fasta.v2.24" />
+	</taxon>
+	<taxon label="ipi.HUMAN.fasta.v3.01">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.HUMAN.fasta.v3.01" />
+	</taxon>
+	<taxon label="ipi.HUMAN.fasta.v2.26">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.HUMAN.fasta.v2.26" />
+	</taxon>
+	<taxon label="ipi.MOUSE.fasta.v3.01">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.MOUSE.fasta.v3.01" />
+	</taxon>
+	<taxon label="ipi.CHICK.v3.01.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.CHICK.v3.01.fasta" />
+	</taxon>
+	<taxon label="exporttoolsdbasekelly">
+		<file format="peptide" URL="/regis/dbase/IPI/exporttoolsdbasekelly" />
+	</taxon>
+	<taxon label="ipi.HUMAN.fasta.20050824">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.HUMAN.fasta.20050824" />
+	</taxon>
+	<taxon label="ipi.MOUSE.fasta.20050824">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.MOUSE.fasta.20050824" />
+	</taxon>
+	<taxon label="ipi.RAT.fasta.20050824">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.RAT.fasta.20050824" />
+	</taxon>
+	<taxon label="ipi.HUMAN.v3.10.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.HUMAN.v3.10.fasta" />
+	</taxon>
+	<taxon label="ipi.MOUSE.v3.10.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.MOUSE.v3.10.fasta" />
+	</taxon>
+	<taxon label="ipi.HUMAN.v3.11.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.HUMAN.v3.11.fasta" />
+	</taxon>
+	<taxon label="ipi.MOUSE.v3.11.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.MOUSE.v3.11.fasta" />
+	</taxon>
+	<taxon label="ipi.HUMAN.v3.13.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.HUMAN.v3.13.fasta" />
+	</taxon>
+	<taxon label="ipi.MOUSE.v3.13.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.MOUSE.v3.13.fasta" />
+	</taxon>
+	<taxon label="ipi.MOUSE.v3.38.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.MOUSE.v3.38.fasta" />
+	</taxon>
+
+    <taxon label="ipi.MOUSE.v3.69_plus_contaminants.fasta">
+    <file format="peptide" URL="/regis/dbase/IPI/ipi.MOUSE.v3.69_plus_contaminants.fasta" />
+    </taxon>
+
+    <taxon label="ipi.MOUSE.v3.69_plus_contaminants_targetdecoy.fasta">
+    <file format="peptide" URL="/regis/dbase/IPI/ipi.MOUSE.v3.69_plus_contaminants_targetdecoy.fasta" />
+    </taxon>
+
+	<taxon label="ipi.RAT.v3.21.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.RAT.v3.21.fasta" />
+	</taxon>
+	<taxon label="ipi.CHICK.v3.09.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.CHICK.v3.09.fasta" />
+	</taxon>
+	<taxon label="ipi.HUMAN.v3.15.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.HUMAN.v3.15.fasta" />
+	</taxon>
+	<taxon label="ipi.MOUSE.v3.15.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.MOUSE.v3.15.fasta" />
+	</taxon>
+	<taxon label="ipi.HUMAN.v3.16.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.HUMAN.v3.16.fasta" />
+	</taxon>
+	<taxon label="ipi.MOUSE.v3.16.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.MOUSE.v3.16.fasta" />
+	</taxon>
+	<taxon label="ipi.RAT.v3.16.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.RAT.v3.16.fasta" />
+	</taxon>
+	<taxon label="ipi.HUMAN.v3.17.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.HUMAN.v3.17.fasta" />
+	</taxon>
+	<taxon label="ipi.MOUSE.v3.17.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.MOUSE.v3.17.fasta" />
+	</taxon>
+	<taxon label="ipi.RAT.v3.17.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.RAT.v3.17.fasta" />
+	</taxon>
+	<taxon label="ipi.HUMAN.v3.19.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.HUMAN.v3.19.fasta" />
+	</taxon>
+	<taxon label="ipi.MOUSE.v3.19.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.MOUSE.v3.19.fasta" />
+	</taxon>
+	<taxon label="ipi.RAT.v3.19.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.RAT.v3.19.fasta" />
+	</taxon>
+	<taxon label="ipi.MOUSE.v3.21.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.MOUSE.v3.21.fasta" />
+	</taxon>
+	<taxon label="ipi.HUMAN.v3.22.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.HUMAN.v3.22.fasta" />
+	</taxon>
+	<taxon label="ipi.MOUSE.v3.22.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.MOUSE.v3.22.fasta" />
+	</taxon>
+	<taxon label="ipi.RAT.v3.22.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.RAT.v3.22.fasta" />
+	</taxon>
+	<taxon label="ipi.HUMAN.v3.23.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.HUMAN.v3.23.fasta" />
+	</taxon>
+	<taxon label="ipi.MOUSE.v3.23.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.MOUSE.v3.23.fasta" />
+	</taxon>
+	<taxon label="ipi.RAT.v3.23.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.RAT.v3.23.fasta" />
+	</taxon>
+	<taxon label="ipi.HUMAN.v3.26.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.HUMAN.v3.26.fasta" />
+	</taxon>
+	<taxon label="ipi.HUMAN.v3.26plus.fasta">
+		<file format="peptide" URL="/regis/dbase/users/sbeams/ipi.HUMAN.v3.26plus.fasta" />
+	</taxon>
+	<taxon label="ipi.HUMAN.v3.26plus_ForwDecoy.fasta">
+		<file format="peptide" URL="/regis/dbase/users/sbeams/ipi.HUMAN.v3.26plus_ForwDecoy.fasta" />
+	</taxon>
+	<taxon label="ipi.HUMAN.v3.34.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.HUMAN.v3.34.fasta" />
+	</taxon>
+	<taxon label="ipi.MOUSE.v3.26.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.MOUSE.v3.26.fasta" />
+	</taxon>
+	<taxon label="ipi.MOUSE.v3.29.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.MOUSE.v3.26.fasta" />
+	</taxon>
+	<taxon label="ipi.MOUSE.v3.34.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.MOUSE.v3.34.fasta" />
+	</taxon>
+	<taxon label="ipi.MOUSE.v3.66.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.MOUSE.v3.66.fasta" />
+	</taxon>
+	<taxon label="ipi.MOUSE.v3.66_plus_contaminants.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.MOUSE.v3.66_plus_contaminants.fasta" />
+	</taxon>
+	<taxon label="ipi.RAT.v3.26.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.RAT.v3.26.fasta" />
+	</taxon>
+        <taxon label="Halobacterium.HumanIPI">
+                <file format="peptide" URL="/regis/dbase/misc/ProtCourseDataset/Halobacterium.humanIPI.20070313.fasta" />
+        </taxon>
+        <taxon label="Mm_MBrosch_0206">
+                <file format="peptide" URL="/regis/dbase/users/sbeams/Mm_MBrosch_0206.fa" />
+        </taxon>
+        <taxon label="Mm_MBrosch_0206_Decoy">
+                <file format="peptide" URL="/regis/dbase/users/sbeams/Mm_MBrosch_0206_Decoy.fa" />
+        </taxon>
+        <taxon label="Mm_MBrosch_0206_ForDec">
+                <file format="peptide" URL="/regis/dbase/users/sbeams/Mm_MBrosch_0206_ForDec.fa" />
+        </taxon>
+        <taxon label="Mm_genoMS_v45a">
+                <file format="peptide" URL="/regis/dbase/users/sbeams/Mm_genoMS_v45a.fa" />
+        </taxon>
+       
+        <taxon label="Mm_NRmerge_20080121_TargDecoy">
+                <file format="peptide" URL="/regis/dbase/users/sbeams/Mm_NRmerge_20080121_TargDecoy.fasta" />
+        </taxon>
+
+        <taxon label="Mm_NRmerge_20080121_TargDecoy_nxst">
+                <file format="peptide" URL="/regis/dbase/users/sbeams/Mm_NRmerge_20080121_TargDecoy_nxst.fasta" />
+        </taxon>
+
+
+         <taxon label="ecoli.nci.20060720">
+                <file format="peptide" URL="/regis/dbase/ecoli.nci.20060720" />
+        </taxon>
+       
+         <taxon label="ecoli.nci.20060720_TargDecoy.fasta">
+                 <file format="peptide" URL="/regis/dbase/users/sbeams/ecoli.nci.20060720_TargDecoy.fasta" />
+        </taxon>
+
+          <taxon label="ecoli.nci.20080206_TargDecoy.fasta">
+                 <file format="peptide" URL="/regis/dbase/users/sbeams/ecoli.nci.20080206_TargDecoy.fasta" />
+        </taxon>
+       
+        <taxon label="yeast_orfs_all_TargDecoy.20060126">
+                <file format="peptide" URL="/regis/dbase/users/sbeams/yeast_orfs_all_TargDecoy.20060126" />
+        </taxon>
+        
+		<taxon label="YeastCombNR_20070207_ForwDecoy.fasta">
+		        <file format="peptide" URL="/regis/dbase/users/sbeams/YeastCombNR_20070207_ForwDecoy.fasta" />
+		</taxon>
+
+		<taxon label="yeast_orfs_all.20060126">
+                <file format="peptide" URL="/regis/dbase/yeast_orfs_all.20060126" />
+        </taxon>
+
+        <taxon label="YeastCombNR_20070207_ForwDecoy_plus_concat.fasta">
+                <file format="peptide" URL="/regis/dbase/users/sbeams/YeastCombNR_20070207_ForwDecoy_plus_concat.fasta" />
+        </taxon>
+
+        <taxon label="SGD_yeast_102007_decoy.fasta">
+                <file format="peptide" URL="/regis/dbase/users/sbeams/SGD_yeast_102007_decoy.fasta" />
+        </taxon>
+
+
+         <taxon label="pig_TargDecoy_2008_04.fasta">
+                <file format="peptide" URL="/regis/dbase/users/sbeams/pig_TargDecoy_2008_04.fasta" />
+        </taxon>
+
+	<taxon label="ipi.HUMAN.v3.38.fasta">
+		<file format="peptide" URL="/regis/dbase/IPI/ipi.HUMAN.v3.38.fasta" />
+	</taxon>
+	
+        <taxon label="ipi.HUMAN.v3.38_forwdecoy.fasta">
+                <file format="peptide" URL="/regis/dbase/users/sbeams/ipi.HUMAN.v3.38_forwdecoy.fasta" />
+        </taxon>
+
+        <taxon label="ipi.HUMAN.v3.38_forwdecoy_nxst.fasta">
+                <file format="peptide" URL="/regis/dbase/users/sbeams/ipi.HUMAN.v3.38_forwdecoy_nxst.fasta" />
+        </taxon>
+        
+
+        <taxon label="nr_human_20061127_v2.fasta">
+                <file format="peptide" URL="/regis/dbase/users/sbeams/nr_human_20061127_v2.fasta" />
+        </taxon>
+
+        <taxon label="17mix_hinf">
+                <file format="peptide" URL="/regis/dbase/misc/17mix_hinf" />
+        </taxon>
+
+        <taxon label="ipi.HUMAN.v3.38_17mix.fasta">
+                <file format="peptide" URL="/regis/dbase/users/csheu/ipi.HUMAN.v3.38_17mix.fasta" />
+        </taxon>
+
+        <taxon label="HsIPI3.50_Ec_cRAP_TargetDecoy.fasta">
+                <file format="peptide" URL="/regis/dbase/users/sbeams/HsIPI3.50_Ec_cRAP_TargetDecoy.fasta" />
+        </taxon>
+
+        <taxon label="HsIPI3.50_Ec_cRAP_20_TargetDecoy.fasta">
+                <file format="peptide" URL="/regis/dbase/users/sbeams/HsIPI3.50_Ec_cRAP_20_TargetDecoy.fasta" />
+        </taxon>
+
+	<taxon label="RnIPI3.50_TargetDecoy.fasta">
+		<file format="peptide" URL="/regis/dbase/users/sbeams/RnIPI3.50_TargetDecoy.fasta" />
+	</taxon>
+
+        <taxon label="HsIPI3.50_cRAP.fasta">
+                <file format="peptide" URL="/regis/dbase/users/sbeams/HsIPI3.50_cRAP.fasta" />
+        </taxon>
+
+        <taxon label="HsIPI3.50_cRAP_TargetDecoy.fasta">
+                <file format="peptide" URL="/regis/dbase/users/sbeams/HsIPI3.50_cRAP_TargetDecoy.fasta" />
+        </taxon>
+
+        <taxon label="17mix_cRAP_HsIPIDecoy.fasta">
+                <file format="peptide" URL="/regis/dbase/users/sbeams/17mix_cRAP_HsIPIDecoy.fasta" />
+        </taxon>
+
+        <taxon label="HsIPI3.50_cRAP_TargetDecoy.fasta">
+             <file format="peptide" URL="/regis/dbase/users/sbeams/HsIPI3.50_cRAP_TargetDecoy.fasta" />
+        </taxon>    
+       
+        <taxon label="yeast_orfs_IGGs.fasta.060401LacIFLAG_13Myc">
+             <file format="peptide" URL="/regis/dbase/users/bungo/yeast_orfs_IGGs.fasta.060401LacIFLAG_13Myc" />
+        </taxon>
+
+        <taxon label="cowDB_txid9913_merge_Decoy_Jan09.fasta">
+             <file format="peptide" URL="/regis/dbase/users/sbeams/cowDB_txid9913_merge_Decoy_Jan09.fasta" />
+        </taxon>
+
+        <taxon label="cow_Merge_Decoy_Jan2009.fasta">
+             <file format="peptide" URL="/regis/dbase/users/sbeams/cow_Merge_Decoy_Jan2009.fasta" />
+        </taxon>
+
+	   <taxon label="Honeybee_Merge20090316_cRAP_TargetDecoy.fasta">
+	   <file format="peptide" URL="/regis/dbase/users/sbeams/Honeybee_Merge20090316_cRAP_TargetDecoy.fasta" />
+	   </taxon>
+       <taxon label="Honeybee_Merge20090316_cRAP_plusNew_TargetDecoy.fasta">
+       <file format="peptide" URL="/regis/dbase/users/sbeams/Honeybee_Merge20090316_cRAP_plusNew_TargetDecoy.fasta" />
+       </taxon>
+
+	   <taxon label="ipi.HUMAN.v3.54_forwdecoy.fasta">
+	   <file format="peptide" URL="/regis/dbase/users/sbeams/ipi.HUMAN.v3.54_forwdecoy.fasta" />
+	   </taxon>
+
+	   <taxon label="ipi.HUMAN.v3.54_forwdecoy_nxst.fasta">
+	   <file format="peptide" URL="/regis/dbase/users/sbeams/ipi.HUMAN.v3.54_forwdecoy_nxst.fasta" />
+	   </taxon>
+
+       <taxon label="ipi.HUMAN.v3.54_SwissProt.v56.7_decoy.fasta">
+       <file format="peptide" URL="/regis/dbase/users/sbeams/ipi.HUMAN.v3.54_SwissProt.v56.7_decoy.fasta" />
+       </taxon>
+
+	   <taxon label="ipi.HUMAN.v3.56_plus_contaminants_mod_taf7.fasta">
+	   <file format="peptide" URL="/regis/dbase/users/bong/ipi.HUMAN.v3.56_plus_contaminants_mod_taf7.fasta" />
+	   </taxon>
+
+	   <taxon label="Methanococcus_20090622_TargDecoy.fasta">
+	   <file format="peptide" URL="/regis/dbase/Methanococcus_20090622_TargDecoy.fasta" />
+	   </taxon>
+
+	   <taxon label="MM_20MB_Human_Jul_2006_TargDecoy.fasta">
+	   <file format="peptide" URL="/regis/dbase/MM_20MB_Human_Jul_2006_TargDecoy.fasta" />
+	   </taxon>
+
+	   <taxon label="SGD_MRM_Atlas_subset_decoy.fasta">
+	   <file format="peptide" URL="/regis/dbase/users/sbeams/SGD_MRM_Atlas_subset_decoy.fasta" />
+	   </taxon>
+
+	   <taxon label="yeast_all_DP_concat_decoy_July09.fasta">
+	   <file format="peptide" URL="/regis/dbase/users/sbeams/yeast_all_DP_concat_decoy_July09.fasta" />
+	   </taxon>
+
+	   <taxon label="yeast_all_DP_concat_decoy_2010-02.fasta">
+	   <file format="peptide" URL="/regis/dbase/users/sbeams/yeast_all_DP_concat_decoy_2010-02.fasta" />
+	   </taxon>
+
+	   <taxon label="yeast_all_DP_concat_decoy_2010-03.fasta">
+	   <file format="peptide" URL="/regis/dbase/users/sbeams/yeast_all_DP_concat_decoy_2010-03.fasta" />
+	   </taxon>
+
+       <taxon label="yeast_all_DP_concat_decoy_2010-09.fasta">
+       <file format="peptide" URL="/regis/dbase/users/sbeams/yeast_all_DP_concat_decoy_2010-09.fasta" />
+       </taxon>
+
+	   <taxon label="HPP_DP_plateIDs_decoy.fasta">
+	   <file format="peptide" URL="/regis/dbase/users/sbeams/HPP_DP_plateIDs_decoy.fasta" />
+	   </taxon>
+
+	   <taxon label="Mm_Ens_IPI_SwissProt_cRAP_20percDECOY_2009-08.fasta">
+	   <file format="peptide" URL="/regis/dbase/users/sbeams/Mm_Ens_IPI_SwissProt_cRAP_20percDECOY_2009-08.fasta" />
+	   </taxon>
+
+	   <taxon label="sprot_human_v57.10_cRAP_TargDecoy.fasta">
+	   <file format="peptide" URL="/regis/dbase/users/sbeams/sprot_human_v57.10_cRAP_TargDecoy.fasta" />
+	   </taxon>
+
+       <taxon label="sprot_human_v57.10_cRAP_plusExtraOrigene_TargDecoy.fasta">
+       <file format="peptide" URL="/regis/dbase/users/sbeams/sprot_human_v57.10_cRAP_plusExtraOrigene_TargDecoy.fasta" />
+       </taxon>
+
+       <taxon label="sprot_human_v57.10_cRAP_plusExtraOrigene_TargDecoy_nxst.fasta">
+       <file format="peptide" URL="/regis/dbase/users/sbeams/sprot_human_v57.10_cRAP_plusExtraOrigene_TargDecoy_nxst.fasta" />
+       </taxon>
+
+       <taxon label="ExpectedOrigene_targetDecoy.fasta">
+       <file format="peptide" URL="/regis/dbase/users/sbeams/ExpectedOrigene_targetDecoy.fasta" />
+       </taxon>
+
+       <taxon label="ExpectedOrigene_targetDecoy_nxst.fasta">
+       <file format="peptide" URL="/regis/dbase/users/sbeams/ExpectedOrigene_targetDecoy_nxst.fasta" />
+       </taxon>
+
+       <taxon label="ipi.RAT.v3.56_plus_contaminants.fasta">
+       <file format="peptide" URL="/regis/dbase/IPI/ipi.RAT.v3.56_plus_contaminants_DECOY.fasta" />
+       </taxon>
+
+       <taxon label="ipi.HUMAN.v3.66_plus_contaminants_nxst_decoy.fasta">
+       <file format="peptide" URL="/regis/dbase/users/sbeams/ipi.HUMAN.v3.66_plus_contaminants_nxst_decoy.fasta" />
+       </taxon>
+
+       <taxon label="ipi.HUMAN.v3.66_plus_contaminants.fasta">
+       <file format="peptide" URL="/regis/dbase/IPI/ipi.HUMAN.v3.66_plus_contaminants.fasta" />
+       </taxon>
+
+       <taxon label="ipi.HUMAN.v3.66_plus_contaminants_decoy.fasta">
+       <file format="peptide" URL="/regis/dbase/users/sbeams/ipi.HUMAN.v3.66_plus_contaminants_decoy.fasta" />
+       </taxon>
+
+       <taxon label="Yeast3StrainCombNR_20100211_TargDecoy.fasta">
+       <file format="peptide" URL="/regis/dbase/users/sbeams/Yeast3StrainCombNR_20100211_TargDecoy.fasta" />
+       </taxon>
+
+         <taxon label="combined_sus_Decoy_Jan2010.fasta">
+                <file format="peptide" URL="/regis/dbase/users/sbeams/combined_sus_Decoy_Jan2010.fasta" />
+        </taxon>
+        <taxon label="fly_fgcz_7227_20050105.fasta">
+                <file format="peptide" URL="/regis/dbase/users/sbeams/fly_fgcz_7227_20050105.fasta" />
+        </taxon>
+
+        <taxon label="bw_UP_sp_human_v57.15_pDCR.fasta">
+                <file format="peptide" URL="/regis/dbase/users/sbeams/bw_UP_sp_human_v57.15_pDCR.fasta" />
+        </taxon>
+        
+        <taxon label="UP_SP_human_v2010-05.fasta">
+                <file format="peptide" URL="/regis/dbase/users/sbeams/UP_SP_human_v2010-05.fasta" />
+        </taxon>
+        
+        <taxon label="ipi.MOUSE.v3.72.targetdecoy.fasta">
+                <file format="peptide" URL="/regis/dbase/users/sbeams/ipi.MOUSE.v3.72.targetdecoy.fasta" />
+        </taxon>
+
+        <taxon label="ipi.MOUSE.v3.72.targetdecoy_nxst.fasta">
+                <file format="peptide" URL="/regis/dbase/users/sbeams/ipi.MOUSE.v3.72.targetdecoy_nxst.fasta" />
+        </taxon>
+
+        <taxon label="ipi.MOUSE.v3.72_FluPR8_1980_targetdecoy.fasta">
+                <file format="peptide" URL="/regis/dbase/users/sbeams/ipi.MOUSE.v3.72_FluPR8_1980_targetdecoy.fasta" />
+        </taxon>
+         
+       <taxon label="ipi.HUMAN.v3.71.targetdecoy.fasta">
+                <file format="peptide" URL="/regis/dbase/users/sbeams/ipi.HUMAN.v3.71.targetdecoy.fasta" />
+        </taxon>
+ 
+       <taxon label="Mtb-H37RvH37Ra_Mb-BCG_merged_2010-06_crap_targetdecoy.fasta">
+                <file format="peptide" URL="/regis/dbase/users/sbeams/Mtb-H37RvH37Ra_Mb-BCG_merged_2010-06_crap_targetdecoy.fasta" />
+        </taxon>
+
+    <taxon label="Mtb-H37RvMb-BCG_merged_2010-08_crap_targetdecoy.fasta">
+         <file format="peptide" URL="/regis/dbase/users/sbeams/Mtb-H37RvMb-BCG_merged_2010-08_crap_targetdecoy.fasta" />
+    </taxon>
+
+    <taxon label="Halobacterium-20080205_TargDecoy.fasta">
+         <file format="peptide" URL="res://largeSample/Halobacterium-20080205_TargDecoyFound.fasta" />
+    </taxon>
+
+       <taxon label="uniprot_sprot_v57.12.fasta">
+                <file format="peptide" URL="/dbase/UniProt/uniprot_sprot_v57.12.fasta" />
+        </taxon>
+       <taxon label="HumanMRM_DP_concat_decoy_2010-07-09.fasta">
+                <file format="peptide" URL="/regis/dbase/users/sbeams/HumanMRM_DP_concat_decoy_2010-07-09.fasta" />
+        </taxon>
+       <taxon label="HumanSRM_DP_concat_decoy_2010-07-19.fasta">
+                <file format="peptide" URL="/regis/dbase/users/sbeams/HumanSRM_DP_concat_decoy_2010-07-19.fasta" />
+        </taxon>
+       <taxon label="HumanSRM_DP_concat_decoy_2010-08-15.fasta">
+                <file format="peptide" URL="/regis/dbase/users/sbeams/HumanSRM_DP_concat_decoy_2010-08-15.fasta" />
+        </taxon>
+       <taxon label="HumanSRM_DP_concat_decoy_2010-09-05.fasta">
+                <file format="peptide" URL="/regis/dbase/users/sbeams/HumanSRM_DP_concat_decoy_2010-09-05.fasta" />
+        </taxon>
+
+       <taxon label="HumanSRM_DP_concat_decoy_2010-10-06.fasta">
+                <file format="peptide" URL="/regis/dbase/users/sbeams/HumanSRM_DP_concat_decoy_2010-10-06.fasta" />
+        </taxon>
+
+       <taxon label="HumanSRM_DP_concat_decoy_2011-01-25.fasta">
+                <file format="peptide" URL="/regis/dbase/users/sbeams/HumanSRM_DP_concat_decoy_2011-01-25.fasta" />
+        </taxon>
+
+       <taxon label="mix14_fetuin_BSA_de-O-N-enzymes-rev_yeast.fasta">
+              <file format="peptide" URL="/regis/dbase/users/bsun/mixprot/mix14_fetuin_BSA_de-O-N-enzymes-rev_yeast.fasta" />
+       </taxon>
+
+       <taxon label="UniProt.Yeast.IS181.contamsS48.fasta">
+                <file format="peptide" URL="/regis/dbase/users/sbeams/UniProt.Yeast.IS181.contamsS48.fasta" />
+        </taxon>
+
+       <taxon label="iPRG2011_TargetDecoy.fasta">
+                <file format="peptide" URL="/regis/sbeams4/nobackup/edeutsch/iPRG2011/dbase/iPRG2011_TargetDecoy.fasta" />
+        </taxon>
+
+       <taxon label="iPRG2011_TargetDecoyEcoli.fasta">
+                <file format="peptide" URL="/regis/sbeams4/nobackup/edeutsch/iPRG2011/dbase/iPRG2011_TargetDecoyEcoli.fasta" />
+        </taxon>
+
+</bioml> 

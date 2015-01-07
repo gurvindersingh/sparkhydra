@@ -32,7 +32,7 @@ public class OriginatingScoredScan implements IScoredScan, IAddable<IScoredScan>
      * It is expensice to compute expected value and until we are at the end of computations not worth reporting
      */
     private static boolean gReportExpectedValue = false;
-    private RawPeptideScan m_Raw;
+    private IMeasuredSpectrum m_Raw;
     private double m_NormalizationFactor = 1;
     private final IonUseScore m_IonUse = new IonUseCounter();
     private IMeasuredSpectrum m_NormalizedRawScan;
@@ -46,7 +46,7 @@ public class OriginatingScoredScan implements IScoredScan, IAddable<IScoredScan>
     private String m_Algorithm = DEFAULT_ALGORITHM;
 
 
-    public OriginatingScoredScan(RawPeptideScan pRaw) {
+    public OriginatingScoredScan(IMeasuredSpectrum pRaw) {
         this();
         m_Raw = pRaw;
     }
@@ -165,11 +165,11 @@ public class OriginatingScoredScan implements IScoredScan, IAddable<IScoredScan>
      * @return
      */
     public boolean isValid() {
-        final RawPeptideScan raw = getRaw();
+        final IMeasuredSpectrum raw = getRaw();
         if (raw == null)
             return false;
-        if (raw.getPrecursorMz() == null)
-            return false;
+//        if (raw.getPrecursorMassChargeRatio() == null)
+//            return false;
         if (raw.getPeaksCount() < 8) // 20)  // todo make it right
             return false;
         if (getConditionedScan() == null) {
@@ -203,8 +203,8 @@ public class OriginatingScoredScan implements IScoredScan, IAddable<IScoredScan>
      * @return as above
      */
     public boolean isMassWithinRange(double mass, int charge, IScoringAlgorithm scorer) {
-        final RawPeptideScan raw = getRaw();
-        final IScanPrecursorMZ mz = raw.getPrecursorMz();
+        final IMeasuredSpectrum raw = getRaw();
+        ScanPrecursorMz mz = new ScanPrecursorMz(1, raw.getPrecursorCharge(), raw.getPrecursorMassChargeRatio(), FragmentationMethod.ECD);
         return mz.isMassWithinRange(mass, charge, scorer);
     }
 
@@ -216,7 +216,7 @@ public class OriginatingScoredScan implements IScoredScan, IAddable<IScoredScan>
      */
     @Override
     public String getId() {
-        RawPeptideScan raw = getRaw();
+        IMeasuredSpectrum raw = getRaw();
         if (raw == null)
             return null;
         return raw.getId();
@@ -224,15 +224,18 @@ public class OriginatingScoredScan implements IScoredScan, IAddable<IScoredScan>
 
 
     @Override
-    public RawPeptideScan getRaw() {
+    public IMeasuredSpectrum getRaw() {
         return m_Raw;
     }
 
     @Override
     public String getRetentionTimeString() {
-        RawPeptideScan raw = getRaw();
-        if (raw != null)
-            return raw.getRetentionTime();
+        IMeasuredSpectrum raw = getRaw();
+        if (raw instanceof RawPeptideScan) {
+            RawPeptideScan rawPeptideScan = (RawPeptideScan) raw;
+            return rawPeptideScan.getRetentionTime();
+        }
+
         return null;
     }
 
@@ -456,7 +459,7 @@ public class OriginatingScoredScan implements IScoredScan, IAddable<IScoredScan>
         if (bestMatch != null) {
             String originalId = bestMatch.getMeasured().getId();
             String matchId = added.getMeasured().getId();
-            if (!originalId.equals(matchId))
+            if (originalId != null && !originalId.equals(matchId))
                 throw new IllegalStateException("Trying to add " + matchId + " to scores from " + originalId);
 
         }
@@ -506,9 +509,8 @@ public class OriginatingScoredScan implements IScoredScan, IAddable<IScoredScan>
      */
     @Override
     public double getMassPlusHydrogen() {
-        RawPeptideScan raw = getRaw();
         IMeasuredSpectrum ns = getNormalizedRawScan();
-        final double mass = raw.getPrecursorMass();  // todo fix
+        final double mass = ns.getPrecursorMass();
         return mass;
     }
 
@@ -580,8 +582,8 @@ public class OriginatingScoredScan implements IScoredScan, IAddable<IScoredScan>
         XMLUtilities.outputLine("For Now forgiving expected value differences");
         //    if (!XTandemUtilities.equivalentDouble(getExpectedValue(), scan.getExpectedValue()))
         //        return false;
-        final RawPeptideScan raw1 = getRaw();
-        final RawPeptideScan raw2 = scan.getRaw();
+        final IMeasuredSpectrum raw1 = getRaw();
+        final IMeasuredSpectrum raw2 = scan.getRaw();
         if (!raw1.equivalent(raw2))
             return false;
         final ISpectralMatch[] sm1 = getSpectralMatches();
@@ -653,7 +655,7 @@ public class OriginatingScoredScan implements IScoredScan, IAddable<IScoredScan>
         adder.endTag();
         adder.cr();
 
-        final RawPeptideScan raw = getRaw();
+        final IMeasuredSpectrum raw = getRaw();
         if (raw != null)
             raw.serializeAsString(adder);
         final IMeasuredSpectrum conditioned = getConditionedScan();

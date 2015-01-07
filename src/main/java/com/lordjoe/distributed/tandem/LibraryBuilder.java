@@ -3,7 +3,6 @@ package com.lordjoe.distributed.tandem;
 import com.lordjoe.distributed.*;
 import com.lordjoe.distributed.database.*;
 import com.lordjoe.distributed.hydra.*;
-import com.lordjoe.distributed.hydra.fragment.*;
 import com.lordjoe.distributed.hydra.peptide.*;
 import com.lordjoe.distributed.hydra.protein.*;
 import com.lordjoe.distributed.hydra.scoring.*;
@@ -36,7 +35,7 @@ import java.util.*;
  */
 public class LibraryBuilder implements Serializable {
 
-    public static final boolean USE_PARQUET_DATABASE = false;
+    public static final boolean USE_PARQUET_DATABASE = true;
     private final XTandemMain application;
 
     public LibraryBuilder(SparkMapReduceScoringHandler pHandler) {
@@ -458,6 +457,6 @@ public class LibraryBuilder implements Serializable {
 
         DatabaseUtilities.buildParaquetDatabase(name,beans,PeptideSchemaBean.class);
 
-
+        totalTime.showElapsed("Done building database " + name);
     }
 }

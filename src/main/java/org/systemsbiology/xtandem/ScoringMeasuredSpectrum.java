@@ -1,7 +1,6 @@
 package org.systemsbiology.xtandem;
 
 import org.systemsbiology.sax.*;
-import org.systemsbiology.xtandem.sax.*;
 import org.systemsbiology.xtandem.scoring.*;
 
 import java.util.*;
@@ -14,7 +13,6 @@ import java.util.*;
  */
 public class ScoringMeasuredSpectrum implements IMeasuredSpectrum {
     public static ScoringMeasuredSpectrum[] EMPTY_ARRAY = {};
-    public static Class THIS_CLASS = ScoringMeasuredSpectrum.class;
 
     private final int m_PrecursorCharge;
     private final double m_PrecursorMass;
@@ -180,7 +178,10 @@ public class ScoringMeasuredSpectrum implements IMeasuredSpectrum {
      */
     @Override
     public String getId() {
-        return getScanData().getId();
+        ISpectralScan scanData = getScanData();
+        if(scanData == null)
+            return null;
+        return scanData.getId();
     }
 
     /**

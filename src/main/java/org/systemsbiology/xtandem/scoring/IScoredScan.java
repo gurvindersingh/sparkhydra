@@ -62,7 +62,7 @@ public interface IScoredScan extends IonTypeScorer , Comparable<IScoredScan>
 
     public int getNumberScoredPeptides();
 
-    public RawPeptideScan getRaw();
+    public IMeasuredSpectrum getRaw();
 
     /**
      * rention time as a string

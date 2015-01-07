@@ -5,6 +5,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.spark.api.java.*;
 import org.apache.spark.api.java.function.*;
 import org.apache.spark.sql.api.java.*;
+import org.junit.*;
 import org.systemsbiology.hadoop.*;
 
 import java.io.*;
@@ -60,18 +61,7 @@ public class PersonDatabaseTest {
 //        return pS1 + "," + age + "\n";
 //    }
 
-
-    public static void main(String[] args) throws Exception {
-        JavaSparkContext sc = SparkUtilities.getCurrentContext();
-        // sc is an existing JavaSparkContext.
-        guaranteeParaquetDatabase(sc, "ManyPeople");
-        showTeenAgersCount(sc, "ManyPeople");
-
-//        for (int i = 1; i < 5; i++) {
-//            buildParaquetDatabase(sc, "people" + i);
-//            showTeenAgers(sc, "people" + i);
-//         }
-    }
+    public static final int TEENAGER_COUNT = 8815;
 
     private static void showTeenAgersCount(final JavaSparkContext sc, final String name) {
         JavaSQLContext sqlContext = SparkUtilities.getCurrentSQLContext();
@@ -96,6 +86,10 @@ public class PersonDatabaseTest {
                   return "Count: " + count;
              }
          }).collect();
+
+        String s = teenagerNames.get(0);
+        int actual = Integer.parseInt(s.replace("Count: ",""));
+        Assert.assertEquals(TEENAGER_COUNT, actual);
 
          for (String teenagerName : teenagerNames)
 
@@ -165,6 +159,19 @@ public class PersonDatabaseTest {
             throw new RuntimeException(e);
 
         }
+    }
+
+
+    public static void main(String[] args) throws Exception {
+        JavaSparkContext sc = SparkUtilities.getCurrentContext();
+        // sc is an existing JavaSparkContext.
+        guaranteeParaquetDatabase(sc, "ManyPeople");
+        showTeenAgersCount(sc, "ManyPeople");
+
+//        for (int i = 1; i < 5; i++) {
+//            buildParaquetDatabase(sc, "people" + i);
+//            showTeenAgers(sc, "people" + i);
+//         }
     }
 
 

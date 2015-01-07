@@ -283,6 +283,7 @@ public abstract class AbstractScoringAlgorithm implements ITandemScoringAlgorith
         return sc.conditionSpectrum(in, 200);
     }
 
+
     /**
      * alter the score from dot_product in algorithm dependent manner
      *
@@ -608,7 +609,8 @@ public abstract class AbstractScoringAlgorithm implements ITandemScoringAlgorith
      * @param pConditionedScan
      * @return
      */
-    protected int scoreScan(final Scorer scorer, final IonUseCounter pCounter, final ITheoreticalSpectrumSet[] pSpectrums, final IScoredScan pConditionedScan) {
+    @Override
+    public int scoreScan(final Scorer scorer, final IonUseCounter pCounter, final ITheoreticalSpectrumSet[] pSpectrums, final IScoredScan pConditionedScan) {
         int numberScoredSpectra = 0;
         boolean LOG_INTERMEDIATE_RESULTS = false;
         SpectrumCondition sc = scorer.getSpectrumCondition();

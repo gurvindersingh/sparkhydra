@@ -1,0 +1,313 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="tandem-style.xsl"?>
+<bioml xmlns:GAML="http://www.bioml.com/gaml/" label="models from 'SmallSample/or20080317_s_silac-lh_1-1_01short.mzxml'">
+<group id="13" mh="1473.465110" z="4" rt="PT12.9863S" expect="3.2e+000" label="REV1_YJL076W NET1 SGDID:S000003612, Chr X from 295162-298731, Verified ORF, 'Core..." type="model" sumI="3.26" maxI="1099.2" fI="1" >
+<protein expect="0.0" id="13.1" uid="8" label="REV1_YJL076W NET1 SGDID:S000003612, Chr X from 295162-298731, Verified ORF, 'Core..." sumI="3.26" >
+<note label="description">REV1_YJL076W NET1 SGDID:S000003612, Chr X from 295162-298731, Verified ORF, 'Core subunit of the RENT complex, which is a complex involved in nucleolar silencing and telophase exit; stimulates transcription by RNA polymerase I and regulates nucleolar structure'</note>
+<file type="peptide" URL="yeast_orfs_pruned.fasta"/>
+<peptide start="1" end="1189">
+	
+<domain id="13.1.1" start="935" end="948" expect="3.2e+000" mh="1472.698" delta="0.768" hyperscore="333" nextscore="332" y_score="0" y_ions="4" b_score="1" b_ions="4" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="DTMK" post="LKLD" seq="GEQVNGEKPDNASK" missed_cleavages="0">
+</domain>
+</peptide>
+</protein>
+<group type="support" label="fragment ion mass spectrum">
+<note label="Description">or20080317_s_silac-lh_1-1_01short.mzxml scan 13 (charge 4)</note>
+<GAML:trace id="13" label="13.spectrum" type="tandem mass spectrum">
+<GAML:attribute type="M+H">1473.47</GAML:attribute>
+<GAML:attribute type="charge">4</GAML:attribute>
+<GAML:Xdata label="13.spectrum" units="MASSTOCHARGERATIO">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="45">
+131.151 135.266 147.218 149.382 167.141 179.253 196.844 200.936 207.122 223.508 227.386 243.29 245.453 247.434 258.176 258.954 260.93 267.011 279.212 281.158 292.997 295.586 297.055 298.256 299.011 301.441 307.507 309.633 312.07 313.181
+318.108 323.086 325.165 327.201 328.086 333.13 333.952 337.373 348.743 351.02 351.773 360.375 361.052 368.922 633.628 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="13.spectrum" units="UNKNOWN">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="45">
+9 6 148 20 4 2 2 6 37 3 4 5 2 3 3 7 2 2 3 1099 9 4 6 14 30 4 3 7 4 22
+16 15 10 226 16 4 7 3 11 7 12 9 5 2 8 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+</group></group>
+<group id="22" mh="1016.070165" z="3" rt="PT21.8203S" expect="5.1e-001" label="REV1_YDR405W MRP20 SGDID:S000002813, Chr IV from 1277637-1278428, Verified ORF, 'Mitochondrial..." type="model" sumI="2.60" maxI="68.161" fI="1" >
+<protein expect="0.0" id="22.1" uid="1" label="REV1_YDR405W MRP20 SGDID:S000002813, Chr IV from 1277637-1278428, Verified ORF, 'Mitochondrial..." sumI="2.60" >
+<note label="description">REV1_YDR405W MRP20 SGDID:S000002813, Chr IV from 1277637-1278428, Verified ORF, 'Mitochondrial ribosomal protein of the large subunit'
+</note>
+<file type="peptide" URL="yeast_orfs_pruned.fasta"/>
+<peptide start="1" end="263">
+	
+<domain id="22.1.1" start="53" end="61" expect="5.1e-001" mh="1014.510" delta="1.560" hyperscore="421" nextscore="346" y_score="1" y_ions="3" b_score="1" b_ions="5" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="SGSR" post="YIKT" seq="ESVNIDVEK" missed_cleavages="0">
+<aa type="E" at="53" modified="-18.0106" />
+</domain>
+</peptide>
+</protein>
+<group type="support" label="fragment ion mass spectrum">
+<note label="Description">or20080317_s_silac-lh_1-1_01short.mzxml scan 22 (charge 3)</note>
+<GAML:trace id="22" label="22.spectrum" type="tandem mass spectrum">
+<GAML:attribute type="M+H">1016.07</GAML:attribute>
+<GAML:attribute type="charge">3</GAML:attribute>
+<GAML:Xdata label="22.spectrum" units="MASSTOCHARGERATIO">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="42">
+109.364 123.345 129.251 135.281 139.469 147.321 163.122 175.305 185.454 189.03 197.16 199.04 203.174 205.432 215.18 227.214 233.12 247.197 255.196 260.02 263.036 264.32 271.205 273.647 275.92 277.076 281.377 283.163 293.019 294.843
+297.11 298.291 299.185 302.975 311.194 312.24 317.025 319.951 321.257 328.904 331.215 411.829 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="22.spectrum" units="UNKNOWN">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="42">
+3 5 8 2 6 7 5 6 5 6 3 3 2 10 2 7 7 14 2 7 5 5 2 2 4 9 3 14 21 8
+4 68 13 15 19 4 13 4 57 9 5 4 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+</group></group>
+<group id="326" mh="835.366564" z="2" rt="PT328.709S" expect="1.2e+000" label="REV1_YGR097W ASK10 SGDID:S000003329, Chr VII from 678699-682139, Verified ORF, 'Component..." type="model" sumI="2.56" maxI="44.0425" fI="1" >
+<protein expect="0.0" id="326.1" uid="3" label="REV1_YGR097W ASK10 SGDID:S000003329, Chr VII from 678699-682139, Verified ORF, 'Component..." sumI="2.56" >
+<note label="description">REV1_YGR097W ASK10 SGDID:S000003329, Chr VII from 678699-682139, Verified ORF, 'Component of the RNA polymerase II holoenzyme, phosphorylated in response to oxidative stress; has a role in destruction of Ssn8p, which relieves repression of stress-response genes'</note>
+<file type="peptide" URL="yeast_orfs_pruned.fasta"/>
+<peptide start="1" end="1146">
+	
+<domain id="326.1.1" start="130" end="136" expect="1.2e+000" mh="833.524" delta="1.842" hyperscore="265" nextscore="230" y_score="1" y_ions="3" b_score="0" b_ions="0" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="KLIK" post="AFQE" seq="LYIVLGR" missed_cleavages="0">
+</domain>
+</peptide>
+</protein>
+<group type="support" label="fragment ion mass spectrum">
+<note label="Description">or20080317_s_silac-lh_1-1_01short.mzxml scan 326 (charge 2)</note>
+<GAML:trace id="326" label="326.spectrum" type="tandem mass spectrum">
+<GAML:attribute type="M+H">835.367</GAML:attribute>
+<GAML:attribute type="charge">2</GAML:attribute>
+<GAML:Xdata label="326.spectrum" units="MASSTOCHARGERATIO">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="40">
+136.299 159.471 204.4 221.884 228.993 231.968 233.234 251.156 261.181 279.127 318.931 327.769 330.215 331.058 336.651 347.567 359.053 362.489 369.208 370.179 371.477 372.992 377.038 387.269 388.712 389.599 391.25 396.558 398.9 400.028
+401.154 404.999 408.577 409.959 452.399 470.819 557.507 619.137 643.359 673.601 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="326.spectrum" units="UNKNOWN">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="40">
+4 2 4 5 2 8 9 10 5 20 12 6 5 2 4 3 8 3 1 4 4 6 9 6 4 11 18 4 2 27
+15 12 44 20 3 4 44 3 2 5 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+</group></group>
+<group id="355" mh="1951.424535" z="3" rt="PT352.909S" expect="9.8e+000" label="REV1_YLR045C STU2 SGDID:S000004035, Chr XII from 237704-235038, reverse complement,..." type="model" sumI="1.86" maxI="11.8478" fI="1" >
+<protein expect="0.0" id="355.1" uid="2" label="REV1_YLR045C STU2 SGDID:S000004035, Chr XII from 237704-235038, reverse complement,..." sumI="1.86" >
+<note label="description">REV1_YLR045C STU2 SGDID:S000004035, Chr XII from 237704-235038, reverse complement, Verified ORF, 'Microtubule-associated protein (MAP) of the XMAP215/Dis1 family; regulates microtubule dynamics during spindle orientation and metaphase chromosome alignment; interacts with spindle pole body component Spc72p'</note>
+<file type="peptide" URL="yeast_orfs_pruned.fasta"/>
+<peptide start="1" end="888">
+	
+<domain id="355.1.1" start="56" end="74" expect="9.8e+000" mh="1949.023" delta="2.402" hyperscore="279" nextscore="223" y_score="1" y_ions="2" b_score="0" b_ions="1" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="NDDR" post="QAVV" seq="LSSSAFADILSNLAVIAQE" missed_cleavages="0">
+</domain>
+</peptide>
+</protein>
+<group type="support" label="fragment ion mass spectrum">
+<note label="Description">or20080317_s_silac-lh_1-1_01short.mzxml scan 355 (charge 3)</note>
+<GAML:trace id="355" label="355.spectrum" type="tandem mass spectrum">
+<GAML:attribute type="M+H">1951.42</GAML:attribute>
+<GAML:attribute type="charge">3</GAML:attribute>
+<GAML:Xdata label="355.spectrum" units="MASSTOCHARGERATIO">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="14">
+287.979 312.114 429.318 501.289 506.011 547.775 555.228 560.676 597.177 605.235 609.906 614.657 630.408 988.899 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="355.spectrum" units="UNKNOWN">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="14">
+4 4 10 11 3 5 3 3 2 2 4 5 12 4 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+</group></group>
+<group id="373" mh="754.432421" z="2" rt="PT368.091S" expect="5.8e+000" label="REV1_YOR093C YOR093C SGDID:S000005619, Chr XV from 502453-497507, reverse complement,..." type="model" sumI="2.60" maxI="45.2798" fI="1" >
+<protein expect="0.0" id="373.1" uid="5" label="REV1_YOR093C YOR093C SGDID:S000005619, Chr XV from 502453-497507, reverse complement,..." sumI="2.60" >
+<note label="description">REV1_YOR093C YOR093C SGDID:S000005619, Chr XV from 502453-497507, reverse complement, Uncharacterized ORF, 'Hypothetical protein'</note>
+<file type="peptide" URL="yeast_orfs_pruned.fasta"/>
+<peptide start="1" end="1648">
+	
+<domain id="373.1.1" start="828" end="833" expect="5.8e+000" mh="751.373" delta="3.059" hyperscore="304" nextscore="240" y_score="1" y_ions="4" b_score="0" b_ions="2" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="EGNK" post="NKTE" seq="QTEAFR" missed_cleavages="0">
+</domain>
+</peptide>
+</protein>
+<group type="support" label="fragment ion mass spectrum">
+<note label="Description">or20080317_s_silac-lh_1-1_01short.mzxml scan 373 (charge 2)</note>
+<GAML:trace id="373" label="373.spectrum" type="tandem mass spectrum">
+<GAML:attribute type="M+H">754.432</GAML:attribute>
+<GAML:attribute type="charge">2</GAML:attribute>
+<GAML:Xdata label="373.spectrum" units="MASSTOCHARGERATIO">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="53">
+123.325 130.251 175.296 196.92 212.291 226.079 228.394 238.905 245.793 246.888 248.102 258.052 262.318 266.395 277.037 280.146 288.195 289.26 291.063 302.121 303.116 304.295 305.31 313.159 314.895 318.478 320.977 322.16 331.299 332.127
+332.901 339.044 341.987 348.507 349.649 357.13 359.288 360.086 361.099 366.082 369.185 429.921 443.614 461.542 501.123 510.231 521.493 523.546 535.845 570.771 579.393 590.587 605.18 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="373.spectrum" units="UNKNOWN">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="53">
+3 2 3 13 2 11 2 3 3 2 2 3 4 8 2 5 5 6 7 45 18 4 4 9 7 5 23 7 15 7
+3 3 8 2 5 6 17 8 5 4 23 13 6 11 14 3 2 4 2 8 5 6 2 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+</group></group>
+<group id="379" mh="641.323107" z="2" rt="PT372.652S" expect="8.0e+001" label="YDR356W SPC110 SGDID:S000002764, Chr IV from 1186099-1188933, Verified ORF, 'Inner..." type="model" sumI="2.74" maxI="139.666" fI="1" >
+<protein expect="0.0" id="379.1" uid="6" label="YDR356W SPC110 SGDID:S000002764, Chr IV from 1186099-1188933, Verified ORF, 'Inner..." sumI="2.74" >
+<note label="description">YDR356W SPC110 SGDID:S000002764, Chr IV from 1186099-1188933, Verified ORF, 'Inner plaque spindle pole body (SPB) component, ortholog of human kendrin; involved in connecting nuclear microtubules to SPB; interacts with Tub4p-complex and calmodulin; phosphorylated by Mps1p in cell cycle-dependent manner'</note>
+<file type="peptide" URL="yeast_orfs_pruned.fasta"/>
+<peptide start="1" end="944">
+	
+<domain id="379.1.1" start="341" end="346" expect="8.0e+001" mh="640.257" delta="1.066" hyperscore="178" nextscore="155" y_score="0" y_ions="2" b_score="0" b_ions="1" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="LETK" post="QSSA" seq="FSENGS" missed_cleavages="0">
+</domain>
+</peptide>
+</protein>
+<group type="support" label="fragment ion mass spectrum">
+<note label="Description">or20080317_s_silac-lh_1-1_01short.mzxml scan 379 (charge 2)</note>
+<GAML:trace id="379" label="379.spectrum" type="tandem mass spectrum">
+<GAML:attribute type="M+H">641.323</GAML:attribute>
+<GAML:attribute type="charge">2</GAML:attribute>
+<GAML:Xdata label="379.spectrum" units="MASSTOCHARGERATIO">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="50">
+99.1536 109.915 147.331 149.235 150.985 153.21 155.145 176.971 181.228 184.62 187.21 191.076 201.096 203.259 205.278 209.038 211.028 225.736 229.493 231.049 234.895 247.195 249.226 250.075 250.879 257.537 259.457 260.983 263.576 264.877
+271.536 275.428 277.906 285.209 290.245 291.191 297.664 301.159 303.317 305.785 311.643 312.334 314.716 369.475 395.328 426.915 476.518 477.67 543.401 654.239 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="379.spectrum" units="UNKNOWN">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="50">
+4 3 10 13 2 2 3 2 6 6 3 33 6 11 4 13 10 7 4 3 3 140 16 4 12 4 8 8 20 3
+11 9 3 14 5 8 3 3 65 7 3 8 7 11 5 9 2 6 3 3 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+</group></group>
+<group id="609" mh="904.473424" z="3" rt="PT580.687S" expect="1.3e+000" label="YLR244C MAP1 SGDID:S000004234, Chr XII from 626333-625170, reverse complement, Verified..." type="model" sumI="2.97" maxI="174.375" fI="1" >
+<protein expect="0.0" id="609.1" uid="7" label="YLR244C MAP1 SGDID:S000004234, Chr XII from 626333-625170, reverse complement, Verified..." sumI="2.97" >
+<note label="description">YLR244C MAP1 SGDID:S000004234, Chr XII from 626333-625170, reverse complement, Verified ORF, 'Methionine aminopeptidase, catalyzes the cotranslational removal of N-terminal methionine from nascent polypeptides; function is partially redundant with that of Map2p'</note>
+<file type="peptide" URL="yeast_orfs_pruned.fasta"/>
+<peptide start="1" end="387">
+	
+<domain id="609.1.1" start="90" end="97" expect="1.3e+000" mh="904.489" delta="-0.015" hyperscore="409" nextscore="295" y_score="1" y_ions="6" b_score="1" b_ions="4" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="GKVK" post="RYVP" seq="ASYPLTPR" missed_cleavages="0">
+</domain>
+</peptide>
+</protein>
+<group type="support" label="fragment ion mass spectrum">
+<note label="Description">or20080317_s_silac-lh_1-1_01short.mzxml scan 609 (charge 3)</note>
+<GAML:trace id="609" label="609.spectrum" type="tandem mass spectrum">
+<GAML:attribute type="M+H">904.473</GAML:attribute>
+<GAML:attribute type="charge">3</GAML:attribute>
+<GAML:Xdata label="609.spectrum" units="MASSTOCHARGERATIO">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="77">
+99.4469 106.254 112.305 120.259 122.052 129.306 137.062 157.916 159.202 160.205 161.101 164.165 168.015 171.639 174.25 175.373 184.855 194.681 197.127 199.134 199.836 201.363 203.217 204.476 212.386 213.178 215.292 216.888 226.205 229.648
+234.234 238.273 240.082 241.177 244.126 245.886 256.248 258.259 259.295 260.947 265.986 268.187 269.487 272.073 279.151 284.095 285.028 286.404 291.144 293.204 295.66 316.588 320.393 353.545 365.397 371.837 374.022 394.889 403.489 408.299
+417.56 418.413 419.553 422.325 423.56 432.212 471.472 475.193 483.164 489.332 495.083 514.16 532.568 561.442 618.486 687.327 706.483 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="609.spectrum" units="UNKNOWN">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="77">
+5 7 4 2 5 7 8 3 12 11 2 8 8 3 9 11 4 13 3 2 3 11 9 7 3 5 3 6 3 3
+7 6 10 4 4 9 3 20 18 11 7 5 5 4 10 62 14 5 5 46 6 4 7 37 11 16 69 3 21 24
+174 7 8 32 6 2 10 6 3 12 11 3 5 9 5 4 3 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+</group></group>
+<group label="input parameters" type="parameters">
+	<note type="input" label="list path, default parameters">isb_default_input_kscore.xml</note>
+	<note type="input" label="list path, taxonomy information">taxonomy.xml</note>
+	<note type="input" label="output, histogram column width">30</note>
+	<note type="input" label="output, histograms">no</note>
+	<note type="input" label="output, log path"></note>
+	<note type="input" label="output, maximum valid expectation value">0.1</note>
+	<note type="input" label="output, message">1234567890</note>
+	<note type="input" label="output, one sequence copy">no</note>
+	<note type="input" label="output, parameters">yes</note>
+	<note type="input" label="output, path">yeast_orfs_all_REV01_short.xml</note>
+	<note type="input" label="output, path hashing">yes</note>
+	<note type="input" label="output, performance">yes</note>
+	<note type="input" label="output, proteins">yes</note>
+	<note type="input" label="output, results">all</note>
+	<note type="input" label="output, sequence path"></note>
+	<note type="input" label="output, sequences">no</note>
+	<note type="input" label="output, sort results by">spectrum</note>
+	<note type="input" label="output, spectra">yes</note>
+	<note type="input" label="output, xsl path">tandem-style.xsl</note>
+	<note type="input" label="protein, C-terminal residue modification mass"></note>
+	<note type="input" label="protein, N-terminal residue modification mass"></note>
+	<note type="input" label="protein, cleavage semi">yes</note>
+	<note type="input" label="protein, cleavage site">[RK]|{P}</note>
+	<note type="input" label="protein, homolog management">no</note>
+	<note type="input" label="protein, modified residue mass file"></note>
+	<note type="input" label="protein, taxon">yeast_orfs_all_REV.20060126.short.fasta</note>
+	<note type="input" label="refine">no</note>
+	<note type="input" label="refine, maximum valid expectation value">0.1</note>
+	<note type="input" label="refine, sequence path"></note>
+	<note type="input" label="refine, spectrum synthesis">yes</note>
+	<note type="input" label="residue, modification mass">57.021464@C</note>
+	<note type="input" label="residue, potential modification mass"></note>
+	<note type="input" label="residue, potential modification motif"></note>
+	<note type="input" label="scoring, a ions">no</note>
+	<note type="input" label="scoring, algorithm">k-score</note>
+	<note type="input" label="scoring, b ions">yes</note>
+	<note type="input" label="scoring, c ions">no</note>
+	<note type="input" label="scoring, cyclic permutation">no</note>
+	<note type="input" label="scoring, include reverse">no</note>
+	<note type="input" label="scoring, maximum missed cleavage sites">2</note>
+	<note type="input" label="scoring, minimum ion count">1</note>
+	<note type="input" label="scoring, x ions">no</note>
+	<note type="input" label="scoring, y ions">yes</note>
+	<note type="input" label="scoring, z ions">no</note>
+	<note type="input" label="spectrum, dynamic range">10000.0</note>
+	<note type="input" label="spectrum, fragment mass type">monoisotopic</note>
+	<note type="input" label="spectrum, fragment monoisotopic mass error">0.4</note>
+	<note type="input" label="spectrum, fragment monoisotopic mass error units">Daltons</note>
+	<note type="input" label="spectrum, maximum parent charge">5</note>
+	<note type="input" label="spectrum, minimum fragment mz">125.0</note>
+	<note type="input" label="spectrum, minimum parent m+h">600.0</note>
+	<note type="input" label="spectrum, minimum peaks">10</note>
+	<note type="input" label="spectrum, parent monoisotopic mass error minus">2.1</note>
+	<note type="input" label="spectrum, parent monoisotopic mass error plus">4.1</note>
+	<note type="input" label="spectrum, parent monoisotopic mass error units">Daltons</note>
+	<note type="input" label="spectrum, parent monoisotopic mass isotope error">no</note>
+	<note type="input" label="spectrum, path">SmallSample/or20080317_s_silac-lh_1-1_01short.mzxml</note>
+	<note type="input" label="spectrum, sequence batch size">1000</note>
+	<note type="input" label="spectrum, threads">1</note>
+	<note type="input" label="spectrum, total peaks">400</note>
+	<note type="input" label="spectrum, use conditioning">no</note>
+	<note type="input" label="spectrum, use noise suppression">yes</note>
+</group>
+<group label="unused input parameters"  type="parameters">
+	<note type="input" label="org.systemsbiology.xtandem.Datasource.Database">yeast_orfs_pruned</note>
+	<note type="input" label="org.systemsbiology.xtandem.Datasource.DriverClass">com.mysql.jdbc.Driver</note>
+	<note type="input" label="org.systemsbiology.xtandem.Datasource.Host">localhost</note>
+	<note type="input" label="org.systemsbiology.xtandem.Datasource.Password">tandem</note>
+	<note type="input" label="org.systemsbiology.xtandem.Datasource.User">proteomics</note>
+	<note type="input" label="refine, cleavage semi">yes</note>
+	<note type="input" label="refine, modification mass"></note>
+	<note type="input" label="refine, point mutations">no</note>
+	<note type="input" label="refine, potential C-terminus modifications"></note>
+	<note type="input" label="refine, potential N-terminus modifications"></note>
+	<note type="input" label="refine, potential modification mass">15.994915@M,8.014199@K,10.008269@R</note>
+	<note type="input" label="refine, potential modification motif"></note>
+	<note type="input" label="refine, tic percent">10</note>
+	<note type="input" label="refine, unanticipated cleavage">no</note>
+	<note type="input" label="refine, use potential modifications for full refinement">no</note>
+	<note type="input" label="scoring, pluggable scoring">yes</note>
+</group>
+<group label="performance parameters" type="parameters">
+	<note label="list path, sequence source #1">yeast_orfs_pruned.fasta</note>
+	<note label="list path, sequence source description #1">no description</note>
+	<note label="modelling, spectrum noise suppression ratio">0.00</note>
+	<note label="modelling, total peptides used">957</note>
+	<note label="modelling, total proteins used">10</note>
+	<note label="modelling, total spectra used">7</note>
+	<note label="process, start time">2011:08:11:13:35:50</note>
+	<note label="process, version">x! tandem 2010.10.01.1 (LabKey, Insilicos and ISB)</note>
+	<note label="quality values">1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0</note>
+	<note label="refining, # input models">0</note>
+	<note label="refining, # input spectra">0</note>
+	<note label="refining, # partial cleavage">0</note>
+	<note label="refining, # point mutations">0</note>
+	<note label="refining, # potential C-terminii">0</note>
+	<note label="refining, # potential N-terminii">0</note>
+	<note label="refining, # unanticipated cleavage">0</note>
+	<note label="timing, initial modelling total (sec)">17.21</note>
+	<note label="timing, initial modelling/spectrum (sec)">2.458</note>
+	<note label="timing, load sequence models (sec)">0.00</note>
+	<note label="timing, refinement/spectrum (sec)">0.000</note>
+</group>
+</bioml>

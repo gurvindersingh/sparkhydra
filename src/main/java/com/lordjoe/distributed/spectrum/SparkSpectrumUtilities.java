@@ -18,15 +18,26 @@ import java.lang.Boolean;
  */
 public class SparkSpectrumUtilities {
 
+    private static boolean gMSLevel1Dropped = true;
+
+    public static boolean isMSLevel1Dropped() {
+        return gMSLevel1Dropped;
+    }
+
+    public static void setMSLevel1Dropped(final boolean pMSLevel1Dropped) {
+        gMSLevel1Dropped = pMSLevel1Dropped;
+    }
+
     /**
      * parse a Faste File returning the comment > line as the key
      * and the rest as the value
+     *
      * @param path
      * @param ctx
      * @return
      */
     @Nonnull
-    public static JavaPairRDD<String, String> parseFastaFile( @Nonnull String path, @Nonnull JavaSparkContext ctx) {
+    public static JavaPairRDD<String, String> parseFastaFile(@Nonnull String path, @Nonnull JavaSparkContext ctx) {
         Class inputFormatClass = FastaInputFormat.class;
         Class keyClass = String.class;
         Class valueClass = String.class;
@@ -49,7 +60,7 @@ public class SparkSpectrumUtilities {
     }
 
     @Nonnull
-    public static JavaPairRDD<String, IMeasuredSpectrum> parseSpectrumFile( @Nonnull String path ) {
+    public static JavaPairRDD<String, IMeasuredSpectrum> parseSpectrumFile(@Nonnull String path) {
         JavaSparkContext ctx = SparkUtilities.getCurrentContext();
 
         //     if(path.toLowerCase().endsWith(".mgf"))
@@ -62,12 +73,12 @@ public class SparkSpectrumUtilities {
     }
 
     @Nonnull
-    public static JavaPairRDD<String, IMeasuredSpectrum> parseAsMZXML( @Nonnull final String path, @Nonnull final JavaSparkContext ctx) {
+    public static JavaPairRDD<String, IMeasuredSpectrum> parseAsMZXML(@Nonnull final String path, @Nonnull final JavaSparkContext ctx) {
         Class inputFormatClass = MZXMLInputFormat.class;
         Class keyClass = String.class;
         Class valueClass = String.class;
 
-        JavaPairRDD<String, String>  spectraAsStrings = ctx.newAPIHadoopFile(
+        JavaPairRDD<String, String> spectraAsStrings = ctx.newAPIHadoopFile(
                 path,
                 inputFormatClass,
                 keyClass,
@@ -75,26 +86,39 @@ public class SparkSpectrumUtilities {
                 SparkUtilities.getHadoopConfiguration()
         );
 
+        long[] countRef = new long[1];
+        spectraAsStrings = SparkUtilities.persistAndCountPair("Raw spectra", spectraAsStrings, countRef);
         // debug code
         //spectraAsStrings = SparkUtilities.realizeAndReturn(spectraAsStrings);
 
-        // filter out MS Level 1 spectra
-        spectraAsStrings = spectraAsStrings.filter( new Function<Tuple2<String,String>, Boolean>() {
-           public Boolean call(Tuple2<String,String> s) {
-               String s1 = s._2();
-               return !s1.contains("msLevel=\"1\""); }
-         });
+        if(isMSLevel1Dropped()) {
+            // filter out MS Level 1 spectra
+            spectraAsStrings = spectraAsStrings.filter(new Function<Tuple2<String, String>, Boolean>() {
+                                                           public Boolean call(Tuple2<String, String> s) {
+                                                               String s1 = s._2();
+                                                               if (s1.contains("msLevel=\"2\""))
+                                                                   return true;
+                                                               return false;
+                                                           }
+                                                       }
+            );
+            spectraAsStrings = SparkUtilities.persistAndCountPair("Filtered spectra", spectraAsStrings, countRef);
+        }
 
-         // debug code
+        // debug code
         //spectraAsStrings = SparkUtilities.realizeAndReturn(spectraAsStrings);
 
-        // parse scan tags as  IMeasuredSpectrum
+        // parse scan tags as  IMeasuredSpectrum key is id
         JavaPairRDD<String, IMeasuredSpectrum> parsed = spectraAsStrings.mapToPair(new MapSpectraStringToRawScan());
+
+        // kill duplicates todo why are there duplicated
+        parsed = SparkUtilities.chooseOneValue(parsed);
+
         return parsed;
     }
 
     @Nonnull
-    public static JavaPairRDD<String, IMeasuredSpectrum> parseAsOldMGF( @Nonnull final String path, @Nonnull final JavaSparkContext ctx) {
+    public static JavaPairRDD<String, IMeasuredSpectrum> parseAsOldMGF(@Nonnull final String path, @Nonnull final JavaSparkContext ctx) {
         Class inputFormatClass = MGFOldInputFormat.class;
         Class keyClass = String.class;
         Class valueClass = String.class;
@@ -105,7 +129,7 @@ public class SparkSpectrumUtilities {
                 keyClass,
                 valueClass
         );
-           JavaPairRDD<String, IMeasuredSpectrum> spectra = spectraAsStrings.mapToPair(new MGFStringTupleToSpectrumTuple());
+        JavaPairRDD<String, IMeasuredSpectrum> spectra = spectraAsStrings.mapToPair(new MGFStringTupleToSpectrumTuple());
         return spectra;
     }
 
@@ -117,7 +141,7 @@ public class SparkSpectrumUtilities {
      * @return
      */
     @Nonnull
-    public static JavaPairRDD<String, IMeasuredSpectrum> parseAsTextMGF( @Nonnull final String path, @Nonnull final JavaSparkContext ctx) {
+    public static JavaPairRDD<String, IMeasuredSpectrum> parseAsTextMGF(@Nonnull final String path, @Nonnull final JavaSparkContext ctx) {
         Class inputFormatClass = MGFTextInputFormat.class;
         Class keyClass = String.class;
         Class valueClass = String.class;
@@ -134,11 +158,8 @@ public class SparkSpectrumUtilities {
     }
 
 
-
-
-
     @Nonnull
-    public static JavaPairRDD<String, IMeasuredSpectrum> parseAsMGF( @Nonnull final String path, @Nonnull final JavaSparkContext ctx) {
+    public static JavaPairRDD<String, IMeasuredSpectrum> parseAsMGF(@Nonnull final String path, @Nonnull final JavaSparkContext ctx) {
         Class inputFormatClass = MGFInputFormat.class;
         Class keyClass = String.class;
         Class valueClass = String.class;
@@ -156,12 +177,13 @@ public class SparkSpectrumUtilities {
 
     /**
      * sample using the olf Hadoop api
-     * @param path  path to the file
+     *
+     * @param path path to the file
      * @param ctx  context
-     * @return  contents as scans
+     * @return contents as scans
      */
     @Nonnull
-    public static JavaPairRDD<String, IMeasuredSpectrum> parseSpectrumFileOld( @Nonnull String path, @Nonnull JavaSparkContext ctx) {
+    public static JavaPairRDD<String, IMeasuredSpectrum> parseSpectrumFileOld(@Nonnull String path, @Nonnull JavaSparkContext ctx) {
 
         Class inputFormatClass = MGFOldInputFormat.class;
         Class keyClass = String.class;
@@ -180,9 +202,11 @@ public class SparkSpectrumUtilities {
     private static class MapSpectraStringToRawScan extends AbstractLoggingPairFunction<Tuple2<String, String>, String, IMeasuredSpectrum> {
         @Override
         public Tuple2<String, IMeasuredSpectrum> doCall(final Tuple2<String, String> in) throws Exception {
-            String key = in._1();
-            RawPeptideScan scan = XTandemHadoopUtilities.readScan(in._2(), null);
-            return new Tuple2(key,scan);
+          //String key = in._1();
+            String scanText = in._2();
+            RawPeptideScan scan = XTandemHadoopUtilities.readScan(scanText, null);
+            return new Tuple2(scan.getId(), scan);
         }
     }
-}
+
+  }

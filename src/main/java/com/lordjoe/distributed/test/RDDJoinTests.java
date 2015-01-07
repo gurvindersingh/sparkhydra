@@ -18,7 +18,7 @@ import java.util.*;
 public class RDDJoinTests {
      public static final Random RND = new Random();
      public static int numberDoubles = 4;
-     public static int itemsPerKeys = 1000;
+     public static int itemsPerKeys = 2000;
 
     /**
      * just a random object but might be medium sized - say 10000 doubles

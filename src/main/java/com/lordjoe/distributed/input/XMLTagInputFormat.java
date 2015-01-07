@@ -235,12 +235,17 @@ public class XMLTagInputFormat extends FileInputFormat<String, String> {
          * @throws java.io.IOException
          */
         public boolean nextKeyValue() throws IOException {
+            String current = m_Sb.toString();
+            if(current.contains("<scan num=\"67\""))
+                current = m_Sb.toString(); // break here
+
             if (readFromCurrentBuffer())
                 return true;
             int newSize;
             if (m_Current > m_End) {  // we are the the end of the split
                 m_Key = null;
                 m_Value = null;
+                m_Sb.setLength(0);
                 return false;
             }
 
@@ -248,13 +253,18 @@ public class XMLTagInputFormat extends FileInputFormat<String, String> {
 
             while (newSize > 0) {
                 m_Current += newSize;
-                m_Sb.append(m_Buffer, 0, newSize);
+                String read = new String(m_Buffer, 0, newSize);
+                m_Sb.append(read);
                 if (readFromCurrentBuffer())
                     return true;
                 if (m_Current > m_End) {  // we are the the end of the split
-                    m_Key = null;
-                    m_Value = null;
-                    return false;
+                    String s = m_Sb.toString();
+                    if(bufferHasStartTag() == -1) {    // not working on a tag
+                        m_Key = null;
+                        m_Value = null;
+                        m_Sb.setLength(0);
+                        return false;
+                    }
                 }
 
                 newSize = m_Input.read(m_Buffer);
@@ -263,11 +273,13 @@ public class XMLTagInputFormat extends FileInputFormat<String, String> {
             if (newSize <= 0) {
                 m_Key = null;
                 m_Value = null;
+                m_Sb.setLength(0);
                 return false;
             }
             if (m_Current > m_End) {  // we are the the end of the split
                 m_Key = null;
                 m_Value = null;
+                m_Sb.setLength(0);
                 return false;
             }
 
@@ -275,23 +287,34 @@ public class XMLTagInputFormat extends FileInputFormat<String, String> {
             return true;
         }
 
+        protected int bufferHasStartTag()
+        {
+            String startText = m_Sb.toString();
+            String startTag = getStartTag() + " ";
+             String startTag2 = getStartTag() + ">";
+             int index = startText.indexOf(startTag);
+            if(index > -1)
+                return index;
+             index = startText.indexOf(startTag2);
+            if(index > -1)
+                 return index;
+               return -1;
+
+        }
+
         protected boolean readFromCurrentBuffer() {
             String endTag = getEndTag();
             String startText = m_Sb.toString();
             if (!startText.contains(endTag))
                 return false; // need more read
-            String startTag = getStartTag() + " ";
-            String startTag2 = getStartTag() + ">";
-            int index = startText.indexOf(startTag);
-            if (index == -1)
-                index = startText.indexOf(startTag2);
-            if (index == -1)
-                return false;
-            startText = startText.substring(index);
+            int index = bufferHasStartTag();
+            if(index == -1)
+                    return false;
+             startText = startText.substring(index);
             m_Sb.setLength(0);
             m_Sb.append(startText);
 
-            String s = startText;
+            String s =  m_Sb.toString();;
             index = s.indexOf(endTag);
             if (index == -1)
                 return false; // need more read

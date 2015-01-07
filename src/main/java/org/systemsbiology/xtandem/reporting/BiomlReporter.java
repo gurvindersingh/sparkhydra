@@ -347,7 +347,8 @@ public class BiomlReporter implements Serializable {
     public void writeScanScores(IScoredScan scan, Appendable out, int indent) {
 
         try {
-            RawPeptideScan raw = scan.getRaw();
+            IMeasuredSpectrum raw = scan.getRaw();
+            ISpectralScan scanData = raw.getScanData();
             final ISpectralMatch nextmatch = scan.getNextBestMatch();
             final ISpectralMatch bestMatch = scan.getBestMatch();
             if (bestMatch == null)
@@ -375,7 +376,7 @@ public class BiomlReporter implements Serializable {
             out.append("id=\"" + raw.getId() + "\" ");
             out.append("mh=\"" + XTandemUtilities.formatDouble(raw.getPrecursorMass(), 6) + "\" ");
             out.append("z=\"" + scan.getCharge() + "\" ");
-            out.append("rt=\"" + raw.getRetentionTime() + "\" ");
+            out.append("rt=\"" + scanData.getRetentionTime() + "\" ");
             double expected = scan.getExpectedValue();
             out.append("expect=\"" + XTandemUtilities.formatScientific(expected, 1) + "\" ");
             if (parentProtein != null)
@@ -463,7 +464,7 @@ public class BiomlReporter implements Serializable {
 
     protected void outputHistogram(IScoredScan scan, Appendable out, int indent) {
         try {
-            RawPeptideScan raw = scan.getRaw();
+            IMeasuredSpectrum raw = scan.getRaw();
             final HyperScoreStatistics hist = scan.getHyperScores();
             final ISpectralMatch bestMatch = scan.getBestMatch();
             final ITheoreticalSpectrumSet theory = bestMatch.getTheory();
@@ -548,7 +549,7 @@ public class BiomlReporter implements Serializable {
             out.append(
                     "<GAML:values byteorder=\"INTEL\" format=\"ASCII\" numvalues=\"" + peaks.length + "\">");
             out.append("\n" );
-            RawPeptideScan raw = scan.getRaw();
+            IMeasuredSpectrum raw = scan.getRaw();
             ISpectrumPeak[] rawPeaks = raw.getPeaks();
             double maxIntensity = raw.getMaxIntensity();
             double factor = scan.getNormalizationFactor();
@@ -599,7 +600,7 @@ public class BiomlReporter implements Serializable {
 
     protected void outputDomain(IScoredScan scan, Appendable out, int indent) {
         try {
-            RawPeptideScan raw = scan.getRaw();
+            IMeasuredSpectrum raw = scan.getRaw();
             final ISpectralMatch match = scan.getBestMatch();
             final ISpectralMatch nextmatch = scan.getNextBestMatch();
             final ISpectralMatch bestMatch = scan.getBestMatch();

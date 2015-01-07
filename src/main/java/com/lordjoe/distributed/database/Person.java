@@ -1,13 +1,11 @@
 package com.lordjoe.distributed.database;
 
-import java.io.*;
-
 /**
 * com.lordjoe.distributed.database.Person
 * User: Steve
 * Date: 10/16/2014
 */
-public class Person implements Serializable {
+public class Person implements IDatabaseBean {
     private String name;
     private int age;
 

@@ -8,7 +8,6 @@ import com.lordjoe.distributed.spark.*;
 import com.lordjoe.distributed.spectrum.*;
 import com.lordjoe.utilities.*;
 import org.apache.hadoop.conf.*;
-import org.apache.log4j.*;
 import org.apache.spark.api.java.*;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.*;
@@ -229,9 +228,7 @@ public class SparkScanScorer {
         }
         SparkUtilities.readSparkProperties(args[SPARK_CONFIG_INDEX]);
 
-        System.out.println("Set Log to Warn");
-        Logger rootLogger = Logger.getRootLogger();
-        rootLogger.setLevel(Level.WARN);
+        SparkUtilities.setLogToWarn();
 
 
         Properties sparkProperties = SparkUtilities.getSparkProperties();

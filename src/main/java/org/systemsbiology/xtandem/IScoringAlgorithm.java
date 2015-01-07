@@ -117,6 +117,9 @@ public interface IScoringAlgorithm  extends Serializable {
      */
     public IMeasuredSpectrum conditionSpectrum(IScoredScan scan, final SpectrumCondition sc);
 
+
+    public IMeasuredSpectrum conditionSpectrum(  final IMeasuredSpectrum pIn, final IMeasuredSpectrum pRaw);
+
     /**
      * return the expected value for the best score
      *

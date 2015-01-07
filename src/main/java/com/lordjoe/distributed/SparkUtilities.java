@@ -10,6 +10,7 @@ import org.apache.spark.*;
 import org.apache.spark.api.java.*;
 import org.apache.spark.api.java.function.*;
 import org.apache.spark.api.java.function.Function;
+import org.apache.spark.api.java.function.Function2;
 import org.apache.spark.sql.api.java.*;
 import org.apache.spark.storage.*;
 import parquet.org.slf4j.spi.*;
@@ -21,6 +22,7 @@ import java.io.Serializable;
 import java.lang.Boolean;
 import java.net.*;
 import java.util.*;
+
 /**
  * com.lordjoe.distributed.SpareUtilities
  * A very useful class representing a number of static functions useful in Spark
@@ -52,6 +54,7 @@ public class SparkUtilities implements Serializable {
         return local;
         // return getCurrentContext().isLocal();
     }
+
 
     public static void setLocal(final boolean pLocal) {
         local = pLocal;
@@ -273,7 +276,7 @@ public class SparkUtilities implements Serializable {
 
         SparkContext sparkContext = JavaSparkContext.toSparkContext(ret);
 
-          sparkContext.addSparkListener(new JavaSparkListener());
+        sparkContext.addSparkListener(new JavaSparkListener());
 
         threadContext = ret;
 
@@ -340,7 +343,6 @@ public class SparkUtilities implements Serializable {
     }
 
 
-
     /**
      * a string prepended to the path =
      * might be   hdfs://daas/steve/Sample2/
@@ -365,8 +367,8 @@ public class SparkUtilities implements Serializable {
 
     /**
      * read a path and return it as a LineNumber reader of the content
-
-    /**
+     * <p/>
+     * /**
      * read a file with a list of desired properties
      *
      * @param fileName
@@ -493,7 +495,7 @@ public class SparkUtilities implements Serializable {
 
     /**
      * @param pathName given path - we may need to predend hdfs access
-       * @return
+     * @return
      */
     public static String buildPath(final String pathName) {
         if (pathName.startsWith("hdfs://"))
@@ -1402,6 +1404,7 @@ public class SparkUtilities implements Serializable {
      * Follows code in http://www.tutorialspoint.com/java/java_serialization.htm
      * finds object size by serializing it - do not call very ofter but
      * useful in determining Spark impact in terms of memory
+     *
      * @param test
      * @return
      */
@@ -1413,11 +1416,30 @@ public class SparkUtilities implements Serializable {
             out.writeObject(test);
             out.close();
             return fileOut.toByteArray().length;
-         }
+        }
         catch (IOException i) {
             throw new RuntimeException(i);
         }
     }
+
+    /**
+     * if there are multiple values per key choose the first
+     * @param inp
+     * @param <K>
+     * @param <R>
+     * @return
+     */
+    public static <K extends Serializable,R extends Serializable >JavaPairRDD<K,R> chooseOneValue( JavaPairRDD<K,R> inp) {
+         return inp.reduceByKey(new Function2<R, R, R>() {
+             @Override
+             public R call(final R v1, final R v2) throws Exception {
+                 return v1;
+             }
+         });
+      }
+
+
+
 }
 
 

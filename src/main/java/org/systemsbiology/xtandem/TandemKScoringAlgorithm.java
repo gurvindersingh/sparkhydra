@@ -262,17 +262,27 @@ public class TandemKScoringAlgorithm extends TandemScoringAlgorithm {
      */
     public IMeasuredSpectrum conditionSpectrum(IScoredScan scan, final SpectrumCondition sc) {
         IMeasuredSpectrum in = sc.conditionSpectrum(scan, 150);
+        IMeasuredSpectrum raw = scan.getRaw();
 
         if (in == null) {
             in = sc.conditionSpectrum(scan, 150); // debug the issue
             return null;
         }
-        final ISpectrumPeak[] spectrumPeaks = in.getPeaks();
-        int precursorCharge = in.getPrecursorCharge();
-        final double mass = in.getPrecursorMass();
+        IMeasuredSpectrum ret =  conditionSpectrum(in, raw);
+        if (scan instanceof OriginatingScoredScan) {
+            OriginatingScoredScan o = (OriginatingScoredScan) scan;
+            o.setNormalizedRawScan(ret);
+          }
+         return ret;
+    }
+
+    public IMeasuredSpectrum conditionSpectrum(  final IMeasuredSpectrum pIn, final IMeasuredSpectrum pRaw) {
+        final ISpectrumPeak[] spectrumPeaks = pIn.getPeaks();
+        int precursorCharge = pIn.getPrecursorCharge();
+        final double mass = pIn.getPrecursorMass();
         if (spectrumPeaks.length < 1) {
-            return new ScoringMeasuredSpectrum(precursorCharge, in.getPrecursorMassChargeRatio(), scan.getRaw(), ISpectrumPeak.EMPTY_ARRAY);
-        }
+           return new ScoringMeasuredSpectrum(precursorCharge, pIn.getPrecursorMassChargeRatio(), pRaw.getScanData(), ISpectrumPeak.EMPTY_ARRAY);
+       }
 
         //       double maxMass = spectrumPeaks[spectrumPeaks.length - 1].getMassChargeRatio();
         //       double minMass = spectrumPeaks[0].getMassChargeRatio();
@@ -298,9 +308,9 @@ public class TandemKScoringAlgorithm extends TandemScoringAlgorithm {
         float fMinCutoff = (float) (0.05 * maxIntensity);
 
 
-        String id = in.getId();
+        String id = pIn.getId();
         //   XTandemUtilities.outputLine("Normalizing " + id);
-        mutablePeaks = normalizeWindows(in, mutablePeaks, maxIntensity, fMinCutoff);
+        mutablePeaks = normalizeWindows(pIn, mutablePeaks, maxIntensity, fMinCutoff);
 
         // should already be in mass order
         //    Arrays.sort(spectrumPeaks,ScoringUtilities.PeakMassComparatorINSTANCE);
@@ -318,16 +328,15 @@ public class TandemKScoringAlgorithm extends TandemScoringAlgorithm {
         ISpectrumPeak[] newPeaks = new ISpectrumPeak[holder.size()];
         holder.toArray(newPeaks);
 
-        final MutableMeasuredSpectrum spectrum = in.asMmutable();
+        final MutableMeasuredSpectrum spectrum = pIn.asMmutable();
         spectrum.setPeaks(newPeaks);
 //             sc.doWindowedNormalization(spectrum);
 //         if (XTandemDebugging.isDebugging()) {
 //             XTandemDebugging.getLocalValues().addMeasuredSpectrums(ret.getId(), "after Perform mix-range modification", ret);
 //         }
         final IMeasuredSpectrum ret = spectrum.asImmutable();
-        ((OriginatingScoredScan) scan).setNormalizedRawScan(ret);
 
-        return new ScoringMeasuredSpectrum(precursorCharge, spectrum.getPrecursorMassChargeRatio(), scan.getRaw(), ret.getPeaks());
+        return new ScoringMeasuredSpectrum(precursorCharge, spectrum.getPrecursorMassChargeRatio(), pRaw.getScanData(), ret.getPeaks());
     }
 
     /*

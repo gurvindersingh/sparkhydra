@@ -56,7 +56,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
 
     private MassType m_MassType = MassType.monoisotopic;
     private boolean m_SemiTryptic;
-      private String m_DefaultParameters;
+    private String m_DefaultParameters;
     private String m_TaxonomyInfo;
     private String m_SpectrumPath;
     private String m_OutputPath;
@@ -75,7 +75,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
 
     private Scorer m_ScoreRunner;
     private final SequenceUtilities[] m_SequenceUtilitiesByMasssType = new SequenceUtilities[2];
-   // private ElapsedTimer m_Elapsed = new ElapsedTimer();
+    // private ElapsedTimer m_Elapsed = new ElapsedTimer();
 
     private Map<String, IScoredScan> m_Scorings = new HashMap<String, IScoredScan>();
     private Map<String, RawPeptideScan> m_RawScans = new HashMap<String, RawPeptideScan>();
@@ -90,7 +90,6 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
     }
 
 
-
     public XTandemMain(final File pTaskFile) {
         String m_TaskFile = pTaskFile.getAbsolutePath();
         //      Protein.resetNextId();
@@ -102,7 +101,8 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
         try {
             InputStream is = new FileInputStream(m_TaskFile);
             handleInputs(is, pTaskFile.getName());
-        } catch (FileNotFoundException e) {
+        }
+        catch (FileNotFoundException e) {
             throw new RuntimeException(e);
 
         }
@@ -112,7 +112,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
 
 
     public XTandemMain(final InputStream is, String url) {
-          //     Protein.resetNextId();
+        //     Protein.resetNextId();
         initOpeners();
         Properties predefined = XTandemHadoopUtilities.getHadoopProperties();
         for (String key : predefined.stringPropertyNames()) {
@@ -244,7 +244,6 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
     }
 
 
-
     public IPeptideDigester getDigester() {
         return m_Digester;
     }
@@ -261,7 +260,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
     @Override
     public String getDatabaseName() {
         String ret = m_TaxonomyName; //getParameter("protein, taxon");
-         //  System.err.println("database name = " + m_TaxonomyName);
+        //  System.err.println("database name = " + m_TaxonomyName);
         return conditionDatabaseName(ret);
     }
 
@@ -326,7 +325,8 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
 
         try {
             readDefaultParameters(notes);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             // forgive
             System.err.println("Cannot find file " + m_DefaultParameters);
         }
@@ -384,10 +384,12 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
             ITandemScoringAlgorithm algorithm = (ITandemScoringAlgorithm) cls.newInstance();
             algorithm.configure(this);
             addAlgorithm(algorithm);
-        } catch (RuntimeException e) {
+        }
+        catch (RuntimeException e) {
             throw e;
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -411,7 +413,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
      */
     @Override
     public ITandemScoringAlgorithm getScorer() {
-          return getAlgorithms()[0];
+        return getAlgorithms()[0];
     }
 
 
@@ -562,7 +564,8 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
         try {
             BiomlReporter reporter = new BiomlReporter(this, scoreRunner.getScans(), new File(file));
             reporter.writeReport();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new RuntimeException(e);
         }
 
@@ -583,7 +586,6 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
 //
 //        buildScorer();
 //    }
-
     public void loadScoring() {
         //  loadTaxonomy(); // read the taxonomy files
 
@@ -673,7 +675,8 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
             }
 
             throw new IllegalStateException("Cannot handle spectrum file " + spectumFile);
-        } catch (RuntimeException e) {
+        }
+        catch (RuntimeException e) {
             Throwable cause = e;
             while (cause.getCause() != null && cause.getCause() != cause)
                 cause = cause.getCause();
@@ -932,7 +935,8 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
             is = open(path);
             String[] annotationfiles = XTandemUtilities.parseFile(is, taxonHandler, path);
 
-        } else {
+        }
+        else {
 
         }
 
@@ -977,17 +981,20 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
             if (m_DefaultParameters.startsWith("res://")) {
                 is = XTandemUtilities.getDescribedStream(m_DefaultParameters);
                 paramName = m_DefaultParameters;
-            } else {
+            }
+            else {
                 File f = new File(m_DefaultParameters);
                 if (f.exists() && f.isFile() && f.canRead()) {
                     try {
                         is = new FileInputStream(f);
-                    } catch (FileNotFoundException e) {
+                    }
+                    catch (FileNotFoundException e) {
                         throw new RuntimeException(e);
 
                     }
                     paramName = f.getName();
-                } else {
+                }
+                else {
                     paramName = XMLUtilities.asLocalFile(m_DefaultParameters);
                     is = open(paramName);
                 }
@@ -999,15 +1006,17 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
                     if (paramName.toLowerCase().contains(DefaultKScoreProperties.IMPLEMENTED_DEFAULT_FILE)) {
                         DefaultKScoreProperties.addDefaultProperties(parametersMap);
                         return;
-                    } else {    // give up
+                    }
+                    else {    // give up
                         throw new IllegalArgumentException("the default input file designated by \"list path, default parameters\" " + m_DefaultParameters + "  does not exist"); // ToDo change
 
                     }
                 }
-            } else {
+            }
+            else {
                 Map<String, String> map = XTandemUtilities.readNotes(is, paramName);
                 for (String key : map.keySet()) {
-                       if (!parametersMap.containsKey(key)) {
+                    if (!parametersMap.containsKey(key)) {
                         String value = map.get(key);
                         parametersMap.put(key, value);
                     }
@@ -1042,6 +1051,6 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
 
 
         main.process();
-      }
+    }
 
 }

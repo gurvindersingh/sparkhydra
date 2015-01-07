@@ -1,0 +1,135 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="tandem-style.xsl"?>
+<bioml xmlns:GAML="http://www.bioml.com/gaml/" label="models from 'myocontrolSmall.mzXML'">
+<group id="1676" mh="1983.055448" z="3" rt="PT19.4361S" expect="7.7e-005" label="MYG_HORSE MYOGLOBIN - Equus caballus (Horse), and Equus burchelli (Plains zebra)..." type="model" sumI="5.85" maxI="72320.1" fI="723.201" >
+<protein expect="-4.1" id="1676.1" uid="1" label="MYG_HORSE MYOGLOBIN - Equus caballus (Horse), and Equus burchelli (Plains zebra)..." sumI="5.85" >
+<note label="description">MYG_HORSE MYOGLOBIN - Equus caballus (Horse), and Equus burchelli (Plains zebra) (Equus quagga).
+</note>
+<file type="peptide" URL="myoglobin.fasta"/>
+<peptide start="1" end="153">
+	
+<domain id="1676.1.1" start="79" end="96" expect="7.7e-005" mh="1982.057" delta="0.999" hyperscore="846" nextscore="100" y_score="2" y_ions="15" b_score="2" b_ions="12" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="ILKK" post="HKIP" seq="KGHHEAELKPLAQSHATK" missed_cleavages="1">
+</domain>
+</peptide>
+</protein>
+<group type="support" label="fragment ion mass spectrum">
+<note label="Description">myocontrolSmall.mzXML scan 1676 (charge 3)</note>
+<GAML:trace id="1676" label="1676.spectrum" type="tandem mass spectrum">
+<GAML:attribute type="M+H">1983.06</GAML:attribute>
+<GAML:attribute type="charge">3</GAML:attribute>
+<GAML:Xdata label="1676.spectrum" units="MASSTOCHARGERATIO">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="50">
+248.282 305.339 319.386 443.216 451.93 460.377 467.727 476.819 506.873 515.748 540.993 543.298 589.444 593.8 597.473 599.788 607.08 612.806 618.827 621.093 641.463 649.675 651.534 655.494 656.504 662.847 671.425 697.482 705.53 720.72
+742.465 762.144 771.677 789.487 806.639 818.558 830.64 832.597 855.664 868.086 884.614 899.18 902.537 909.479 918.796 927.674 932.807 934.624 952.634 1030.64 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="1676.spectrum" units="UNKNOWN">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="50">
+3 3 3 4 12 3 3 61 4 82 9 3 11 4 50 26 20 22 54 17 5 12 5 66 4 59 7 14 3 5
+9 5 3 42 5 3 41 13 3 25 5 14 34 4 12 30 4 12 100 33 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+</group></group>
+<group label="input parameters" type="parameters">
+	<note type="input" label="list path, default parameters">default_input.xml</note>
+	<note type="input" label="list path, taxonomy information">taxonomySmall.xml</note>
+	<note type="input" label="output, histogram column width">30</note>
+	<note type="input" label="output, histograms">no</note>
+	<note type="input" label="output, log path"></note>
+	<note type="input" label="output, maximum valid expectation value">0.1</note>
+	<note type="input" label="output, message">testing 1 2 3</note>
+	<note type="input" label="output, one sequence copy">yes</note>
+	<note type="input" label="output, parameters">yes</note>
+	<note type="input" label="output, path">output.xml</note>
+	<note type="input" label="output, path hashing">yes</note>
+	<note type="input" label="output, performance">yes</note>
+	<note type="input" label="output, proteins">yes</note>
+	<note type="input" label="output, results">valid</note>
+	<note type="input" label="output, sequence path"></note>
+	<note type="input" label="output, sequences">no</note>
+	<note type="input" label="output, sort results by">spectrum</note>
+	<note type="input" label="output, spectra">yes</note>
+	<note type="input" label="output, xsl path">tandem-style.xsl</note>
+	<note type="input" label="protein, C-terminal residue modification mass"></note>
+	<note type="input" label="protein, N-terminal residue modification mass"></note>
+	<note type="input" label="protein, cleavage site">[RK]|{P}</note>
+	<note type="input" label="protein, homolog management">no</note>
+	<note type="input" label="protein, modified residue mass file"></note>
+	<note type="input" label="protein, taxon">mouse</note>
+	<note type="input" label="refine">no</note>
+	<note type="input" label="refine, maximum valid expectation value">0.1</note>
+	<note type="input" label="refine, sequence path"></note>
+	<note type="input" label="refine, spectrum synthesis">yes</note>
+	<note type="input" label="residue, modification mass">57.021464@C</note>
+	<note type="input" label="residue, potential modification mass"></note>
+	<note type="input" label="residue, potential modification motif"></note>
+	<note type="input" label="scoring, a ions">no</note>
+	<note type="input" label="scoring, algorithm">k-score</note>
+	<note type="input" label="scoring, b ions">yes</note>
+	<note type="input" label="scoring, c ions">no</note>
+	<note type="input" label="scoring, cyclic permutation">no</note>
+	<note type="input" label="scoring, include reverse">no</note>
+	<note type="input" label="scoring, maximum missed cleavage sites">1</note>
+	<note type="input" label="scoring, minimum ion count">4</note>
+	<note type="input" label="scoring, x ions">no</note>
+	<note type="input" label="scoring, y ions">yes</note>
+	<note type="input" label="scoring, z ions">no</note>
+	<note type="input" label="spectrum, dynamic range">100.0</note>
+	<note type="input" label="spectrum, fragment mass type">monoisotopic</note>
+	<note type="input" label="spectrum, fragment monoisotopic mass error">0.4</note>
+	<note type="input" label="spectrum, fragment monoisotopic mass error units">Daltons</note>
+	<note type="input" label="spectrum, maximum parent charge">4</note>
+	<note type="input" label="spectrum, minimum fragment mz">150.0</note>
+	<note type="input" label="spectrum, minimum parent m+h">500.0</note>
+	<note type="input" label="spectrum, minimum peaks">6</note>
+	<note type="input" label="spectrum, parent monoisotopic mass error minus">2.0</note>
+	<note type="input" label="spectrum, parent monoisotopic mass error plus">4.0</note>
+	<note type="input" label="spectrum, parent monoisotopic mass error units">Daltons</note>
+	<note type="input" label="spectrum, parent monoisotopic mass isotope error">no</note>
+	<note type="input" label="spectrum, path">myocontrolSmall.mzXML</note>
+	<note type="input" label="spectrum, sequence batch size">1000</note>
+	<note type="input" label="spectrum, threads">1</note>
+	<note type="input" label="spectrum, total peaks">50</note>
+	<note type="input" label="spectrum, use noise suppression">yes</note>
+</group>
+<group label="unused input parameters"  type="parameters">
+	<note type="input" label="refine, cleavage semi">yes</note>
+	<note type="input" label="refine, modification mass"></note>
+	<note type="input" label="refine, point mutations">no</note>
+	<note type="input" label="refine, potential C-terminus modifications"></note>
+	<note type="input" label="refine, potential N-terminus modification"></note>
+	<note type="input" label="refine, potential N-terminus modifications"></note>
+	<note type="input" label="refine, potential modification mass"></note>
+	<note type="input" label="refine, potential modification motif"></note>
+	<note type="input" label="refine, tic percent">20</note>
+	<note type="input" label="refine, unanticipated cleavage">no</note>
+	<note type="input" label="refine, use potential modifications for full refinement">no</note>
+	<note type="input" label="scoring, pluggable scoring">yes</note>
+</group>
+<group label="performance parameters" type="parameters">
+	<note label="list path, sequence source #1">myoglobin.fasta</note>
+	<note label="list path, sequence source description #1">no description</note>
+	<note label="modelling, estimated false positives">0</note>
+	<note label="modelling, spectrum noise suppression ratio">0.00</note>
+	<note label="modelling, total peptides used">1</note>
+	<note label="modelling, total proteins used">1</note>
+	<note label="modelling, total spectra assigned">1</note>
+	<note label="modelling, total spectra used">1</note>
+	<note label="modelling, total unique assigned">1</note>
+	<note label="process, start time">2011:02:22:09:19:35</note>
+	<note label="process, version">x! tandem 2010.10.01.1 (LabKey, Insilicos and ISB)</note>
+	<note label="quality values">0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0</note>
+	<note label="refining, # input models">0</note>
+	<note label="refining, # input spectra">0</note>
+	<note label="refining, # partial cleavage">0</note>
+	<note label="refining, # point mutations">0</note>
+	<note label="refining, # potential C-terminii">0</note>
+	<note label="refining, # potential N-terminii">0</note>
+	<note label="refining, # unanticipated cleavage">0</note>
+	<note label="timing, initial modelling total (sec)">0.42</note>
+	<note label="timing, initial modelling/spectrum (sec)">0.416</note>
+	<note label="timing, load sequence models (sec)">0.00</note>
+	<note label="timing, refinement/spectrum (sec)">0.000</note>
+</group>
+</bioml>

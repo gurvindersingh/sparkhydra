@@ -2,6 +2,7 @@ package org.systemsbiology.xtandem.sax;
 
 import org.systemsbiology.sax.*;
 import org.systemsbiology.xtandem.*;
+import org.systemsbiology.xtandem.bioml.sax.*;
 import org.xml.sax.*;
 
 import java.util.*;
@@ -11,7 +12,7 @@ import java.util.*;
  * User: steven
  * Date: 3/28/11
  */
-public class MeasuredSpectrumHandler  extends AbstractElementSaxHandler<IMeasuredSpectrum> {
+public class MeasuredSpectrumHandler  extends AbstractXTandemElementSaxHandler<IMeasuredSpectrum> {
     public static final MeasuredSpectrumHandler[] EMPTY_ARRAY = {};
     public static final String TAG = "MeasuredSpectrum" ;
 
@@ -167,6 +168,7 @@ public class MeasuredSpectrumHandler  extends AbstractElementSaxHandler<IMeasure
         ISpectrumPeak[] peaks = m_Peaks.toArray(ISpectrumPeak.EMPTY_ARRAY);
         int precursorCharge = getPrecursorCharge();
         double precursorMz = getPrecursorMassChargeRatio();
+
         ScoringMeasuredSpectrum spce = new  ScoringMeasuredSpectrum(precursorCharge, precursorMz,null, peaks);
         setElementObject(spce);
     }
