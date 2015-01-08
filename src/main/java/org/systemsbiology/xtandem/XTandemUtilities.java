@@ -5,6 +5,7 @@ package org.systemsbiology.xtandem;
 
 import com.lordjoe.distributed.spectrum.*;
 import com.lordjoe.utilities.*;
+import com.lordjoe.utilities.Base64;
 import org.systemsbiology.hadoop.*;
 import org.systemsbiology.sax.*;
 import org.systemsbiology.xml.*;
