@@ -3,8 +3,8 @@ package org.systemsbiology.xtandem;
 
 //import com.lordjoe.utilities.*;
 
+import com.lordjoe.distributed.spectrum.*;
 import com.lordjoe.utilities.*;
-import com.lordjoe.utilities.Base64;
 import org.systemsbiology.hadoop.*;
 import org.systemsbiology.sax.*;
 import org.systemsbiology.xml.*;
@@ -1420,10 +1420,10 @@ public class XTandemUtilities {
                     line = inp.readLine();
                     continue;
                 }
-                if (line.endsWith(" 0.0")) {
-                    line = inp.readLine();
-                    continue;
-                }
+//                if (line.endsWith(" 0.0")) {
+//                    line = inp.readLine();
+//                    continue;
+//                }
 
 
                 if (line.contains("=")) {
@@ -1465,9 +1465,11 @@ public class XTandemUtilities {
                     throw new IllegalStateException("Cannot parse MGF line " + line);
                 }
                 if ("END IONS".equals(line)) {
-                    ISpectrumPeak[] peaks = new ISpectrumPeak[holder.size()];
-                    holder.toArray(peaks);
-                    ret.setPeaks(peaks);
+                    // if peaks have multiple readings choose real peaks
+                    List<ISpectrumPeak> realPeaks = IntensitySetTransformer.findRealPeaks(holder);
+                    ISpectrumPeak[] peaks = realPeaks.toArray(new ISpectrumPeak[realPeaks.size()]);
+
+                     ret.setPeaks(peaks);
                     ret.setRetentionTime(retentionTime);
                     IScanPrecursorMZ spre = null;
 
@@ -1488,10 +1490,8 @@ public class XTandemUtilities {
                         try {
                             double peakMass = Double.parseDouble(items[0].trim());
                             float peakIntensity = Float.parseFloat(items[1].trim());
-                            if(peakIntensity > 0) {
-                                SpectrumPeak added = new SpectrumPeak(peakMass, peakIntensity);
-                                holder.add(added);
-                            }
+                            SpectrumPeak added = new SpectrumPeak(peakMass, peakIntensity);
+                            holder.add(added);
                         }
                         catch (NumberFormatException e) {
                             // I am not happy but I guess we can forgive a little bad data
