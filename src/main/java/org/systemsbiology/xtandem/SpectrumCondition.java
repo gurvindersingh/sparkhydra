@@ -864,7 +864,7 @@ public class SpectrumCondition implements Serializable {
         m_lMinSize = params.getIntParameter(strKey);
 
         strKey = "spectrum, minimum m_ParentStream m+h";
-        m_fMinMass = params.getFloatParameter(strKey, 500.0F);
+        m_fMinMass = params.getFloatParameter(strKey, 100.0F);
 
         strKey = "spectrum, maximum m_ParentStream m+h";
         m_fMaxMass = params.getFloatParameter(strKey, 6000);

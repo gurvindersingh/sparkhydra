@@ -80,8 +80,12 @@ public class BinChargeMapper implements Serializable {
     public BinChargeKey oneKeyFromChargeMz(int charge, double mz) {
         List<BinChargeKey> holder = new ArrayList<BinChargeKey>();
         double mzStart = ((int) (0.5 + ((mz) / binSize))) * binSize;
-        double quantizedMz = mzStart * binSize;
-        return new BinChargeKey(charge, quantizedMz); // todo add meighbors
+        double quantizedMz = mzStart ;
+        BinChargeKey ret = new BinChargeKey(charge, quantizedMz);
+        double mzx = ret.getMz();
+        if(Math.abs(mz - mzx) > binSize)
+            throw new IllegalStateException("bad bin key");
+        return ret;
     }
 
     /**
@@ -93,7 +97,7 @@ public class BinChargeMapper implements Serializable {
             double matchingMass = pp.getMatchingMass();
             List<Tuple2<BinChargeKey, IPolypeptide>> holder = new ArrayList<Tuple2<BinChargeKey, IPolypeptide>>();
             for (int charge = 1; charge < 4; charge++) {
-                BinChargeKey key = oneKeyFromChargeMz(charge, matchingMass);
+                BinChargeKey key = oneKeyFromChargeMz(charge, matchingMass / charge );
                 holder.add(new Tuple2<BinChargeKey, IPolypeptide>(key, pp));
             }
             if (holder.isEmpty())
@@ -106,10 +110,11 @@ public class BinChargeMapper implements Serializable {
     private class mapMeasuredSpectraToBins extends AbstractLoggingPairFlatMapFunction<IMeasuredSpectrum, BinChargeKey, IMeasuredSpectrum> {
         @Override
         public Iterable<Tuple2<BinChargeKey, IMeasuredSpectrum>> doCall(final IMeasuredSpectrum spec) throws Exception {
-            double matchingMass = spec.getPrecursorMass();
+            double matchingMass = spec.getPrecursorMass();   // todo decide whether mass or mz is better
+            double specMZ = spec.getPrecursorMassChargeRatio();
             int charge = spec.getPrecursorCharge();
             List<Tuple2<BinChargeKey, IMeasuredSpectrum>> holder = new ArrayList<Tuple2<BinChargeKey, IMeasuredSpectrum>>();
-            BinChargeKey[] keys = keysFromChargeMz(charge, matchingMass);
+            BinChargeKey[] keys = keysFromChargeMz(charge, specMZ);
             for (int i = 0; i < keys.length; i++) {
                 BinChargeKey key = keys[i];
                 holder.add(new Tuple2<BinChargeKey, IMeasuredSpectrum>(key, spec));

@@ -97,6 +97,7 @@ public abstract class AbstractLoggingFunctionBase implements Serializable {
             return;
         String className = getClass().getSimpleName();
         if (!isLogged()) {
+            SparkUtilities.setLogToWarn();
             System.err.println("Starting Function " + className);
             //SparkUtilities.setLogToWarn();
             setLogged(true);  // done once

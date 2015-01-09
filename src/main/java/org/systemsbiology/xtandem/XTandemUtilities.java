@@ -1474,7 +1474,8 @@ public class XTandemUtilities {
                     ret.setRetentionTime(retentionTime);
                     IScanPrecursorMZ spre = null;
 
-                    double mz = massToChargeCalledPpMass;
+                   // double mz = massToChargeCalledPpMass;
+                    double mz = massToChargeCalledPpMass / charge; // todo I need to change this to get better scoring
                     // maybe this is what is meant - certainly scores better
 
                     spre = new ScanPrecursorMz(1, charge, mz, FragmentationMethod.CID);
