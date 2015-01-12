@@ -43,7 +43,7 @@ public class SparkScanScorer {
 //
 //    };
 
-    private static boolean debuggingCountMade = true;
+    private static boolean debuggingCountMade = false;
 
     public static boolean isDebuggingCountMade() {
         return debuggingCountMade;
