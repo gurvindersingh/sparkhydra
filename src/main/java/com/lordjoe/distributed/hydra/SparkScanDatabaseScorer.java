@@ -259,7 +259,7 @@ public class SparkScanDatabaseScorer {
 
         String spectra = SparkUtilities.buildPath(args[SPECTRA_INDEX]);
 
-        SparkMapReduceScoringHandler handler = new SparkMapReduceScoringHandler(configStr);
+        SparkMapReduceScoringHandler handler = new SparkMapReduceScoringHandler(configStr, true);
 
         JavaRDD<IMeasuredSpectrum> spectraToScore = getMeasuredSpectra(timer, sparkProperties, spectra);
 

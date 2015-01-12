@@ -48,7 +48,7 @@ public class SparkMapReduceScoringHandler implements Serializable {
     private PeptideDatabase peptideDatabase;
 
 
-    public SparkMapReduceScoringHandler(String congiguration) {
+    public SparkMapReduceScoringHandler(String congiguration, boolean createDb) {
 
         SparkUtilities.setAppName("SparkMapReduceScoringHandler");
 
@@ -56,7 +56,8 @@ public class SparkMapReduceScoringHandler implements Serializable {
 
         application = new SparkXTandemMain(is, congiguration);
         sequenceUtilities = new SequenceUtilities(application);
-        peptideDatabase = new PeptideDatabase(application);
+        if (createDb == true)
+            peptideDatabase = new PeptideDatabase(application);
 
         handler = new SparkMapReduce("Score Scans", new ScanTagMapperFunction(application), new ScoringReducer(application));
 

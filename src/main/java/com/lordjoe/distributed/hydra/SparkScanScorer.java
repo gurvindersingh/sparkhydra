@@ -174,10 +174,8 @@ public class SparkScanScorer {
         // read spectra
         JavaPairRDD<String, IMeasuredSpectrum> scans = SparkSpectrumUtilities.parseSpectrumFile(pSpectra);
 
-        System.out.println(scans.take(5));
         System.err.println("Scans Partitions " + scans.partitions().size());
         JavaRDD<IMeasuredSpectrum> spectraToScore = scans.values();
-        System.out.println(spectraToScore.take(5));
 
         // drop bad ids
         spectraToScore = spectraToScore.filter(new Function<IMeasuredSpectrum, Boolean>() {
@@ -218,6 +216,8 @@ public class SparkScanScorer {
      */
     public static void main(String[] args) throws Exception {
 
+        // Force PepXMLWriter to load
+        PepXMLWriter foo = null;
         // code to run class loader
         //String runner = SparkUtilities.buildLoggingClassLoaderPropertiesFile(ScanScorer.class  , args);
         //System.out.println(runner);
@@ -267,12 +267,11 @@ public class SparkScanScorer {
         }*/
 
 
-        SparkMapReduceScoringHandler handler = new SparkMapReduceScoringHandler(configStr);
+        SparkMapReduceScoringHandler handler = new SparkMapReduceScoringHandler(configStr, false);
 
         JavaPairRDD<BinChargeKey, IPolypeptide> keyedPeptides = getBinChargePeptides(sparkProperties, handler);
         timer.showElapsed("Mapped Peptides", System.err);
-        System.out.println(keyedPeptides.take(5));
-        //System.exit(0);
+
         long[] counts = new long[1];
         if(isDebuggingCountMade()) {
             keyedPeptides = SparkUtilities.persistAndCountPair("Mapped Peptides", keyedPeptides, counts);
@@ -299,7 +298,6 @@ public class SparkScanScorer {
         // find spectra-peptide pairs to score
         JavaPairRDD<BinChargeKey, Tuple2<IPolypeptide,IMeasuredSpectrum>> binPairs = keyedPeptides.join(keyedSpectra,
                 SparkUtilities.DEFAULT_PARTITIONER);
-
         // next line is for debugging
         /// binPairs = SparkUtilities.realizeAndReturn(binPairs);
 

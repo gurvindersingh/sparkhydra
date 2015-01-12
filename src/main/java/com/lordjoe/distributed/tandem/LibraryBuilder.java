@@ -445,7 +445,7 @@ public class LibraryBuilder implements Serializable {
         Configuration hadoopConfiguration2 = SparkUtilities.getHadoopConfiguration();  // did we change the original or a copy
 
 
-        SparkMapReduceScoringHandler handler = new SparkMapReduceScoringHandler(configStr);
+        SparkMapReduceScoringHandler handler = new SparkMapReduceScoringHandler(configStr, false);
 
         LibraryBuilder builder = new LibraryBuilder(handler);
 

@@ -126,7 +126,7 @@ public class ScanScorer {
 
         String spectra = SparkUtilities.buildPath(args[SPECTRA_INDEX]);
 
-        SparkMapReduceScoringHandler handler = new SparkMapReduceScoringHandler(configStr);
+        SparkMapReduceScoringHandler handler = new SparkMapReduceScoringHandler(configStr, false);
 
         // handler.buildLibraryIfNeeded();
         JavaRDD<IPolypeptide> databasePeptides = handler.buildLibrary(0);

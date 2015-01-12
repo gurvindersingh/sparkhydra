@@ -79,8 +79,8 @@ public class BinChargeKey implements Serializable, Comparable<BinChargeKey> {
     @Override
     public int hashCode() {
         int result;
-        result = charge;
-        result = 31 * result + (mzInt ^ (mzInt >>> 32));
+        result = mzInt;
+        result = 31 * result + (charge ^ (charge >>> 32));
         return result;
     }
 

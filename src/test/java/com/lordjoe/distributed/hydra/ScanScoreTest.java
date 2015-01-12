@@ -90,7 +90,7 @@ public class ScanScoreTest {
 
         Properties props = new Properties();
         props.setProperty("spark.mesos.coarse", "true");
-        SparkMapReduceScoringHandler handler = new SparkMapReduceScoringHandler( args[0]);
+        SparkMapReduceScoringHandler handler = new SparkMapReduceScoringHandler( args[0], false);
 
 
         JavaPairRDD<String, IMeasuredSpectrum> scans = SparkSpectrumUtilities.parseSpectrumFile(spectra);

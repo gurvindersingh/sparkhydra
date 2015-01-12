@@ -832,7 +832,7 @@ public class SparkUtilities implements Serializable {
         throw new UnsupportedOperationException("Fix This"); // ToDo
     }
 
-    public static final StorageLevel DEFAULT_STORAGE_LEVEL = StorageLevel.DISK_ONLY();
+    public static final StorageLevel DEFAULT_STORAGE_LEVEL = StorageLevel.MEMORY_AND_DISK();
 
     /**
      * persist in the best way - saves remembering which storage level
