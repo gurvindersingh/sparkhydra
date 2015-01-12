@@ -249,10 +249,17 @@ public class SparkUtilities implements Serializable {
         SparkUtilities.guaranteeSparkMaster(sparkConf);
 
 
+        Option<String> option = sparkConf.getOption("com.lordjoe.Log4jProperties");
+        if (option.isDefined()) {
+            String propertyFile = option.get();
+            PropertyConfigurator.configure(propertyFile);
+        }
+
+
         // what are we using as a serializer
         //showOption("spark.serializer",sparkConf);
 
-        Option<String> option = sparkConf.getOption("spark.serializer");
+        option = sparkConf.getOption("spark.serializer");
         if (!option.isDefined())
             sparkConf.set("spark.serializer", "org.apache.spark.serializer.JavaSerializer");   // todo use kryo
 //        else {
@@ -304,8 +311,26 @@ public class SparkUtilities implements Serializable {
         if (!logSetToWarn) {
             Logger rootLogger = Logger.getRootLogger();
             rootLogger.setLevel(Level.WARN);
+
+            // not sure why this is needed
+            setNamedLoggerToWarn("spark");
+            setNamedLoggerToWarn("akka");
+            setNamedLoggerToWarn("sparkDriver-akka");
+
             logSetToWarn = true;
         }
+    }
+
+    protected static void setNamedLoggerToWarn(String name) {
+        try {
+            Logger spark = Logger.getLogger(name);
+            if (spark != null)
+                spark.setLevel(Level.WARN);
+        }
+        catch (Exception e) {
+            // forgive errors
+        }
+
     }
 
 
@@ -1424,20 +1449,20 @@ public class SparkUtilities implements Serializable {
 
     /**
      * if there are multiple values per key choose the first
+     *
      * @param inp
      * @param <K>
      * @param <R>
      * @return
      */
-    public static <K extends Serializable,R extends Serializable >JavaPairRDD<K,R> chooseOneValue( JavaPairRDD<K,R> inp) {
-         return inp.reduceByKey(new Function2<R, R, R>() {
-             @Override
-             public R call(final R v1, final R v2) throws Exception {
-                 return v1;
-             }
-         });
-      }
-
+    public static <K extends Serializable, R extends Serializable> JavaPairRDD<K, R> chooseOneValue(JavaPairRDD<K, R> inp) {
+        return inp.reduceByKey(new Function2<R, R, R>() {
+            @Override
+            public R call(final R v1, final R v2) throws Exception {
+                return v1;
+            }
+        });
+    }
 
 
 }

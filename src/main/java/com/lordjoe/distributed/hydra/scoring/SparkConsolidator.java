@@ -1,6 +1,8 @@
 package com.lordjoe.distributed.hydra.scoring;
 
+import com.lordjoe.distributed.*;
 import org.apache.spark.api.java.*;
+import org.apache.spark.api.java.function.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.scoring.*;
 
@@ -41,6 +43,14 @@ public class SparkConsolidator implements Serializable {
      */
     public void writeScores(final Appendable out, JavaRDD<IScoredScan> scans) {
         writer.appendHeader(out, getApplication());
+
+        // Print scans in sorted order
+        scans.sortBy(new Function<IScoredScan, String>() {
+            @Override
+            public String call(final IScoredScan v1) throws Exception {
+                return v1.getId();
+            }
+        },true, SparkUtilities.getDefaultNumberPartitions());
 
         Iterator<IScoredScan> scanIterator = scans.toLocalIterator();
         while(scanIterator.hasNext())  {

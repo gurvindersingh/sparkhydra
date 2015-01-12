@@ -11,7 +11,9 @@ import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.hadoop.*;
 import org.systemsbiology.xtandem.peptide.*;
 import scala.*;
+import scala.Serializable;
 
+import java.io.*;
 import java.lang.Boolean;
 import java.lang.Long;
 import java.util.*;
@@ -40,6 +42,8 @@ public class PeptideDatabase implements Serializable {
      * find counts as an efficiency measure
      */
     private void buildKeyCounts() {
+        if(possibllyReadKeyCounts())
+            return;
         JavaSQLContext sqlContext = SparkUtilities.getCurrentSQLContext();
         String databaseName1 = getDatabaseName();
         try {
@@ -48,7 +52,8 @@ public class PeptideDatabase implements Serializable {
             //Parquet files can also be registered as tables and then used in SQL statements.
             parquetFile.registerAsTable("peptides");
 
-            JavaSchemaRDD binCounts = sqlContext.sql("SELECT massBin,count(*) FROM  peptides  group by massBin ");
+               JavaSchemaRDD binCounts = sqlContext.sql("SELECT massBin,count(*) FROM  peptides  group by massBin ");
+
             Iterator<Row> rowIterator = binCounts.toLocalIterator();
             while (rowIterator.hasNext()) {
                 Row rw = rowIterator.next();
@@ -62,7 +67,7 @@ public class PeptideDatabase implements Serializable {
                 BinChargeKey key = new BinChargeKey(1, mz);
                 keysWithData.add(key);
             }
-            Collections.sort(keysWithData);
+            saveKeyCounts(keysWithData);
            // for debugging show keys with and without data
           //  showKeysWithAndWithoutData(keysWithData);
         }
@@ -71,6 +76,40 @@ public class PeptideDatabase implements Serializable {
             return;
 
         }
+    }
+
+
+    protected boolean possibllyReadKeyCounts( )  {
+
+        try {
+            JavaSparkContext ctx = SparkUtilities.getCurrentContext();
+            String fileName = databaseName + "KeyCounts.txt";
+            List<String> collect = ctx.textFile(fileName).collect();
+            if(collect.isEmpty())
+                return false;
+            for (String s : collect) {
+                String[] items = s.split("\t");
+                String[] keyParts = items[0].split(":");
+                Long count = new Long(items[1].trim());
+                Integer mzInt = new Integer(keyParts[2].trim());
+                keyCounts.put(mzInt,count) ;
+            }
+            return true; // read from file
+        }
+        catch ( Exception e) {
+            return false;
+         }
+    }
+
+    protected void saveKeyCounts(final List<BinChargeKey> pKeysWithData) throws IOException {
+        Collections.sort(pKeysWithData);
+        PrintWriter out = new PrintWriter(new FileWriter(databaseName + "KeyCounts.txt"));
+        for (BinChargeKey key : pKeysWithData) {
+            Integer mzAsInt = key.getMzInt();
+            Long aLong = keyCounts.get(mzAsInt);
+            out.println(key + "\t" + aLong);
+        }
+        out.close();
     }
 
     private void showKeysWithAndWithoutData(final List<BinChargeKey> pKeysWithData) {

@@ -456,11 +456,14 @@ public class OriginatingScoredScan implements IScoredScan, IAddable<IScoredScan>
 
         // Test for add with wrong spectral id
         ISpectralMatch bestMatch = getBestMatch();
-        if (bestMatch != null) {
+        if (bestMatch != null && bestMatch.getMeasured() != null) {
             String originalId = bestMatch.getMeasured().getId();
-            String matchId = added.getMeasured().getId();
-            if (originalId != null && !originalId.equals(matchId))
-                throw new IllegalStateException("Trying to add " + matchId + " to scores from " + originalId);
+            if (added.getMeasured() != null) {
+                String matchId = added.getMeasured().getId();
+                if (originalId != null && !originalId.equals(matchId))
+                    throw new IllegalStateException("Trying to add " + matchId + " to scores from " + originalId);
+
+            }
 
         }
 
