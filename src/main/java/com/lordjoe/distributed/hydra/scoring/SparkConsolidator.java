@@ -1,14 +1,11 @@
 package com.lordjoe.distributed.hydra.scoring;
 
 import com.lordjoe.distributed.*;
-import com.lordjoe.utilities.FileUtilities;
 import org.apache.spark.api.java.*;
-import org.apache.spark.api.java.function.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.scoring.*;
 
 import java.io.*;
-import java.util.*;
 
 /**
  * com.lordjoe.distributed.hydra.scoring.SparkConsolidator     \
@@ -53,19 +50,36 @@ public class SparkConsolidator implements Serializable {
     public void writeScores(final Appendable out, JavaRDD<IScoredScan> scans) {
         writer.appendHeader(out, getApplication());
 
-        // Print scans in sorted order
-        scans.sortBy(new Function<IScoredScan, String>() {
+        // make an RDD of the text for every SPrectrum
+        JavaRDD<String> textOut  = scans.map(new AbstractLoggingFunction<IScoredScan, String>() {
             @Override
-            public String call(final IScoredScan v1) throws Exception {
-                return v1.getId();
+            public String doCall(final IScoredScan v1) throws Exception {
+                StringBuilder sb = new StringBuilder();
+                writer.appendScan(sb, getApplication(), v1);
+                return sb.toString();
             }
-        },true, SparkUtilities.getDefaultNumberPartitions());
+        });
 
-        Iterator<IScoredScan> scanIterator = scans.toLocalIterator();
-        while(scanIterator.hasNext())  {
-            IScoredScan scan = scanIterator.next();
-            writer.appendScan(out, getApplication(), scan);
-        }
+        // write yo text file todo
+
+
+//        // Print scans in sorted order
+//        scans.sortBy(new Function<IScoredScan, String>() {
+//            @Override
+//            public String call(final IScoredScan v1) throws Exception {
+//                return v1.getId();
+//            }
+//        },true, SparkUtilities.getDefaultNumberPartitions());
+//
+//
+//
+//        Iterator<IScoredScan> scanIterator = scans.toLocalIterator();
+//
+//
+//        while(scanIterator.hasNext())  {
+//            IScoredScan scan = scanIterator.next();
+//            writer.appendScan(out, getApplication(), scan);
+//        }
         //scans.mapPartitions(new writeData());
         writer.appendFooter(out, getApplication());
     }
