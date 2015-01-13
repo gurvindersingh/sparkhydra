@@ -1,6 +1,7 @@
 package com.lordjoe.distributed.hydra.scoring;
 
 import com.lordjoe.distributed.*;
+import com.lordjoe.utilities.FileUtilities;
 import org.apache.spark.api.java.*;
 import org.apache.spark.api.java.function.*;
 import org.systemsbiology.xtandem.*;
@@ -33,7 +34,15 @@ public class SparkConsolidator implements Serializable {
         return application;
     }
 
-
+    /*class writeData implements FlatMapFunction<Iterator<IScoredScan>, String> {
+        public Iterator<IScoredScan> call (Iterator<IScoredScan>) {
+            while (t.hasNext()) {
+                IScoredScan scan = t.next();
+                writer.appendScan(out, getApplication(), scan);
+            }
+            return null;
+        }
+    }*/
 
     /**
      * write scores into a file
@@ -57,6 +66,7 @@ public class SparkConsolidator implements Serializable {
             IScoredScan scan = scanIterator.next();
             writer.appendScan(out, getApplication(), scan);
         }
+        //scans.mapPartitions(new writeData());
         writer.appendFooter(out, getApplication());
     }
 

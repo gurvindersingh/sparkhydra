@@ -101,7 +101,7 @@ public class LibraryBuilder implements Serializable {
         JavaRDD<IProtein> proteins = readProteins(jctx);
 
         long[] proteinCountRef = new long[1];
-        proteins = SparkUtilities.persistAndCount("Proteins  to Score", proteins, proteinCountRef);
+        //proteins = SparkUtilities.persistAndCount("Proteins  to Score", proteins, proteinCountRef);
 
         long proteinCount = proteinCountRef[0];
 
@@ -112,7 +112,7 @@ public class LibraryBuilder implements Serializable {
             if (countPercentile < PercentileFilter.PERCENTILE_DIVISION) {
                 System.err.println("Filter on "  + countPercentile);
                 proteins = proteins.filter(new PercentileFilter<IProtein>(countPercentile)); // todo make a loop
-                proteins = SparkUtilities.persistAndCount("Filtered Proteins  to Score", proteins, proteinCountRef);
+                //proteins = SparkUtilities.persistAndCount("Filtered Proteins  to Score", proteins, proteinCountRef);
              }
         }
         else {
@@ -125,11 +125,11 @@ public class LibraryBuilder implements Serializable {
         proteins = SparkUtilities.guaranteePartition(proteins);
 
 
-        proteins = SparkUtilities.persistAndCount("Total Proteins", proteins);
+        //proteins = SparkUtilities.persistAndCount("Total Proteins", proteins);
 
         JavaRDD<IPolypeptide> digested = proteins.flatMap(new DigestProteinFunction(app));
 
-        digested = SparkUtilities.persistAndCount("Digested Proteins", digested);
+        //digested = SparkUtilities.persistAndCount("Digested Proteins", digested);
 
         // digested = digested.repartition(SparkUtilities.getDefaultNumberPartitions());
         // uncomment when you want to look

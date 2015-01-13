@@ -449,15 +449,14 @@ public class SparkUtilities implements Serializable {
 //        // set all properties in the SparkProperties file
         sparkConf.set("spark.ui.killEnabled", "true");  // always allow a job to be killed
         for (String property : sparkProperties.stringPropertyNames()) {
-            if (!property.startsWith("spark."))
-                continue;
             String value = sparkProperties.getProperty(property);
-            sparkConf.set(property, value);
-            if (NUMBER_PARTITIONS_PROPERTY_NAME.equals(property))
+            if (property.startsWith("spark.")) {
+                sparkConf.set(property, value);
+            } else if (NUMBER_PARTITIONS_PROPERTY_NAME.equals(property)) {
                 setDefaultNumberPartitions(Integer.parseInt(value));
-            if (LOG_FUNCTIONS_PROPERTY_NAME.equals(property))
+            } else if (LOG_FUNCTIONS_PROPERTY_NAME.equals(property)) {
                 SparkAccumulators.setFunctionsLoggedByDefault(Boolean.parseBoolean(value));
-
+            }
         }
 
     }

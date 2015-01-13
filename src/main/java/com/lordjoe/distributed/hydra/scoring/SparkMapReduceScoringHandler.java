@@ -281,7 +281,7 @@ public class SparkMapReduceScoringHandler implements Serializable {
         JavaRDD<IScoredScan> scores = values.flatMap(new ScoreScansByCharge());
 
         //   JavaRDD<IScoredScan> scores = binPairs.mapPartitions(new ScoreScansByCharge());
-        scores = SparkUtilities.persistAndCount("Scored Scans", scores);
+        //scores = SparkUtilities.persistAndCount("Scored Scans", scores);
 
         JavaPairRDD<String, IScoredScan> scoreByID = scores.mapToPair(new ScoredScanToId());
 
@@ -293,7 +293,7 @@ public class SparkMapReduceScoringHandler implements Serializable {
                 new combineScoredScans()
         );
 
-        scoreByID = SparkUtilities.persistAndCount("Scored Scans by ID - best", scoreByID);
+        //scoreByID = SparkUtilities.persistAndCount("Scored Scans by ID - best", scoreByID);
 
         timer.showElapsed("built score by ids");
 
