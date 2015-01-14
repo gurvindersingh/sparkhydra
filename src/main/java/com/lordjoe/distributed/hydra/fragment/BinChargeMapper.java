@@ -77,7 +77,7 @@ public class BinChargeMapper implements Serializable {
      * @param mz
      * @return
      */
-    public BinChargeKey oneKeyFromChargeMz(int charge, double mz) {
+    static public BinChargeKey oneKeyFromChargeMz(int charge, double mz) {
         List<BinChargeKey> holder = new ArrayList<BinChargeKey>();
         double mzStart = ((int) (0.5 + ((mz) / binSize))) * binSize;
         double quantizedMz = mzStart ;

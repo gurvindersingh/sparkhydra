@@ -154,6 +154,41 @@ public class PepXMLWriter implements Serializable {
         }
     }
 
+    public String getPepXMLHeader()    {
+        String path = getApplication().getParameter("spectrum, path");
+        ITandemScoringAlgorithm[] algorithms = getApplication().getAlgorithms();
+        String algo = "";
+        if (algorithms.length > 0)
+            algo = algorithms[0].getName();
+        String out;
+        String now = XTandemUtilities.xTandemNow();
+        String header = PEPXML_HEADER.replace("%PATH%", path);
+        header = header.replace("%DATE%", now);
+        out = header;
+        out += "\n";
+
+        header = ANALYSIS_HEADER.replace("%PATH%", path);
+        header = header.replace("%DATE%", now);
+        header = header.replace("%ALGO%", algo);
+        out += header;
+        out += "\n";
+
+        out += TTRYPSIN_XML;  // tod stop hard coding
+        out += "\n";
+
+        String ss = SEARCH_SUMMARY_TEXT.replace("%FULL_FILE_PATH%",path);
+        ss = ss.replace("%ALGO%", algo);
+        out += ss;  // tod stop hard coding
+        out += "\n";
+
+        out += showDatabase();
+        out += showEnzyme();
+        out += showModifications();
+        out += showParameters();
+        out += "      </search_summary>";
+        out += "\n";
+        return out;
+    }
     protected void showModifications(Appendable out)  throws IOException  {
         IMainData application = getApplication();
         ScoringModifications scoringMods = application.getScoringMods();
@@ -167,6 +202,23 @@ public class PepXMLWriter implements Serializable {
         for(PeptideModification pm : PeptideModification.getTerminalModifications())     {
              showModification(pm,out);
          }
+    }
+
+    protected String showModifications() {
+        String out = "";
+        IMainData application = getApplication();
+        ScoringModifications scoringMods = application.getScoringMods();
+        PeptideModification[] modifications = scoringMods.getModifications();
+        Arrays.sort(modifications);
+        for(PeptideModification pm : modifications)     {
+            out += showModification(pm);
+        }
+        PeptideModification.getTerminalModifications();
+        Arrays.sort(modifications);
+        for(PeptideModification pm : PeptideModification.getTerminalModifications())     {
+             out += showModification(pm);
+         }
+        return out;
     }
 
     /*
@@ -200,6 +252,29 @@ public class PepXMLWriter implements Serializable {
           out.append("\n");
     }
 
+    protected String showModification(PeptideModification pm)  {
+        String out = "";
+        double massChange = pm.getMassChange();
+        double pepideMass = pm.getPepideMass();
+        String variable = "Y";
+        if(pm.isFixed())
+            variable = "N";
+
+        out += " <aminoacid_modification";
+        out += " aminoacid=\"" +  pm.getAminoAcid() + "\"";
+        out += " massdiff=\"" + String.format("%10.4f",massChange).trim() + "\"";
+        out += " mass=\"" + String.format("%10.4f",pepideMass).trim() + "\"";
+        out += "variable=\"" + variable + "\"";
+        out += " />";
+        if(pm.getRestriction() == PeptideModificationRestriction.CTerminal)
+              out += "<!--X! Tandem c-terminal AA variable modification-->";
+        if(pm.getRestriction() == PeptideModificationRestriction.NTerminal)
+              out += "<!--X! Tandem n-terminal AA variable modification-->";
+
+        out += "\n";
+        return out;
+    }
+
 
     protected void showEnzyme(Appendable out)  throws IOException  {
         IMainData application = getApplication();
@@ -211,6 +286,17 @@ public class PepXMLWriter implements Serializable {
         out.append("\n");
     }
 
+    protected String showEnzyme()  {
+        String out = "";
+        IMainData application = getApplication();
+
+        out += "        <enzymatic_search_constraint enzyme=\"trypsin\" max_num_internal_cleavages=\"" +
+                        application.getDigester().getNumberMissedCleavages() +
+                        "\" />";
+        out += "\n";
+        return out;
+    }
+
     protected void showDatabase(Appendable out)  throws IOException  {
         IMainData application = getApplication();
         String[] parameterKeys = application.getParameterKeys();
@@ -220,6 +306,18 @@ public class PepXMLWriter implements Serializable {
                         " />"
         );
         out.append("\n");
+    }
+
+    protected String showDatabase() {
+        String out = "";
+        IMainData application = getApplication();
+        String[] parameterKeys = application.getParameterKeys();
+        out += "         <search_database local_path=\"" +
+                        application.getDatabaseName() +
+                        "\" type=\"AA\"" +
+                        " />";
+        out += "\n";
+        return out;
     }
 
     protected void showParameters(Appendable out)  throws IOException  {
@@ -240,6 +338,25 @@ public class PepXMLWriter implements Serializable {
         }
     }
 
+    protected String showParameters()  {
+        String out = "";
+        IMainData application = getApplication();
+        String[] parameterKeys = application.getParameterKeys();
+        out += "        <!-- Input parameters -->";
+        out += "\n";
+         for (int i = 0; i < parameterKeys.length; i++) {
+            String parameterKey = parameterKeys[i];
+            String value = application.getParameter(parameterKey);
+            out += "        <parameter name=\"" +
+                            parameterKey + "\"" +
+                            " value=\"" +
+                            value +
+                            "\" />";
+            out += "\n";
+        }
+        return out;
+    }
+
     public void writePepXMLFooter(Appendable out)   {
         try {
             out.append("     </msms_run_summary>");
@@ -251,6 +368,14 @@ public class PepXMLWriter implements Serializable {
             throw new RuntimeException(e);
 
         }
+    }
+
+    public String getPepXMLFooter()   {
+        String out =  "     </msms_run_summary>";
+        out += "\n";
+        out += "</msms_pipeline_analysis>";
+        out += "\n";
+        return out;
     }
 
     protected void writeSummaries(IScoredScan scan, Appendable out) throws IOException {
