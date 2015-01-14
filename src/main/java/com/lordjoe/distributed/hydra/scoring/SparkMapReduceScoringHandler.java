@@ -285,6 +285,8 @@ public class SparkMapReduceScoringHandler implements Serializable {
 
         JavaPairRDD<String, IScoredScan> scoreByID = scores.mapToPair(new ScoredScanToId());
 
+        scoreByID = SparkUtilities.persistAndShowHash("Scoring",scoreByID);
+
         // next line is for debugging
         // boolean forceInCluster = true;
         // scoreByID = SparkUtilities.realizeAndReturn(scoreByID, forceInCluster);
@@ -581,10 +583,26 @@ public class SparkMapReduceScoringHandler implements Serializable {
         }
     }
 
+    static int[] hashes = new int[100] ;
+    static int numberProcessed;
     private static class ScoredScanToId extends AbstractLoggingPairFunction<IScoredScan, String, IScoredScan> {
         @Override
         public Tuple2<String, IScoredScan> doCall(final IScoredScan t) {
-            return new Tuple2<String, IScoredScan>(t.getBestMatch().getMeasured().getId(), t);
+            ISpectralMatch bestMatch = t.getBestMatch();
+            IMeasuredSpectrum measured = bestMatch.getMeasured();
+            String id = measured.getId();
+
+            // debugging CODE!!! todo remove
+            hashes[Math.abs(id.hashCode() ) % hashes.length]++;
+            if(numberProcessed > 0 && numberProcessed % 10 == 0)   {
+                numberProcessed += 0;       // break here
+            }
+            if(!(id.equals("31104_Berit_BSA2.5115.5115.3"))) {
+                numberProcessed += 0;   // break here
+
+            }
+
+            return new Tuple2<String, IScoredScan>(id, t);
         }
     }
 
@@ -645,6 +663,7 @@ public class SparkMapReduceScoringHandler implements Serializable {
 
     private class ScoreScansByCharge extends AbstractLoggingFlatMapFunction<Tuple2<IPolypeptide, IMeasuredSpectrum>, IScoredScan> {
         private ScoreScansByCharge() {
+            super();
             SparkAccumulators.createAccumulator("NumberSavedScores");
         }
 

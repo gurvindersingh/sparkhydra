@@ -19,7 +19,9 @@ import scala.*;
 import javax.annotation.*;
 import java.io.*;
 import java.io.Serializable;
+import java.lang.*;
 import java.lang.Boolean;
+import java.lang.Long;
 import java.net.*;
 import java.util.*;
 
@@ -875,6 +877,65 @@ public class SparkUtilities implements Serializable {
         return inp.persist(storageLevel);
     }
 
+    /**
+       * persist and show how a key hashes
+       * @param message message to show
+       * @param inp     rdd
+       * @return
+       */
+      @Nonnull
+      public static <K,V> JavaPairRDD<K,V> persistAndShowHash(@Nonnull final String message, @Nonnull final JavaPairRDD<K,V> inp)
+      {
+           return  persistAndShowHash(message,System.err,inp);
+        }
+    /**
+        * persist and show count
+        *
+        * @param message message to show
+        * @param inp     rdd
+        * @return
+        */
+       @Nonnull
+       public static <K,V> JavaPairRDD<K,V> persistAndShowHash(@Nonnull final String message,Appendable out, @Nonnull final JavaPairRDD<K,V> inp ) {
+           JavaPairRDD<K,V> ret = persist(inp);
+
+           Map<K, Object> keyCounts = ret.countByKey();
+           try {
+               out.append(message + "\n");
+           }
+           catch (IOException e) {
+               throw new RuntimeException(e);
+
+           }
+           showKeyHashes(ret, out);
+           return ret;
+       }
+
+
+    public static <K,V>  Map<Integer,Long>  getKeyHashes(JavaPairRDD<K,V> kvx)  {
+          JavaRDD<Integer> hashes = kvx.keys().map(new KeyToHash<K>()) ;
+
+        Map<Integer,Long> counts = hashes.countByValue();
+        return counts;
+
+    }
+
+    public static <K,V>  void   showKeyHashes(JavaPairRDD<K,V> kvx,Appendable out)  {
+        try {
+            Map<Integer,Long>  hashes = getKeyHashes(kvx);
+            List<Integer> keys = new ArrayList<Integer>(hashes.keySet());
+            Collections.sort(keys);
+            for (Integer key : keys) {
+               out.append(Integer.toString(key) + "  =  " + hashes.get(key) + '\n');
+            }
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+
+        }
+
+    }
+
 
     /**
      * persist and show count
@@ -1464,6 +1525,15 @@ public class SparkUtilities implements Serializable {
     }
 
 
+    public static class KeyToHash<K> implements Function<K, Integer> {
+
+        @Override
+        public Integer call(final K v1) throws Exception {
+            int hc = v1.hashCode();
+            int hash = Math.abs(hc) % SparkUtilities.DEFAULT_NUMBER_PARTITIONS;
+            return hash;
+        }
+    }
 }
 
 
