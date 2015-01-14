@@ -321,14 +321,12 @@ public class SparkScanDatabaseScorer {
         //bestScores =  bestScores.persist(StorageLevel.MEMORY_AND_DISK());
         // System.out.println("Total Scores " + bestScores.count() + " Scores");
 
-         PepXMLWriter pwrtr = new PepXMLWriter(application);
+        PepXMLWriter pwrtr = new PepXMLWriter(application);
         PepXMLScoredScanWriter pWrapper = new PepXMLScoredScanWriter(pwrtr);
         SparkConsolidator consolidator = new SparkConsolidator(pWrapper, application);
 
 
-        PrintWriter out = buildWriter(application);
-        consolidator.writeScores(out, bestScores);
-        out.close();
+        consolidator.writeScores(pwrtr, bestScores);
 
 
         SparkAccumulators.showAccumulators();

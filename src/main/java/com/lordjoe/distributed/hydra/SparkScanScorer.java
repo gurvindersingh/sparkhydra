@@ -343,9 +343,7 @@ public class SparkScanScorer {
             SparkConsolidator consolidator = new SparkConsolidator(pWrapper, application);
 
 
-            PrintWriter out = buildWriter(application);
-            consolidator.writeScores(out, bestScores);
-            out.close();
+            consolidator.writeScores(pwrtr, bestScores);
         }
 
 

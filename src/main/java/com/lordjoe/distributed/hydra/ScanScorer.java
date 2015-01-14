@@ -172,9 +172,7 @@ public class ScanScorer {
 
         JavaRDD<IScoredScan> values = bestScores.values();
 
-        PrintWriter out = buildWriter(application);
-        consolidator.writeScores(out, values);
-        out.close();
+        consolidator.writeScores(pwrtr, values);
 
     }
 
