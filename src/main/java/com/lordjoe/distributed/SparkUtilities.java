@@ -62,9 +62,9 @@ public class SparkUtilities implements Serializable {
         local = pLocal;
     }
 
-    public static final int DEFAULT_NUMBER_PARTITIONS = 600;
+    private static final int DEFAULT_NUMBER_PARTITIONS_X = 120;
 
-    private static int defaultNumberPartitions = DEFAULT_NUMBER_PARTITIONS;
+    private static int defaultNumberPartitions = DEFAULT_NUMBER_PARTITIONS_X;
 
     public static int getDefaultNumberPartitions() {
         if (isLocal())
@@ -1545,7 +1545,7 @@ public class SparkUtilities implements Serializable {
         @Override
         public Integer call(final K v1) throws Exception {
             int hc = v1.hashCode();
-            int hash = Math.abs(hc) % SparkUtilities.DEFAULT_NUMBER_PARTITIONS;
+            int hash = Math.abs(hc) % getDefaultNumberPartitions();
             return hash;
         }
     }
