@@ -1,12 +1,12 @@
 package com.lordjoe.distributed;
 
-import com.sun.istack.*;
 import org.apache.hadoop.conf.*;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.*;
 import org.apache.spark.api.java.*;
 import org.systemsbiology.hadoop.*;
 
+import javax.annotation.Nonnull;
 import java.io.*;
 
 /**
@@ -22,7 +22,7 @@ public class SparkFileSaver {
      * @param outPath path of the output file
      * @param data    rdd to save
      */
-    public static void saveAsFile(@NotNull String outFile, @NotNull JavaRDD<String> data) {
+    public static void saveAsFile(@Nonnull String outFile, @Nonnull JavaRDD<String> data) {
         String pathStr = SparkUtilities.buildPath(outFile);
         Path path = new Path(pathStr);
         saveAsFile(path, data);
@@ -34,7 +34,7 @@ public class SparkFileSaver {
      * @param outPath path of the output file
      * @param data    rdd to save
      */
-    public static void saveAsFile(@NotNull Path outPath, @NotNull JavaRDD<String> data) {
+    public static void saveAsFile(@Nonnull Path outPath, @Nonnull JavaRDD<String> data) {
 
         String tempPathStr = outPath.toString() + ".temp";
 
