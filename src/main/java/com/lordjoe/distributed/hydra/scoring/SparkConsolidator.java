@@ -1,16 +1,16 @@
 package com.lordjoe.distributed.hydra.scoring;
 
 import com.lordjoe.distributed.*;
+import org.apache.hadoop.fs.*;
 import org.apache.spark.api.java.*;
-import org.apache.spark.api.java.function.Function;
+import org.apache.spark.api.java.function.*;
 import org.systemsbiology.xtandem.*;
-import org.systemsbiology.xtandem.hadoop.XTandemHadoopUtilities;
-import org.systemsbiology.xtandem.pepxml.PepXMLWriter;
+import org.systemsbiology.xtandem.hadoop.*;
+import org.systemsbiology.xtandem.pepxml.*;
 import org.systemsbiology.xtandem.scoring.*;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * com.lordjoe.distributed.hydra.scoring.SparkConsolidator     \
@@ -67,7 +67,10 @@ public class SparkConsolidator implements Serializable {
             }
         });
 
-        System.out.println("Writing to: " + XTandemHadoopUtilities.getRelativePath("result").toString());
-        headerRDD.union(textOut).union(footerRDD).coalesce(1).saveAsTextFile(XTandemHadoopUtilities.getRelativePath("result").toString());
+        JavaRDD<String> data = headerRDD.union(textOut).union(footerRDD).coalesce(1);
+
+        Path result = XTandemHadoopUtilities.getRelativePath("result.pep.xml");
+
+        SparkFileSaver.saveAsFile(result,data);
     }
 }

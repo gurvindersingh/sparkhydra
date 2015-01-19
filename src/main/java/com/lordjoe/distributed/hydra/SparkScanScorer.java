@@ -7,7 +7,6 @@ import com.lordjoe.distributed.output.*;
 import com.lordjoe.distributed.spark.*;
 import com.lordjoe.distributed.spectrum.*;
 import com.lordjoe.utilities.*;
-import org.apache.hadoop.conf.*;
 import org.apache.spark.api.java.*;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.*;
@@ -54,11 +53,11 @@ public class SparkScanScorer {
     }
 
 
-    public static class writeScoresMapper extends AbstractLoggingFunction<Tuple2<String, IScoredScan>, Tuple2<String, String>> {
+    public static class WriteScoresMapper extends AbstractLoggingFunction<Tuple2<String, IScoredScan>, Tuple2<String, String>> {
 
         final BiomlReporter reporter;
 
-        private writeScoresMapper(final BiomlReporter pReporter) {
+        private WriteScoresMapper(final BiomlReporter pReporter) {
             reporter = pReporter;
         }
 
@@ -96,7 +95,7 @@ public class SparkScanScorer {
         }
     }
 
-    public static class chooseBestScanScore extends AbstractLoggingFunction2<IScoredScan, IScoredScan, IScoredScan> {
+    public static class ChooseBestScanScore extends AbstractLoggingFunction2<IScoredScan, IScoredScan, IScoredScan> {
 
         @Override
         public IScoredScan doCall(final IScoredScan v1, final IScoredScan v2) throws Exception {
@@ -209,148 +208,6 @@ public class SparkScanScorer {
         return spectraToScore;
     }
 
-    /**
-     * call with args like or20080320_s_silac-lh_1-1_11short.mzxml in Sample2
-     *
-     * @param args
-     */
-    public static void main(String[] args) throws Exception {
-
-        // Force PepXMLWriter to load
-        PepXMLWriter foo = null;
-        // code to run class loader
-        //String runner = SparkUtilities.buildLoggingClassLoaderPropertiesFile(ScanScorer.class  , args);
-        //System.out.println(runner);
-        ElapsedTimer timer = new ElapsedTimer();
-        ElapsedTimer totalTime = new ElapsedTimer();
-
-        if (args.length < TANDEM_CONFIG_INDEX + 1) {
-            System.out.println("usage sparkconfig configFile fastaFile");
-            return;
-        }
-        SparkUtilities.readSparkProperties(args[SPARK_CONFIG_INDEX]);
-
-        SparkUtilities.setLogToWarn();
-
-
-        Properties sparkProperties = SparkUtilities.getSparkProperties();
-        String pathPrepend = sparkProperties.getProperty("com.lordjoe.distributed.PathPrepend");
-        if (pathPrepend != null)
-            XTandemHadoopUtilities.setDefaultPath(pathPrepend);
-
-        String maxScoringPartitionSize = sparkProperties.getProperty(SCORING_PARTITIONS_SCANS_NAME);
-        if (maxScoringPartitionSize != null)
-            SparkMapReduceScoringHandler.setMaxScoringPartitionSize(Integer.parseInt(maxScoringPartitionSize));
-
-
-        String configStr = SparkUtilities.buildPath(args[TANDEM_CONFIG_INDEX]);
-
-        //Configuration hadoopConfiguration = SparkUtilities.getHadoopConfiguration();
-        //hadoopConfiguration.setLong(org.apache.hadoop.mapreduce.lib.input.FileInputFormat.SPLIT_MAXSIZE, 64 * 1024L * 1024L);
-
-        //Configuration hadoopConfiguration2 = SparkUtilities.getHadoopConfiguration();  // did we change the original or a copy
-
-        String spectra = SparkUtilities.buildPath(args[SPECTRA_INDEX]);
-        JavaRDD<IMeasuredSpectrum> spectraToScore = getMeasuredSpectra(timer, sparkProperties, spectra);
-        System.err.println("number partitions " + spectraToScore.partitions().size());
-
-        /*if(isDebuggingCountMade()) {
-            long[] spectraCounts = new long[1];
-            SparkUtilities.persistAndCount("Read Spectra", spectraToScore, spectraCounts);
-
-            long spectraCount = spectraCounts[0];
-            if (spectraCount > MAX_SPECTRA_TO_SCORE_IN_ONE_PASS) {
-                int percentileKept = (int) ((100L * MAX_SPECTRA_TO_SCORE_IN_ONE_PASS) / spectraCount);
-                System.err.println("Keeping " + percentileKept + "% spectra");
-                spectraToScore = spectraToScore.filter(new PercentileFilter(percentileKept));
-            }
-        }*/
-
-
-        SparkMapReduceScoringHandler handler = new SparkMapReduceScoringHandler(configStr, false);
-
-        JavaPairRDD<BinChargeKey, IPolypeptide> keyedPeptides = getBinChargePeptides(sparkProperties, handler);
-        timer.showElapsed("Mapped Peptides", System.err);
-
-        long[] counts = new long[1];
-        if(isDebuggingCountMade()) {
-            keyedPeptides = SparkUtilities.persistAndCountPair("Mapped Peptides", keyedPeptides, counts);
-        }
-        long peptidecounts =  counts[0];
-
-        JavaPairRDD<BinChargeKey, IMeasuredSpectrum> keyedSpectra = handler.mapMeasuredSpectrumToKeys(spectraToScore);
-        if(isDebuggingCountMade()) {
-            keyedSpectra = SparkUtilities.persistAndCountPair("Mapped Spectra", keyedSpectra, counts);
-        }
-
-
-        if(isDebuggingCountMade()) {
-            showBinPairSizes(keyedPeptides, keyedSpectra);
-        }
-        long spectracounts =  counts[0];
-
-        timer.showElapsed("Counted Scoring pairs", System.err);
-
-
-        // next line is for debugging
-        // keyedSpectra = SparkUtilities.realizeAndReturn(keyedSpectra);
-
-        // find spectra-peptide pairs to score
-        JavaPairRDD<BinChargeKey, Tuple2<IPolypeptide,IMeasuredSpectrum>> binPairs = keyedPeptides.join(keyedSpectra,
-                SparkUtilities.DEFAULT_PARTITIONER);
-        // next line is for debugging
-        /// binPairs = SparkUtilities.realizeAndReturn(binPairs);
-
-        System.out.println("number partitions after join" + binPairs.partitions().size());
-
-
-
-        // next line is for debugging
-        // binPairs = SparkUtilities.realizeAndReturn(binPairs);
-
-
-        timer.reset();
-        if(isDebuggingCountMade())
-            binPairs = SparkUtilities.persistAndCount("Binned Pairs", binPairs);
-        timer.showElapsed("Joined Pairs",System.err);
-
-
-        if (EXIT_BEFORE_SCORINE) {
-            System.err.println("Exiting before scoring peptidecounts " + peptidecounts + " spectra counts " + spectracounts);
-            return;
-        }
-
-
-        String skipScoring = sparkProperties.getProperty(SKIP_SCORING_PROPERTY);
-        if ("true".equals(skipScoring)) {
-            System.err.println("Skipped scoring" );
-        }
-        else {
-            timer.reset();
-            // now produce all peptide spectrum scores where spectrum and peptide are in the same bin
-            JavaRDD<IScoredScan> bestScores = handler.scoreBinPairs(binPairs);
-
-            if(isDebuggingCountMade())
-                bestScores = SparkUtilities.persistAndCount("Best Scores", bestScores);
-
-            timer.showElapsed("built best scores",System.err);
-            //bestScores =  bestScores.persist(StorageLevel.MEMORY_AND_DISK());
-            // System.out.println("Total Scores " + bestScores.count() + " Scores");
-
-            XTandemMain application = handler.getApplication();
-            PepXMLWriter pwrtr = new PepXMLWriter(application);
-            PepXMLScoredScanWriter pWrapper = new PepXMLScoredScanWriter(pwrtr);
-            SparkConsolidator consolidator = new SparkConsolidator(pWrapper, application);
-
-
-            consolidator.writeScores(pwrtr, bestScores);
-        }
-
-
-        //SparkAccumulators.showAccumulators();
-        totalTime.showElapsed("Finished Scoring");
-
-    }
 
     public static class PairCounter implements Comparable<PairCounter> {
         public final BinChargeKey key;
@@ -417,4 +274,150 @@ public class SparkScanScorer {
 
         );
     }
+
+    /**
+       * call with args like or20080320_s_silac-lh_1-1_11short.mzxml in Sample2
+       *
+       * @param args
+       */
+      public static void main(String[] args) throws Exception {
+
+          String property = System.getProperty("java.class.path");
+          System.out.println(property);
+          // Force PepXMLWriter to load
+          PepXMLWriter foo = null;
+          // code to run class loader
+          //String runner = SparkUtilities.buildLoggingClassLoaderPropertiesFile(ScanScorer.class  , args);
+          //System.out.println(runner);
+          ElapsedTimer timer = new ElapsedTimer();
+          ElapsedTimer totalTime = new ElapsedTimer();
+
+          if (args.length < TANDEM_CONFIG_INDEX + 1) {
+              System.out.println("usage sparkconfig configFile fastaFile");
+              return;
+          }
+          SparkUtilities.readSparkProperties(args[SPARK_CONFIG_INDEX]);
+
+          SparkUtilities.setLogToWarn();
+
+
+          Properties sparkProperties = SparkUtilities.getSparkProperties();
+          String pathPrepend = sparkProperties.getProperty("com.lordjoe.distributed.PathPrepend");
+          if (pathPrepend != null)
+              XTandemHadoopUtilities.setDefaultPath(pathPrepend);
+
+          String maxScoringPartitionSize = sparkProperties.getProperty(SCORING_PARTITIONS_SCANS_NAME);
+          if (maxScoringPartitionSize != null)
+              SparkMapReduceScoringHandler.setMaxScoringPartitionSize(Integer.parseInt(maxScoringPartitionSize));
+
+
+          String configStr = SparkUtilities.buildPath(args[TANDEM_CONFIG_INDEX]);
+
+          //Configuration hadoopConfiguration = SparkUtilities.getHadoopConfiguration();
+          //hadoopConfiguration.setLong(org.apache.hadoop.mapreduce.lib.input.FileInputFormat.SPLIT_MAXSIZE, 64 * 1024L * 1024L);
+
+          //Configuration hadoopConfiguration2 = SparkUtilities.getHadoopConfiguration();  // did we change the original or a copy
+
+          String spectra = SparkUtilities.buildPath(args[SPECTRA_INDEX]);
+          JavaRDD<IMeasuredSpectrum> spectraToScore = getMeasuredSpectra(timer, sparkProperties, spectra);
+          System.err.println("number partitions " + spectraToScore.partitions().size());
+
+          /*if(isDebuggingCountMade()) {
+              long[] spectraCounts = new long[1];
+              SparkUtilities.persistAndCount("Read Spectra", spectraToScore, spectraCounts);
+
+              long spectraCount = spectraCounts[0];
+              if (spectraCount > MAX_SPECTRA_TO_SCORE_IN_ONE_PASS) {
+                  int percentileKept = (int) ((100L * MAX_SPECTRA_TO_SCORE_IN_ONE_PASS) / spectraCount);
+                  System.err.println("Keeping " + percentileKept + "% spectra");
+                  spectraToScore = spectraToScore.filter(new PercentileFilter(percentileKept));
+              }
+          }*/
+
+
+          SparkMapReduceScoringHandler handler = new SparkMapReduceScoringHandler(configStr, false);
+
+          JavaPairRDD<BinChargeKey, IPolypeptide> keyedPeptides = getBinChargePeptides(sparkProperties, handler);
+          timer.showElapsed("Mapped Peptides", System.err);
+
+          long[] counts = new long[1];
+          if(isDebuggingCountMade()) {
+              keyedPeptides = SparkUtilities.persistAndCountPair("Mapped Peptides", keyedPeptides, counts);
+          }
+          long peptidecounts =  counts[0];
+
+          JavaPairRDD<BinChargeKey, IMeasuredSpectrum> keyedSpectra = handler.mapMeasuredSpectrumToKeys(spectraToScore);
+          if(isDebuggingCountMade()) {
+              keyedSpectra = SparkUtilities.persistAndCountPair("Mapped Spectra", keyedSpectra, counts);
+          }
+
+
+          if(isDebuggingCountMade()) {
+              showBinPairSizes(keyedPeptides, keyedSpectra);
+          }
+          long spectracounts =  counts[0];
+
+          timer.showElapsed("Counted Scoring pairs", System.err);
+
+
+          // next line is for debugging
+          // keyedSpectra = SparkUtilities.realizeAndReturn(keyedSpectra);
+
+          // find spectra-peptide pairs to score
+          JavaPairRDD<BinChargeKey, Tuple2<IPolypeptide,IMeasuredSpectrum>> binPairs = keyedPeptides.join(keyedSpectra,
+                  SparkUtilities.DEFAULT_PARTITIONER);
+          // next line is for debugging
+          /// binPairs = SparkUtilities.realizeAndReturn(binPairs);
+
+          System.out.println("number partitions after join" + binPairs.partitions().size());
+
+
+
+          // next line is for debugging
+          // binPairs = SparkUtilities.realizeAndReturn(binPairs);
+
+
+          timer.reset();
+          if(isDebuggingCountMade())
+              binPairs = SparkUtilities.persistAndCount("Binned Pairs", binPairs);
+          timer.showElapsed("Joined Pairs",System.err);
+
+
+          if (EXIT_BEFORE_SCORINE) {
+              System.err.println("Exiting before scoring peptidecounts " + peptidecounts + " spectra counts " + spectracounts);
+              return;
+          }
+
+
+          String skipScoring = sparkProperties.getProperty(SKIP_SCORING_PROPERTY);
+          if ("true".equals(skipScoring)) {
+              System.err.println("Skipped scoring" );
+          }
+          else {
+              timer.reset();
+              // now produce all peptide spectrum scores where spectrum and peptide are in the same bin
+              JavaRDD<IScoredScan> bestScores = handler.scoreBinPairs(binPairs);
+
+              if(isDebuggingCountMade())
+                  bestScores = SparkUtilities.persistAndCount("Best Scores", bestScores);
+
+              timer.showElapsed("built best scores",System.err);
+              //bestScores =  bestScores.persist(StorageLevel.MEMORY_AND_DISK());
+              // System.out.println("Total Scores " + bestScores.count() + " Scores");
+
+              XTandemMain application = handler.getApplication();
+              PepXMLWriter pwrtr = new PepXMLWriter(application);
+              PepXMLScoredScanWriter pWrapper = new PepXMLScoredScanWriter(pwrtr);
+              SparkConsolidator consolidator = new SparkConsolidator(pWrapper, application);
+
+
+              consolidator.writeScores(pwrtr, bestScores);
+          }
+
+
+          SparkAccumulators.showAccumulators();
+          totalTime.showElapsed("Finished Scoring");
+
+      }
+
 }

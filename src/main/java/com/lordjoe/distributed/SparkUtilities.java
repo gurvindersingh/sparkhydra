@@ -5,6 +5,7 @@ import com.lordjoe.distributed.output.*;
 import com.lordjoe.distributed.spark.*;
 import com.lordjoe.distributed.spark.MachineUseAccumulator.*;
 import org.apache.hadoop.conf.*;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.log4j.*;
 import org.apache.spark.*;
 import org.apache.spark.api.java.*;
@@ -19,7 +20,6 @@ import scala.*;
 import javax.annotation.*;
 import java.io.*;
 import java.io.Serializable;
-import java.lang.*;
 import java.lang.Boolean;
 import java.lang.Long;
 import java.net.*;
@@ -62,7 +62,8 @@ public class SparkUtilities implements Serializable {
         local = pLocal;
     }
 
-    public static final int DEFAULT_NUMBER_PARTITIONS = 120;
+    public static final int DEFAULT_NUMBER_PARTITIONS = 600;
+
     private static int defaultNumberPartitions = DEFAULT_NUMBER_PARTITIONS;
 
     public static int getDefaultNumberPartitions() {
@@ -112,6 +113,20 @@ public class SparkUtilities implements Serializable {
 
         }
         return configuration;
+    }
+
+    /**
+     * return the current Hadoop file System
+     * @return
+     */
+    public static synchronized FileSystem getHadoopFileSystem() {
+        try {
+            return FileSystem.get(getHadoopConfiguration());
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+
+        }
     }
 
 

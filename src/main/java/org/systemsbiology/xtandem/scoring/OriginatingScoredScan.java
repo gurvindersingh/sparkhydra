@@ -401,7 +401,7 @@ public class OriginatingScoredScan implements IScoredScan, IAddable<IScoredScan>
      * @param added
      */
     public void addTo(IScoredScan added) {
-        if (!added.getId().equals(getId()))
+         if (!added.getId().equals(getId()))
             throw new IllegalArgumentException("incompatable scan");
 
         ISpectralMatch newMatch = added.getBestMatch();

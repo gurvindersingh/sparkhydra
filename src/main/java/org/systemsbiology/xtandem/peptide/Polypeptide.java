@@ -510,6 +510,8 @@ public class Polypeptide implements IPolypeptide, Comparable<IPolypeptide> {
         return true;
     }
 
+
+
     /**
      * mass used to see if scoring rowks
      *
@@ -565,6 +567,8 @@ public class Polypeptide implements IPolypeptide, Comparable<IPolypeptide> {
         }
         return true;
     }
+
+
 
     /**
      * check for ambiguous peptides like *

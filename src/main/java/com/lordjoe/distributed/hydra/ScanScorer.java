@@ -23,10 +23,10 @@ import java.util.*;
  */
 public class ScanScorer {
 
-    public static class writeScoresMapper extends AbstractLoggingFunction<Tuple2<String, IScoredScan>, Tuple2<String, String>> {
+    public static class WriteScoresMapper extends AbstractLoggingFunction<Tuple2<String, IScoredScan>, Tuple2<String, String>> {
         final BiomlReporter reporter;
 
-        private writeScoresMapper(final BiomlReporter pReporter) {
+        private WriteScoresMapper(final BiomlReporter pReporter) {
             reporter = pReporter;
         }
 
@@ -66,7 +66,7 @@ public class ScanScorer {
         }
     }
 
-    public static class chooseBestScanScore extends AbstractLoggingFunction2<IScoredScan, IScoredScan, IScoredScan> {
+    public static class ChooseBestScanScore extends AbstractLoggingFunction2<IScoredScan, IScoredScan, IScoredScan> {
 
         @Override
         public IScoredScan doCall(final IScoredScan v1, final IScoredScan v2) throws Exception {
@@ -157,7 +157,7 @@ public class ScanScorer {
         /**
          *  find the best score
          */
-        JavaPairRDD<String, IScoredScan> bestScores = mappedByScanKey.reduceByKey(new chooseBestScanScore());
+        JavaPairRDD<String, IScoredScan> bestScores = mappedByScanKey.reduceByKey(new ChooseBestScanScore());
         /**
          * collect and write
          */

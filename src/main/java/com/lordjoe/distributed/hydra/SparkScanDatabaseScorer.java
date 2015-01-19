@@ -54,11 +54,11 @@ public class SparkScanDatabaseScorer {
     }
 
 
-    public static class writeScoresMapper extends AbstractLoggingFunction<Tuple2<String, IScoredScan>, Tuple2<String, String>> {
+    public static class WriteScoresMapper extends AbstractLoggingFunction<Tuple2<String, IScoredScan>, Tuple2<String, String>> {
 
         final BiomlReporter reporter;
 
-        private writeScoresMapper(final BiomlReporter pReporter) {
+        private WriteScoresMapper(final BiomlReporter pReporter) {
             reporter = pReporter;
         }
 

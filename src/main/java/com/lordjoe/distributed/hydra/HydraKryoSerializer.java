@@ -15,6 +15,9 @@ import java.util.*;
  */
 public class HydraKryoSerializer implements KryoRegistrator, Serializable {
 
+    public HydraKryoSerializer() {
+    }
+
     /**
      * register a class indicated by name but only if not already registered
      *
@@ -154,6 +157,14 @@ public class HydraKryoSerializer implements KryoRegistrator, Serializable {
         doRegistration(kryo,"org.systemsbiology.xtandem.scoring.ScoringModifications",handler);
         doRegistration(kryo,"org.systemsbiology.xtandem.taxonomy.Taxonomy",handler);
         doRegistration(kryo,"com.lordjoe.distributed.database.PeptideDatabase",handler);
+        doRegistration(kryo,"com.lordjoe.distributed.SparkUtilities",handler);
+        doRegistration(kryo,"com.lordjoe.distributed.SparkUtilities$1",handler);
+        doRegistration(kryo,"com.lordjoe.distributed.SparkUtilities$IdentityFunction",handler);
+        doRegistration(kryo,"com.lordjoe.distributed.SparkUtilities$TupleValues",handler);
+        doRegistration(kryo,"com.lordjoe.distributed.hydra.scoring.SparkMapReduceScoringHandler",handler);
+        doRegistration(kryo,"com.lordjoe.distributed.spark.SparkAccumulators",handler);
+        doRegistration(kryo,"com.lordjoe.utilities.ElapsedTimer",handler);
+        doRegistration(kryo,"org.systemsbiology.xtandem.XTandemMain",handler);
      }
 
 
