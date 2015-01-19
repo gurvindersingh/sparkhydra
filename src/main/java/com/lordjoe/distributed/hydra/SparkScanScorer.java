@@ -364,8 +364,7 @@ public class SparkScanScorer {
           // keyedSpectra = SparkUtilities.realizeAndReturn(keyedSpectra);
 
           // find spectra-peptide pairs to score
-          JavaPairRDD<BinChargeKey, Tuple2<IPolypeptide,IMeasuredSpectrum>> binPairs = keyedPeptides.join(keyedSpectra,
-                  SparkUtilities.DEFAULT_PARTITIONER);
+          JavaPairRDD<BinChargeKey, Tuple2<IPolypeptide,IMeasuredSpectrum>> binPairs = keyedPeptides.join(keyedSpectra);
           // next line is for debugging
           /// binPairs = SparkUtilities.realizeAndReturn(binPairs);
 

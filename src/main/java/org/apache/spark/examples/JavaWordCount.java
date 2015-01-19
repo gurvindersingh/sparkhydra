@@ -78,7 +78,7 @@ public final class JavaWordCount {
             }
         });
 
-        ones = ones.partitionBy(SparkUtilities.DEFAULT_PARTITIONER);
+        //ones = ones.partitionBy(SparkUtilities.DEFAULT_PARTITIONER);
 
         JavaPairRDD<String, Integer> counts = ones.reduceByKey(new Function2<Integer, Integer, Integer>() {
             @Override

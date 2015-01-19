@@ -21,6 +21,7 @@ import javax.annotation.*;
 import java.io.*;
 import java.io.Serializable;
 import java.lang.Boolean;
+import java.lang.Double;
 import java.lang.Long;
 import java.net.*;
 import java.util.*;
@@ -69,7 +70,8 @@ public class SparkUtilities implements Serializable {
     public static int getDefaultNumberPartitions() {
         if (isLocal())
             return 1;
-        return defaultNumberPartitions;
+        SparkConf sparkConf = SparkUtilities.getCurrentContext().getConf();
+        return sparkConf.getInt("spark.default.parallelism", DEFAULT_NUMBER_PARTITIONS_X);
     }
 
     public static void setDefaultNumberPartitions(final int pDefaultNumberPartitions) {
@@ -79,7 +81,7 @@ public class SparkUtilities implements Serializable {
     /**
      * set up a sane partition scheme
      */
-    public static final Partitioner DEFAULT_PARTITIONER = new Partitioner() {
+    public static final Partitioner DEFAULT_PARTITIONER_X = new Partitioner() {
         @Override
         public int numPartitions() {
             return getDefaultNumberPartitions();
@@ -1153,7 +1155,8 @@ public class SparkUtilities implements Serializable {
         if (numberPartitions == currentPartitions)
             return inp;
         if (numberPartitions > currentPartitions) {
-            double ratio = currentPartitions / numberPartitions;
+            double ratio = (double)(currentPartitions / numberPartitions);
+            System.out.println("Tolerance Ration is : "+ratio);
             if (Math.abs(1.0 - ratio) < tolerance)
                 return inp;
         }
