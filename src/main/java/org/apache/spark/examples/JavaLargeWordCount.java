@@ -20,6 +20,7 @@ package org.apache.spark.examples;
 import com.lordjoe.distributed.*;
 import com.lordjoe.distributed.spark.*;
 import com.lordjoe.distributed.util.*;
+import com.lordjoe.utilities.*;
 import org.apache.spark.*;
 import org.apache.spark.api.java.*;
 import org.apache.spark.api.java.function.*;
@@ -61,7 +62,7 @@ public final class
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
-
+        ElapsedTimer totalTime = new ElapsedTimer();
         if (args.length < INPUT_FILE_INDEX + 1) {
             System.err.println("Usage: SparkProperties JavaWordCount <file>");
             return;
@@ -155,7 +156,7 @@ public final class
         }
 
 
-        SparkAccumulators.showAccumulators();
+        SparkAccumulators.showAccumulators(totalTime );
         java.lang.Long wordCount = totalWords.value();
         System.out.println("total words = " + wordCount);
 

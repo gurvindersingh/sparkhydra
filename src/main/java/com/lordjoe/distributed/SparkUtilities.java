@@ -6,6 +6,7 @@ import com.lordjoe.distributed.spark.*;
 import com.lordjoe.distributed.spark.MachineUseAccumulator.*;
 import org.apache.hadoop.conf.*;
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.*;
 import org.apache.log4j.*;
 import org.apache.spark.*;
 import org.apache.spark.api.java.*;
@@ -14,6 +15,7 @@ import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.Function2;
 import org.apache.spark.sql.api.java.*;
 import org.apache.spark.storage.*;
+import org.systemsbiology.xtandem.hadoop.*;
 import parquet.org.slf4j.spi.*;
 import scala.*;
 
@@ -21,7 +23,6 @@ import javax.annotation.*;
 import java.io.*;
 import java.io.Serializable;
 import java.lang.Boolean;
-import java.lang.Double;
 import java.lang.Long;
 import java.net.*;
 import java.util.*;
@@ -119,6 +120,7 @@ public class SparkUtilities implements Serializable {
 
     /**
      * return the current Hadoop file System
+     *
      * @return
      */
     public static synchronized FileSystem getHadoopFileSystem() {
@@ -131,6 +133,40 @@ public class SparkUtilities implements Serializable {
         }
     }
 
+    /**
+     * retuirn an open OutputStream to a file of this name
+     *
+     * @param fileName name of a nonexistant ot to be deleted file
+     * @return OutputStream
+     */
+    public static
+    @Nonnull
+    OutputStream getHadoopOutputStream(@Nonnull String fileName) {
+        FileSystem fs = getHadoopFileSystem();
+        Path path = XTandemHadoopUtilities.getRelativePath(fileName);
+        try {
+            boolean recursive = false;
+            fs.delete(path, false);
+            return fs.create(path);
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+         }
+    }
+
+    /**
+     * retuirn an open PrintWriter to a file of this name
+     *
+     * @param fileName name of a nonexistant ot to be deleted file
+     * @return printwriter
+     */
+    public static
+    @Nonnull
+    PrintWriter getHadoopPrintWriter(@Nonnull String fileName) {
+        OutputStream os = getHadoopOutputStream(fileName);
+        PrintWriter ret = new PrintWriter(os);
+        return ret;
+    }
 
     /**
      * turn an RDD of Tuples into a JavaPairRdd
@@ -471,9 +507,11 @@ public class SparkUtilities implements Serializable {
             String value = sparkProperties.getProperty(property);
             if (property.startsWith("spark.")) {
                 sparkConf.set(property, value);
-            } else if (NUMBER_PARTITIONS_PROPERTY_NAME.equals(property)) {
+            }
+            else if (NUMBER_PARTITIONS_PROPERTY_NAME.equals(property)) {
                 setDefaultNumberPartitions(Integer.parseInt(value));
-            } else if (LOG_FUNCTIONS_PROPERTY_NAME.equals(property)) {
+            }
+            else if (LOG_FUNCTIONS_PROPERTY_NAME.equals(property)) {
                 SparkAccumulators.setFunctionsLoggedByDefault(Boolean.parseBoolean(value));
             }
         }
@@ -895,55 +933,56 @@ public class SparkUtilities implements Serializable {
     }
 
     /**
-       * persist and show how a key hashes
-       * @param message message to show
-       * @param inp     rdd
-       * @return
-       */
-      @Nonnull
-      public static <K,V> JavaPairRDD<K,V> persistAndShowHash(@Nonnull final String message, @Nonnull final JavaPairRDD<K,V> inp)
-      {
-           return  persistAndShowHash(message,System.err,inp);
-        }
+     * persist and show how a key hashes
+     *
+     * @param message message to show
+     * @param inp     rdd
+     * @return
+     */
+    @Nonnull
+    public static <K, V> JavaPairRDD<K, V> persistAndShowHash(@Nonnull final String message, @Nonnull final JavaPairRDD<K, V> inp) {
+        return persistAndShowHash(message, System.err, inp);
+    }
+
     /**
-        * persist and show count
-        *
-        * @param message message to show
-        * @param inp     rdd
-        * @return
-        */
-       @Nonnull
-       public static <K,V> JavaPairRDD<K,V> persistAndShowHash(@Nonnull final String message,Appendable out, @Nonnull final JavaPairRDD<K,V> inp ) {
-           JavaPairRDD<K,V> ret = persist(inp);
+     * persist and show count
+     *
+     * @param message message to show
+     * @param inp     rdd
+     * @return
+     */
+    @Nonnull
+    public static <K, V> JavaPairRDD<K, V> persistAndShowHash(@Nonnull final String message, Appendable out, @Nonnull final JavaPairRDD<K, V> inp) {
+        JavaPairRDD<K, V> ret = persist(inp);
 
-           Map<K, Object> keyCounts = ret.countByKey();
-           try {
-               out.append(message + "\n");
-           }
-           catch (IOException e) {
-               throw new RuntimeException(e);
+        Map<K, Object> keyCounts = ret.countByKey();
+        try {
+            out.append(message + "\n");
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
 
-           }
-           showKeyHashes(ret, out);
-           return ret;
-       }
+        }
+        showKeyHashes(ret, out);
+        return ret;
+    }
 
 
-    public static <K,V>  Map<Integer,Long>  getKeyHashes(JavaPairRDD<K,V> kvx)  {
-          JavaRDD<Integer> hashes = kvx.keys().map(new KeyToHash<K>()) ;
+    public static <K, V> Map<Integer, Long> getKeyHashes(JavaPairRDD<K, V> kvx) {
+        JavaRDD<Integer> hashes = kvx.keys().map(new KeyToHash<K>());
 
-        Map<Integer,Long> counts = hashes.countByValue();
+        Map<Integer, Long> counts = hashes.countByValue();
         return counts;
 
     }
 
-    public static <K,V>  void   showKeyHashes(JavaPairRDD<K,V> kvx,Appendable out)  {
+    public static <K, V> void showKeyHashes(JavaPairRDD<K, V> kvx, Appendable out) {
         try {
-            Map<Integer,Long>  hashes = getKeyHashes(kvx);
+            Map<Integer, Long> hashes = getKeyHashes(kvx);
             List<Integer> keys = new ArrayList<Integer>(hashes.keySet());
             Collections.sort(keys);
             for (Integer key : keys) {
-               out.append(Integer.toString(key) + "  =  " + hashes.get(key) + '\n');
+                out.append(Integer.toString(key) + "  =  " + hashes.get(key) + '\n');
             }
         }
         catch (IOException e) {
@@ -1155,8 +1194,8 @@ public class SparkUtilities implements Serializable {
         if (numberPartitions == currentPartitions)
             return inp;
         if (numberPartitions > currentPartitions) {
-            double ratio = (double)(currentPartitions / numberPartitions);
-            System.out.println("Tolerance Ration is : "+ratio);
+            double ratio = (double) (currentPartitions / numberPartitions);
+            System.out.println("Tolerance Ration is : " + ratio);
             if (Math.abs(1.0 - ratio) < tolerance)
                 return inp;
         }

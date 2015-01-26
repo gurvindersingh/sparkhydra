@@ -13,33 +13,10 @@ import org.systemsbiology.xtandem.scoring.*;
 public interface ITandemScoringAlgorithm extends IScoringAlgorithm {
     public static final ITandemScoringAlgorithm[] EMPTY_ARRAY = {};
 
-//    public int getMinimumIonCount();
-//
-//    public int getMaximumMissedCleavageSites();
-//
-//    public boolean isScoringXIons();
-//
-//    public boolean isScoringYIons();
-//
-//    public boolean isScoringAIons();
-//
-//    public boolean isScoringBIons();
-//
-//    public boolean isScoringCIons();
-//
-//    public boolean isScoringCyclicPermutation();
-//
-//    public boolean isScoringIncludeReverse();
-//
-//    public boolean isRefineSpectrumSynthesis();
+
 
     public float getSpectrumMassError();
 
-//    public float getSpectrumMonoIsotopicMassError();
-//
-//    public float getSpectrumMonoIsotopicMassErrorMinus();
-//
-//    public float getSpectrumHomologyError();
 
     /**
      * use the parameters to configure local properties
@@ -75,15 +52,6 @@ public interface ITandemScoringAlgorithm extends IScoringAlgorithm {
      * @return value of the score
      */
     public double scoreSpectrum(IMeasuredSpectrum measured, ITheoreticalSpectrum theory, Object... otherdata);
-
-    /**
-     * actually do the scorring
-     * @param scorer  !null scorrer
-     * @param scan  !null scan to score
-     * @param pPps  !null set of peptides ot score
-     * @return !null score
-     */
-    public IScoredScan handleScan(final Scorer scorer,  final RawPeptideScan scan, final IPolypeptide[] pPps );
 
     /**
      * actually do the scorring

@@ -11,8 +11,6 @@ import org.apache.hadoop.conf.*;
 import org.apache.hadoop.fs.*;
 import org.apache.spark.*;
 import org.apache.spark.api.java.*;
-import org.apache.spark.api.java.function.Function;
-import org.apache.spark.api.java.function.Function2;
 import org.systemsbiology.common.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.hadoop.*;
@@ -36,7 +34,6 @@ public class SparkMapReduceScoringHandler implements Serializable {
     private XTandemMain application;
 
     private final JXTandemStatistics m_Statistics = new JXTandemStatistics();
-    private final SparkMapReduce<String, IMeasuredSpectrum, String, IMeasuredSpectrum, String, IScoredScan> handler;
     private Map<Integer, Integer> sizes;
     private final BinChargeMapper binMapper;
     private SequenceUtilities sequenceUtilities;
@@ -59,9 +56,7 @@ public class SparkMapReduceScoringHandler implements Serializable {
         if (createDb == true)
             peptideDatabase = new PeptideDatabase(application);
 
-        handler = new SparkMapReduce("Score Scans", new ScanTagMapperFunction(application), new ScoringReducer(application));
-
-        SparkConf sparkConf = SparkUtilities.getCurrentContext().getConf();
+            SparkConf sparkConf = SparkUtilities.getCurrentContext().getConf();
         /**
          * copy application parameters to spark context
          */
@@ -101,15 +96,6 @@ public class SparkMapReduceScoringHandler implements Serializable {
         return m_Statistics;
     }
 
-    public SparkMapReduce<String, IMeasuredSpectrum, String, IMeasuredSpectrum, String, IScoredScan> getHandler() {
-        return handler;
-    }
-
-
-    public JavaRDD<KeyValueObject<String, IScoredScan>> getOutput() {
-        JavaRDD<KeyValueObject<String, IScoredScan>> output = handler.getOutput();
-        return output;
-    }
 
 
     /**
@@ -188,34 +174,6 @@ public class SparkMapReduceScoringHandler implements Serializable {
     }
 
 
-    /**
-     * all the work is done here
-     *
-     * @param pInputs
-     */
-    public void performSingleReturnMapReduce(final JavaRDD<KeyValueObject<String, IMeasuredSpectrum>> pInputs) {
-        performSetup();
-        System.err.println("setup Done");
-        handler.performSingleReturnMapReduce(pInputs);
-        System.err.println("Map Reduce Done");
-    }
-
-    /**
-     * all the work is done here
-     *
-     * @param pInputs
-     */
-    public void performSourceMapReduce(final JavaRDD<KeyValueObject<String, IMeasuredSpectrum>> pInputs) {
-        performSetup();
-        handler.performSourceMapReduce(pInputs);
-    }
-
-    protected void performSetup() {
-        JavaSparkContext ctx = SparkUtilities.getCurrentContext();
-        ((AbstractTandemFunction) handler.getMap()).setup(ctx);
-        ((AbstractTandemFunction) handler.getReduce()).setup(ctx);
-        System.err.println("Setup Performed");
-    }
 
 
     public JavaPairRDD<BinChargeKey, IMeasuredSpectrum> mapMeasuredSpectrumToKeys(JavaRDD<IMeasuredSpectrum> inp) {
@@ -349,97 +307,98 @@ public class SparkMapReduceScoringHandler implements Serializable {
     }
 
     public JavaRDD<IScoredScan> scoreSpectra(JavaPairRDD<BinChargeKey, Tuple2<BinChargeKey, IMeasuredSpectrum>> scoredSpectra) {
-
-        JavaPairRDD<BinChargeKey, Map<String, IScoredScan>> binnedScores = scoredSpectra.combineByKey(
-                new Function<Tuple2<BinChargeKey, IMeasuredSpectrum>, Map<String, IScoredScan>>() {
-                    @Override
-                    public Map<String, IScoredScan> call(final Tuple2<BinChargeKey, IMeasuredSpectrum> scantuple) throws Exception {
-                        Map<String, IScoredScan> ret = new HashMap<String, IScoredScan>();
-                        BinChargeKey key = scantuple._1();
-                        IMeasuredSpectrum scan = scantuple._2();
-                        scoreScanInMap(key, scan, ret);
-                        return ret;
-                    }
-                },
-                new Function2<Map<String, IScoredScan>, Tuple2<BinChargeKey, IMeasuredSpectrum>, Map<String, IScoredScan>>() {
-                    @Override
-                    public Map<String, IScoredScan> call(final Map<String, IScoredScan> pStringIScoredScanMap, final Tuple2<BinChargeKey, IMeasuredSpectrum> scantuple) throws Exception {
-                        BinChargeKey key = scantuple._1();
-                        IMeasuredSpectrum scan = scantuple._2();
-                        scoreScanInMap(key, scan, pStringIScoredScanMap);
-                        return pStringIScoredScanMap;
-                    }
-                }, new Function2<Map<String, IScoredScan>, Map<String, IScoredScan>, Map<String, IScoredScan>>() {
-                    @Override
-                    public Map<String, IScoredScan> call(final Map<String, IScoredScan> map1, final Map<String, IScoredScan> map2) throws Exception {
-                        for (String s : map1.keySet()) {
-                            IScoredScan scan1 = map1.get(s);
-                            IScoredScan scan2 = map2.get(s);
-                            if (scan2 != null) {
-                                scan1.addTo(scan2);
-                            }
-                        }
-                        for (String s : map2.keySet()) {
-                            IScoredScan scan1 = map1.get(s);
-                            IScoredScan scan2 = map2.get(s);
-                            if (scan1 == null) {
-                                map1.put(s, scan2);
-                            }
-                        }
-                        return map1;
-                    }
-                });
-        JavaPairRDD<String, IScoredScan> idToScan = binnedScores.values().flatMapToPair(new ScoredScansToIds());
-        JavaPairRDD<String, IScoredScan> combinedValues = idToScan.combineByKey(
-                new Function<IScoredScan, IScoredScan>() {
-                    @Override
-                    public IScoredScan call(final IScoredScan scan) throws Exception {
-                        return scan;
-                    }
-                },
-                new Function2<IScoredScan, IScoredScan, IScoredScan>() {
-                    @Override
-                    public IScoredScan call(final IScoredScan scan1, final IScoredScan scan2) throws Exception {
-                        scan1.addTo(scan2);
-                        return scan1;
-                    }
-                },
-                new Function2<IScoredScan, IScoredScan, IScoredScan>() {
-                    @Override
-                    public IScoredScan call(final IScoredScan scan1, final IScoredScan scan2) throws Exception {
-                        scan1.addTo(scan2);
-                        return scan1;
-                    }
-                });
-
-        return combinedValues.values();
+               throw new UnsupportedOperationException("Fix This"); // ToDo
+//        JavaPairRDD<BinChargeKey, Map<String, IScoredScan>> binnedScores = scoredSpectra.combineByKey(
+//                new Function<Tuple2<BinChargeKey, IMeasuredSpectrum>, Map<String, IScoredScan>>() {
+//                    @Override
+//                    public Map<String, IScoredScan> call(final Tuple2<BinChargeKey, IMeasuredSpectrum> scantuple) throws Exception {
+//                        Map<String, IScoredScan> ret = new HashMap<String, IScoredScan>();
+//                        BinChargeKey key = scantuple._1();
+//                        IMeasuredSpectrum scan = scantuple._2();
+//                        scoreScanInMap(key, scan, ret);
+//                        return ret;
+//                    }
+//                },
+//                new Function2<Map<String, IScoredScan>, Tuple2<BinChargeKey, IMeasuredSpectrum>, Map<String, IScoredScan>>() {
+//                    @Override
+//                    public Map<String, IScoredScan> call(final Map<String, IScoredScan> pStringIScoredScanMap, final Tuple2<BinChargeKey, IMeasuredSpectrum> scantuple) throws Exception {
+//                        BinChargeKey key = scantuple._1();
+//                        IMeasuredSpectrum scan = scantuple._2();
+//                        scoreScanInMap(key, scan, pStringIScoredScanMap);
+//                        return pStringIScoredScanMap;
+//                    }
+//                }, new Function2<Map<String, IScoredScan>, Map<String, IScoredScan>, Map<String, IScoredScan>>() {
+//                    @Override
+//                    public Map<String, IScoredScan> call(final Map<String, IScoredScan> map1, final Map<String, IScoredScan> map2) throws Exception {
+//                        for (String s : map1.keySet()) {
+//                            IScoredScan scan1 = map1.get(s);
+//                            IScoredScan scan2 = map2.get(s);
+//                            if (scan2 != null) {
+//                                scan1.addTo(scan2);
+//                            }
+//                        }
+//                        for (String s : map2.keySet()) {
+//                            IScoredScan scan1 = map1.get(s);
+//                            IScoredScan scan2 = map2.get(s);
+//                            if (scan1 == null) {
+//                                map1.put(s, scan2);
+//                            }
+//                        }
+//                        return map1;
+//                    }
+//                });
+//        JavaPairRDD<String, IScoredScan> idToScan = binnedScores.values().flatMapToPair(new ScoredScansToIds());
+//        JavaPairRDD<String, IScoredScan> combinedValues = idToScan.combineByKey(
+//                new Function<IScoredScan, IScoredScan>() {
+//                    @Override
+//                    public IScoredScan call(final IScoredScan scan) throws Exception {
+//                        return scan;
+//                    }
+//                },
+//                new Function2<IScoredScan, IScoredScan, IScoredScan>() {
+//                    @Override
+//                    public IScoredScan call(final IScoredScan scan1, final IScoredScan scan2) throws Exception {
+//                        scan1.addTo(scan2);
+//                        return scan1;
+//                    }
+//                },
+//                new Function2<IScoredScan, IScoredScan, IScoredScan>() {
+//                    @Override
+//                    public IScoredScan call(final IScoredScan scan1, final IScoredScan scan2) throws Exception {
+//                        scan1.addTo(scan2);
+//                        return scan1;
+//                    }
+//                });
+//
+//        return combinedValues.values();
     }
 
     public void scoreScanInMap(BinChargeKey key, IMeasuredSpectrum scan, Map<String, IScoredScan> scores) {
-        String id = scan.getId();
-        StringBuffer sb = new StringBuffer();
-//        IXMLAppender appender = new XMLAppender(sb);
-//        scan.serializeAsString(appender);
-
-        List<IPolypeptide> peptides = getPeptides(key);
-        if (peptides.isEmpty())
-            return; // nothing to score
-
-
-        List<ITheoreticalSpectrumSet> peptideSpectra = new ArrayList<ITheoreticalSpectrumSet>();
-        for (IPolypeptide peptide : peptides) {
-            ITheoreticalSpectrumSet ts = TheoreticalSetGenerator.generateTheoreticalSet(peptide, TheoreticalSetGenerator.MAX_CHARGE, sequenceUtilities);
-            peptideSpectra.add(ts);
-        }
-        ITheoreticalSpectrumSet[] ts = peptideSpectra.toArray(new ITheoreticalSpectrumSet[peptideSpectra.size()]);
-        IScoredScan ret = new OriginatingScoredScan(scan);
-        IonUseCounter counter = new IonUseCounter();
-        Scorer scorer1 = getScorer();
-        scorer1.generateTheoreticalSpectra();
-        ITandemScoringAlgorithm algorithm1 = getAlgorithm();
-        int n = algorithm1.scoreScan(scorer1, counter, ts, ret);
-
-        scores.put(id, ret);
+        throw new UnsupportedOperationException("Fix This"); // ToDo`
+//        String id = scan.getId();
+//        StringBuffer sb = new StringBuffer();
+////        IXMLAppender appender = new XMLAppender(sb);
+////        scan.serializeAsString(appender);
+//
+//        List<IPolypeptide> peptides = getPeptides(key);
+//        if (peptides.isEmpty())
+//            return; // nothing to score
+//
+//
+//        List<ITheoreticalSpectrumSet> peptideSpectra = new ArrayList<ITheoreticalSpectrumSet>();
+//        for (IPolypeptide peptide : peptides) {
+//            ITheoreticalSpectrumSet ts = TheoreticalSetGenerator.generateTheoreticalSet(peptide, TheoreticalSetGenerator.MAX_CHARGE, sequenceUtilities);
+//            peptideSpectra.add(ts);
+//        }
+//        ITheoreticalSpectrumSet[] ts = peptideSpectra.toArray(new ITheoreticalSpectrumSet[peptideSpectra.size()]);
+//        IScoredScan ret = new OriginatingScoredScan(scan);
+//        IonUseCounter counter = new IonUseCounter();
+//        Scorer scorer1 = getScorer();
+//        scorer1.generateTheoreticalSpectra();
+//        ITandemScoringAlgorithm algorithm1 = getAlgorithm();
+//        int n = algorithm1.scoreScan(scorer1, counter, ts, ret);
+//
+//        scores.put(id, ret);
     }
 
     protected List<IPolypeptide> getPeptides(final BinChargeKey key) {
@@ -574,16 +533,12 @@ public class SparkMapReduceScoringHandler implements Serializable {
      * @return
      */
     protected static IScoredScan scoreOnePeptide(RawPeptideScan spec, IPolypeptide pp, Scorer scorer1, ITandemScoringAlgorithm algorithm1) {
-        IPolypeptide[] pps = {pp};
-        //     Scorer scorer1 = getScorer();
-        scorer1.addPeptide(pp);
-        scorer1.generateTheoreticalSpectra();
-        //     ITandemScoringAlgorithm algorithm1 = getAlgorithm();
-        IScoredScan ret = algorithm1.handleScan(scorer1, spec, pps);
-        // clean up
-        scorer1.clearPeptides();
-        scorer1.clearSpectra();
-        return ret;
+        ITheoreticalSpectrumSet ts =  scorer1.generateSpectrum(pp);
+        IPolypeptide[] pps = { pp };
+        ITheoreticalSpectrumSet[] tts = { ts };
+          //     Scorer scorer1 = getScorer();
+           IScoredScan ret = algorithm1.handleScan(scorer1, spec, pps,tts);
+           return ret;
     }
 
     public Map<Integer, Integer> getDatabaseSizes() {

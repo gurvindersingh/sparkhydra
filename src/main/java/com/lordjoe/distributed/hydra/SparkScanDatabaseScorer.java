@@ -329,7 +329,7 @@ public class SparkScanDatabaseScorer {
         consolidator.writeScores(pwrtr, bestScores);
 
 
-        SparkAccumulators.showAccumulators();
+        SparkAccumulators.showAccumulators(totalTime);
         totalTime.showElapsed("Finished Scoring");
 
     }

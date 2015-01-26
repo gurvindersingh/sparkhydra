@@ -28,7 +28,8 @@ public abstract class AbstractLoggingFunctionBase implements Serializable {
     private transient boolean logged;   // transient so every machine keeps its own
     private transient long numberCalls;   // transient so every machine keeps its own
     private SparkAccumulators accumulators; // member so it will be serialized from the executor
-    protected transient long totalTime;
+    private transient long totalTime;
+    private transient long accumulatedTime;
 
 
     protected AbstractLoggingFunctionBase() {
@@ -45,6 +46,29 @@ public abstract class AbstractLoggingFunctionBase implements Serializable {
          }
     }
 
+    public long getTotalTime() {
+        return totalTime;
+    }
+
+
+
+
+    public long getAccumulatedTime() {
+        return accumulatedTime;
+    }
+
+    public void incrementAccumulatedTime(long added) {
+        accumulatedTime += added;
+        totalTime += added;
+    }
+
+
+    public long getAndClearAccumulatedTime()
+    {
+        long ret = accumulatedTime;
+        accumulatedTime = 0;
+        return ret;
+    }
     /**
      * Override this to prevent logging
      *
@@ -115,7 +139,8 @@ public abstract class AbstractLoggingFunctionBase implements Serializable {
         SparkAccumulators accumulators1 = getAccumulators();
         if (accumulators1 == null)
             return;
-        accumulators1.incrementFunctionAccumulator(className);
+        long time = getAndClearAccumulatedTime();
+        accumulators1.incrementFunctionAccumulator(className,time);
 //        if ( accumulators1.isAccumulatorRegistered(className)) {
 //            accumulators1.incrementAccumulator(className);
 //        }

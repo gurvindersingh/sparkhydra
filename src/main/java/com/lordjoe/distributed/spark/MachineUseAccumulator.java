@@ -98,9 +98,10 @@ public class MachineUseAccumulator implements Serializable {
 
     }
 
-
+    // key is the machine MAC address
     private Map<String, Long> items = new HashMap<String, Long>();
-    private long total;
+    private long totalCalls;  // number function calls
+    private long totalTime;   // call time in nanosec
 
     /**
      * will be called to count use on a single machine
@@ -111,9 +112,9 @@ public class MachineUseAccumulator implements Serializable {
     /**
      * will be called to count use on a single machine
      */
-    public MachineUseAccumulator(long n) {
+    public MachineUseAccumulator(long n,long totalTime) {
         this();
-        add(n);
+        add(n,totalTime);
     }
 
     /**
@@ -122,12 +123,14 @@ public class MachineUseAccumulator implements Serializable {
     public MachineUseAccumulator(MachineUseAccumulator copy) {
         this();
         items.putAll(copy.items);
+        totalTime += copy.getTotalTime();
     }
 
 
-    public void add(long value) {
+    public void add(long value,long totalT) {
         String macAddress = SparkUtilities.getMacAddress();
         addEntry(macAddress, value);
+        totalTime +=  totalT;
     }
 
     protected void addEntry(String entry, long value) {
@@ -136,14 +139,16 @@ public class MachineUseAccumulator implements Serializable {
             present += items.get(entry);
         long value1 = value + present;
         items.put(entry, value1);
-        total += value;
+        totalCalls += value;
     }
 
 
     protected void addAll(MachineUseAccumulator added) {
         for (String t : added.items.keySet()) {
-            addEntry(t, added.get(t));
+            long value = added.get(t);
+            addEntry(t, value);
         }
+        totalTime += added.getTotalTime();
     }
 
 
@@ -154,10 +159,10 @@ public class MachineUseAccumulator implements Serializable {
         return 0;
     }
 
-    public long getTotal() {
-        if (total == 0)
-            total = computeTotal();
-        return total;
+    public long getTotalCalls() {
+        if (totalCalls == 0)
+            totalCalls = computeTotal();
+        return totalCalls;
     }
 
     public long computeTotal() {
@@ -166,6 +171,12 @@ public class MachineUseAccumulator implements Serializable {
             sum += v;
         }
         return sum;
+    }
+
+
+
+    public long getTotalTime() {
+           return totalTime;
     }
 
 
@@ -191,12 +202,17 @@ public class MachineUseAccumulator implements Serializable {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(" total:");
-        long total1 = getTotal();
+        sb.append(" totalCalls:");
+        long total1 = getTotalCalls();
         sb.append(SparkUtilities.formatLargeNumber(total1));
         sb.append("\n");
 
-        sb.append(" total entries:");
+        sb.append(" totalTime:");
+          long totaltime = getTotalTime();
+          sb.append(SparkUtilities.formatNanosec(totaltime));
+          sb.append("\n");
+
+        sb.append(" totalCalls entries:");
         sb.append(size());
         sb.append("\n");
 

@@ -4,15 +4,11 @@ import org.systemsbiology.hadoop.*;
 import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.hadoop.*;
 import org.systemsbiology.xtandem.peptide.*;
-import org.systemsbiology.xtandem.reporting.*;
 import org.systemsbiology.xtandem.sax.*;
 import org.systemsbiology.xtandem.scoring.*;
 import org.systemsbiology.xtandem.taxonomy.*;
-import org.systemsbiology.xtandem.testing.*;
-import org.xml.sax.*;
 
 import java.io.*;
-import java.net.*;
 import java.util.*;
 
 /**
@@ -24,6 +20,8 @@ import java.util.*;
  */
 public class XTandemMain extends AbstractParameterHolder implements IMainData {
     public static final IMainData[] EMPTY_ARRAY = {};
+    public static final String HARDCODED_MODIFICATIONS_PROPERTY = "org.systemsbiology.xtandem.HardCodeModifications";
+    public static final String NUMBER_REMEMBERED_MATCHES = "org.systemsbiology.numberRememberedMatches";
 
     private static final List<IStreamOpener> gPreLoadOpeners =
             new ArrayList<IStreamOpener>();
@@ -194,12 +192,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
         m_SemiTryptic = pSemiTryptic;
     }
 
-    @Override
-    public RawPeptideScan[] getRawScans() {
-        if (m_RawScans.isEmpty())
-            loadSpectra();
-        return m_RawScans.values().toArray(new RawPeptideScan[0]);
-    }
+
 
     @Override
     public RawPeptideScan getRawScan(String key) {
@@ -216,12 +209,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
         m_Scorings.remove(removed);
     }
 
-    @Override
-    public IScoredScan[] getScorings() {
-        return m_Scorings.values().toArray(new IScoredScan[m_Scorings.size()]);
-    }
-
-    /**
+       /**
      * remove all retained data
      */
     @Override
@@ -547,46 +535,8 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
         return m_Taxonomy;
     }
 
-    public void process() {
 
-
-        final MassSpecRun[] specRuns = getRuns();
-        MassSpecRun onlyRun = specRuns[0];
-        final IMeasuredSpectrum[] scans = onlyRun.getScans();
-
-        final SpectrumCondition sc = getSpectrumParameters();
-        final IScoringAlgorithm sa = getScorer();
-        //      IMeasuredSpectrum[] conditionedScans = sa.conditionSpectra(scans,sc);
-        scoreRuns();
-
-        Scorer scoreRunner = getScoreRunner();
-        String file = BiomlReporter.buildDefaultFileName(this);
-        try {
-            BiomlReporter reporter = new BiomlReporter(this, scoreRunner.getScans(), new File(file));
-            reporter.writeReport();
-        }
-        catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        //     throw new UnsupportedOperationException("Fix This"); // ToDo
-    }
-
-    /**
-     * DO NOT USE FOR BIG FastaFiles
-     * Used in most test cases - loads the proteins in memory
-     */
-//    public void loadScoringTest() {
-//        loadTaxonomy();
-//        loadScoring();
-//
-//        final ITaxonomy taxonomy = getTaxonomy();
-//        if (taxonomy instanceof Taxonomy)
-//            ((Taxonomy) taxonomy).loadTaxonomyFiles();
-//
-//        buildScorer();
-//    }
-    public void loadScoring() {
+     public void loadScoring() {
         //  loadTaxonomy(); // read the taxonomy files
 
         buildScoringAlgorithm();
@@ -602,7 +552,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
             IScoringAlgorithm algorithm = getScorer();
             SequenceUtilities su = getSequenceUtilities();
             SpectrumCondition sp = getSpectrumParameters();
-            m_ScoreRunner = new Scorer(this, su, sp, algorithm, IProtein.EMPTY_ARRAY);
+            m_ScoreRunner = new Scorer(this, su, sp, algorithm );
 
         }
         return m_ScoreRunner;
@@ -612,185 +562,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
         return m_ScoringMods;
     }
 
-    public TaxonomyProcessor getProteinHandler() {
-        return m_ProteinHandler;
-    }
-
-    protected void scoreRuns() {
-        m_ScoreRunner.score();
-    }
-
-    protected void buildScorer() {
-        ITaxonomy tax = getTaxonomy();
-        final IProtein[] proteins = tax.getValidProteins();
-        m_ScoreRunner = new Scorer(this, getSequenceUtilities(), getSpectrumParameters(), getScorer(), proteins);
-    }
-
-    public void loadSpectra() {
-        if (getScorer() == null)
-            buildScorer();
-        loadSpectrumTry(0);
-    }
-
-    public static final int MAX_TRIES = 3;
-
-    private void loadSpectrumTry(int tryNumber) {
-
-        if (tryNumber >= MAX_TRIES)
-            throw new IllegalStateException("cannot load spectrum file " + getSpectrumPath());
-
-        String spectumFile = getSpectrumPath();
-        try {
-            final String lcName = spectumFile.toLowerCase();
-            Scorer scoreRunner = getScoreRunner();
-//            if (lcName.endsWith(".mzml")) {
-//                loadMZMLFile(spectumFile);
-//                final MassSpecRun[] runs = getRuns();
-//                scoreRunner.setScoredScans(this, runs);
-//                return;
-//            }
-//            if (lcName.endsWith(".mzml.gz")) {
-//                loadMZMLFile(spectumFile);
-//                final MassSpecRun[] runs = getRuns();
-//                scoreRunner.setScoredScans(this, runs);
-//                return;
-//            }
-//            if (lcName.endsWith(".mzxml")) {
-//                loadMZXMLFile(spectumFile);
-//                final MassSpecRun[] runs = getRuns();
-//                scoreRunner.setScoredScans(this, runs);
-//                return;
-//            }
-//            if (lcName.endsWith(".mzxml.gz")) {
-//                loadGZ_MZXMLFile(spectumFile);
-//                final MassSpecRun[] runs = getRuns();
-//                scoreRunner.setScoredScans(this, runs);
-//                return;
-//            }
-            if (lcName.endsWith(".mgf")) {
-                loadMGF(spectumFile);
-                final MassSpecRun[] runs = getRuns();
-                scoreRunner.setScoredScans(this, runs);
-                return;
-            }
-
-            throw new IllegalStateException("Cannot handle spectrum file " + spectumFile);
-        }
-        catch (RuntimeException e) {
-            Throwable cause = e;
-            while (cause.getCause() != null && cause.getCause() != cause)
-                cause = cause.getCause();
-
-            String message = cause.getMessage();
-            Class cls = cause.getClass();
-            if (cls.isAssignableFrom(MalformedURLException.class) ||
-                    cls.isAssignableFrom(MassSpecRunHandler.BadEndTagException.class) ||
-                    cls.isAssignableFrom(SAXParseException.class)) {
-                XTandemUtilities.fixScanTagsSafely(new File(spectumFile));
-                loadSpectrumTry(tryNumber + 1);
-                return;
-            }
-            throw e;
-        }
-    }
-
-//    public void loadMZMLFile(String f) {
-//
-//        InputStream is = null;
-//        try {
-//            is = open(f);
-//            MessagingMzMLReader rdr = new MessagingMzMLReader();
-//            rdr.setXMLInputStream(is);
-//
-//            MassSpecRun[] runs = new MassSpecRun[1];
-//            MassSpecRun msr = new MassSpecRun();
-//            runs[0] = msr;
-//
-//
-//            ScanGeneratingSpectrumHandler handler2 = new ScanGeneratingSpectrumHandler();
-//            MsRunPopulator populator = new MsRunPopulator(msr);
-//            handler2.addScanReadListener(populator);
-//            rdr.addTagEndListener(handler2);
-//
-//            rdr.processXMLFile();
-//            return;
-//        } finally {
-//            if (is != null) {
-//                try {
-//                    is.close();
-//                } catch (IOException e) {
-//                    // forgive this
-//                }
-//            }
-//        }
-//    }
-//
-//
-//    public static class MsRunPopulator implements ScanReadListener {
-//        private final MassSpecRun m_Run;
-//
-//        public MsRunPopulator(final MassSpecRun pRun) {
-//            m_Run = pRun;
-//        }
-//
-//        @Override
-//        public void onScanRead(final RawPeptideScan scan) {
-//            m_Run.addScan(scan);
-//        }
-//    }
-//
-//
-//    public void loadMZXMLFile(String f) {
-//        MzXMLHandler handler = new MzXMLHandler();
-//        InputStream is = null;
-//        try {
-//            is = open(f);
-//            setRuns(XTandemUtilities.parseFile(is, handler, f));
-//            return;
-//        } finally {
-//            if (is != null) {
-//                try {
-//                    is.close();
-//                } catch (IOException e) {
-//                    // forgive this
-//                }
-//            }
-//        }
-//    }
-//
-
-    public void loadMGF(String f) {
-        setRuns(XTandemUtilities.parseMgfFileString(f));
-        return;
-    }
-//
-//
-//    public void loadFastaProFile(String f) {
-//        MzXMLHandler handler = new MzXMLHandler();
-//        InputStream is = open(f);
-//        setRuns(XTandemUtilities.parseFile(is, handler, f));
-//        return;
-//    }
-//
-//    /**
-//     * load a gzippewd file
-//     *
-//     * @param f the file
-//     */
-//    public void loadGZ_MZXMLFile(String f) {
-//        try {
-//            InputStream in = open(f);
-//
-//            InputStream is = new GZIPInputStream(in);
-//            MzXMLHandler handler = new MzXMLHandler();
-//            setRuns(XTandemUtilities.parseFile(is, handler, f));
-//            return;
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-//
-    /*
+        /*
  * modify checks the input parameters for known parameters that are use to modify
  * a protein sequence. these parameters are stored in the m_pScore member object's
  * msequenceutilities member object
@@ -1031,26 +803,5 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
         XMLUtilities.outputLine("Usage - JXTandem <inputfile>");
     }
 
-    public static void main(String[] args) {
-        if (args.length == 0) {
-            usage();
-            return;
-        }
-        File TaskFile = new File(args[0]);
-        if (!TaskFile.exists() || !TaskFile.canRead()) {
-            usage();
-            return;
-        }
-        XTandemMain main = new XTandemMain(TaskFile);
-        XTandemDebugging.setDebugging(true, main);
-        main.loadTaxonomy();
-        main.loadScoring();
-        main.loadSpectra();
-
-        //        XTandemDebugging.loadXTandemValues("log1.txt");
-
-
-        main.process();
-    }
 
 }

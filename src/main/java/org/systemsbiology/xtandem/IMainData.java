@@ -34,11 +34,9 @@ public interface IMainData extends IParameterHolder {
 
     public ScoringModifications getScoringMods();
 
-    public RawPeptideScan[] getRawScans();
 
     public RawPeptideScan getRawScan(String key);
 
-    public IScoredScan[] getScorings();
 
     public IScoredScan getScoring(String key);
 

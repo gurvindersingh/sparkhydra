@@ -75,7 +75,7 @@ public class ScanTagMapperFunction extends AbstractTandemFunction implements IMa
         m_MaxScoredPeptides = XTandemHadoopUtilities.getMaxScoredPeptides(config);
 
 
-        boolean doHardCoded = app.getBooleanParameter(ScoringReducer.HARDCODED_MODIFICATIONS_PROPERTY, true);
+        boolean doHardCoded = app.getBooleanParameter(XTandemMain.HARDCODED_MODIFICATIONS_PROPERTY, true);
         PeptideModification.setHardCodeModifications(doHardCoded);
 
 

@@ -8,7 +8,7 @@ import java.util.*;
  * User: steven
  * Date: Jan 3, 2011
  */
-public class MassSpecRun  implements Serializable {
+public class MassSpecRun implements Serializable {
     public static final MassSpecRun[] EMPTY_ARRAY = {};
 
     private int m_ScanCount;
@@ -43,15 +43,30 @@ public class MassSpecRun  implements Serializable {
     }
 
     public void addScan(RawPeptideScan added) {
-        if(added.getPrecursorMz() == null)
+        try {
+            if (added.getPrecursorMz() == null)
+                return;
+            if (added.getPeaksCount() == 0)
+                return;
+            added.validate();
+
+            String id = added.getId();
+            RawPeptideScan existing = m_Scan.get(id);
+            if (existing == null)
+                m_Scan.put(id, added);
+            else {
+                boolean same = existing.equivalent(added);
+                if (!same) {
+                    same = existing.equivalent(added);
+                    throw new IllegalStateException("problem"); // ToDo change
+                }
+
+            }
+        }
+        catch (Exception e) {
             return;
-        if(added.getPeaksCount() == 0)
-            return;
-        added.validate();
-        m_Scan.put(added.getId(), added);
+        }
     }
-
-
 
 
     public RawPeptideScan[] getScans() {

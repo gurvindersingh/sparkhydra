@@ -28,8 +28,8 @@ public abstract class AbstractLoggingFunction2<T1 extends Serializable, T2 exten
         long startTime = System.nanoTime();
         R ret = doCall(v1, v2);
         long estimatedTime = System.nanoTime() - startTime;
-        totalTime += estimatedTime;
-        return ret;
+        incrementAccumulatedTime(estimatedTime);
+         return ret;
 
     }
 

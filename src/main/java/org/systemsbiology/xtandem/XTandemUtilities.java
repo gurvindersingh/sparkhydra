@@ -4,8 +4,8 @@ package org.systemsbiology.xtandem;
 //import com.lordjoe.utilities.*;
 
 import com.lordjoe.distributed.spectrum.*;
-import com.lordjoe.utilities.*;
 import com.lordjoe.utilities.Base64;
+import com.lordjoe.utilities.*;
 import org.systemsbiology.hadoop.*;
 import org.systemsbiology.sax.*;
 import org.systemsbiology.xml.*;
@@ -1351,6 +1351,7 @@ public class XTandemUtilities {
      */
     public static MassSpecRun[] parseMgfFile(InputStream is, String url) {
         MassSpecRun[] ret = new MassSpecRun[1];
+        int readScans = 0;
         try {
             LineNumberReader inp = new LineNumberReader(new InputStreamReader(is));
             MassSpecRun run = new MassSpecRun();
@@ -1358,8 +1359,15 @@ public class XTandemUtilities {
             String line = inp.readLine();
             while (line != null) {
                 if (line.startsWith("BEGIN IONS")) {
-                    RawPeptideScan scan = readMGFScan(inp, url);
-                    run.addScan(scan);
+                    RawPeptideScan scan = readMGFScan(inp, url,line);
+                    if (scan != null) {
+                        run.addScan(scan);
+                        readScans++;
+                    }
+                    else {
+                        readScans++;
+                    }
+
                 }
                 line = inp.readLine();
             }
@@ -1385,6 +1393,17 @@ public class XTandemUtilities {
     public static RawPeptideScan readMGFScan(LineNumberReader inp, String url) {
         try {
             String line = inp.readLine();
+            if(line == null)
+                return null;
+            return readMGFScan(inp, url, line);
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+         }
+    }
+
+    public static RawPeptideScan readMGFScan(LineNumberReader inp, String url, String line) {
+        try {
             RawPeptideScan ret;
             String retentionTime = null;
             double massToChargeCalledPpMass = 0;
@@ -1466,15 +1485,22 @@ public class XTandemUtilities {
                     throw new IllegalStateException("Cannot parse MGF line " + line);
                 }
                 if ("END IONS".equals(line)) {
+
+//                    if("131114_Ida_ctr5_131118085248.10001.10001.2".equals(title))   {
+//                        for (ISpectrumPeak peak : holder) {
+//                            System.out.println(peak);
+//                        }
+//                      }
+
                     // if peaks have multiple readings choose real peaks
                     List<ISpectrumPeak> realPeaks = IntensitySetTransformer.findRealPeaks(holder);
                     ISpectrumPeak[] peaks = realPeaks.toArray(new ISpectrumPeak[realPeaks.size()]);
 
-                     ret.setPeaks(peaks);
+                    ret.setPeaks(peaks);
                     ret.setRetentionTime(retentionTime);
                     IScanPrecursorMZ spre = null;
 
-                   // double mz = massToChargeCalledPpMass;
+                    // double mz = massToChargeCalledPpMass;
                     double mz = massToChargeCalledPpMass / charge; // todo I need to change this to get better scoring
                     // maybe this is what is meant - certainly scores better
 

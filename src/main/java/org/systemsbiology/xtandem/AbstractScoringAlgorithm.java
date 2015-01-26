@@ -426,19 +426,6 @@ public abstract class AbstractScoringAlgorithm implements ITandemScoringAlgorith
         return true; // override for better filtering
     }
 
-    /**
-     * actually do the scorring
-     *
-     * @param scorer !null scorrer
-     * @param scan   !null scan to score
-     * @param pPps   !null set of peptides ot score
-     * @return !null score
-     */
-    @Override
-    public IScoredScan handleScan(final Scorer scorer, final RawPeptideScan scan, final IPolypeptide[] pPps) {
-        final ITheoreticalSpectrumSet[] tss = scorer.getAllSpectra();
-        return handleScan(scorer, scan, pPps, tss);
-    }
 
     /**
      * actually do the scorring
@@ -451,6 +438,10 @@ public abstract class AbstractScoringAlgorithm implements ITandemScoringAlgorith
     @Override
     public IScoredScan handleScan(final Scorer scorer, final RawPeptideScan scan, final IPolypeptide[] pPps, ITheoreticalSpectrumSet[] tss) {
         String id = scan.getId();
+//        for (int i = 0; i < pPps.length; i++) {
+//            IPolypeptide pp = pPps[i];
+//            System.out.println("      \"" + pp + "\"," + " //" + id);
+//        }
         OriginatingScoredScan scoring = new OriginatingScoredScan(scan);
         scoring.setAlgorithm(getName());
         IonUseCounter counter = new IonUseCounter();

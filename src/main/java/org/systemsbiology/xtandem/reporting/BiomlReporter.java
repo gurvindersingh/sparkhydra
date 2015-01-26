@@ -142,10 +142,6 @@ public class BiomlReporter implements Serializable {
         this(pParameters, scans, new FileOutputStream(out));
     }
 
-    public BiomlReporter(IMainData pParameters, Scorer scores, OutputStream out) {
-        this(pParameters, scores.getScans(), out);
-
-    }
 
     public BiomlReporter(IMainData pParameters, IScoredScan[] scans, OutputStream out) {
         m_Parameters = pParameters;
@@ -154,9 +150,6 @@ public class BiomlReporter implements Serializable {
         m_Scans = scans;
     }
 
-    public BiomlReporter(XTandemMain pParameters, OutputStream out) {
-        this(pParameters, pParameters.getScoreRunner(), out);
-    }
 
     public int getNumberScoredScans() {
         return m_NumberScoredScans;

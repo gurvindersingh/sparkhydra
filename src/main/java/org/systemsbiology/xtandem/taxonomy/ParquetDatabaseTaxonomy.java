@@ -113,13 +113,13 @@ public class ParquetDatabaseTaxonomy implements ITaxonomy {
      */
     @Override
     public IPolypeptide[] getPeptidesOfMass(final double scanmass, boolean isSemi) {
-
-        //here for backward compatability
-        if (getTandem() instanceof XTandemMain) {
-            Scorer scorer = ((XTandemMain) getTandem()).getScoreRunner();
-            return scorer.getPeptidesOfMass(scanmass);
-        }
-        throw new UnsupportedOperationException("Bad State");
+         throw new UnsupportedOperationException("Fix This"); // ToDo
+//        //here for backward compatability
+//        if (getTandem() instanceof XTandemMain) {
+//            Scorer scorer = ((XTandemMain) getTandem()).getScoreRunner();
+//            return scorer.getPeptidesOfMass(scanmass);
+//        }
+//        throw new UnsupportedOperationException("Bad State");
     }
 
 

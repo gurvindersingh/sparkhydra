@@ -12,6 +12,8 @@ import java.util.*;
 public class IntensitySetTransformer {
 
     public static final double MIN_PEAK_DIFFERENCE = 0.05;
+    private static final double MINIMUM_MZ = 150;
+    private static final int MAX_PEAKS = 50;
 
     public static IMeasuredSpectrum findSpectrum(IMeasuredSpectrum inp) {
         List<ISpectrumPeak> peaks = Arrays.asList(inp.getPeaks());
@@ -43,17 +45,33 @@ public class IntensitySetTransformer {
 
 
     public static List<ISpectrumPeak> findRealPeaks(List<ISpectrumPeak> intensityReadings) {
-
+         // no zero peaks
         if (isPeaksNormalized(intensityReadings))
                return intensityReadings;
 
          List<List<ISpectrumPeak>> peakGroups = buildPeakGroups(intensityReadings);
 
+        double totalIntensity = 0;
         List<ISpectrumPeak> ret = new ArrayList<ISpectrumPeak>();
         for (List<ISpectrumPeak> peakGroup : peakGroups) {
             ISpectrumPeak peak = findSinglePeak(peakGroup);
+            totalIntensity += peak.getPeak();
             ret.add(peak);
         }
+
+        Collections.sort(ret,SpectrumPeak.INTENSITY_COMPARATOR);
+
+        List<ISpectrumPeak> pruned = new ArrayList<ISpectrumPeak>();
+        for (ISpectrumPeak peak : ret) {
+            if(peak.getMassChargeRatio() < MINIMUM_MZ)
+                continue;
+            pruned.add(peak);
+
+           if(pruned.size() >= MAX_PEAKS)
+               break;
+        }
+        Collections.sort(ret );
+
         return ret;
     }
 

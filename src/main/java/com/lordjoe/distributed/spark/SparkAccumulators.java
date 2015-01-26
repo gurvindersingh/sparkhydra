@@ -1,6 +1,7 @@
 package com.lordjoe.distributed.spark;
 
 import com.lordjoe.distributed.*;
+import com.lordjoe.utilities.*;
 import org.apache.spark.*;
 import org.apache.spark.api.java.*;
 
@@ -60,7 +61,7 @@ public class SparkAccumulators implements Serializable {
      *
      * @param out where to append
      */
-    public static void showAccumulators(Appendable out) {
+    public static void showAccumulators(Appendable out,ElapsedTimer totalTIme) {
         try {
             SparkAccumulators me = getInstance();
             List<String> accumulatorNames = me.getAccumulatorNames();
@@ -76,17 +77,14 @@ public class SparkAccumulators implements Serializable {
               for (String accumulatorName : functionAccumulatorNames) {
                   Accumulator<MachineUseAccumulator> accumulator = me.getFunctionAccumulator(accumulatorName);
                   MachineUseAccumulator value = accumulator.value();
-
-                  List<MachineUseAccumulator.CountedItem> items = value.asCountedItems();
-                  for (MachineUseAccumulator.CountedItem item : items) {
-                      totalCalls.addEntry(item.getValue(),item.getCount());
-                  }
-
-                  //noinspection StringConcatenationInsideStringBufferAppend
+                   totalCalls.addAll(value);
+                      //noinspection StringConcatenationInsideStringBufferAppend
                   out.append(accumulatorName + "\n" + value + "\n");
               }
 
-            out.append("total calls\n" + totalCalls.toString() + "\n");
+            out.append("Total all Functions\n" + totalCalls.toString() + "\n");
+            out.append(totalTIme.formatElapsed("Total Run Time"));
+            out.append("\n");
         }
         catch (IOException e) {
             throw new RuntimeException(e);
@@ -133,9 +131,12 @@ public class SparkAccumulators implements Serializable {
      * append lines for all accumulators to System.out
      * NOTE - call only in the Executor
      */
-    public static void showAccumulators() {
-        showAccumulators(System.out);
-    }
+    public static void showAccumulators(ElapsedTimer totalTime) {
+        showAccumulators(System.out,totalTime);
+        PrintWriter  savedAccumulators = SparkUtilities.getHadoopPrintWriter("Accumulators.txt");
+        showAccumulators(savedAccumulators,totalTime);
+        savedAccumulators.close();
+      }
 
 
 //    protected void createMachineAccumulator() {
@@ -271,8 +272,8 @@ public class SparkAccumulators implements Serializable {
      *
      * @param acc
      */
-    public void incrementFunctionAccumulator(String acc) {
-        incrementFunctionAccumulator(acc, 1);
+    public void incrementFunctionAccumulator(String acc,long totalTme) {
+        incrementFunctionAccumulator(acc,totalTme, 1);
     }
 
     /**
@@ -281,10 +282,10 @@ public class SparkAccumulators implements Serializable {
      * @param acc   name of am existing accumulator
      * @param added amount to add
      */
-    public void incrementFunctionAccumulator(String acc, int added) {
+    public void incrementFunctionAccumulator(String acc,long totalTme, int added) {
         Accumulator<MachineUseAccumulator> accumulator = getFunctionAccumulator(acc);
         if(accumulator != null)
-             accumulator.add(new MachineUseAccumulator(added));
+             accumulator.add(new MachineUseAccumulator(added,totalTme));
     }
 
 }

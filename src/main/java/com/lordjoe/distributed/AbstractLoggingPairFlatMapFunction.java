@@ -28,8 +28,8 @@ public abstract class AbstractLoggingPairFlatMapFunction<T, K extends Serializab
         long startTime = System.nanoTime();
         Iterable<Tuple2<K, V>> ret = doCall(t);
         long estimatedTime = System.nanoTime() - startTime;
-        totalTime += estimatedTime;
-        return ret;
+        incrementAccumulatedTime(estimatedTime);
+         return ret;
     }
 
     /**

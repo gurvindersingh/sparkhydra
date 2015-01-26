@@ -28,8 +28,8 @@ public abstract class AbstractLoggingPairFunction<T extends Serializable, K exte
         long startTime = System.nanoTime();
         Tuple2<K, V> ret = doCall(t);
         long estimatedTime = System.nanoTime() - startTime;
-        totalTime += estimatedTime;
-        return ret;
+        incrementAccumulatedTime(estimatedTime);
+         return ret;
     }
 
     /**

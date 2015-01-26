@@ -110,14 +110,15 @@ public class Taxonomy implements ITaxonomy {
      */
     @Override
     public IPolypeptide[] getPeptidesOfMass(final double scanmass,boolean isSemi) {
-        if(isSemi)
-            throw new UnsupportedOperationException("Currently we only support tyrptic in the database");
-        //here for backward compatability
-        if(getTandem() instanceof XTandemMain ) {
-            Scorer scorer = ((XTandemMain) getTandem()).getScoreRunner();
-            return scorer.getPeptidesOfMass( scanmass );
-        }
-        throw new UnsupportedOperationException("Bad State");  
+        throw new UnsupportedOperationException("Fix This"); // ToDo
+//        if(isSemi)
+//            throw new UnsupportedOperationException("Currently we only support tyrptic in the database");
+//        //here for backward compatability
+//        if(getTandem() instanceof XTandemMain ) {
+//            Scorer scorer = ((XTandemMain) getTandem()).getScoreRunner();
+//            return scorer.getPeptidesOfMass( scanmass );
+//        }
+//        throw new UnsupportedOperationException("Bad State");
     }
 
 
@@ -130,14 +131,15 @@ public class Taxonomy implements ITaxonomy {
      */
     @Override
     public IPolypeptide[] getPeptidesOfExactMass(final int scanmass, final boolean isSemi) {
-        if(isSemi)
-              throw new UnsupportedOperationException("Currently we only support tyrptic in the database");
-          //here for backward compatability
-          if(getTandem() instanceof XTandemMain ) {
-              Scorer scorer = ((XTandemMain) getTandem()).getScoreRunner();
-              return scorer.getPeptidesOfMass( scanmass );
-          }
-          throw new UnsupportedOperationException("Bad State");
+        throw new UnsupportedOperationException("Fix This"); // ToDo
+//        if(isSemi)
+//              throw new UnsupportedOperationException("Currently we only support tyrptic in the database");
+//          //here for backward compatability
+//          if(getTandem() instanceof XTandemMain ) {
+//              Scorer scorer = ((XTandemMain) getTandem()).getScoreRunner();
+//              return scorer.getPeptidesOfMass( scanmass );
+//          }
+//          throw new UnsupportedOperationException("Bad State");
      }
 
 
@@ -150,24 +152,25 @@ public class Taxonomy implements ITaxonomy {
      */
     @Override
     public IPolypeptide[] getPeptidesOfExactMass(final MassPeptideInterval interval, final boolean isSemi) {
-        if(isSemi)
-              throw new UnsupportedOperationException("Currently we only support tyrptic in the database");
-          //here for backward compatability
-          if(getTandem() instanceof XTandemMain ) {
-              Scorer scorer = ((XTandemMain) getTandem()).getScoreRunner();
-              IPolypeptide[] peptidesOfMass = scorer.getPeptidesOfMass(interval.getMass() );
-              if(interval.isUnlimited())
-                  return peptidesOfMass;
-              List<IPolypeptide> holder = new ArrayList<IPolypeptide>();
-              for (int i = interval.getStart(); i < Math.min(peptidesOfMass.length,interval.getEnd()); i++) {
-                  IPolypeptide peptide = peptidesOfMass[i];
-                   holder.add(peptide);
-              }
-              IPolypeptide[] ret = new IPolypeptide[holder.size()];
-              holder.toArray(ret);
-              return ret;
-             }
-          throw new UnsupportedOperationException("Bad State");
+        throw new UnsupportedOperationException("Fix This"); // ToDo
+//        if(isSemi)
+//              throw new UnsupportedOperationException("Currently we only support tyrptic in the database");
+//          //here for backward compatability
+//          if(getTandem() instanceof XTandemMain ) {
+//              Scorer scorer = ((XTandemMain) getTandem()).getScoreRunner();
+//              IPolypeptide[] peptidesOfMass = scorer.getPeptidesOfMass(interval.getMass() );
+//              if(interval.isUnlimited())
+//                  return peptidesOfMass;
+//              List<IPolypeptide> holder = new ArrayList<IPolypeptide>();
+//              for (int i = interval.getStart(); i < Math.min(peptidesOfMass.length,interval.getEnd()); i++) {
+//                  IPolypeptide peptide = peptidesOfMass[i];
+//                   holder.add(peptide);
+//              }
+//              IPolypeptide[] ret = new IPolypeptide[holder.size()];
+//              holder.toArray(ret);
+//              return ret;
+//             }
+//          throw new UnsupportedOperationException("Bad State");
      }
 
     /**

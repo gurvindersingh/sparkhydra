@@ -414,7 +414,7 @@ public class SparkScanScorer {
           }
 
 
-          SparkAccumulators.showAccumulators();
+          SparkAccumulators.showAccumulators(totalTime);
           totalTime.showElapsed("Finished Scoring");
 
       }
