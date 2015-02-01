@@ -9,6 +9,7 @@ import org.systemsbiology.xtandem.hadoop.*;
 import scala.*;
 
 import javax.annotation.*;
+import java.io.*;
 import java.lang.Boolean;
 
 /**
@@ -91,7 +92,7 @@ public class SparkSpectrumUtilities {
         // debug code
         //spectraAsStrings = SparkUtilities.realizeAndReturn(spectraAsStrings);
 
-        if(isMSLevel1Dropped()) {
+        if (isMSLevel1Dropped()) {
             // filter out MS Level 1 spectra
             spectraAsStrings = spectraAsStrings.filter(new Function<Tuple2<String, String>, Boolean>() {
                                                            public Boolean call(Tuple2<String, String> s) {
@@ -158,6 +159,15 @@ public class SparkSpectrumUtilities {
     }
 
 
+    public static String cleanMGFRepresentation(String inpStr) {
+        LineNumberReader inp = new LineNumberReader(new StringReader(inpStr));
+        IMeasuredSpectrum spectrum = XTandemUtilities.readMGFScan(inp, "");
+        IMeasuredSpectrum ret = IntensitySetTransformer.findSpectrum(spectrum);
+        StringBuilder sb = new StringBuilder();
+        ((RawPeptideScan)spectrum).appendAsMGF(sb);
+        return sb.toString();
+    }
+
     @Nonnull
     public static JavaPairRDD<String, IMeasuredSpectrum> parseAsMGF(@Nonnull final String path, @Nonnull final JavaSparkContext ctx) {
         Class inputFormatClass = MGFInputFormat.class;
@@ -171,7 +181,17 @@ public class SparkSpectrumUtilities {
                 valueClass,
                 ctx.hadoopConfiguration()
         );
+
+        spectraAsStrings = SparkUtilities.persist(spectraAsStrings);
+        long spectraStringCount = spectraAsStrings.count();
+
         JavaPairRDD<String, IMeasuredSpectrum> spectra = spectraAsStrings.mapToPair(new MGFStringTupleToSpectrumTuple());
+        spectra = SparkUtilities.persist(spectra);
+        long spectraCount = spectra.count();
+
+        String countString = "Read " + spectraStringCount + " spectra parsed " + spectraCount;
+     //   if (true)
+     //       throw new IllegalStateException(countString); // look and stop
         return spectra;
     }
 
@@ -202,11 +222,11 @@ public class SparkSpectrumUtilities {
     private static class MapSpectraStringToRawScan extends AbstractLoggingPairFunction<Tuple2<String, String>, String, IMeasuredSpectrum> {
         @Override
         public Tuple2<String, IMeasuredSpectrum> doCall(final Tuple2<String, String> in) throws Exception {
-          //String key = in._1();
+            //String key = in._1();
             String scanText = in._2();
             RawPeptideScan scan = XTandemHadoopUtilities.readScan(scanText, null);
             return new Tuple2(scan.getId(), scan);
         }
     }
 
-  }
+}

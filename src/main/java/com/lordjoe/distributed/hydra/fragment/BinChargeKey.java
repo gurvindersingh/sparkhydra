@@ -71,7 +71,7 @@ public class BinChargeKey implements Serializable, Comparable<BinChargeKey> {
 
         if (charge != that.charge) return false;
 
-        if (Integer.compare(mzInt, that.mzInt) != 0) return false;
+        if ( mzInt != that.mzInt) return false;
 
         return true;
     }

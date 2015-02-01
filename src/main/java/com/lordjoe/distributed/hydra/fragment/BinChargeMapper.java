@@ -18,7 +18,7 @@ import java.util.*;
 public class BinChargeMapper implements Serializable {
 
     public static final double binSize = BinChargeKey.QUANTIZATION;
-    public static final double examineWidth = 0.6;
+    public static final double examineWidth = 1.2;
 
 
     private final XTandemMain application;

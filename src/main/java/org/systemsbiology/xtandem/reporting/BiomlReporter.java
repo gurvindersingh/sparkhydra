@@ -1,5 +1,6 @@
 package org.systemsbiology.xtandem.reporting;
 
+import com.lordjoe.distributed.hydra.scoring.*;
 import com.lordjoe.utilities.*;
 import org.systemsbiology.hadoop.*;
 import org.systemsbiology.xtandem.*;
@@ -19,7 +20,7 @@ import java.util.*;
  * Class responsible for writing a report -
  * similar responsibilities to mreport in the C++ version
  */
-public class BiomlReporter implements Serializable {
+public class BiomlReporter implements Serializable,ScoredScanWriter {
 
     public static final String[] PERFORMANCE_PARAMETER_KEYS =
             {
@@ -120,7 +121,7 @@ public class BiomlReporter implements Serializable {
     }
 
     private final IMainData m_Parameters;
-    private final OutputStream m_Out;
+  //  private final OutputStream m_Out;
     private int m_HistogramColumnWidth;
     private boolean m_SpectraShown;
     private boolean m_PerformanceShown;
@@ -136,19 +137,12 @@ public class BiomlReporter implements Serializable {
     private int m_NumberPeptidess;
 
     private String m_OutputResultsType; // todo should this be an enum
-    private final IScoredScan[] m_Scans;
-
-    public BiomlReporter(IMainData pParameters, IScoredScan[] scans, File out) throws IOException {
-        this(pParameters, scans, new FileOutputStream(out));
-    }
 
 
-    public BiomlReporter(IMainData pParameters, IScoredScan[] scans, OutputStream out) {
+    public BiomlReporter(IMainData pParameters) {
         m_Parameters = pParameters;
         setReportParameters();
-        m_Out = out;
-        m_Scans = scans;
-    }
+      }
 
 
     public int getNumberScoredScans() {
@@ -175,9 +169,6 @@ public class BiomlReporter implements Serializable {
         m_NumberPeptidess = pNumberPeptidess;
     }
 
-    public IScoredScan[] getScans() {
-        return m_Scans;
-    }
 
     public int getHistogramColumnWidth() {
         return m_HistogramColumnWidth;
@@ -261,17 +252,18 @@ public class BiomlReporter implements Serializable {
         return m_Parameters;
     }
 
-    public void writeReport() {
-        PrintWriter out = new PrintWriter(new OutputStreamWriter(m_Out));
+
+    public void writeReport(Appendable out,IScoredScan[] scans) {
         writeHeader(out, 0);
-
-        writeScores(out, 0);
-
+        for (int i = 0; i < scans.length; i++) {
+            IScoredScan scan = scans[i];
+            writeScanScores(scan,out,1);
+        }
         writeReportEnd(out);
-        out.close();
-    }
+      }
 
-    public void writeReportEnd(PrintWriter out) {
+
+    public void writeReportEnd(Appendable out) {
         if (isParametersShown()) {
             writeParameters(out, 0);
             writeUnusedParameters(out, 0);
@@ -329,13 +321,6 @@ public class BiomlReporter implements Serializable {
     }
 
 
-    protected void writeScores(PrintWriter out, int indent) {
-        IScoredScan[] scans = getScans();
-        for (int i = 0; i < scans.length; i++) {
-            IScoredScan scan = scans[i];
-            writeScanScores(scan, out, indent);
-        }
-    }
 
     public void writeScanScores(IScoredScan scan, Appendable out, int indent) {
 
@@ -962,6 +947,40 @@ public class BiomlReporter implements Serializable {
         }
     }
 
+    /**
+     * write the start of a file
+     *
+     * @param out where to append
+     * @param app appliaction data
+     */
+    @Override
+    public void appendHeader(final Appendable out, final XTandemMain app) {
+        writeHeader(out, 0);
+
+    }
+
+    /**
+     * write the end of a file
+     *
+     * @param out where to append
+     * @param app appliaction data
+     */
+    @Override
+    public void appendFooter(final Appendable out, final XTandemMain app) {
+        writeFooter(out,0);
+    }
+
+    /**
+     * write one scan
+     *
+     * @param out  where to append
+     * @param app  appliaction data
+     * @param scan one scan
+     */
+    @Override
+    public void appendScan(final Appendable out, final XTandemMain app, final IScoredScan scan) {
+         writeScanScores(scan,out,1);
+    }
 
     protected void writeFooter(Appendable out, int indent) {
         try {

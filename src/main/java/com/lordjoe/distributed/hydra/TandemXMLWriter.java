@@ -30,14 +30,17 @@ public class TandemXMLWriter {
         try {
             String pathAsString = prepent.toString();
             os = new FileOutputStream(pathAsString);
+            PrintWriter out = new PrintWriter(os);
             List<IScoredScan> holder = new ArrayList<IScoredScan>();
             for (Tuple2<String, IScoredScan> tp : scorings) {
                 holder.add(tp._2());
             }
             IScoredScan[] ret = new IScoredScan[holder.size()];
             holder.toArray(ret);
-            BiomlReporter reporter = new BiomlReporter(application, ret, os);
-            reporter.writeReport();
+            BiomlReporter reporter = new BiomlReporter(application);
+
+            reporter.writeReport(out,ret);
+            out.close();
         }
         catch (IOException e) {
             throw new RuntimeException(e);

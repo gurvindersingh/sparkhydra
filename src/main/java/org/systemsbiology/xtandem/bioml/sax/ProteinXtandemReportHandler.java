@@ -11,7 +11,7 @@ import org.xml.sax.*;
 import java.util.*;
 
 /**
- * org.systemsbiology.xtandem.bioml.sax.BiomlSaxHandler
+ * org.systemsbiology.xtandem.bioml.sax.ProteinXtandemReportHandler
  * User: steven
  * Date: 8/22/11
  */

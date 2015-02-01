@@ -59,7 +59,7 @@
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-core_2.10</artifactId>
             <version>1.2.0</version>
-            <exclusions>
+             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-nop</artifactId>
@@ -73,7 +73,7 @@
                     <artifactId>jcl-over-slf4j</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
+           </dependency>
 
         <dependency>
             <groupId>org.apache.spark</groupId>

@@ -6,7 +6,7 @@ import org.apache.spark.api.java.*;
 import org.apache.spark.api.java.function.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.hadoop.*;
-import org.systemsbiology.xtandem.pepxml.*;
+import org.systemsbiology.xtandem.reporting.*;
 import org.systemsbiology.xtandem.scoring.*;
 
 import java.io.*;
@@ -41,36 +41,60 @@ public class SparkConsolidator implements Serializable {
      *
      * @param scans
      */
-    public void writeScores(PepXMLWriter pwriter, JavaRDD<IScoredScan> scans) {
+    public int writeScores(JavaRDD<IScoredScan> scans) {
         // Print scans in sorted order
         scans.sortBy(new Function<IScoredScan, Object>() {
             @Override
             public String call(final IScoredScan v1) throws Exception {
                 return v1.getId();
             }
-        },true, SparkUtilities.getDefaultNumberPartitions());
+        }, true, SparkUtilities.getDefaultNumberPartitions());
 
         List<String> header = new ArrayList<String>();
-        header.add(pwriter.getPepXMLHeader());
+        StringBuilder sb = new StringBuilder();
+        writer.appendHeader(sb, getApplication());
+        header.add(sb.toString());
+        sb.setLength(0);
         //header.add(out.toString());
         JavaRDD<String> headerRDD = SparkUtilities.getCurrentContext().parallelize(header);
+
         List<String> footer = new ArrayList<String>();
-        footer.add(pwriter.getPepXMLFooter());
+        writer.appendFooter(sb, getApplication());
+        header.add(sb.toString());
+        sb.setLength(0);
         JavaRDD<String> footerRDD = SparkUtilities.getCurrentContext().parallelize(footer);
+
         // make an RDD of the text for every SPrectrum
-        JavaRDD<String> textOut  = scans.map(new AbstractLoggingFunction<IScoredScan, String>() {
-            @Override
-            public String doCall(final IScoredScan v1) throws Exception {
-                StringBuilder sb = new StringBuilder();
-                writer.appendScan(sb, getApplication(), v1);
-                return sb.toString();
-            }
-        });
+        JavaRDD<String> textOut = scans.map(new AppendScanStringToWriter(writer,getApplication()));
+
+        long[] scoreCounts = new long[1];
+        textOut = SparkUtilities.persistAndCount("Total Scored Scans",textOut,scoreCounts);
 
         JavaRDD<String> data = headerRDD.union(textOut).union(footerRDD).coalesce(1);
 
-        Path result = XTandemHadoopUtilities.getRelativePath("result.pep.xml");
+        String outputPath = BiomlReporter.buildDefaultFileName(getApplication());
+        Path result = XTandemHadoopUtilities.getRelativePath(outputPath);
 
-        SparkFileSaver.saveAsFile(result,data);
+        SparkFileSaver.saveAsFile(result, data);
+
+        return (int)scoreCounts[0];
+    }
+
+
+    public static  class AppendScanStringToWriter extends AbstractLoggingFunction<IScoredScan, String> {
+        private final ScoredScanWriter writer;
+        private final XTandemMain application;
+
+        public AppendScanStringToWriter(final ScoredScanWriter pWriter,XTandemMain app) {
+            writer = pWriter;
+            application = app;
+        }
+
+        @Override
+        public String doCall(final IScoredScan v1) throws Exception {
+            StringBuilder sb = new StringBuilder();
+            writer.appendScan(sb, application, v1);
+            return sb.toString();
+        }
     }
 }

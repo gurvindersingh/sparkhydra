@@ -132,6 +132,9 @@ public class SparkAccumulators implements Serializable {
      * NOTE - call only in the Executor
      */
     public static void showAccumulators(ElapsedTimer totalTime) {
+        System.out.println("=========================================");
+             System.out.println("====  Accululators              =========");
+             System.out.println("=========================================");
         showAccumulators(System.out,totalTime);
         PrintWriter  savedAccumulators = SparkUtilities.getHadoopPrintWriter("Accumulators.txt");
         showAccumulators(savedAccumulators,totalTime);

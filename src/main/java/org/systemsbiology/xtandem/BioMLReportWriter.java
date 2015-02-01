@@ -11,7 +11,7 @@ import java.util.*;
  */
 
 /**
- * write a bioml file from a collecton of protein sequences
+ * write a bioml file from a collection of protein sequences
  */
 public class BioMLReportWriter
 {

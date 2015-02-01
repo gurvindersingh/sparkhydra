@@ -326,7 +326,7 @@ public class SparkScanDatabaseScorer {
         SparkConsolidator consolidator = new SparkConsolidator(pWrapper, application);
 
 
-        consolidator.writeScores(pwrtr, bestScores);
+        consolidator.writeScores( bestScores);
 
 
         SparkAccumulators.showAccumulators(totalTime);
