@@ -143,6 +143,7 @@ public class SparkScanScorer {
         System.err.println("Max Proteins " + max_proteins);
 
 
+
         // handler.buildLibraryIfNeeded();
         // find all polypeptides and modified polypeptides
         JavaRDD<IPolypeptide> databasePeptides = pHandler.buildLibrary(max_proteins);
@@ -153,7 +154,7 @@ public class SparkScanScorer {
 
         databasePeptides = SparkUtilities.repartitionIfNeeded(databasePeptides);
 
-        // Map peptides into bins
+             // Map peptides into bins
         JavaPairRDD<BinChargeKey, IPolypeptide> keyedPeptides = pHandler.mapFragmentsToKeys(databasePeptides);
 
         keyedPeptides = SparkUtilities.repartitionIfNeeded(keyedPeptides);

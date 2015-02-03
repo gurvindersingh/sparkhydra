@@ -56,7 +56,7 @@ public class SparkMapReduceScoringHandler implements Serializable {
         if (createDb == true)
             peptideDatabase = new PeptideDatabase(application);
 
-            SparkConf sparkConf = SparkUtilities.getCurrentContext().getConf();
+        SparkConf sparkConf = SparkUtilities.getCurrentContext().getConf();
         /**
          * copy application parameters to spark context
          */
@@ -71,6 +71,14 @@ public class SparkMapReduceScoringHandler implements Serializable {
 
     }
 
+
+    public String getDatabasePath() {
+        XTandemMain application1 = getApplication();
+        String fasta = application1.getDatabaseName();
+        Path defaultPath = XTandemHadoopUtilities.getDefaultPath();
+        fasta = defaultPath.toString() + "/" + fasta + ".fasta";
+        return fasta;
+    }
 
 //    public IFileSystem getAccessor() {
 //
@@ -95,7 +103,6 @@ public class SparkMapReduceScoringHandler implements Serializable {
     public JXTandemStatistics getStatistics() {
         return m_Statistics;
     }
-
 
 
     /**
@@ -172,8 +179,6 @@ public class SparkMapReduceScoringHandler implements Serializable {
     public XTandemMain getApplication() {
         return application;
     }
-
-
 
 
     public JavaPairRDD<BinChargeKey, IMeasuredSpectrum> mapMeasuredSpectrumToKeys(JavaRDD<IMeasuredSpectrum> inp) {
@@ -307,7 +312,7 @@ public class SparkMapReduceScoringHandler implements Serializable {
     }
 
     public JavaRDD<IScoredScan> scoreSpectra(JavaPairRDD<BinChargeKey, Tuple2<BinChargeKey, IMeasuredSpectrum>> scoredSpectra) {
-               throw new UnsupportedOperationException("Fix This"); // ToDo
+        throw new UnsupportedOperationException("Fix This"); // ToDo
 //        JavaPairRDD<BinChargeKey, Map<String, IScoredScan>> binnedScores = scoredSpectra.combineByKey(
 //                new Function<Tuple2<BinChargeKey, IMeasuredSpectrum>, Map<String, IScoredScan>>() {
 //                    @Override
@@ -533,12 +538,12 @@ public class SparkMapReduceScoringHandler implements Serializable {
      * @return
      */
     protected static IScoredScan scoreOnePeptide(RawPeptideScan spec, IPolypeptide pp, Scorer scorer1, ITandemScoringAlgorithm algorithm1) {
-        ITheoreticalSpectrumSet ts =  scorer1.generateSpectrum(pp);
-        IPolypeptide[] pps = { pp };
-        ITheoreticalSpectrumSet[] tts = { ts };
-          //     Scorer scorer1 = getScorer();
-           IScoredScan ret = algorithm1.handleScan(scorer1, spec, pps,tts);
-           return ret;
+        ITheoreticalSpectrumSet ts = scorer1.generateSpectrum(pp);
+        IPolypeptide[] pps = {pp};
+        ITheoreticalSpectrumSet[] tts = {ts};
+        //     Scorer scorer1 = getScorer();
+        IScoredScan ret = algorithm1.handleScan(scorer1, spec, pps, tts);
+        return ret;
     }
 
     public Map<Integer, Integer> getDatabaseSizes() {
@@ -646,10 +651,10 @@ public class SparkMapReduceScoringHandler implements Serializable {
     private static class CombineScoredScans extends AbstractLoggingFunction2<IScoredScan, IScoredScan, IScoredScan> {
         @Override
         public IScoredScan doCall(final IScoredScan original, final IScoredScan added) throws Exception {
-            if(original.getRaw() == null || original.getBestMatch() == null)
+            if (original.getRaw() == null || original.getBestMatch() == null)
                 return added;
-            if(added.getRaw() == null || added.getBestMatch() == null)
-                   return original;
+            if (added.getRaw() == null || added.getBestMatch() == null)
+                return original;
 
             // Add new matches - only the best will be retaind
             for (ISpectralMatch match : added.getSpectralMatches()) {

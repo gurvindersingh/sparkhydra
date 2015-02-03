@@ -7,6 +7,8 @@ import com.lordjoe.distributed.spark.MachineUseAccumulator.*;
 import org.apache.hadoop.conf.*;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.*;
+import org.apache.hadoop.mapreduce.lib.input.*;
+import org.apache.hadoop.mapreduce.lib.output.*;
 import org.apache.log4j.*;
 import org.apache.spark.*;
 import org.apache.spark.api.java.*;
@@ -151,7 +153,7 @@ public class SparkUtilities implements Serializable {
         }
         catch (IOException e) {
             throw new RuntimeException(e);
-         }
+        }
     }
 
     /**
@@ -1581,6 +1583,61 @@ public class SparkUtilities implements Serializable {
         });
     }
 
+    public static <K, V> JavaPairRDD<K, V> saveAsSequenceFile(String path, JavaPairRDD<K, V> inp) {
+        try {
+            inp = persist(inp);
+            Tuple2<K, V> first = inp.first();
+            if (first == null)
+                return inp;
+            Class keyClass = first._1().getClass();
+            Class valueClass = first._2().getClass();
+            Class outputFormatClass = SequenceFileOutputFormat.class;
+
+            inp.saveAsNewAPIHadoopFile(path, keyClass, valueClass, outputFormatClass);
+            return inp;
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+
+        }
+    }
+
+    public static <K, V> JavaPairRDD<K, V> readAsSequenceFile(String path, Class<? extends K> keyClass, Class<? extends V> valueClass) {
+        try {
+            Class inputFormatClass =  SequenceFileInputFormat.class;
+            JavaSparkContext currentContext = getCurrentContext();
+            return currentContext.newAPIHadoopFile(path, inputFormatClass, keyClass, valueClass,getHadoopConfiguration());
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static <K,V> Map<K,V>  mapFromTupleList(List<Tuple2<K, V>> inp)
+    {
+        HashMap<K,V> ret = new HashMap<K, V>() ;
+        for (Tuple2<K, V> kvTuple2 : inp) {
+            ret.put(kvTuple2._1(),kvTuple2._2());
+        }
+        return ret;
+    }
+
+
+    public static <K,V> boolean  equivalent(Map<K,V> m1,Map<K,V> m2)
+    {
+         if(m1.size() != m2.size())
+             return false;
+        for (K k : m1.keySet()) {
+            Object o1 = m1.get(k);
+            Object o2 = m2.get(k);
+            if(o2 == null)
+                return false;
+            if(!o1.equals(o2))
+                return false;
+
+        }
+        return true;
+    }
 
     public static class KeyToHash<K> implements Function<K, Integer> {
 
