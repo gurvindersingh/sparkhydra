@@ -1,6 +1,7 @@
 package com.lordjoe.distributed;
 
 import com.lordjoe.distributed.database.*;
+import com.lordjoe.distributed.hydra.test.*;
 import com.lordjoe.distributed.output.*;
 import com.lordjoe.distributed.spark.*;
 import com.lordjoe.distributed.spark.MachineUseAccumulator.*;
@@ -733,6 +734,8 @@ public class SparkUtilities implements Serializable {
         if (!isLocal())     // not to use on the cluster - only for debugging
             return inp;
         List collect = inp.collect();    // break here and take a look
+
+        TestUtilities.examineInteresting(collect);
 
         System.out.println("Realized with " + collect.size() + " elements");
         // look at a few elements

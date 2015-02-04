@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<bioml>
+	<note type="input" label="list path, default parameters">parameters_searchGUI.xml</note>
+	<note type="input" label="list path, taxonomy information">taxonomy_searchGUI.xml</note>
+	<!-- <note type="input" label="protein, taxon">all</note> -->
+	<note type="input" label="protein, taxon">selectedProtein200.fasta</note>
+	<note type="input" label="spectrum, path">selectedProtein200.mgf</note>
+	<note type="input" label="output, path">selectedProtein200.out.xml</note>
+</bioml>

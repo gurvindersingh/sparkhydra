@@ -3,6 +3,7 @@ package com.lordjoe.distributed.hydra;
 import com.lordjoe.distributed.*;
 import com.lordjoe.distributed.hydra.fragment.*;
 import com.lordjoe.distributed.hydra.scoring.*;
+import com.lordjoe.distributed.hydra.test.*;
 import com.lordjoe.distributed.output.*;
 import com.lordjoe.distributed.spark.*;
 import com.lordjoe.distributed.spectrum.*;
@@ -148,9 +149,16 @@ public class SparkScanScorer {
         // find all polypeptides and modified polypeptides
         JavaRDD<IPolypeptide> databasePeptides = pHandler.buildLibrary(max_proteins);
 
+        // DEBUGGING why do we see more than one instance of interesting peptide
+        List<IPolypeptide> interesting1 = new ArrayList<IPolypeptide>();
+        databasePeptides = TestUtilities.findInterestingPeptides(databasePeptides,interesting1);
+
         if (isDebuggingCountMade())
             databasePeptides = SparkUtilities.persistAndCount("Database peptides", databasePeptides);
 
+       // DEBUGGING why do we see more than one instance of interesting peptide
+        List<IPolypeptide> interesting2 = new ArrayList<IPolypeptide>();
+        databasePeptides = TestUtilities.findInterestingPeptides(databasePeptides, interesting2);
 
         databasePeptides = SparkUtilities.repartitionIfNeeded(databasePeptides);
 

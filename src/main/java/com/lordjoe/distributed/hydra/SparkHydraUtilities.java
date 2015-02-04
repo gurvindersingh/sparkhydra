@@ -17,10 +17,23 @@ import java.io.*;
  */
 public class SparkHydraUtilities {
 
+    public static final int LINE_LENGTH = 80;
 
+    public static String asFastaString(String in) {
+        StringBuilder sb = new StringBuilder();
+        while (in.length() > LINE_LENGTH) {
+            sb.append(in.substring(0, LINE_LENGTH));
+            sb.append("\n");
+            in = in.substring(LINE_LENGTH);
+        }
+        if (in.length() > 0) {
+            sb.append(in);
+            sb.append("\n");
+        }
+         return sb.toString();
+     }
 
-    public static Partitioner getMeasuredSpectrumPartitioner()
-    {
+    public static Partitioner getMeasuredSpectrumPartitioner() {
         return new Partitioner() {
             @Override
             public int numPartitions() {
@@ -29,7 +42,7 @@ public class SparkHydraUtilities {
 
             @Override
             public int getPartition(final Object key) {
-                String id = ((IMeasuredSpectrum)key).getId();
+                String id = ((IMeasuredSpectrum) key).getId();
                 return Math.abs(id.hashCode() % numPartitions());
             }
         };
@@ -102,19 +115,20 @@ public class SparkHydraUtilities {
         }
         System.err.println("opening " + name + " as " + path);
         return fs.openPath(path);
-     }
+    }
 
     /**
-      * throw an exception explaining a bad path
-      * @param name name in user.dir
-      * @param app  current application
-      * @return input stream or null if the file does not exist
-      */
-     public static void throwBadPathException(String name, XTandemMain app) {
-         IFileSystem fs = HydraSparkUtilities.getHadoopFileSystem();
-         Path dd = XTandemHadoopUtilities.getRelativePath(name);
-         String path = dd.toString();
-         throw new IllegalArgumentException("Cannot find path " + name + " as " + path);
-      }
+     * throw an exception explaining a bad path
+     *
+     * @param name name in user.dir
+     * @param app  current application
+     * @return input stream or null if the file does not exist
+     */
+    public static void throwBadPathException(String name, XTandemMain app) {
+        IFileSystem fs = HydraSparkUtilities.getHadoopFileSystem();
+        Path dd = XTandemHadoopUtilities.getRelativePath(name);
+        String path = dd.toString();
+        throw new IllegalArgumentException("Cannot find path " + name + " as " + path);
+    }
 
 }

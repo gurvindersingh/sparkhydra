@@ -1,0 +1,19 @@
+package org.systemsbiology.xtandem.taxonomy;
+
+/**
+ * org.systemsbiology.xtandem.taxonomy.IFastaHandler
+ * implemented by a piece of code to handle proteins coming off a fasta file
+ * User: Steve
+ * Date: Apr 11, 2011
+ */
+public interface IFastaHandler {
+    public static final IFastaHandler[] EMPTY_ARRAY = {};
+
+    /**
+     * do whatever you what with the porotein
+     * @param annotation !null annotation - should be unique
+     * @param sequence   !null sequence
+     */
+    public void handleProtein(String annotation,String sequence);
+
+}

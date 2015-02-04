@@ -4,6 +4,7 @@ import com.lordjoe.distributed.*;
 import com.lordjoe.distributed.database.*;
 import com.lordjoe.distributed.hydra.*;
 import com.lordjoe.distributed.hydra.fragment.*;
+import com.lordjoe.distributed.hydra.test.*;
 import com.lordjoe.distributed.spark.*;
 import com.lordjoe.distributed.tandem.*;
 import com.lordjoe.utilities.*;
@@ -816,6 +817,14 @@ public class SparkMapReduceScoringHandler implements Serializable {
             IPolypeptide pp = toScore._1();
             if (!(spec instanceof RawPeptideScan))
                 throw new IllegalStateException("We can only handle RawScans Here");
+
+            if(TestUtilities.isInterestingPeptide(pp))    {
+                pp = toScore._1(); // break here
+            }
+            if(TestUtilities.isInterestingSpectrum(spec))    {
+                      pp = toScore._1(); // break here
+             }
+
             RawPeptideScan rs = (RawPeptideScan) spec;
             IScoredScan score = scoreOnePeptide(rs, pp, application.getScoreRunner(), application.getScorer());
             if (v1.getRaw() == null)
@@ -823,6 +832,8 @@ public class SparkMapReduceScoringHandler implements Serializable {
             v1.addTo(score);
             return v1;
         }
+
+
     }
 
 

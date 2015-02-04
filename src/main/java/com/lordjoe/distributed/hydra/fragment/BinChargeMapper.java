@@ -2,6 +2,7 @@ package com.lordjoe.distributed.hydra.fragment;
 
 import com.lordjoe.distributed.*;
 import com.lordjoe.distributed.hydra.scoring.*;
+import com.lordjoe.distributed.hydra.test.*;
 import org.apache.spark.api.java.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.peptide.*;
@@ -16,9 +17,10 @@ import java.util.*;
  * Date: 10/31/2014
  */
 public class BinChargeMapper implements Serializable {
-
+    // how wide are the bins
     public static final double binSize = BinChargeKey.QUANTIZATION;
-    public static final double examineWidth = 1.2;
+    // how wide to we search
+    public static final double examineWidth = binSize * 2;
 
 
     private final XTandemMain application;
@@ -91,11 +93,15 @@ public class BinChargeMapper implements Serializable {
     /**
      * peptides are only mapped once whereas spectra map to multiple  bins
      */
-    private class mapPolypeptidesToBins extends AbstractLoggingPairFlatMapFunction<IPolypeptide, BinChargeKey, IPolypeptide> {
+    public static class mapPolypeptidesToBins extends AbstractLoggingPairFlatMapFunction<IPolypeptide, BinChargeKey, IPolypeptide> {
         @Override
         public Iterable<Tuple2<BinChargeKey, IPolypeptide>> doCall(final IPolypeptide pp) throws Exception {
             double matchingMass = pp.getMatchingMass();
-            List<Tuple2<BinChargeKey, IPolypeptide>> holder = new ArrayList<Tuple2<BinChargeKey, IPolypeptide>>();
+
+            if(TestUtilities.isInterestingPeptide(pp))
+                matchingMass = pp.getMatchingMass(); // break here
+
+             List<Tuple2<BinChargeKey, IPolypeptide>> holder = new ArrayList<Tuple2<BinChargeKey, IPolypeptide>>();
             for (int charge = 1; charge < 4; charge++) {
                 BinChargeKey key = oneKeyFromChargeMz(charge, matchingMass / charge );
                 holder.add(new Tuple2<BinChargeKey, IPolypeptide>(key, pp));

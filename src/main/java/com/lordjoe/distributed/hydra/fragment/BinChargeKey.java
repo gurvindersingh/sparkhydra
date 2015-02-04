@@ -12,7 +12,7 @@ import java.io.*;
  */
 public class BinChargeKey implements Serializable, Comparable<BinChargeKey> {
 
-    public static final double QUANTIZATION = 0.1;
+    public static final double QUANTIZATION = 0.2;
 
     public static int mzAsInt(double mz) {
         return (int) (0.5 + (mz / QUANTIZATION));

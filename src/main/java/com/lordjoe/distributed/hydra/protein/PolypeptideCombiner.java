@@ -1,6 +1,7 @@
 package com.lordjoe.distributed.hydra.protein;
 
 import com.lordjoe.distributed.*;
+import com.lordjoe.distributed.hydra.test.*;
 import com.lordjoe.distributed.spark.*;
 import org.apache.spark.api.java.*;
 import org.systemsbiology.xtandem.peptide.*;
@@ -49,7 +50,8 @@ public class PolypeptideCombiner {
 
         @Override
         public IPolypeptide doCall(final IPolypeptide v1, final IPolypeptide v2) throws Exception {
-            return mergeProteins(v1,v2);
+            TestUtilities.isInterestingPeptide(v1,v2);
+                return mergeProteins(v1,v2);
         }
     }
 
