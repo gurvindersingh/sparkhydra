@@ -20,7 +20,7 @@ public class BinChargeMapper implements Serializable {
     // how wide are the bins
     public static final double binSize = BinChargeKey.QUANTIZATION;
     // how wide to we search
-    public static final double examineWidth = binSize * 2;
+    public static final double examineWidth = binSize * 3;
 
 
     private final XTandemMain application;
@@ -119,6 +119,11 @@ public class BinChargeMapper implements Serializable {
             double matchingMass = spec.getPrecursorMass();   // todo decide whether mass or mz is better
             double specMZ = spec.getPrecursorMassChargeRatio();
             int charge = spec.getPrecursorCharge();
+
+            if(TestUtilities.isInterestingSpectrum(spec))
+                charge = spec.getPrecursorCharge(); // break here
+
+
             List<Tuple2<BinChargeKey, IMeasuredSpectrum>> holder = new ArrayList<Tuple2<BinChargeKey, IMeasuredSpectrum>>();
             BinChargeKey[] keys = keysFromChargeMz(charge, specMZ);
             for (int i = 0; i < keys.length; i++) {

@@ -538,7 +538,7 @@ public class SparkMapReduceScoringHandler implements Serializable {
      * @param pp
      * @return
      */
-    protected static IScoredScan scoreOnePeptide(RawPeptideScan spec, IPolypeptide pp, Scorer scorer1, ITandemScoringAlgorithm algorithm1) {
+    protected static IScoredScan scoreOnePeptide(IMeasuredSpectrum spec, IPolypeptide pp, Scorer scorer1, ITandemScoringAlgorithm algorithm1) {
         ITheoreticalSpectrumSet ts = scorer1.generateSpectrum(pp);
         IPolypeptide[] pps = {pp};
         ITheoreticalSpectrumSet[] tts = {ts};
@@ -815,18 +815,17 @@ public class SparkMapReduceScoringHandler implements Serializable {
             Tuple2<IPolypeptide, IMeasuredSpectrum> toScore = v2;
             IMeasuredSpectrum spec = toScore._2();
             IPolypeptide pp = toScore._1();
-            if (!(spec instanceof RawPeptideScan))
-                throw new IllegalStateException("We can only handle RawScans Here");
 
-            if(TestUtilities.isInterestingPeptide(pp))    {
+            if (TestUtilities.isInterestingSpectrum(spec)) {
                 pp = toScore._1(); // break here
             }
-            if(TestUtilities.isInterestingSpectrum(spec))    {
-                      pp = toScore._1(); // break here
-             }
+            if (TestUtilities.isInterestingPeptide(pp)) {
+                pp = toScore._1(); // break here
+            }
 
-            RawPeptideScan rs = (RawPeptideScan) spec;
-            IScoredScan score = scoreOnePeptide(rs, pp, application.getScoreRunner(), application.getScorer());
+            Scorer scoreRunner = application.getScoreRunner();
+            ITandemScoringAlgorithm scorer1 = application.getScorer();
+            IScoredScan score = scoreOnePeptide(spec, pp, scoreRunner, scorer1);
             if (v1.getRaw() == null)
                 return score;
             v1.addTo(score);

@@ -61,20 +61,20 @@ public class SparkSpectrumUtilities {
     }
 
     @Nonnull
-    public static JavaPairRDD<String, IMeasuredSpectrum> parseSpectrumFile(@Nonnull String path) {
+    public static JavaPairRDD<String, IMeasuredSpectrum> parseSpectrumFile(@Nonnull String path,XTandemMain application) {
         JavaSparkContext ctx = SparkUtilities.getCurrentContext();
 
         //     if(path.toLowerCase().endsWith(".mgf"))
         //           return parseAsTextMGF(path,ctx);     this will fail
         if (path.toLowerCase().endsWith(".mgf"))
-            return parseAsMGF(path, ctx);
+            return parseAsMGF(path, ctx,application);
         if (path.toLowerCase().endsWith(".mzxml"))
-            return parseAsMZXML(path, ctx);
+            return parseAsMZXML(path, ctx,application);
         throw new UnsupportedOperationException("Cannot understand extension " + path);
     }
 
     @Nonnull
-    public static JavaPairRDD<String, IMeasuredSpectrum> parseAsMZXML(@Nonnull final String path, @Nonnull final JavaSparkContext ctx) {
+    public static JavaPairRDD<String, IMeasuredSpectrum> parseAsMZXML(@Nonnull final String path, @Nonnull final JavaSparkContext ctx,XTandemMain application) {
         Class inputFormatClass = MZXMLInputFormat.class;
         Class keyClass = String.class;
         Class valueClass = String.class;
@@ -111,6 +111,7 @@ public class SparkSpectrumUtilities {
 
         // parse scan tags as  IMeasuredSpectrum key is id
         JavaPairRDD<String, IMeasuredSpectrum> parsed = spectraAsStrings.mapToPair(new MapSpectraStringToRawScan());
+        // TODO normalize
 
         // kill duplicates todo why are there duplicated
         parsed = SparkUtilities.chooseOneValue(parsed);
@@ -118,21 +119,21 @@ public class SparkSpectrumUtilities {
         return parsed;
     }
 
-    @Nonnull
-    public static JavaPairRDD<String, IMeasuredSpectrum> parseAsOldMGF(@Nonnull final String path, @Nonnull final JavaSparkContext ctx) {
-        Class inputFormatClass = MGFOldInputFormat.class;
-        Class keyClass = String.class;
-        Class valueClass = String.class;
-
-        JavaPairRDD<String, String> spectraAsStrings = ctx.hadoopFile(
-                path,
-                inputFormatClass,
-                keyClass,
-                valueClass
-        );
-        JavaPairRDD<String, IMeasuredSpectrum> spectra = spectraAsStrings.mapToPair(new MGFStringTupleToSpectrumTuple());
-        return spectra;
-    }
+//    @Nonnull
+//    public static JavaPairRDD<String, IMeasuredSpectrum> parseAsOldMGF(@Nonnull final String path, @Nonnull final JavaSparkContext ctx) {
+//        Class inputFormatClass = MGFOldInputFormat.class;
+//        Class keyClass = String.class;
+//        Class valueClass = String.class;
+//
+//        JavaPairRDD<String, String> spectraAsStrings = ctx.hadoopFile(
+//                path,
+//                inputFormatClass,
+//                keyClass,
+//                valueClass
+//        );
+//        JavaPairRDD<String, IMeasuredSpectrum> spectra = spectraAsStrings.mapToPair(new MGFStringTupleToSpectrumTuple());
+//        return spectra;
+//    }
 
     /**
      * NOTE this will not work since Text is not serializable
@@ -142,7 +143,7 @@ public class SparkSpectrumUtilities {
      * @return
      */
     @Nonnull
-    public static JavaPairRDD<String, IMeasuredSpectrum> parseAsTextMGF(@Nonnull final String path, @Nonnull final JavaSparkContext ctx) {
+    public static JavaPairRDD<String, IMeasuredSpectrum> parseAsTextMGF(@Nonnull final String path, @Nonnull final JavaSparkContext ctx,XTandemMain application) {
         Class inputFormatClass = MGFTextInputFormat.class;
         Class keyClass = String.class;
         Class valueClass = String.class;
@@ -154,7 +155,7 @@ public class SparkSpectrumUtilities {
                 valueClass,
                 ctx.hadoopConfiguration()
         );
-        JavaPairRDD<String, IMeasuredSpectrum> spectra = spectraAsStrings.mapToPair(new MGFStringTupleToSpectrumTuple());
+        JavaPairRDD<String, IMeasuredSpectrum> spectra = spectraAsStrings.mapToPair(new MGFStringTupleToSpectrumTuple(application));
         return spectra;
     }
 
@@ -169,7 +170,7 @@ public class SparkSpectrumUtilities {
     }
 
     @Nonnull
-    public static JavaPairRDD<String, IMeasuredSpectrum> parseAsMGF(@Nonnull final String path, @Nonnull final JavaSparkContext ctx) {
+    public static JavaPairRDD<String, IMeasuredSpectrum> parseAsMGF(@Nonnull final String path, @Nonnull final JavaSparkContext ctx,XTandemMain application) {
         Class inputFormatClass = MGFInputFormat.class;
         Class keyClass = String.class;
         Class valueClass = String.class;
@@ -185,7 +186,7 @@ public class SparkSpectrumUtilities {
         spectraAsStrings = SparkUtilities.persist(spectraAsStrings);
         long spectraStringCount = spectraAsStrings.count();
 
-        JavaPairRDD<String, IMeasuredSpectrum> spectra = spectraAsStrings.mapToPair(new MGFStringTupleToSpectrumTuple());
+        JavaPairRDD<String, IMeasuredSpectrum> spectra = spectraAsStrings.mapToPair(new MGFStringTupleToSpectrumTuple(application));
         spectra = SparkUtilities.persist(spectra);
         long spectraCount = spectra.count();
 
@@ -203,7 +204,7 @@ public class SparkSpectrumUtilities {
      * @return contents as scans
      */
     @Nonnull
-    public static JavaPairRDD<String, IMeasuredSpectrum> parseSpectrumFileOld(@Nonnull String path, @Nonnull JavaSparkContext ctx) {
+    public static JavaPairRDD<String, IMeasuredSpectrum> parseSpectrumFileOld(@Nonnull String path, @Nonnull JavaSparkContext ctx,XTandemMain application) {
 
         Class inputFormatClass = MGFOldInputFormat.class;
         Class keyClass = String.class;
@@ -215,7 +216,7 @@ public class SparkSpectrumUtilities {
                 keyClass,
                 valueClass
         );
-        JavaPairRDD<String, IMeasuredSpectrum> spectra = spectraAsStrings.mapToPair(new MGFStringTupleToSpectrumTuple());
+        JavaPairRDD<String, IMeasuredSpectrum> spectra = spectraAsStrings.mapToPair(new MGFStringTupleToSpectrumTuple(application));
         return spectra;
     }
 

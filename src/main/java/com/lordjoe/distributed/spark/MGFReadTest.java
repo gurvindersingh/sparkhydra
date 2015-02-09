@@ -1,17 +1,8 @@
 package com.lordjoe.distributed.spark;
 
 
-import com.lordjoe.distributed.input.*;
-import com.lordjoe.distributed.spectrum.*;
-import org.apache.hadoop.conf.*;
 import org.apache.hadoop.fs.*;
 import org.apache.hadoop.fs.FileSystem;
-import org.apache.log4j.*;
-import org.apache.spark.*;
-import org.apache.spark.api.java.*;
-import org.apache.spark.storage.*;
-import org.systemsbiology.xtandem.*;
-import scala.*;
 
 import java.io.*;
 import java.util.*;
@@ -52,64 +43,64 @@ public class MGFReadTest {
     }
 
 
-    /**
-     * call with filename and filesize
-     * eg
-     * Random6GB.fasta 6000000000
-     *
-     * @param args
-     * @throws Exception
-     */
-    public static void main(String[] args) throws Exception {
-        String hdfsFileName = args[0];
-
-        System.out.println("Set Log to Warn");    // shut up the logger
-        Logger rootLogger = Logger.getRootLogger();
-        rootLogger.setLevel(Level.WARN);
-
-
-        SparkConf sparkConf = new SparkConf().setAppName("Test MGF Read");
-        Option<String> option = sparkConf.getOption("spark.master");
-        if (!option.isDefined())    // use local over nothing
-            sparkConf.setMaster("local[*]");
-
-        JavaSparkContext ctx = new JavaSparkContext(sparkConf);
-
-        // get hfs and make get rid of older files
-        Configuration entries = ctx.hadoopConfiguration();
-        FileSystem fs = FileSystem.get(entries);
-        Path path = new Path(hdfsFileName);
-
-
-        Class inputFormatClass = MGFInputFormat.class;
-        Class keyClass = String.class;
-        Class valueClass = String.class;
-
-        JavaPairRDD<String, String> spectraAsStrings = ctx.newAPIHadoopFile(
-                hdfsFileName,
-                inputFormatClass,
-                keyClass,
-                valueClass,
-                entries
-        );
-
-        JavaPairRDD<String, IMeasuredSpectrum> spectra = spectraAsStrings.mapToPair(new MGFStringTupleToSpectrumTuple());
-
-        boolean forceShuffle = true;
-        JavaRDD<IMeasuredSpectrum> spectraToScore = spectra.values();
-     //   spectraToScore.coalesce(120, forceShuffle);
-
-        spectraToScore = spectraToScore.persist(StorageLevel.DISK_ONLY());
-
-        //  spectra = spectraAsStrings.persist(StorageLevel.MEMORY_AND_DISK());
-        //lines = lines.persist(StorageLevel.DISK_ONLY());
-        long pairs = spectraToScore.count();
-
-
-        System.out.println("read  " + pairs + " records");
-
-
-    }
+//    /**
+//     * call with filename and filesize
+//     * eg
+//     * Random6GB.fasta 6000000000
+//     *
+//     * @param args
+//     * @throws Exception
+//     */
+//    public static void main(String[] args) throws Exception {
+//        String hdfsFileName = args[0];
+//
+//        System.out.println("Set Log to Warn");    // shut up the logger
+//        Logger rootLogger = Logger.getRootLogger();
+//        rootLogger.setLevel(Level.WARN);
+//
+//
+//        SparkConf sparkConf = new SparkConf().setAppName("Test MGF Read");
+//        Option<String> option = sparkConf.getOption("spark.master");
+//        if (!option.isDefined())    // use local over nothing
+//            sparkConf.setMaster("local[*]");
+//
+//        JavaSparkContext ctx = new JavaSparkContext(sparkConf);
+//
+//        // get hfs and make get rid of older files
+//        Configuration entries = ctx.hadoopConfiguration();
+//        FileSystem fs = FileSystem.get(entries);
+//        Path path = new Path(hdfsFileName);
+//
+//
+//        Class inputFormatClass = MGFInputFormat.class;
+//        Class keyClass = String.class;
+//        Class valueClass = String.class;
+//
+//        JavaPairRDD<String, String> spectraAsStrings = ctx.newAPIHadoopFile(
+//                hdfsFileName,
+//                inputFormatClass,
+//                keyClass,
+//                valueClass,
+//                entries
+//        );
+//
+//        JavaPairRDD<String, IMeasuredSpectrum> spectra = spectraAsStrings.mapToPair(new MGFStringTupleToSpectrumTuple());
+//
+//        boolean forceShuffle = true;
+//        JavaRDD<IMeasuredSpectrum> spectraToScore = spectra.values();
+//     //   spectraToScore.coalesce(120, forceShuffle);
+//
+//        spectraToScore = spectraToScore.persist(StorageLevel.DISK_ONLY());
+//
+//        //  spectra = spectraAsStrings.persist(StorageLevel.MEMORY_AND_DISK());
+//        //lines = lines.persist(StorageLevel.DISK_ONLY());
+//        long pairs = spectraToScore.count();
+//
+//
+//        System.out.println("read  " + pairs + " records");
+//
+//
+//    }
 
 
 }

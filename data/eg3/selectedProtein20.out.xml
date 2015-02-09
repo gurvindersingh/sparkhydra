@@ -4,59 +4,454 @@
 
 </bioml>
 
-
-<!--   sequence=Q[-17.026]QHEK -->
-    <group id="131104_Berit_BSA2.21533.21533.2" mh="650.952724" z="2" rt="null" expect="4.7E002" type="model" sumI="0.43" maxI="0.4" fI="0.004"  >
-    <protein expect="2.7" id="131104_Berit_BSA2.21533.21533.2.1" uid="131104_Berit_BSA2.21533.21533.2.1" sumI="0.43"  >
+<!--   sequence=VSYAVYNR -->
+    <group id="131104_Berit_BSA2.17729.17729.2" mh="969.542724" z="2" rt="null" expect="4.8E002" type="model" sumI="0.52" maxI="0.3" fI="0.003"  >
+    <protein expect="2.7" id="131104_Berit_BSA2.17729.17729.2.1" uid="131104_Berit_BSA2.17729.17729.2.1" sumI="0.52"  >
     <file type="peptide"  />
-    <peptide start="1" end="5"   >
-    <domain id="131104_Berit_BSA2.21533.21533.2.1.1" start="0" end="5" expect="4.7E002" mh="652.305" delta="1.352" hyperscore="92" nextscore="92" y_score="0" y_ions="0" b_score="0" b_ions="1" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="QQHEK" missed_cleavages="0"  >
-    <aa  type="Q" at="1" modified="-17.027" />
+    <peptide start="1" end="8"   >
+    <domain id="131104_Berit_BSA2.17729.17729.2.1.1" start="0" end="8" expect="4.8E002" mh="971.495" delta="1.952" hyperscore="91" nextscore="100" y_score="0" y_ions="0" b_score="0" b_ions="0" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="VSYAVYNR" missed_cleavages="0"  >
+    </domain>
+    </peptide>
+    </protein>
+    <group type="support" label="fragment ion mass spectrum">
+    <note label="Description">selectedProtein20.mgf scan 131104_Berit_BSA2.17729.17729.2 (charge 2)</note>
+<GAML:trace id="131104_Berit_BSA2.17729.17729.2" label="131104_Berit_BSA2.17729.17729.2.spectrum" type="tandem mass spectrum">
+    <GAML:attribute type="M+H">969.54</GAML:attribute>
+    <GAML:attribute type="charge">2</GAML:attribute>
+    <GAML:Xdata label="131104_Berit_BSA2.17729.17729.2.spectrum" units="MASSTOCHARGERATIO" >
+    <GAML:values byteorder="INTEL" format="ASCII" numvalues="12">
+    195.468 228.498 248.467 281.611 288.094 311.127 543.577 681.52 720.003 766.472 931.615 975.188 
+
+    </GAML:values>
+    </GAML:Xdata>
+    <GAML:Ydata label="131104_Berit_BSA2.17729.17729.2.spectrum" units="UNKNOWN" >
+    <GAML:values byteorder="INTEL" format="ASCII" numvalues="12">
+0 0 0 0 0 0 0 0 0 0 0 0 
+    </GAML:values>
+    </GAML:Ydata>
+</GAML:trace>
+</group></group>
+
+<!--   sequence=MVQMER -->
+    <group id="131104_Berit_BSA2.13019.13019.2" mh="793.322724" z="2" rt="null" expect="3.6E001" type="model" sumI="0.51" maxI="0.3" fI="0.003"  >
+    <protein expect="1.6" id="131104_Berit_BSA2.13019.13019.2.1" uid="131104_Berit_BSA2.13019.13019.2.1" sumI="0.51"  >
+    <file type="peptide"  />
+    <peptide start="1" end="6"   >
+    <domain id="131104_Berit_BSA2.13019.13019.2.1.1" start="0" end="6" expect="3.6E001" mh="793.37" delta="0.047" hyperscore="217" nextscore="104" y_score="1" y_ions="1" b_score="0" b_ions="0" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="MVQMER" missed_cleavages="0"  >
+    </domain>
+    </peptide>
+    </protein>
+    <group type="support" label="fragment ion mass spectrum">
+    <note label="Description">selectedProtein20.mgf scan 131104_Berit_BSA2.13019.13019.2 (charge 2)</note>
+<GAML:trace id="131104_Berit_BSA2.13019.13019.2" label="131104_Berit_BSA2.13019.13019.2.spectrum" type="tandem mass spectrum">
+    <GAML:attribute type="M+H">793.32</GAML:attribute>
+    <GAML:attribute type="charge">2</GAML:attribute>
+    <GAML:Xdata label="131104_Berit_BSA2.13019.13019.2.spectrum" units="MASSTOCHARGERATIO" >
+    <GAML:values byteorder="INTEL" format="ASCII" numvalues="11">
+    152.265 161.581 169.511 217.123 311.127 332.126 334.385 564.72 631.164 634.821 796.469 
+
+    </GAML:values>
+    </GAML:Xdata>
+    <GAML:Ydata label="131104_Berit_BSA2.13019.13019.2.spectrum" units="UNKNOWN" >
+    <GAML:values byteorder="INTEL" format="ASCII" numvalues="11">
+0 0 0 0 0 0 0 0 0 0 0 
+    </GAML:values>
+    </GAML:Ydata>
+</GAML:trace>
+</group></group>
+
+<!--   sequence=CKPAVSR -->
+    <group id="131104_Berit_BSA2.5671.5671.2" mh="817.317847" z="2" rt="null" expect="1.2E001" type="model" sumI="0.57" maxI="0.3" fI="0.003"  >
+    <protein expect="1.1" id="131104_Berit_BSA2.5671.5671.2.1" uid="131104_Berit_BSA2.5671.5671.2.1" sumI="0.57"  >
+    <file type="peptide"  />
+    <peptide start="1" end="7"   >
+    <domain id="131104_Berit_BSA2.5671.5671.2.1.1" start="0" end="7" expect="1.2E001" mh="817.435" delta="0.117" hyperscore="270" nextscore="69" y_score="0" y_ions="1" b_score="1" b_ions="3" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="CKPAVSR" missed_cleavages="0"  >
+    </domain>
+    </peptide>
+    </protein>
+    <group type="support" label="fragment ion mass spectrum">
+    <note label="Description">selectedProtein20.mgf scan 131104_Berit_BSA2.5671.5671.2 (charge 2)</note>
+<GAML:trace id="131104_Berit_BSA2.5671.5671.2" label="131104_Berit_BSA2.5671.5671.2.spectrum" type="tandem mass spectrum">
+    <GAML:attribute type="M+H">817.32</GAML:attribute>
+    <GAML:attribute type="charge">2</GAML:attribute>
+    <GAML:Xdata label="131104_Berit_BSA2.5671.5671.2.spectrum" units="MASSTOCHARGERATIO" >
+    <GAML:values byteorder="INTEL" format="ASCII" numvalues="16">
+    161.019 177.087 181.104 183.319 208.004 229.082 239.094 292.097 299.065 312.322 320.091 328.15 350.321 419.162 643.744 815.348 
+
+    </GAML:values>
+    </GAML:Xdata>
+    <GAML:Ydata label="131104_Berit_BSA2.5671.5671.2.spectrum" units="UNKNOWN" >
+    <GAML:values byteorder="INTEL" format="ASCII" numvalues="16">
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+    </GAML:values>
+    </GAML:Ydata>
+</GAML:trace>
+</group></group>
+
+<!--   sequence=SSSGSTSSSSSSTR -->
+    <group id="131104_Berit_BSA2.21533.21533.2" mh="1302.912724" z="2" rt="null" expect="3.3E001" type="model" sumI="0.56" maxI="0.3" fI="0.003"  >
+    <protein expect="1.5" id="131104_Berit_BSA2.21533.21533.2.1" uid="131104_Berit_BSA2.21533.21533.2.1" sumI="0.56"  >
+    <file type="peptide"  />
+    <peptide start="1" end="14"   >
+    <domain id="131104_Berit_BSA2.21533.21533.2.1.1" start="0" end="14" expect="3.3E001" mh="1304.556" delta="1.643" hyperscore="220" nextscore="220" y_score="0" y_ions="1" b_score="1" b_ions="0" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="SSSGSTSSSSSSTR" missed_cleavages="0"  >
     </domain>
     </peptide>
     </protein>
     <group type="support" label="fragment ion mass spectrum">
     <note label="Description">selectedProtein20.mgf scan 131104_Berit_BSA2.21533.21533.2 (charge 2)</note>
 <GAML:trace id="131104_Berit_BSA2.21533.21533.2" label="131104_Berit_BSA2.21533.21533.2.spectrum" type="tandem mass spectrum">
-    <GAML:attribute type="M+H">650.95</GAML:attribute>
+    <GAML:attribute type="M+H">1302.91</GAML:attribute>
     <GAML:attribute type="charge">2</GAML:attribute>
     <GAML:Xdata label="131104_Berit_BSA2.21533.21533.2.spectrum" units="MASSTOCHARGERATIO" >
-    <GAML:values byteorder="INTEL" format="ASCII" numvalues="8">
-    200.577 247.69 261.022 262.687 355.064 399.028 506.352 564.248 
+    <GAML:values byteorder="INTEL" format="ASCII" numvalues="14">
+    200.577 247.69 261.022 262.687 355.064 399.028 506.352 564.248 683.281 743.97 774.916 1191.022 1247.667 1257.907 
 
     </GAML:values>
     </GAML:Xdata>
     <GAML:Ydata label="131104_Berit_BSA2.21533.21533.2.spectrum" units="UNKNOWN" >
-    <GAML:values byteorder="INTEL" format="ASCII" numvalues="8">
-2978 3961 8460 3568 7097 4568 3968 4600 
+    <GAML:values byteorder="INTEL" format="ASCII" numvalues="14">
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 
     </GAML:values>
     </GAML:Ydata>
 </GAML:trace>
 </group></group>
 
-<!--   sequence=QFAK -->
-    <group id="131104_Berit_BSA2.19487.19487.2" mh="492.980818" z="2" rt="null" expect="1.6E003" type="model" sumI="0.52" maxI="0.3" fI="0.003"  >
-    <protein expect="3.2" id="131104_Berit_BSA2.19487.19487.2.1" uid="131104_Berit_BSA2.19487.19487.2.1" sumI="0.52"  >
+<!--   sequence=SLLQAR -->
+    <group id="131104_Berit_BSA2.9118.9118.2" mh="687.562724" z="2" rt="null" expect="3.3E000" type="model" sumI="0.48" maxI="0.3" fI="0.003"  >
+    <protein expect="0.5" id="131104_Berit_BSA2.9118.9118.2.1" uid="131104_Berit_BSA2.9118.9118.2.1" sumI="0.48"  >
     <file type="peptide"  />
-    <peptide start="1" end="4"   >
-    <domain id="131104_Berit_BSA2.19487.19487.2.1.1" start="0" end="4" expect="1.6E003" mh="493.277" delta="0.296" hyperscore="33" nextscore="33" y_score="0" y_ions="0" b_score="0" b_ions="0" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="QFAK" missed_cleavages="0"  >
+    <peptide start="1" end="6"   >
+    <domain id="131104_Berit_BSA2.9118.9118.2.1.1" start="0" end="6" expect="3.3E000" mh="687.415" delta="0.148" hyperscore="331" nextscore="164" y_score="1" y_ions="4" b_score="0" b_ions="0" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="SLLQAR" missed_cleavages="0"  >
+    </domain>
+    </peptide>
+    </protein>
+    <group type="support" label="fragment ion mass spectrum">
+    <note label="Description">selectedProtein20.mgf scan 131104_Berit_BSA2.9118.9118.2 (charge 2)</note>
+<GAML:trace id="131104_Berit_BSA2.9118.9118.2" label="131104_Berit_BSA2.9118.9118.2.spectrum" type="tandem mass spectrum">
+    <GAML:attribute type="M+H">687.56</GAML:attribute>
+    <GAML:attribute type="charge">2</GAML:attribute>
+    <GAML:Xdata label="131104_Berit_BSA2.9118.9118.2.spectrum" units="MASSTOCHARGERATIO" >
+    <GAML:values byteorder="INTEL" format="ASCII" numvalues="10">
+    175.033 225.085 235.729 244.165 250.28 301.189 486.772 659.506 676.373 689.159 
+
+    </GAML:values>
+    </GAML:Xdata>
+    <GAML:Ydata label="131104_Berit_BSA2.9118.9118.2.spectrum" units="UNKNOWN" >
+    <GAML:values byteorder="INTEL" format="ASCII" numvalues="10">
+0 0 0 0 0 0 0 0 0 0 
+    </GAML:values>
+    </GAML:Ydata>
+</GAML:trace>
+</group></group>
+
+<!--   sequence=GPSGGPGR -->
+    <group id="131104_Berit_BSA2.15170.15170.3" mh="681.286555" z="3" rt="null" expect="1.2E001" type="model" sumI="0.56" maxI="0.3" fI="0.003"  >
+    <protein expect="1.1" id="131104_Berit_BSA2.15170.15170.3.1" uid="131104_Berit_BSA2.15170.15170.3.1" sumI="0.56"  >
+    <file type="peptide"  />
+    <peptide start="1" end="8"   >
+    <domain id="131104_Berit_BSA2.15170.15170.3.1.1" start="0" end="8" expect="1.2E001" mh="684.342" delta="3.056" hyperscore="270" nextscore="100" y_score="0" y_ions="0" b_score="1" b_ions="3" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="GPSGGPGR" missed_cleavages="0"  >
+    </domain>
+    </peptide>
+    </protein>
+    <group type="support" label="fragment ion mass spectrum">
+    <note label="Description">selectedProtein20.mgf scan 131104_Berit_BSA2.15170.15170.3 (charge 3)</note>
+<GAML:trace id="131104_Berit_BSA2.15170.15170.3" label="131104_Berit_BSA2.15170.15170.3.spectrum" type="tandem mass spectrum">
+    <GAML:attribute type="M+H">681.29</GAML:attribute>
+    <GAML:attribute type="charge">3</GAML:attribute>
+    <GAML:Xdata label="131104_Berit_BSA2.15170.15170.3.spectrum" units="MASSTOCHARGERATIO" >
+    <GAML:values byteorder="INTEL" format="ASCII" numvalues="15">
+    178.054 192.959 210.765 213.088 221.085 225.044 242.186 244.166 299.062 301.188 343.237 355.069 359.028 373.17 429.089 
+
+    </GAML:values>
+    </GAML:Xdata>
+    <GAML:Ydata label="131104_Berit_BSA2.15170.15170.3.spectrum" units="UNKNOWN" >
+    <GAML:values byteorder="INTEL" format="ASCII" numvalues="15">
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+    </GAML:values>
+    </GAML:Ydata>
+</GAML:trace>
+</group></group>
+
+
+<!--   sequence=YNAGIVK -->
+    <group id="131104_Berit_BSA2.13178.13178.3" mh="762.655448" z="3" rt="null" expect="3.2E001" type="model" sumI="0.58" maxI="0.3" fI="0.003"  >
+    <protein expect="1.5" id="131104_Berit_BSA2.13178.13178.3.1" uid="131104_Berit_BSA2.13178.13178.3.1" sumI="0.58"  >
+    <file type="peptide"  />
+    <peptide start="1" end="7"   >
+    <domain id="131104_Berit_BSA2.13178.13178.3.1.1" start="0" end="7" expect="3.2E001" mh="764.43" delta="1.775" hyperscore="221" nextscore="221" y_score="1" y_ions="2" b_score="0" b_ions="0" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="YNAGIVK" missed_cleavages="0"  >
+    </domain>
+    </peptide>
+    </protein>
+    <group type="support" label="fragment ion mass spectrum">
+    <note label="Description">selectedProtein20.mgf scan 131104_Berit_BSA2.13178.13178.3 (charge 3)</note>
+<GAML:trace id="131104_Berit_BSA2.13178.13178.3" label="131104_Berit_BSA2.13178.13178.3.spectrum" type="tandem mass spectrum">
+    <GAML:attribute type="M+H">762.66</GAML:attribute>
+    <GAML:attribute type="charge">3</GAML:attribute>
+    <GAML:Xdata label="131104_Berit_BSA2.13178.13178.3.spectrum" units="MASSTOCHARGERATIO" >
+    <GAML:values byteorder="INTEL" format="ASCII" numvalues="17">
+    176.278 183.062 193.099 202.473 207.113 213.088 226.156 242.136 244.166 277.607 301.015 342.129 358.209 395.06 425.169 443.18 474.735 
+
+    </GAML:values>
+    </GAML:Xdata>
+    <GAML:Ydata label="131104_Berit_BSA2.13178.13178.3.spectrum" units="UNKNOWN" >
+    <GAML:values byteorder="INTEL" format="ASCII" numvalues="17">
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+    </GAML:values>
+    </GAML:Ydata>
+</GAML:trace>
+</group></group>
+
+<!--   sequence=LMQDLLLR -->
+    <group id="131104_Berit_BSA2.8977.8977.3" mh="999.725448" z="3" rt="null" expect="2.7E001" type="model" sumI="0.49" maxI="0.3" fI="0.003"  >
+    <protein expect="1.4" id="131104_Berit_BSA2.8977.8977.3.1" uid="131104_Berit_BSA2.8977.8977.3.1" sumI="0.49"  >
+    <file type="peptide"  />
+    <peptide start="1" end="8"   >
+    <domain id="131104_Berit_BSA2.8977.8977.3.1.1" start="0" end="8" expect="2.7E001" mh="1001.581" delta="1.856" hyperscore="230" nextscore="230" y_score="1" y_ions="1" b_score="0" b_ions="1" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="LMQDLLLR" missed_cleavages="0"  >
+    </domain>
+    </peptide>
+    </protein>
+    <group type="support" label="fragment ion mass spectrum">
+    <note label="Description">selectedProtein20.mgf scan 131104_Berit_BSA2.8977.8977.3 (charge 3)</note>
+<GAML:trace id="131104_Berit_BSA2.8977.8977.3" label="131104_Berit_BSA2.8977.8977.3.spectrum" type="tandem mass spectrum">
+    <GAML:attribute type="M+H">999.73</GAML:attribute>
+    <GAML:attribute type="charge">3</GAML:attribute>
+    <GAML:Xdata label="131104_Berit_BSA2.8977.8977.3.spectrum" units="MASSTOCHARGERATIO" >
+    <GAML:values byteorder="INTEL" format="ASCII" numvalues="10">
+    154.776 175.035 185.544 199.872 289.543 291.12 358.208 538.209 565.102 667.256 
+
+    </GAML:values>
+    </GAML:Xdata>
+    <GAML:Ydata label="131104_Berit_BSA2.8977.8977.3.spectrum" units="UNKNOWN" >
+    <GAML:values byteorder="INTEL" format="ASCII" numvalues="10">
+0 0 0 0 0 0 0 0 0 0 
+    </GAML:values>
+    </GAML:Ydata>
+</GAML:trace>
+</group></group>
+
+
+<!--   sequence=NGKPALR -->
+    <group id="131104_Berit_BSA2.9258.9258.3" mh="752.297389" z="3" rt="null" expect="1.0E001" type="model" sumI="0.57" maxI="0.3" fI="0.003"  >
+    <protein expect="1" id="131104_Berit_BSA2.9258.9258.3.1" uid="131104_Berit_BSA2.9258.9258.3.1" sumI="0.57"  >
+    <file type="peptide"  />
+    <peptide start="1" end="7"   >
+    <domain id="131104_Berit_BSA2.9258.9258.3.1.1" start="0" end="7" expect="1.0E001" mh="755.452" delta="3.155" hyperscore="276" nextscore="276" y_score="1" y_ions="2" b_score="0" b_ions="1" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="NGKPALR" missed_cleavages="0"  >
+    </domain>
+    </peptide>
+    </protein>
+    <group type="support" label="fragment ion mass spectrum">
+    <note label="Description">selectedProtein20.mgf scan 131104_Berit_BSA2.9258.9258.3 (charge 3)</note>
+<GAML:trace id="131104_Berit_BSA2.9258.9258.3" label="131104_Berit_BSA2.9258.9258.3.spectrum" type="tandem mass spectrum">
+    <GAML:attribute type="M+H">752.3</GAML:attribute>
+    <GAML:attribute type="charge">3</GAML:attribute>
+    <GAML:Xdata label="131104_Berit_BSA2.9258.9258.3.spectrum" units="MASSTOCHARGERATIO" >
+    <GAML:values byteorder="INTEL" format="ASCII" numvalues="15">
+    153.053 175.035 176.21 208.991 235.088 239.094 286.521 288.031 313.478 322.942 328.892 331.785 358.207 456.969 478.236 
+
+    </GAML:values>
+    </GAML:Xdata>
+    <GAML:Ydata label="131104_Berit_BSA2.9258.9258.3.spectrum" units="UNKNOWN" >
+    <GAML:values byteorder="INTEL" format="ASCII" numvalues="15">
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+    </GAML:values>
+    </GAML:Ydata>
+</GAML:trace>
+</group></group>
+
+<!--   sequence=LLEPLQK -->
+    <group id="131104_Berit_BSA2.16405.16405.3" mh="837.059552" z="3" rt="null" expect="1.7E002" type="model" sumI="0.55" maxI="0.3" fI="0.003"  >
+    <protein expect="2.2" id="131104_Berit_BSA2.16405.16405.3.1" uid="131104_Berit_BSA2.16405.16405.3.1" sumI="0.55"  >
+    <file type="peptide"  />
+    <peptide start="1" end="7"   >
+    <domain id="131104_Berit_BSA2.16405.16405.3.1.1" start="0" end="7" expect="1.7E002" mh="840.519" delta="3.459" hyperscore="142" nextscore="142" y_score="0" y_ions="1" b_score="0" b_ions="1" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="LLEPLQK" missed_cleavages="0"  >
+    </domain>
+    </peptide>
+    </protein>
+    <group type="support" label="fragment ion mass spectrum">
+    <note label="Description">selectedProtein20.mgf scan 131104_Berit_BSA2.16405.16405.3 (charge 3)</note>
+<GAML:trace id="131104_Berit_BSA2.16405.16405.3" label="131104_Berit_BSA2.16405.16405.3.spectrum" type="tandem mass spectrum">
+    <GAML:attribute type="M+H">837.06</GAML:attribute>
+    <GAML:attribute type="charge">3</GAML:attribute>
+    <GAML:Xdata label="131104_Berit_BSA2.16405.16405.3.spectrum" units="MASSTOCHARGERATIO" >
+    <GAML:values byteorder="INTEL" format="ASCII" numvalues="14">
+    183.113 211.145 245.096 284.125 294.179 300.158 308.15 325.185 357.179 367.162 391.235 480.285 511.241 524.291 
+
+    </GAML:values>
+    </GAML:Xdata>
+    <GAML:Ydata label="131104_Berit_BSA2.16405.16405.3.spectrum" units="UNKNOWN" >
+    <GAML:values byteorder="INTEL" format="ASCII" numvalues="14">
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+    </GAML:values>
+    </GAML:Ydata>
+</GAML:trace>
+</group></group>
+
+<!--   sequence=ALSNLSSR -->
+    <group id="131104_Berit_BSA2.13466.13466.3" mh="846.705448" z="3" rt="null" expect="4.8E001" type="model" sumI="0.58" maxI="0.3" fI="0.003"  >
+    <protein expect="1.7" id="131104_Berit_BSA2.13466.13466.3.1" uid="131104_Berit_BSA2.13466.13466.3.1" sumI="0.58"  >
+    <file type="peptide"  />
+    <peptide start="1" end="8"   >
+    <domain id="131104_Berit_BSA2.13466.13466.3.1.1" start="0" end="8" expect="4.8E001" mh="847.463" delta="0.758" hyperscore="202" nextscore="202" y_score="0" y_ions="2" b_score="0" b_ions="1" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="ALSNLSSR" missed_cleavages="0"  >
+    </domain>
+    </peptide>
+    </protein>
+    <group type="support" label="fragment ion mass spectrum">
+    <note label="Description">selectedProtein20.mgf scan 131104_Berit_BSA2.13466.13466.3 (charge 3)</note>
+<GAML:trace id="131104_Berit_BSA2.13466.13466.3" label="131104_Berit_BSA2.13466.13466.3.spectrum" type="tandem mass spectrum">
+    <GAML:attribute type="M+H">846.71</GAML:attribute>
+    <GAML:attribute type="charge">3</GAML:attribute>
+    <GAML:Xdata label="131104_Berit_BSA2.13466.13466.3.spectrum" units="MASSTOCHARGERATIO" >
+    <GAML:values byteorder="INTEL" format="ASCII" numvalues="16">
+    161.02 168.899 175.034 193.097 194.101 195.57 244.166 248.104 289.562 292.137 307.366 311.127 335.135 392.158 409.209 468.574 
+
+    </GAML:values>
+    </GAML:Xdata>
+    <GAML:Ydata label="131104_Berit_BSA2.13466.13466.3.spectrum" units="UNKNOWN" >
+    <GAML:values byteorder="INTEL" format="ASCII" numvalues="16">
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+    </GAML:values>
+    </GAML:Ydata>
+</GAML:trace>
+</group></group>
+
+<!--   sequence=SLFEEEVDK -->
+    <group id="131104_Berit_BSA2.21939.21939.3" mh="1095.335448" z="3" rt="null" expect="1.6E002" type="model" sumI="0.46" maxI="0.4" fI="0.004"  >
+    <protein expect="2.2" id="131104_Berit_BSA2.21939.21939.3.1" uid="131104_Berit_BSA2.21939.21939.3.1" sumI="0.46"  >
+    <file type="peptide"  />
+    <peptide start="1" end="9"   >
+    <domain id="131104_Berit_BSA2.21939.21939.3.1.1" start="0" end="9" expect="1.6E002" mh="1095.52" delta="0.185" hyperscore="144" nextscore="144" y_score="0" y_ions="1" b_score="0" b_ions="0" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="SLFEEEVDK" missed_cleavages="0"  >
+    </domain>
+    </peptide>
+    </protein>
+    <group type="support" label="fragment ion mass spectrum">
+    <note label="Description">selectedProtein20.mgf scan 131104_Berit_BSA2.21939.21939.3 (charge 3)</note>
+<GAML:trace id="131104_Berit_BSA2.21939.21939.3" label="131104_Berit_BSA2.21939.21939.3.spectrum" type="tandem mass spectrum">
+    <GAML:attribute type="M+H">1095.34</GAML:attribute>
+    <GAML:attribute type="charge">3</GAML:attribute>
+    <GAML:Xdata label="131104_Berit_BSA2.21939.21939.3.spectrum" units="MASSTOCHARGERATIO" >
+    <GAML:values byteorder="INTEL" format="ASCII" numvalues="9">
+    166.999 201.783 209.112 234.304 251.742 261.921 311.126 530.29 584.243 
+
+    </GAML:values>
+    </GAML:Xdata>
+    <GAML:Ydata label="131104_Berit_BSA2.21939.21939.3.spectrum" units="UNKNOWN" >
+    <GAML:values byteorder="INTEL" format="ASCII" numvalues="9">
+0 0 0 0 0 0 0 0 0 
+    </GAML:values>
+    </GAML:Ydata>
+</GAML:trace>
+</group></group>
+
+<!--   sequence=TASILDGLAK -->
+    <group id="131104_Berit_BSA2.19487.19487.2" mh="986.968911" z="2" rt="null" expect="4.9E002" type="model" sumI="0.54" maxI="0.3" fI="0.003"  >
+    <protein expect="2.7" id="131104_Berit_BSA2.19487.19487.2.1" uid="131104_Berit_BSA2.19487.19487.2.1" sumI="0.54"  >
+    <file type="peptide"  />
+    <peptide start="1" end="10"   >
+    <domain id="131104_Berit_BSA2.19487.19487.2.1.1" start="0" end="10" expect="4.9E002" mh="988.567" delta="1.598" hyperscore="90" nextscore="90" y_score="0" y_ions="0" b_score="0" b_ions="0" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="TASILDGLAK" missed_cleavages="0"  >
     </domain>
     </peptide>
     </protein>
     <group type="support" label="fragment ion mass spectrum">
     <note label="Description">selectedProtein20.mgf scan 131104_Berit_BSA2.19487.19487.2 (charge 2)</note>
 <GAML:trace id="131104_Berit_BSA2.19487.19487.2" label="131104_Berit_BSA2.19487.19487.2.spectrum" type="tandem mass spectrum">
-    <GAML:attribute type="M+H">492.98</GAML:attribute>
+    <GAML:attribute type="M+H">986.97</GAML:attribute>
     <GAML:attribute type="charge">2</GAML:attribute>
     <GAML:Xdata label="131104_Berit_BSA2.19487.19487.2.spectrum" units="MASSTOCHARGERATIO" >
     <GAML:values byteorder="INTEL" format="ASCII" numvalues="13">
-    152.105 167.093 174.594 219.1 249.749 299.102 311.126 332.548 352.917 396.546 450.725 490.368 494.212 
+    152.105 167.093 174.594 219.1 247.798 249.749 299.102 311.126 332.548 352.917 396.546 450.725 490.368 
 
     </GAML:values>
     </GAML:Xdata>
     <GAML:Ydata label="131104_Berit_BSA2.19487.19487.2.spectrum" units="UNKNOWN" >
     <GAML:values byteorder="INTEL" format="ASCII" numvalues="13">
-2479 13846 2237 2797 3519 2989 8568 2950 3615 3208 4022 3156 3391 
+0 0 0 0 0 0 0 0 0 0 0 0 0 
+    </GAML:values>
+    </GAML:Ydata>
+</GAML:trace>
+</group></group>
+
+<!--   sequence=QQER -->
+    <group id="131104_Berit_BSA2.11685.11685.3" mh="556.605448" z="3" rt="null" expect="2.1E002" type="model" sumI="0.59" maxI="0.3" fI="0.003"  >
+    <protein expect="2.3" id="131104_Berit_BSA2.11685.11685.3.1" uid="131104_Berit_BSA2.11685.11685.3.1" sumI="0.59"  >
+    <file type="peptide"  />
+    <peptide start="1" end="4"   >
+    <domain id="131104_Berit_BSA2.11685.11685.3.1.1" start="0" end="4" expect="2.1E002" mh="560.279" delta="3.673" hyperscore="130" nextscore="130" y_score="0" y_ions="1" b_score="0" b_ions="1" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="QQER" missed_cleavages="0"  >
+    </domain>
+    </peptide>
+    </protein>
+    <group type="support" label="fragment ion mass spectrum">
+    <note label="Description">selectedProtein20.mgf scan 131104_Berit_BSA2.11685.11685.3 (charge 3)</note>
+<GAML:trace id="131104_Berit_BSA2.11685.11685.3" label="131104_Berit_BSA2.11685.11685.3.spectrum" type="tandem mass spectrum">
+    <GAML:attribute type="M+H">556.61</GAML:attribute>
+    <GAML:attribute type="charge">3</GAML:attribute>
+    <GAML:Xdata label="131104_Berit_BSA2.11685.11685.3.spectrum" units="MASSTOCHARGERATIO" >
+    <GAML:values byteorder="INTEL" format="ASCII" numvalues="19">
+    158.092 175.119 177.102 193.097 215.114 219.123 226.119 233.12 243.11 246.127 258.146 262.139 274.124 305.985 325.186 332.171 340.198 346.167 358.116 
+
+    </GAML:values>
+    </GAML:Xdata>
+    <GAML:Ydata label="131104_Berit_BSA2.11685.11685.3.spectrum" units="UNKNOWN" >
+    <GAML:values byteorder="INTEL" format="ASCII" numvalues="19">
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+    </GAML:values>
+    </GAML:Ydata>
+</GAML:trace>
+</group></group>
+
+
+<!--   sequence=C[57.021]PYGSR -->
+    <group id="131104_Berit_BSA2.15702.15702.3" mh="795.385448" z="3" rt="null" expect="2.1E002" type="model" sumI="0.51" maxI="0.3" fI="0.003"  >
+    <protein expect="2.3" id="131104_Berit_BSA2.15702.15702.3.1" uid="131104_Berit_BSA2.15702.15702.3.1" sumI="0.51"  >
+    <file type="peptide"  />
+    <peptide start="1" end="6"   >
+    <domain id="131104_Berit_BSA2.15702.15702.3.1.1" start="0" end="6" expect="2.1E002" mh="796.341" delta="0.955" hyperscore="130" nextscore="130" y_score="0" y_ions="1" b_score="0" b_ions="1" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="CPYGSR" missed_cleavages="0"  >
+    <aa  type="C" at="1" modified="57.021" />
+    </domain>
+    </peptide>
+    </protein>
+    <group type="support" label="fragment ion mass spectrum">
+    <note label="Description">selectedProtein20.mgf scan 131104_Berit_BSA2.15702.15702.3 (charge 3)</note>
+<GAML:trace id="131104_Berit_BSA2.15702.15702.3" label="131104_Berit_BSA2.15702.15702.3.spectrum" type="tandem mass spectrum">
+    <GAML:attribute type="M+H">795.39</GAML:attribute>
+    <GAML:attribute type="charge">3</GAML:attribute>
+    <GAML:Xdata label="131104_Berit_BSA2.15702.15702.3.spectrum" units="MASSTOCHARGERATIO" >
+    <GAML:values byteorder="INTEL" format="ASCII" numvalues="12">
+    155.003 172.232 187.071 199.107 209.218 227.102 228.645 242.054 265.041 284.125 311.125 341.145 
+
+    </GAML:values>
+    </GAML:Xdata>
+    <GAML:Ydata label="131104_Berit_BSA2.15702.15702.3.spectrum" units="UNKNOWN" >
+    <GAML:values byteorder="INTEL" format="ASCII" numvalues="12">
+0 0 0 0 0 0 0 0 0 0 0 0 
+    </GAML:values>
+    </GAML:Ydata>
+</GAML:trace>
+</group></group>
+
+
+<!--   sequence=SLLQAR -->
+    <group id="131104_Berit_BSA2.11254.11254.3" mh="686.602363" z="3" rt="null" expect="1.1E002" type="model" sumI="0.5" maxI="0.3" fI="0.003"  >
+    <protein expect="2.1" id="131104_Berit_BSA2.11254.11254.3.1" uid="131104_Berit_BSA2.11254.11254.3.1" sumI="0.5"  >
+    <file type="peptide"  />
+    <peptide start="1" end="6"   >
+    <domain id="131104_Berit_BSA2.11254.11254.3.1.1" start="0" end="6" expect="1.1E002" mh="687.415" delta="0.812" hyperscore="160" nextscore="160" y_score="1" y_ions="2" b_score="0" b_ions="0" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="SLLQAR" missed_cleavages="0"  >
+    </domain>
+    </peptide>
+    </protein>
+    <group type="support" label="fragment ion mass spectrum">
+    <note label="Description">selectedProtein20.mgf scan 131104_Berit_BSA2.11254.11254.3 (charge 3)</note>
+<GAML:trace id="131104_Berit_BSA2.11254.11254.3" label="131104_Berit_BSA2.11254.11254.3.spectrum" type="tandem mass spectrum">
+    <GAML:attribute type="M+H">686.6</GAML:attribute>
+    <GAML:attribute type="charge">3</GAML:attribute>
+    <GAML:Xdata label="131104_Berit_BSA2.11254.11254.3.spectrum" units="MASSTOCHARGERATIO" >
+    <GAML:values byteorder="INTEL" format="ASCII" numvalues="11">
+    167.873 180.809 196.096 216.098 226.155 244.165 301.186 320.926 342.133 408.714 430.231 
+
+    </GAML:values>
+    </GAML:Xdata>
+    <GAML:Ydata label="131104_Berit_BSA2.11254.11254.3.spectrum" units="UNKNOWN" >
+    <GAML:values byteorder="INTEL" format="ASCII" numvalues="11">
+0 0 0 0 0 0 0 0 0 0 0 
     </GAML:values>
     </GAML:Ydata>
 </GAML:trace>

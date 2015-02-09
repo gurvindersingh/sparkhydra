@@ -61,7 +61,7 @@ public interface ITandemScoringAlgorithm extends IScoringAlgorithm {
      * @param tss  !null set of Theoretical Spectra ot score
       * @return !null score
      */
-    public IScoredScan handleScan(final Scorer scorer,  final RawPeptideScan scan, final IPolypeptide[] pPps, ITheoreticalSpectrumSet[] tss );
+    public IScoredScan handleScan(final Scorer scorer,  final IMeasuredSpectrum scan, final IPolypeptide[] pPps, ITheoreticalSpectrumSet[] tss );
 
 
     public int scoreScan(final Scorer scorer, final IonUseCounter pCounter, final ITheoreticalSpectrumSet[] pSpectrums, final IScoredScan pConditionedScan);

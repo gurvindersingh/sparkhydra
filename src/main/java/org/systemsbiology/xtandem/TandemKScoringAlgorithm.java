@@ -1,5 +1,6 @@
 package org.systemsbiology.xtandem;
 
+import com.lordjoe.distributed.hydra.test.*;
 import org.systemsbiology.hadoop.*;
 import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.ionization.*;
@@ -780,7 +781,8 @@ public class TandemKScoringAlgorithm extends TandemScoringAlgorithm {
         // debugging why are we not handling higher charges right
         if (charge > 1)
             XTandemUtilities.breakHere();
-
+        if(TestUtilities.isInterestingSpectrum(measured))
+            XTandemUtilities.breakHere();
 
         double product = 0;
         // for each theoretical peak

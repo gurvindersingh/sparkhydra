@@ -161,7 +161,7 @@ public class SparkScanDatabaseScorer {
         return keyedPeptides;
     }
 
-    public static JavaRDD<IMeasuredSpectrum> getMeasuredSpectra(final ElapsedTimer pTimer, final Properties pSparkProperties, final String pSpectra) {
+    public static JavaRDD<IMeasuredSpectrum> getMeasuredSpectra(final ElapsedTimer pTimer, final Properties pSparkProperties, final String pSpectra,XTandemMain application) {
         int max_spectra = SPECTRA_TO_SCORE;
         if (pSparkProperties.containsKey(MAX_SPECTRA_PROPERTY)) {
             max_spectra = Integer.parseInt(pSparkProperties.getProperty(MAX_SPECTRA_PROPERTY));
@@ -172,7 +172,7 @@ public class SparkScanDatabaseScorer {
         // System.out.println("Scoring " + databasePeptides.count() + " Peptides");
 
         // read spectra
-        JavaPairRDD<String, IMeasuredSpectrum> scans = SparkSpectrumUtilities.parseSpectrumFile(pSpectra);
+        JavaPairRDD<String, IMeasuredSpectrum> scans = SparkSpectrumUtilities.parseSpectrumFile(pSpectra,application);
 
         if (isDebuggingCountMade()) {
             long[] spectraCounts = new long[1];
@@ -261,7 +261,7 @@ public class SparkScanDatabaseScorer {
 
         SparkMapReduceScoringHandler handler = new SparkMapReduceScoringHandler(configStr, true);
 
-        JavaRDD<IMeasuredSpectrum> spectraToScore = getMeasuredSpectra(timer, sparkProperties, spectra);
+        JavaRDD<IMeasuredSpectrum> spectraToScore = getMeasuredSpectra(timer, sparkProperties, spectra,null);
 
         XTandemMain application  = handler.getApplication();
 

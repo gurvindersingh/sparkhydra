@@ -170,7 +170,7 @@ public class SparkScanScorer {
         return keyedPeptides;
     }
 
-    public static JavaRDD<IMeasuredSpectrum> getMeasuredSpectra(final ElapsedTimer pTimer, final Properties pSparkProperties, final String pSpectra) {
+    public static JavaRDD<IMeasuredSpectrum> getMeasuredSpectra(final ElapsedTimer pTimer, final Properties pSparkProperties, final String pSpectra,XTandemMain application) {
         int max_spectra = SPECTRA_TO_SCORE;
         if (pSparkProperties.containsKey(MAX_SPECTRA_PROPERTY)) {
             max_spectra = Integer.parseInt(pSparkProperties.getProperty(MAX_SPECTRA_PROPERTY));
@@ -181,7 +181,7 @@ public class SparkScanScorer {
         // System.out.println("Scoring " + databasePeptides.count() + " Peptides");
 
         // read spectra
-        JavaPairRDD<String, IMeasuredSpectrum> scans = SparkSpectrumUtilities.parseSpectrumFile(pSpectra);
+        JavaPairRDD<String, IMeasuredSpectrum> scans = SparkSpectrumUtilities.parseSpectrumFile(pSpectra,application);
 
         System.err.println("Scans Partitions " + scans.partitions().size());
         JavaRDD<IMeasuredSpectrum> spectraToScore = scans.values();
@@ -331,9 +331,10 @@ public class SparkScanScorer {
         //hadoopConfiguration.setLong(org.apache.hadoop.mapreduce.lib.input.FileInputFormat.SPLIT_MAXSIZE, 64 * 1024L * 1024L);
 
         //Configuration hadoopConfiguration2 = SparkUtilities.getHadoopConfiguration();  // did we change the original or a copy
+        SparkMapReduceScoringHandler handler = new SparkMapReduceScoringHandler(configStr, false);
 
         String spectra = SparkUtilities.buildPath(args[SPECTRA_INDEX]);
-        JavaRDD<IMeasuredSpectrum> spectraToScore = getMeasuredSpectra(timer, sparkProperties, spectra);
+        JavaRDD<IMeasuredSpectrum> spectraToScore = getMeasuredSpectra(timer, sparkProperties, spectra,handler.getApplication());
         System.err.println("number partitions " + spectraToScore.partitions().size());
 
         if (isDebuggingCountMade()) {
@@ -349,7 +350,6 @@ public class SparkScanScorer {
         }
 
 
-        SparkMapReduceScoringHandler handler = new SparkMapReduceScoringHandler(configStr, false);
 
         JavaPairRDD<BinChargeKey, IPolypeptide> keyedPeptides = getBinChargePeptides(sparkProperties, handler);
         timer.showElapsed("Mapped Peptides", System.err);

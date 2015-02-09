@@ -52,7 +52,7 @@ public class ParseMGFTest {
         }
         timer.showElapsed("read " + holder.size() + " spectra");
         List<IMeasuredSpectrum> specHolder = new ArrayList<IMeasuredSpectrum>();
-        MGFStringTupleToSpectrumTuple func = new MGFStringTupleToSpectrumTuple();
+        MGFStringTupleToSpectrumTuple func = new MGFStringTupleToSpectrumTuple(null);
         for (Tuple2<String,String> s : holder) {
             Tuple2<String, IMeasuredSpectrum> value = func.call(s);
             specHolder.add(value._2());

@@ -1,5 +1,6 @@
 package org.systemsbiology.xtandem;
 
+import com.lordjoe.distributed.hydra.test.*;
 import org.systemsbiology.sax.*;
 import org.systemsbiology.xtandem.hadoop.*;
 import org.systemsbiology.xtandem.mzml.*;
@@ -92,13 +93,16 @@ public class RawPeptideScan implements IMeasuredSpectrum, ISpectralScan, Compara
         return m_AddedValues.get(key);
     }
 
-    public void setId(final String pId) {
+    public void setId( String pId) {
         if (m_Id != null)
             throw new IllegalStateException("id can only be set once");
         if ("".equals(pId))
             return; // do nit try with empty string
         m_Id = toNumericId(pId);
         m_Label = fromRestOfId(pId);
+
+        if(TestUtilities.isInterestingSpectrum(this))
+             pId = null; // break here
     }
 
     /**

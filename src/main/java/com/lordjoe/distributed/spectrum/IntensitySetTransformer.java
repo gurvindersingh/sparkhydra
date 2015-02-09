@@ -45,6 +45,7 @@ public class IntensitySetTransformer {
 
 
     public static List<ISpectrumPeak> findRealPeaks(List<ISpectrumPeak> intensityReadings) {
+
         // no zero peaks
         if (isPeaksNormalized(intensityReadings))
             return intensityReadings;

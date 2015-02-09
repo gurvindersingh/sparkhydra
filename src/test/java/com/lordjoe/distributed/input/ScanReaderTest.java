@@ -30,7 +30,7 @@ public class ScanReaderTest {
 
             }
             else {
-                JavaPairRDD<String, IMeasuredSpectrum> parsed = SparkSpectrumUtilities.parseSpectrumFile(args[i]);
+                JavaPairRDD<String, IMeasuredSpectrum> parsed = SparkSpectrumUtilities.parseSpectrumFile(args[i],null);
                 SparkUtilities.showPairRDD(parsed);
             }
 

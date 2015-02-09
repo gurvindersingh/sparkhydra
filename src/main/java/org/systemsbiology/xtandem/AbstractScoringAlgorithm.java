@@ -436,7 +436,7 @@ public abstract class AbstractScoringAlgorithm implements ITandemScoringAlgorith
      * @return !null score
      */
     @Override
-    public IScoredScan handleScan(final Scorer scorer, final RawPeptideScan scan, final IPolypeptide[] pPps, ITheoreticalSpectrumSet[] tss) {
+    public IScoredScan handleScan(final Scorer scorer, final IMeasuredSpectrum scan, final IPolypeptide[] pPps, ITheoreticalSpectrumSet[] tss) {
         String id = scan.getId();
 //        for (int i = 0; i < pPps.length; i++) {
 //            IPolypeptide pp = pPps[i];
