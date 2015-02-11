@@ -137,6 +137,64 @@ public class VerboseMgfCleaner {
 
     }
 
+    private static Set<String> readSelectedTitles(File template) throws Exception {
+
+        Set<String> selectedTitles = new HashSet<String>();
+        LineNumberReader rdr = new LineNumberReader(new FileReader(template));
+        String line = rdr.readLine();
+        while (line != null) {
+            if (line.contains("TITLE=")) {
+                selectedTitles.add(line);
+            }
+            line = rdr.readLine();
+        }
+        rdr.close();
+
+        return selectedTitles;
+    }
+
+
+    private static void writeSelectedFullMGFS(final PrintWriter pOut, final InputStream pIs, File template) throws Exception {
+
+        Set<String> titles = readSelectedTitles(template);
+
+        int linesPerItem = 0;
+        int totalLines = 0;
+        int totalWritten = 0;
+        int totalBig = 0;
+        List<String> holder = new ArrayList<String>();
+
+        boolean saveHolder = false;
+        LineNumberReader rdr = new LineNumberReader(new InputStreamReader(pIs));
+        int scanCount = 0;
+        String line = rdr.readLine();
+        while (line != null) {
+            if(titles.contains(line))
+                saveHolder = true;
+            if (line.contains("BEGIN IONS")) {
+                if(saveHolder) {
+                    appendHolder(holder, pOut);
+                    totalWritten++;
+                    saveHolder = false;
+                }
+                holder.clear();
+               linesPerItem = 0;
+
+            }
+            holder.add(line);
+            line = rdr.readLine();
+            linesPerItem++;
+            totalLines++;
+        }
+        System.out.println("Read " + scanCount + " scans  wrote " + totalWritten +
+                        " total big " + totalBig +
+                        " total lines " + totalLines +
+                        " total written " + totalWritten
+        );
+        rdr.close();
+        pOut.close();
+    }
+
 
     private static void writeCleanMGFFile(final PrintWriter pOut, final InputStream pIs) throws Exception {
         int linesPerItem = 0;
@@ -155,7 +213,7 @@ public class VerboseMgfCleaner {
                 linesPerItem = 0;
                 totalWritten++;
             }
-             holder.add(line);
+            holder.add(line);
             line = rdr.readLine();
             linesPerItem++;
             totalLines++;
@@ -198,6 +256,9 @@ public class VerboseMgfCleaner {
     public static void main(String[] args) throws Exception {
         File in = new File(args[0]);
         File outFile = new File(args[1]);
+        File templateFile = null;
+        if (args.length > 2)
+            templateFile = new File(args[2]);
         PrintWriter out = new PrintWriter(new FileWriter(outFile));
 
         InputStream is = new FileInputStream(in);
@@ -214,7 +275,9 @@ public class VerboseMgfCleaner {
         // this routine chops the number of proteins at  MAX_PROTEINS
         // writeShorterFastaFile(out, is, MAX_PROTEINS);
 
-        writeCleanMGFFile(out, is);
+       // writeCleanMGFFile(out, is);
+
+        writeSelectedFullMGFS(out, is,templateFile);
     }
 
 

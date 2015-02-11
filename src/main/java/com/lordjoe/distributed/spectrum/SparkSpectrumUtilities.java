@@ -155,7 +155,15 @@ public class SparkSpectrumUtilities {
                 valueClass,
                 ctx.hadoopConfiguration()
         );
-        JavaPairRDD<String, IMeasuredSpectrum> spectra = spectraAsStrings.mapToPair(new MGFStringTupleToSpectrumTuple(application));
+
+        long[] counts = new long[1];
+        spectraAsStrings = SparkUtilities.persistAndCountPair("Spectra as read",spectraAsStrings,counts);
+
+        JavaPairRDD<String, IMeasuredSpectrum> spectra = spectraAsStrings.flatMapToPair(new MGFStringTupleToSpectrumTuple(application));
+
+        long[] spectraCounts = new long[1];
+        spectra = SparkUtilities.persistAndCountPair("Spectra as read",spectra,spectraCounts);
+
         return spectra;
     }
 
@@ -186,7 +194,7 @@ public class SparkSpectrumUtilities {
         spectraAsStrings = SparkUtilities.persist(spectraAsStrings);
         long spectraStringCount = spectraAsStrings.count();
 
-        JavaPairRDD<String, IMeasuredSpectrum> spectra = spectraAsStrings.mapToPair(new MGFStringTupleToSpectrumTuple(application));
+        JavaPairRDD<String, IMeasuredSpectrum> spectra = spectraAsStrings.flatMapToPair(new MGFStringTupleToSpectrumTuple(application));
         spectra = SparkUtilities.persist(spectra);
         long spectraCount = spectra.count();
 
@@ -216,7 +224,7 @@ public class SparkSpectrumUtilities {
                 keyClass,
                 valueClass
         );
-        JavaPairRDD<String, IMeasuredSpectrum> spectra = spectraAsStrings.mapToPair(new MGFStringTupleToSpectrumTuple(application));
+        JavaPairRDD<String, IMeasuredSpectrum> spectra = spectraAsStrings.flatMapToPair(new MGFStringTupleToSpectrumTuple(application));
         return spectra;
     }
 

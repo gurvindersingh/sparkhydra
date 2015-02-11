@@ -18,7 +18,14 @@ public class TestUtilities {
     public static final Set<String> INTERESTING_PEPTIDES = new HashSet<String>(Arrays.asList(INTERESTING_PEPTIDES_STRS));
 
 
-    public static final String[] INTERESTING_SPECTRUM_STRS = { "131104_Berit_BSA2.17729.17729.2"};
+    public static final String[] INTERESTING_SPECTRUM_STRS = {
+            "131104_Berit_BSA2.17729.17729.2",     //  sequence=AVPGAIVR score 550   ;
+            "13697",     //  sequence=AVPGAIVR score 550   131104_Berit_BSA2.17729.17729.2";
+             "62963", // sequence=SVLRPDVDLR   score 720
+            "30788" //   sequence=Q[-17.026]TLVAQGTLR    hyperscore="629"
+
+    } ;
+
     public static final Set<String> INTERESTING_SPECTRUMS = new HashSet<String>(Arrays.asList(INTERESTING_SPECTRUM_STRS));
 
 

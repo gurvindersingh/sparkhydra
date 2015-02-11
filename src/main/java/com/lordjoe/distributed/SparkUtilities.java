@@ -4,7 +4,6 @@ import com.lordjoe.distributed.database.*;
 import com.lordjoe.distributed.hydra.test.*;
 import com.lordjoe.distributed.output.*;
 import com.lordjoe.distributed.spark.*;
-import com.lordjoe.distributed.spark.MachineUseAccumulator.*;
 import org.apache.hadoop.conf.*;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.*;

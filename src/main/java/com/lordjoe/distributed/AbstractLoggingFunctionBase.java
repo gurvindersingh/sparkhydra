@@ -28,6 +28,7 @@ public abstract class AbstractLoggingFunctionBase implements Serializable {
     private transient boolean logged;   // transient so every machine keeps its own
     private transient long numberCalls;   // transient so every machine keeps its own
     private SparkAccumulators accumulators; // member so it will be serialized from the executor
+    private transient long startTime;     // transient so every machine keeps its own
     private transient long totalTime;
     private transient long accumulatedTime;
 
@@ -43,7 +44,7 @@ public abstract class AbstractLoggingFunctionBase implements Serializable {
             String className = getClass().getSimpleName();
             SparkAccumulators.createFunctionAccumulator(className);
             SparkAccumulators.createAccumulator(className);
-         }
+        }
     }
 
     public long getTotalTime() {
@@ -51,7 +52,21 @@ public abstract class AbstractLoggingFunctionBase implements Serializable {
     }
 
 
+    public long getRunningTimeMillisec() {
+        return getStartTIme() - System.currentTimeMillis();
+    }
 
+    /**
+     * really the time this function was first called as a local copy
+     *
+     * @return
+     */
+    public long getStartTIme() {
+        if (startTime == 0) {
+            startTime = System.currentTimeMillis();
+        }
+        return startTime;
+    }
 
     public long getAccumulatedTime() {
         return accumulatedTime;
@@ -63,12 +78,12 @@ public abstract class AbstractLoggingFunctionBase implements Serializable {
     }
 
 
-    public long getAndClearAccumulatedTime()
-    {
+    public long getAndClearAccumulatedTime() {
         long ret = accumulatedTime;
         accumulatedTime = 0;
         return ret;
     }
+
     /**
      * Override this to prevent logging
      *
@@ -104,17 +119,21 @@ public abstract class AbstractLoggingFunctionBase implements Serializable {
     public static final double HOUR_IN_NANOSEC = MIN_IN_NANOSEC * 60;
     public static final double DAY_IN_NANOSEC = HOUR_IN_NANOSEC * 24;
 
-    public static String formatNanosec(long timeNanosec)   {
-        if(timeNanosec < 10 * SEC_IN_NANOSEC)
+    public static String formatNanosec(long timeNanosec) {
+        if (timeNanosec < 10 * SEC_IN_NANOSEC)
             return String.format("%10.2f", timeNanosec / MILLISEC_IN_NANOSEC) + " msec";
-        if(timeNanosec < 10 * MIN_IN_NANOSEC)
-              return String.format("%10.2f", timeNanosec / SEC_IN_NANOSEC) + " sec";
-        if(timeNanosec < 10 * HOUR_IN_NANOSEC)
-              return String.format("%10.2f", timeNanosec / MIN_IN_NANOSEC) + " min";
-        if(timeNanosec < 10 * DAY_IN_NANOSEC)
-              return String.format("%10.2f", timeNanosec / HOUR_IN_NANOSEC) + " hour";
+        if (timeNanosec < 10 * MIN_IN_NANOSEC)
+            return String.format("%10.2f", timeNanosec / SEC_IN_NANOSEC) + " sec";
+        if (timeNanosec < 10 * HOUR_IN_NANOSEC)
+            return String.format("%10.2f", timeNanosec / MIN_IN_NANOSEC) + " min";
+        if (timeNanosec < 10 * DAY_IN_NANOSEC)
+            return String.format("%10.2f", timeNanosec / HOUR_IN_NANOSEC) + " hour";
         return String.format("%10.2f", timeNanosec / DAY_IN_NANOSEC) + " days";
-     }
+    }
+
+    public static String formatMillisec(long timeMillisec) {
+        return formatNanosec(timeMillisec * (long)MILLISEC_IN_NANOSEC);
+    }
 
     public void reportCalls() {
         if (!isFunctionCallsLogged())
@@ -131,7 +150,7 @@ public abstract class AbstractLoggingFunctionBase implements Serializable {
             long numberCalls1 = getNumberCalls();
             if (numberCalls1 > 0 && numberCalls1 % getCallReportInterval() == 0) {
                 System.err.println("Calling Function " + className + " " + numberCalls1 / 1000 + "k times");
-                System.err.println(" Function took " + className + " " + formatNanosec(totalTime));
+                System.err.println(" Function took " + className + " " + formatNanosec(totalTime) + " running for " + formatMillisec(getRunningTimeMillisec()));
              }
         }
         incrementNumberCalled();
@@ -140,7 +159,7 @@ public abstract class AbstractLoggingFunctionBase implements Serializable {
         if (accumulators1 == null)
             return;
         long time = getAndClearAccumulatedTime();
-        accumulators1.incrementFunctionAccumulator(className,time);
+        accumulators1.incrementFunctionAccumulator(className, time);
 //        if ( accumulators1.isAccumulatorRegistered(className)) {
 //            accumulators1.incrementAccumulator(className);
 //        }
@@ -153,29 +172,29 @@ public abstract class AbstractLoggingFunctionBase implements Serializable {
 //        }
     }
 
-
-    /**
-     * Todo Why might this help SLewis - added only to debug serialization
-     * Always treat de-serialization as a full-blown constructor, by
-     * validating the final state of the de-serialized object.
-     */
-    private void readObject(
-            ObjectInputStream aInputStream
-    ) throws ClassNotFoundException, IOException {
-        //always perform the default de-serialization first
-        aInputStream.defaultReadObject();
-    }
-
-    /**
-     * Todo Why might this help SLewis - added only to debug serialization
-     * This is the default implementation of writeObject.
-     * Customise if necessary.
-     */
-    private void writeObject(
-            ObjectOutputStream aOutputStream
-    ) throws IOException {
-        //perform the default serialization for all non-transient, non-static fields
-        aOutputStream.defaultWriteObject();
-    }
+//
+//    /**
+//     * Todo Why might this help SLewis - added only to debug serialization
+//     * Always treat de-serialization as a full-blown constructor, by
+//     * validating the final state of the de-serialized object.
+//     */
+//    private void readObject(
+//            ObjectInputStream aInputStream
+//    ) throws ClassNotFoundException, IOException {
+//        //always perform the default de-serialization first
+//        aInputStream.defaultReadObject();
+//    }
+//
+//    /**
+//     * Todo Why might this help SLewis - added only to debug serialization
+//     * This is the default implementation of writeObject.
+//     * Customise if necessary.
+//     */
+//    private void writeObject(
+//            ObjectOutputStream aOutputStream
+//    ) throws IOException {
+//        //perform the default serialization for all non-transient, non-static fields
+//        aOutputStream.defaultWriteObject();
+//    }
 
 }

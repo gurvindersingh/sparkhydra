@@ -1,6 +1,7 @@
 package com.lordjoe.distributed.spark;
 
 import com.lordjoe.distributed.*;
+import com.lordjoe.distributed.hydra.test.*;
 import com.lordjoe.utilities.*;
 import org.apache.spark.*;
 import org.apache.spark.api.java.*;
@@ -35,11 +36,14 @@ public class SparkAccumulators implements Serializable {
 
     public static void createInstance() {
         instance = new SparkAccumulators();
+        for (int i = 0; i < TestUtilities.INTERESTING_SPECTRUM_STRS.length; i++) {
+            String id = TestUtilities.INTERESTING_SPECTRUM_STRS[i];
+            instance.createSpecialAccumulator(id);
+        }
 //        for (int i = 0; i < MAX_TRACKED_THREADS; i++) {
 //            //noinspection AccessStaticViaInstance
 //            instance.createAccumulator(ThreadUseLogger.getThreadAccumulatorName(i));
 //        }
-
 //        instance.createMachineAccumulator();
     }
 
@@ -52,7 +56,9 @@ public class SparkAccumulators implements Serializable {
      */
     private final Map<String, Accumulator<Long>> accumulators = new HashMap<String, Accumulator<Long>>();
     private final Map<String, Accumulator<MachineUseAccumulator>> functionaccumulators = new HashMap<String, Accumulator<MachineUseAccumulator>>();
-//    private Accumulator<Set<String>> machines;
+    // not sure what these are used for but thay are allowed
+    private final Map<String, Accumulator> specialaccumulators = new HashMap<String, Accumulator>();
+    //    private Accumulator<Set<String>> machines;
     private transient Set<String> deliveredMessages = new HashSet<String>();
 
     /**
@@ -61,26 +67,14 @@ public class SparkAccumulators implements Serializable {
      *
      * @param out where to append
      */
-    public static void showAccumulators(Appendable out,ElapsedTimer totalTIme) {
+    public static void showAccumulators(Appendable out, ElapsedTimer totalTIme) {
         try {
             SparkAccumulators me = getInstance();
-            List<String> accumulatorNames = me.getAccumulatorNames();
-            for (String accumulatorName : accumulatorNames) {
-                Accumulator<Long> accumulator = me.getAccumulator(accumulatorName);
-                Long value = accumulator.value();
-                //noinspection StringConcatenationInsideStringBufferAppend
-                out.append(accumulatorName + " " + SparkUtilities.formatLargeNumber(value) + "\n");
-            }
+            showAccumulators(out, me);
 
-            MachineUseAccumulator totalCalls = new MachineUseAccumulator();
-            List<String> functionAccumulatorNames = me.getFunctionAccumulatorNames();
-              for (String accumulatorName : functionAccumulatorNames) {
-                  Accumulator<MachineUseAccumulator> accumulator = me.getFunctionAccumulator(accumulatorName);
-                  MachineUseAccumulator value = accumulator.value();
-                   totalCalls.addAll(value);
-                      //noinspection StringConcatenationInsideStringBufferAppend
-                  out.append(accumulatorName + "\n" + value + "\n");
-              }
+            MachineUseAccumulator totalCalls = showMachineUseAccumulators(out, me);
+
+            showSpecialAccumulators(out, me);
 
             out.append("Total all Functions\n" + totalCalls.toString() + "\n");
             out.append(totalTIme.formatElapsed("Total Run Time"));
@@ -92,7 +86,43 @@ public class SparkAccumulators implements Serializable {
         }
     }
 
+    public static void showAccumulators(final Appendable out, final SparkAccumulators pMe) throws IOException {
+        List<String> accumulatorNames = pMe.getAccumulatorNames();
+        for (String accumulatorName : accumulatorNames) {
+            Accumulator<Long> accumulator = pMe.getAccumulator(accumulatorName);
+            Long value = accumulator.value();
+            //noinspection StringConcatenationInsideStringBufferAppend
+            out.append(accumulatorName + " " + SparkUtilities.formatLargeNumber(value) + "\n");
+        }
+    }
 
+    public static MachineUseAccumulator showMachineUseAccumulators(final Appendable out, final SparkAccumulators pMe) throws IOException {
+        MachineUseAccumulator totalCalls = new MachineUseAccumulator();
+        List<String> functionAccumulatorNames = pMe.getFunctionAccumulatorNames();
+        for (String accumulatorName : functionAccumulatorNames) {
+            Accumulator<MachineUseAccumulator> accumulator = pMe.getFunctionAccumulator(accumulatorName);
+            MachineUseAccumulator value = accumulator.value();
+            totalCalls.addAll(value);
+            //noinspection StringConcatenationInsideStringBufferAppend
+            out.append(accumulatorName + "\n" + value + "\n");
+        }
+        return totalCalls;
+    }
+
+    public static void showSpecialAccumulators(final Appendable out, final SparkAccumulators pMe) throws IOException {
+        List<String> specialAccumulatorNames = pMe.getSpecialAccumulatorNames();
+        for (String accumulatorName : specialAccumulatorNames) {
+            Accumulator accumulator = pMe.getSpecialAccumulator(accumulatorName);
+            Object value = accumulator.value();
+            if (value instanceof SpectrumScoringAccumulator) {
+                SpectrumScoringAccumulator spectr = (SpectrumScoringAccumulator) value;
+                if(spectr.getTotalCalls() == 0)
+                    continue;
+            }
+            //noinspection StringConcatenationInsideStringBufferAppend
+            out.append(accumulatorName + "\n" + value.toString() + "\n");
+        }
+    }
 
 
     /**
@@ -121,11 +151,23 @@ public class SparkAccumulators implements Serializable {
         if (me.functionaccumulators.get(acc) != null)
             return; // already done - should an exception be thrown
         JavaSparkContext currentContext = SparkUtilities.getCurrentContext();
-        Accumulator<MachineUseAccumulator> accumulator = currentContext.accumulator(new MachineUseAccumulator() , "function:" + acc, MachineUseAccumulator.PARAM_INSTANCE);
-
+        Accumulator<MachineUseAccumulator> accumulator = currentContext.accumulator(new MachineUseAccumulator(), "function:" + acc, MachineUseAccumulator.PARAM_INSTANCE);
         me.functionaccumulators.put(acc, accumulator);
     }
 
+    /**
+     * must be called in the Executor before accumulators can be used
+     *
+     * @param acc
+     */
+    public static void createSpecialAccumulator(String id) {
+        SparkAccumulators me = getInstance();
+        if (me.specialaccumulators.get(id) != null)
+            return; // already done - should an exception be thrown
+        JavaSparkContext currentContext = SparkUtilities.getCurrentContext();
+        Accumulator<SpectrumScoringAccumulator> accumulator = currentContext.accumulator(new SpectrumScoringAccumulator(id), "scoring:" + id, SpectrumScoringAccumulator.PARAM_INSTANCE);
+        me.specialaccumulators.put(id, accumulator);
+    }
 
     /**
      * append lines for all accumulators to System.out
@@ -133,13 +175,13 @@ public class SparkAccumulators implements Serializable {
      */
     public static void showAccumulators(ElapsedTimer totalTime) {
         System.out.println("=========================================");
-             System.out.println("====  Accululators              =========");
-             System.out.println("=========================================");
-        showAccumulators(System.out,totalTime);
-        PrintWriter  savedAccumulators = SparkUtilities.getHadoopPrintWriter("Accumulators.txt");
-        showAccumulators(savedAccumulators,totalTime);
+        System.out.println("====  Accululators              =========");
+        System.out.println("=========================================");
+        showAccumulators(System.out, totalTime);
+        PrintWriter savedAccumulators = SparkUtilities.getHadoopPrintWriter("Accumulators.txt");
+        showAccumulators(savedAccumulators, totalTime);
         savedAccumulators.close();
-      }
+    }
 
 
 //    protected void createMachineAccumulator() {
@@ -170,16 +212,28 @@ public class SparkAccumulators implements Serializable {
         Collections.sort(keys);  // alphapetize
         return keys;
     }
+
     /**
-      * return all registerd aaccumlators
-      *
-      * @return
-      */
-     public List<String> getFunctionAccumulatorNames() {
-         List<String> keys = new ArrayList<String>(functionaccumulators.keySet());
-         Collections.sort(keys);  // alphapetize
-         return keys;
-     }
+     * return all registerd accumulators
+     *
+     * @return
+     */
+    public List<String> getFunctionAccumulatorNames() {
+        List<String> keys = new ArrayList<String>(functionaccumulators.keySet());
+        Collections.sort(keys);  // alphabetize
+        return keys;
+    }
+
+    /**
+     * return all special accumulators
+     *
+     * @return
+     */
+    public List<String> getSpecialAccumulatorNames() {
+        List<String> keys = new ArrayList<String>(specialaccumulators.keySet());
+        Collections.sort(keys);  // alphabetize
+        return keys;
+    }
 
 //    /**
 //     * how much work are we spreading across threads
@@ -208,11 +262,11 @@ public class SparkAccumulators implements Serializable {
         Accumulator<Long> ret = accumulators.get(acc);
         if (ret == null) {
             String message = "Accumulators need to be created in advance in the executor - cannot get " + acc;
-            if(!deliveredMessages.contains(message))   {
+            if (!deliveredMessages.contains(message)) {
                 System.err.println(message);
                 deliveredMessages.add(message);
             }
-         }
+        }
         return ret;
     }
 
@@ -225,11 +279,32 @@ public class SparkAccumulators implements Serializable {
         Accumulator<MachineUseAccumulator> ret = functionaccumulators.get(acc);
         if (ret == null) {
             String message = "Function Accumulators need to be created in advance in the executor - cannot get " + acc;
-            if(!deliveredMessages.contains(message))   {
+            if (!deliveredMessages.contains(message)) {
                 System.err.println(message);
                 deliveredMessages.add(message);
             }
-         }
+        }
+        return ret;
+    }
+
+
+    public void addSpecialAccumulator(String name, Accumulator added) {
+        specialaccumulators.put(name, added);
+    }
+
+    /**
+     * @param acc name of am existing special accumulator
+     * @return !null existing accumulator
+     */
+    public Accumulator getSpecialAccumulator(String acc) {
+        Accumulator<MachineUseAccumulator> ret = specialaccumulators.get(acc);
+        if (ret == null) {
+            String message = "Special Accumulators need to be created in advance in the executor - cannot get " + acc;
+            if (!deliveredMessages.contains(message)) {
+                System.err.println(message);
+                deliveredMessages.add(message);
+            }
+        }
         return ret;
     }
 
@@ -265,8 +340,8 @@ public class SparkAccumulators implements Serializable {
      */
     public void incrementAccumulator(String acc, long added) {
         Accumulator<Long> accumulator = getAccumulator(acc);
-        if(accumulator != null)
-             accumulator.add(added);
+        if (accumulator != null)
+            accumulator.add(added);
     }
 
 
@@ -275,8 +350,8 @@ public class SparkAccumulators implements Serializable {
      *
      * @param acc
      */
-    public void incrementFunctionAccumulator(String acc,long totalTme) {
-        incrementFunctionAccumulator(acc,totalTme, 1);
+    public void incrementFunctionAccumulator(String acc, long totalTme) {
+        incrementFunctionAccumulator(acc, totalTme, 1);
     }
 
     /**
@@ -285,10 +360,10 @@ public class SparkAccumulators implements Serializable {
      * @param acc   name of am existing accumulator
      * @param added amount to add
      */
-    public void incrementFunctionAccumulator(String acc,long totalTme, int added) {
+    public void incrementFunctionAccumulator(String acc, long totalTme, int added) {
         Accumulator<MachineUseAccumulator> accumulator = getFunctionAccumulator(acc);
-        if(accumulator != null)
-             accumulator.add(new MachineUseAccumulator(added,totalTme));
+        if (accumulator != null)
+            accumulator.add(new MachineUseAccumulator(added, totalTme));
     }
 
 }

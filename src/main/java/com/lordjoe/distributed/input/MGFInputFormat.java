@@ -24,8 +24,11 @@ import java.util.*;
  * nice enough to put the begin and end tags on separate lines
  */
 public class MGFInputFormat extends FileInputFormat<String, String> implements Serializable {
+    public static final int MAX_NORMAL_SPLITS = 20000;
+    public static final boolean NEVER_SPLIT = false; // false // IF True process on one machine - used to see why we have too many operations SLewis
 
     private String m_Extension = "mgf";
+
 
     public MGFInputFormat() {
 
@@ -36,9 +39,9 @@ public class MGFInputFormat extends FileInputFormat<String, String> implements S
 
         List<InputSplit> splits = super.getSplits(job);
         // make sure not too many splits
-        while(splits.size() > 200)  {
+        while (splits.size() > MAX_NORMAL_SPLITS) {
             Configuration configuration = job.getConfiguration();
-            long oldMax = configuration.getLong(FileInputFormat.SPLIT_MAXSIZE,Integer.MAX_VALUE);
+            long oldMax = configuration.getLong(FileInputFormat.SPLIT_MAXSIZE, Integer.MAX_VALUE);
             configuration.setLong(FileInputFormat.SPLIT_MAXSIZE, oldMax * 2);
             splits = super.getSplits(job);
         }
@@ -64,6 +67,9 @@ public class MGFInputFormat extends FileInputFormat<String, String> implements S
 
     @Override
     protected boolean isSplitable(JobContext context, Path file) {
+        if (NEVER_SPLIT)
+            return false; // todo take out - for test only
+
         final String lcName = file.getName().toLowerCase();
         //noinspection RedundantIfStatement
         if (lcName.endsWith("gz"))
@@ -84,7 +90,7 @@ public class MGFInputFormat extends FileInputFormat<String, String> implements S
         private long m_End;
         private long current;
         private LineReader m_Input;
-        FSDataInputStream m_RealFile;
+        private FSDataInputStream m_RealFile;
         private String key = null;
         private String value = null;
         private Text buffer; // must be
@@ -111,6 +117,8 @@ public class MGFInputFormat extends FileInputFormat<String, String> implements S
             // open the file and seek to the m_Start of the split
             m_RealFile = fs.open(split.getPath());
             if (codec != null) {
+                if (true)
+                    throw new UnsupportedOperationException("We cannot handle compressed streams " + codec.getClass());
                 CompressionInputStream inputStream = codec.createInputStream(m_RealFile);
                 m_Input = new LineReader(inputStream);
                 m_End = Long.MAX_VALUE;
@@ -171,6 +179,16 @@ public class MGFInputFormat extends FileInputFormat<String, String> implements S
                 }
                 newSize = m_Input.readLine(getBuffer());
             }
+            // start a new spectrum - are we at the end
+            current = m_RealFile.getPos();
+            // we are done
+            if (current > m_End) {
+                key = null;
+                value = null;
+                return false;
+             }
+
+
             if (newSize == 0) {
                 key = null;
                 value = null;
@@ -187,7 +205,7 @@ public class MGFInputFormat extends FileInputFormat<String, String> implements S
                 newSize = m_Input.readLine(buffer);
             }
 
-             value = sb.toString();
+            value = sb.toString();
 
             if (sb.length() == 0) {
                 key = null;

@@ -183,7 +183,10 @@ public class SparkScanScorer {
         // read spectra
         JavaPairRDD<String, IMeasuredSpectrum> scans = SparkSpectrumUtilities.parseSpectrumFile(pSpectra,application);
 
-        System.err.println("Scans Partitions " + scans.partitions().size());
+        int numberPartitions = scans.partitions().size();
+        System.err.println("Scans Partitions " + numberPartitions);
+        if(numberPartitions == 1)
+            scans = SparkUtilities.coalesce(scans) ;
         JavaRDD<IMeasuredSpectrum> spectraToScore = scans.values();
 
         // drop bad ids

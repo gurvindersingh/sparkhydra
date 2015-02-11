@@ -809,15 +809,20 @@ public class SparkMapReduceScoringHandler implements Serializable {
         }
     }
 
-    public class CombineScoredScanWithScore extends AbstractLoggingFunction2<IScoredScan, Tuple2<IPolypeptide, IMeasuredSpectrum>, IScoredScan> {
+    public class
+            CombineScoredScanWithScore extends AbstractLoggingFunction2<IScoredScan, Tuple2<IPolypeptide, IMeasuredSpectrum>, IScoredScan> {
         @Override
         public IScoredScan doCall(final IScoredScan v1, final Tuple2<IPolypeptide, IMeasuredSpectrum> v2) throws Exception {
             Tuple2<IPolypeptide, IMeasuredSpectrum> toScore = v2;
             IMeasuredSpectrum spec = toScore._2();
+            String id = spec.getId();
             IPolypeptide pp = toScore._1();
 
             if (TestUtilities.isInterestingSpectrum(spec)) {
-                pp = toScore._1(); // break here
+                Accumulator<SpectrumScoringAccumulator> specialAccumulator =  (Accumulator<SpectrumScoringAccumulator>)SparkAccumulators.getInstance().getSpecialAccumulator(id);
+
+                specialAccumulator.add(new SpectrumScoringAccumulator(id,pp.toString(),1));
+
             }
             if (TestUtilities.isInterestingPeptide(pp)) {
                 pp = toScore._1(); // break here
