@@ -5,11 +5,11 @@
 </bioml>
 
 <!--   sequence=VSYAVYNR -->
-    <group id="131104_Berit_BSA2.17729.17729.2" mh="969.542724" z="2" rt="null" expect="4.8E002" type="model" sumI="0.52" maxI="0.3" fI="0.003"  >
-    <protein expect="2.7" id="131104_Berit_BSA2.17729.17729.2.1" uid="131104_Berit_BSA2.17729.17729.2.1" sumI="0.52"  >
+    <group id="131104_Berit_BSA2.17729.17729.2" mh="969.542724" z="2" rt="null" expect="6.0E002" type="model" sumI="0.5" maxI="0.4" fI="0.004"  >
+    <protein expect="2.8" id="131104_Berit_BSA2.17729.17729.2.1" uid="131104_Berit_BSA2.17729.17729.2.1" sumI="0.5"  >
     <file type="peptide"  />
     <peptide start="1" end="8"   >
-    <domain id="131104_Berit_BSA2.17729.17729.2.1.1" start="0" end="8" expect="4.8E002" mh="971.495" delta="1.952" hyperscore="91" nextscore="100" y_score="0" y_ions="0" b_score="0" b_ions="0" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="VSYAVYNR" missed_cleavages="0"  >
+    <domain id="131104_Berit_BSA2.17729.17729.2.1.1" start="0" end="8" expect="6.0E002" mh="971.495" delta="1.952" hyperscore="80" nextscore="100" y_score="0" y_ions="0" b_score="0" b_ions="0" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="VSYAVYNR" missed_cleavages="0"  >
     </domain>
     </peptide>
     </protein>
@@ -26,18 +26,18 @@
     </GAML:Xdata>
     <GAML:Ydata label="131104_Berit_BSA2.17729.17729.2.spectrum" units="UNKNOWN" >
     <GAML:values byteorder="INTEL" format="ASCII" numvalues="12">
-0 0 0 0 0 0 0 0 0 0 0 0 
+2764 2518 2978 2576 3750 18967 3819 3382 3949 4276 5027 3731 
     </GAML:values>
     </GAML:Ydata>
 </GAML:trace>
 </group></group>
 
 <!--   sequence=MVQMER -->
-    <group id="131104_Berit_BSA2.13019.13019.2" mh="793.322724" z="2" rt="null" expect="3.6E001" type="model" sumI="0.51" maxI="0.3" fI="0.003"  >
-    <protein expect="1.6" id="131104_Berit_BSA2.13019.13019.2.1" uid="131104_Berit_BSA2.13019.13019.2.1" sumI="0.51"  >
+    <group id="131104_Berit_BSA2.13019.13019.2" mh="793.322724" z="2" rt="null" expect="3.5E001" type="model" sumI="0.51" maxI="0.3" fI="0.003"  >
+    <protein expect="1.5" id="131104_Berit_BSA2.13019.13019.2.1" uid="131104_Berit_BSA2.13019.13019.2.1" sumI="0.51"  >
     <file type="peptide"  />
     <peptide start="1" end="6"   >
-    <domain id="131104_Berit_BSA2.13019.13019.2.1.1" start="0" end="6" expect="3.6E001" mh="793.37" delta="0.047" hyperscore="217" nextscore="104" y_score="1" y_ions="1" b_score="0" b_ions="0" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="MVQMER" missed_cleavages="0"  >
+    <domain id="131104_Berit_BSA2.13019.13019.2.1.1" start="0" end="6" expect="3.5E001" mh="793.37" delta="0.047" hyperscore="217" nextscore="100" y_score="1" y_ions="1" b_score="0" b_ions="0" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="MVQMER" missed_cleavages="0"  >
     </domain>
     </peptide>
     </protein>
@@ -54,18 +54,18 @@
     </GAML:Xdata>
     <GAML:Ydata label="131104_Berit_BSA2.13019.13019.2.spectrum" units="UNKNOWN" >
     <GAML:values byteorder="INTEL" format="ASCII" numvalues="11">
-0 0 0 0 0 0 0 0 0 0 0 
+2705 2082 1979 2821 6603 4556 3737 3706 3868 3500 16517 
     </GAML:values>
     </GAML:Ydata>
 </GAML:trace>
 </group></group>
 
 <!--   sequence=CKPAVSR -->
-    <group id="131104_Berit_BSA2.5671.5671.2" mh="817.317847" z="2" rt="null" expect="1.2E001" type="model" sumI="0.57" maxI="0.3" fI="0.003"  >
-    <protein expect="1.1" id="131104_Berit_BSA2.5671.5671.2.1" uid="131104_Berit_BSA2.5671.5671.2.1" sumI="0.57"  >
+    <group id="131104_Berit_BSA2.5671.5671.2" mh="817.317847" z="2" rt="null" expect="1.2E001" type="model" sumI="0.55" maxI="0.4" fI="0.004"  >
+    <protein expect="1.1" id="131104_Berit_BSA2.5671.5671.2.1" uid="131104_Berit_BSA2.5671.5671.2.1" sumI="0.55"  >
     <file type="peptide"  />
     <peptide start="1" end="7"   >
-    <domain id="131104_Berit_BSA2.5671.5671.2.1.1" start="0" end="7" expect="1.2E001" mh="817.435" delta="0.117" hyperscore="270" nextscore="69" y_score="0" y_ions="1" b_score="1" b_ions="3" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="CKPAVSR" missed_cleavages="0"  >
+    <domain id="131104_Berit_BSA2.5671.5671.2.1.1" start="0" end="7" expect="1.2E001" mh="817.435" delta="0.117" hyperscore="270" nextscore="52" y_score="0" y_ions="1" b_score="1" b_ions="3" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="CKPAVSR" missed_cleavages="0"  >
     </domain>
     </peptide>
     </protein>
@@ -82,18 +82,18 @@
     </GAML:Xdata>
     <GAML:Ydata label="131104_Berit_BSA2.5671.5671.2.spectrum" units="UNKNOWN" >
     <GAML:values byteorder="INTEL" format="ASCII" numvalues="16">
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+2642 6992 2470 2390 2816 17353 3627 15099 5396 2815 15898 8896 2738 4393 3406 4014 
     </GAML:values>
     </GAML:Ydata>
 </GAML:trace>
 </group></group>
 
 <!--   sequence=SSSGSTSSSSSSTR -->
-    <group id="131104_Berit_BSA2.21533.21533.2" mh="1302.912724" z="2" rt="null" expect="3.3E001" type="model" sumI="0.56" maxI="0.3" fI="0.003"  >
+    <group id="131104_Berit_BSA2.21533.21533.2" mh="1302.912724" z="2" rt="null" expect="3.1E001" type="model" sumI="0.56" maxI="0.3" fI="0.003"  >
     <protein expect="1.5" id="131104_Berit_BSA2.21533.21533.2.1" uid="131104_Berit_BSA2.21533.21533.2.1" sumI="0.56"  >
     <file type="peptide"  />
     <peptide start="1" end="14"   >
-    <domain id="131104_Berit_BSA2.21533.21533.2.1.1" start="0" end="14" expect="3.3E001" mh="1304.556" delta="1.643" hyperscore="220" nextscore="220" y_score="0" y_ions="1" b_score="1" b_ions="0" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="SSSGSTSSSSSSTR" missed_cleavages="0"  >
+    <domain id="131104_Berit_BSA2.21533.21533.2.1.1" start="0" end="14" expect="3.1E001" mh="1304.556" delta="1.643" hyperscore="223" nextscore="223" y_score="0" y_ions="1" b_score="1" b_ions="0" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="SSSGSTSSSSSSTR" missed_cleavages="0"  >
     </domain>
     </peptide>
     </protein>
@@ -110,18 +110,18 @@
     </GAML:Xdata>
     <GAML:Ydata label="131104_Berit_BSA2.21533.21533.2.spectrum" units="UNKNOWN" >
     <GAML:values byteorder="INTEL" format="ASCII" numvalues="14">
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+2978 3961 8460 3568 7097 4568 3968 4600 4049 4940 5159 5772 4701 6919 
     </GAML:values>
     </GAML:Ydata>
 </GAML:trace>
 </group></group>
 
 <!--   sequence=SLLQAR -->
-    <group id="131104_Berit_BSA2.9118.9118.2" mh="687.562724" z="2" rt="null" expect="3.3E000" type="model" sumI="0.48" maxI="0.3" fI="0.003"  >
-    <protein expect="0.5" id="131104_Berit_BSA2.9118.9118.2.1" uid="131104_Berit_BSA2.9118.9118.2.1" sumI="0.48"  >
+    <group id="131104_Berit_BSA2.9118.9118.2" mh="687.562724" z="2" rt="null" expect="2.2E000" type="model" sumI="0.48" maxI="0.4" fI="0.004"  >
+    <protein expect="0.3" id="131104_Berit_BSA2.9118.9118.2.1" uid="131104_Berit_BSA2.9118.9118.2.1" sumI="0.48"  >
     <file type="peptide"  />
     <peptide start="1" end="6"   >
-    <domain id="131104_Berit_BSA2.9118.9118.2.1.1" start="0" end="6" expect="3.3E000" mh="687.415" delta="0.148" hyperscore="331" nextscore="164" y_score="1" y_ions="4" b_score="0" b_ions="0" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="SLLQAR" missed_cleavages="0"  >
+    <domain id="131104_Berit_BSA2.9118.9118.2.1.1" start="0" end="6" expect="2.2E000" mh="687.415" delta="0.148" hyperscore="350" nextscore="175" y_score="1" y_ions="4" b_score="0" b_ions="0" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="SLLQAR" missed_cleavages="0"  >
     </domain>
     </peptide>
     </protein>
@@ -138,18 +138,18 @@
     </GAML:Xdata>
     <GAML:Ydata label="131104_Berit_BSA2.9118.9118.2.spectrum" units="UNKNOWN" >
     <GAML:values byteorder="INTEL" format="ASCII" numvalues="10">
-0 0 0 0 0 0 0 0 0 0 
+4014 2788 2272 4193 2923 3490 3280 3196 3980 12818 
     </GAML:values>
     </GAML:Ydata>
 </GAML:trace>
 </group></group>
 
 <!--   sequence=GPSGGPGR -->
-    <group id="131104_Berit_BSA2.15170.15170.3" mh="681.286555" z="3" rt="null" expect="1.2E001" type="model" sumI="0.56" maxI="0.3" fI="0.003"  >
-    <protein expect="1.1" id="131104_Berit_BSA2.15170.15170.3.1" uid="131104_Berit_BSA2.15170.15170.3.1" sumI="0.56"  >
+    <group id="131104_Berit_BSA2.15170.15170.3" mh="681.286555" z="3" rt="null" expect="1.3E001" type="model" sumI="0.55" maxI="0.3" fI="0.003"  >
+    <protein expect="1.1" id="131104_Berit_BSA2.15170.15170.3.1" uid="131104_Berit_BSA2.15170.15170.3.1" sumI="0.55"  >
     <file type="peptide"  />
     <peptide start="1" end="8"   >
-    <domain id="131104_Berit_BSA2.15170.15170.3.1.1" start="0" end="8" expect="1.2E001" mh="684.342" delta="3.056" hyperscore="270" nextscore="100" y_score="0" y_ions="0" b_score="1" b_ions="3" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="GPSGGPGR" missed_cleavages="0"  >
+    <domain id="131104_Berit_BSA2.15170.15170.3.1.1" start="0" end="8" expect="1.3E001" mh="684.342" delta="3.056" hyperscore="265" nextscore="100" y_score="0" y_ions="0" b_score="1" b_ions="3" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="GPSGGPGR" missed_cleavages="0"  >
     </domain>
     </peptide>
     </protein>
@@ -166,19 +166,46 @@
     </GAML:Xdata>
     <GAML:Ydata label="131104_Berit_BSA2.15170.15170.3.spectrum" units="UNKNOWN" >
     <GAML:values byteorder="INTEL" format="ASCII" numvalues="15">
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+11310 2506 2264 3966 2562 7345 9592 29956 3583 2617 3486 4658 12005 3300 4675 
     </GAML:values>
     </GAML:Ydata>
 </GAML:trace>
 </group></group>
 
-
-<!--   sequence=YNAGIVK -->
-    <group id="131104_Berit_BSA2.13178.13178.3" mh="762.655448" z="3" rt="null" expect="3.2E001" type="model" sumI="0.58" maxI="0.3" fI="0.003"  >
-    <protein expect="1.5" id="131104_Berit_BSA2.13178.13178.3.1" uid="131104_Berit_BSA2.13178.13178.3.1" sumI="0.58"  >
+<!--   sequence=KPLLNAR -->
+    <group id="131104_Berit_BSA2.9427.9427.3" mh="809.045448" z="3" rt="null" expect="1.9E000" type="model" sumI="0.41" maxI="0.4" fI="0.004"  >
+    <protein expect="0.3" id="131104_Berit_BSA2.9427.9427.3.1" uid="131104_Berit_BSA2.9427.9427.3.1" sumI="0.41"  >
     <file type="peptide"  />
     <peptide start="1" end="7"   >
-    <domain id="131104_Berit_BSA2.13178.13178.3.1.1" start="0" end="7" expect="3.2E001" mh="764.43" delta="1.775" hyperscore="221" nextscore="221" y_score="1" y_ions="2" b_score="0" b_ions="0" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="YNAGIVK" missed_cleavages="0"  >
+    <domain id="131104_Berit_BSA2.9427.9427.3.1.1" start="0" end="7" expect="1.9E000" mh="811.515" delta="2.469" hyperscore="359" nextscore="359" y_score="1" y_ions="2" b_score="0" b_ions="1" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="KPLLNAR" missed_cleavages="0"  >
+    </domain>
+    </peptide>
+    </protein>
+    <group type="support" label="fragment ion mass spectrum">
+    <note label="Description">selectedProtein20.mgf scan 131104_Berit_BSA2.9427.9427.3 (charge 3)</note>
+<GAML:trace id="131104_Berit_BSA2.9427.9427.3" label="131104_Berit_BSA2.9427.9427.3.spectrum" type="tandem mass spectrum">
+    <GAML:attribute type="M+H">809.05</GAML:attribute>
+    <GAML:attribute type="charge">3</GAML:attribute>
+    <GAML:Xdata label="131104_Berit_BSA2.9427.9427.3.spectrum" units="MASSTOCHARGERATIO" >
+    <GAML:values byteorder="INTEL" format="ASCII" numvalues="7">
+    173.002 175.034 181.317 244.991 339.097 438.349 473.882 
+
+    </GAML:values>
+    </GAML:Xdata>
+    <GAML:Ydata label="131104_Berit_BSA2.9427.9427.3.spectrum" units="UNKNOWN" >
+    <GAML:values byteorder="INTEL" format="ASCII" numvalues="7">
+3372 3613 2645 3525 2827 3672 3029 
+    </GAML:values>
+    </GAML:Ydata>
+</GAML:trace>
+</group></group>
+
+<!--   sequence=YNAGIVK -->
+    <group id="131104_Berit_BSA2.13178.13178.3" mh="762.655448" z="3" rt="null" expect="4.1E001" type="model" sumI="0.56" maxI="0.3" fI="0.003"  >
+    <protein expect="1.6" id="131104_Berit_BSA2.13178.13178.3.1" uid="131104_Berit_BSA2.13178.13178.3.1" sumI="0.56"  >
+    <file type="peptide"  />
+    <peptide start="1" end="7"   >
+    <domain id="131104_Berit_BSA2.13178.13178.3.1.1" start="0" end="7" expect="4.1E001" mh="764.43" delta="1.775" hyperscore="210" nextscore="210" y_score="1" y_ions="2" b_score="0" b_ions="0" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="YNAGIVK" missed_cleavages="0"  >
     </domain>
     </peptide>
     </protein>
@@ -195,18 +222,18 @@
     </GAML:Xdata>
     <GAML:Ydata label="131104_Berit_BSA2.13178.13178.3.spectrum" units="UNKNOWN" >
     <GAML:values byteorder="INTEL" format="ASCII" numvalues="17">
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+2405 2117 2348 1940 2708 13402 6344 2563 40203 2973 2842 6352 6763 17479 8362 5322 3989 
     </GAML:values>
     </GAML:Ydata>
 </GAML:trace>
 </group></group>
 
 <!--   sequence=LMQDLLLR -->
-    <group id="131104_Berit_BSA2.8977.8977.3" mh="999.725448" z="3" rt="null" expect="2.7E001" type="model" sumI="0.49" maxI="0.3" fI="0.003"  >
+    <group id="131104_Berit_BSA2.8977.8977.3" mh="999.725448" z="3" rt="null" expect="2.5E001" type="model" sumI="0.49" maxI="0.3" fI="0.003"  >
     <protein expect="1.4" id="131104_Berit_BSA2.8977.8977.3.1" uid="131104_Berit_BSA2.8977.8977.3.1" sumI="0.49"  >
     <file type="peptide"  />
     <peptide start="1" end="8"   >
-    <domain id="131104_Berit_BSA2.8977.8977.3.1.1" start="0" end="8" expect="2.7E001" mh="1001.581" delta="1.856" hyperscore="230" nextscore="230" y_score="1" y_ions="1" b_score="0" b_ions="1" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="LMQDLLLR" missed_cleavages="0"  >
+    <domain id="131104_Berit_BSA2.8977.8977.3.1.1" start="0" end="8" expect="2.5E001" mh="1001.581" delta="1.856" hyperscore="233" nextscore="233" y_score="1" y_ions="1" b_score="0" b_ions="1" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="LMQDLLLR" missed_cleavages="0"  >
     </domain>
     </peptide>
     </protein>
@@ -223,19 +250,47 @@
     </GAML:Xdata>
     <GAML:Ydata label="131104_Berit_BSA2.8977.8977.3.spectrum" units="UNKNOWN" >
     <GAML:values byteorder="INTEL" format="ASCII" numvalues="10">
-0 0 0 0 0 0 0 0 0 0 
+2593 3460 2966 2401 3658 2752 3238 8145 5109 6513 
     </GAML:values>
     </GAML:Ydata>
 </GAML:trace>
 </group></group>
 
-
-<!--   sequence=NGKPALR -->
-    <group id="131104_Berit_BSA2.9258.9258.3" mh="752.297389" z="3" rt="null" expect="1.0E001" type="model" sumI="0.57" maxI="0.3" fI="0.003"  >
-    <protein expect="1" id="131104_Berit_BSA2.9258.9258.3.1" uid="131104_Berit_BSA2.9258.9258.3.1" sumI="0.57"  >
+<!--   sequence=E[-18.01]DPTPYR -->
+    <group id="131104_Berit_BSA2.16203.16203.3" mh="856.065448" z="3" rt="null" expect="1.8E002" type="model" sumI="0.41" maxI="0.4" fI="0.004"  >
+    <protein expect="2.3" id="131104_Berit_BSA2.16203.16203.3.1" uid="131104_Berit_BSA2.16203.16203.3.1" sumI="0.41"  >
     <file type="peptide"  />
     <peptide start="1" end="7"   >
-    <domain id="131104_Berit_BSA2.9258.9258.3.1.1" start="0" end="7" expect="1.0E001" mh="755.452" delta="3.155" hyperscore="276" nextscore="276" y_score="1" y_ions="2" b_score="0" b_ions="1" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="NGKPALR" missed_cleavages="0"  >
+    <domain id="131104_Berit_BSA2.16203.16203.3.1.1" start="0" end="7" expect="1.8E002" mh="859.394" delta="3.329" hyperscore="137" nextscore="92" y_score="0" y_ions="0" b_score="1" b_ions="1" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="EDPTPYR" missed_cleavages="0"  >
+    <aa  type="E" at="1" modified="-18.011" />
+    </domain>
+    </peptide>
+    </protein>
+    <group type="support" label="fragment ion mass spectrum">
+    <note label="Description">selectedProtein20.mgf scan 131104_Berit_BSA2.16203.16203.3 (charge 3)</note>
+<GAML:trace id="131104_Berit_BSA2.16203.16203.3" label="131104_Berit_BSA2.16203.16203.3.spectrum" type="tandem mass spectrum">
+    <GAML:attribute type="M+H">856.07</GAML:attribute>
+    <GAML:attribute type="charge">3</GAML:attribute>
+    <GAML:Xdata label="131104_Berit_BSA2.16203.16203.3.spectrum" units="MASSTOCHARGERATIO" >
+    <GAML:values byteorder="INTEL" format="ASCII" numvalues="7">
+    152.758 190.833 194.512 227.102 311.127 341.145 426.234 
+
+    </GAML:values>
+    </GAML:Xdata>
+    <GAML:Ydata label="131104_Berit_BSA2.16203.16203.3.spectrum" units="UNKNOWN" >
+    <GAML:values byteorder="INTEL" format="ASCII" numvalues="7">
+2423 2614 2368 3110 21757 4759 3549 
+    </GAML:values>
+    </GAML:Ydata>
+</GAML:trace>
+</group></group>
+
+<!--   sequence=NGKPALR -->
+    <group id="131104_Berit_BSA2.9258.9258.3" mh="752.297389" z="3" rt="null" expect="1.0E001" type="model" sumI="0.56" maxI="0.3" fI="0.003"  >
+    <protein expect="1" id="131104_Berit_BSA2.9258.9258.3.1" uid="131104_Berit_BSA2.9258.9258.3.1" sumI="0.56"  >
+    <file type="peptide"  />
+    <peptide start="1" end="7"   >
+    <domain id="131104_Berit_BSA2.9258.9258.3.1.1" start="0" end="7" expect="1.0E001" mh="755.452" delta="3.155" hyperscore="277" nextscore="277" y_score="1" y_ions="2" b_score="0" b_ions="1" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="NGKPALR" missed_cleavages="0"  >
     </domain>
     </peptide>
     </protein>
@@ -252,18 +307,18 @@
     </GAML:Xdata>
     <GAML:Ydata label="131104_Berit_BSA2.9258.9258.3.spectrum" units="UNKNOWN" >
     <GAML:values byteorder="INTEL" format="ASCII" numvalues="15">
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+2374 2606 1809 2991 4797 2493 2691 2657 2971 2703 2830 2371 7098 2700 3770 
     </GAML:values>
     </GAML:Ydata>
 </GAML:trace>
 </group></group>
 
 <!--   sequence=LLEPLQK -->
-    <group id="131104_Berit_BSA2.16405.16405.3" mh="837.059552" z="3" rt="null" expect="1.7E002" type="model" sumI="0.55" maxI="0.3" fI="0.003"  >
-    <protein expect="2.2" id="131104_Berit_BSA2.16405.16405.3.1" uid="131104_Berit_BSA2.16405.16405.3.1" sumI="0.55"  >
+    <group id="131104_Berit_BSA2.16405.16405.3" mh="837.059552" z="3" rt="null" expect="2.1E002" type="model" sumI="0.55" maxI="0.3" fI="0.003"  >
+    <protein expect="2.3" id="131104_Berit_BSA2.16405.16405.3.1" uid="131104_Berit_BSA2.16405.16405.3.1" sumI="0.55"  >
     <file type="peptide"  />
     <peptide start="1" end="7"   >
-    <domain id="131104_Berit_BSA2.16405.16405.3.1.1" start="0" end="7" expect="1.7E002" mh="840.519" delta="3.459" hyperscore="142" nextscore="142" y_score="0" y_ions="1" b_score="0" b_ions="1" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="LLEPLQK" missed_cleavages="0"  >
+    <domain id="131104_Berit_BSA2.16405.16405.3.1.1" start="0" end="7" expect="2.1E002" mh="840.519" delta="3.459" hyperscore="132" nextscore="132" y_score="0" y_ions="1" b_score="0" b_ions="1" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="LLEPLQK" missed_cleavages="0"  >
     </domain>
     </peptide>
     </protein>
@@ -280,18 +335,18 @@
     </GAML:Xdata>
     <GAML:Ydata label="131104_Berit_BSA2.16405.16405.3.spectrum" units="UNKNOWN" >
     <GAML:values byteorder="INTEL" format="ASCII" numvalues="14">
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+7923 9851 8878 6575 6685 12957 7251 6791 7996 8368 8288 10006 10686 6494 
     </GAML:values>
     </GAML:Ydata>
 </GAML:trace>
 </group></group>
 
 <!--   sequence=ALSNLSSR -->
-    <group id="131104_Berit_BSA2.13466.13466.3" mh="846.705448" z="3" rt="null" expect="4.8E001" type="model" sumI="0.58" maxI="0.3" fI="0.003"  >
-    <protein expect="1.7" id="131104_Berit_BSA2.13466.13466.3.1" uid="131104_Berit_BSA2.13466.13466.3.1" sumI="0.58"  >
+    <group id="131104_Berit_BSA2.13466.13466.3" mh="846.705448" z="3" rt="null" expect="8.1E001" type="model" sumI="0.56" maxI="0.3" fI="0.003"  >
+    <protein expect="1.9" id="131104_Berit_BSA2.13466.13466.3.1" uid="131104_Berit_BSA2.13466.13466.3.1" sumI="0.56"  >
     <file type="peptide"  />
     <peptide start="1" end="8"   >
-    <domain id="131104_Berit_BSA2.13466.13466.3.1.1" start="0" end="8" expect="4.8E001" mh="847.463" delta="0.758" hyperscore="202" nextscore="202" y_score="0" y_ions="2" b_score="0" b_ions="1" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="ALSNLSSR" missed_cleavages="0"  >
+    <domain id="131104_Berit_BSA2.13466.13466.3.1.1" start="0" end="8" expect="8.1E001" mh="847.463" delta="0.758" hyperscore="177" nextscore="177" y_score="0" y_ions="2" b_score="0" b_ions="1" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="ALSNLSSR" missed_cleavages="0"  >
     </domain>
     </peptide>
     </protein>
@@ -308,18 +363,18 @@
     </GAML:Xdata>
     <GAML:Ydata label="131104_Berit_BSA2.13466.13466.3.spectrum" units="UNKNOWN" >
     <GAML:values byteorder="INTEL" format="ASCII" numvalues="16">
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+2508 2052 3265 12425 3144 4336 4457 4651 2456 3146 2789 6003 3077 4930 4719 3212 
     </GAML:values>
     </GAML:Ydata>
 </GAML:trace>
 </group></group>
 
 <!--   sequence=SLFEEEVDK -->
-    <group id="131104_Berit_BSA2.21939.21939.3" mh="1095.335448" z="3" rt="null" expect="1.6E002" type="model" sumI="0.46" maxI="0.4" fI="0.004"  >
-    <protein expect="2.2" id="131104_Berit_BSA2.21939.21939.3.1" uid="131104_Berit_BSA2.21939.21939.3.1" sumI="0.46"  >
+    <group id="131104_Berit_BSA2.21939.21939.3" mh="1095.335448" z="3" rt="null" expect="2.0E002" type="model" sumI="0.46" maxI="0.4" fI="0.004"  >
+    <protein expect="2.3" id="131104_Berit_BSA2.21939.21939.3.1" uid="131104_Berit_BSA2.21939.21939.3.1" sumI="0.46"  >
     <file type="peptide"  />
     <peptide start="1" end="9"   >
-    <domain id="131104_Berit_BSA2.21939.21939.3.1.1" start="0" end="9" expect="1.6E002" mh="1095.52" delta="0.185" hyperscore="144" nextscore="144" y_score="0" y_ions="1" b_score="0" b_ions="0" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="SLFEEEVDK" missed_cleavages="0"  >
+    <domain id="131104_Berit_BSA2.21939.21939.3.1.1" start="0" end="9" expect="2.0E002" mh="1095.52" delta="0.185" hyperscore="134" nextscore="134" y_score="0" y_ions="1" b_score="0" b_ions="0" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="SLFEEEVDK" missed_cleavages="0"  >
     </domain>
     </peptide>
     </protein>
@@ -336,18 +391,18 @@
     </GAML:Xdata>
     <GAML:Ydata label="131104_Berit_BSA2.21939.21939.3.spectrum" units="UNKNOWN" >
     <GAML:values byteorder="INTEL" format="ASCII" numvalues="9">
-0 0 0 0 0 0 0 0 0 
+2787 2361 2645 2354 3430 2660 7728 3714 4201 
     </GAML:values>
     </GAML:Ydata>
 </GAML:trace>
 </group></group>
 
 <!--   sequence=TASILDGLAK -->
-    <group id="131104_Berit_BSA2.19487.19487.2" mh="986.968911" z="2" rt="null" expect="4.9E002" type="model" sumI="0.54" maxI="0.3" fI="0.003"  >
-    <protein expect="2.7" id="131104_Berit_BSA2.19487.19487.2.1" uid="131104_Berit_BSA2.19487.19487.2.1" sumI="0.54"  >
+    <group id="131104_Berit_BSA2.19487.19487.2" mh="986.968911" z="2" rt="null" expect="5.7E002" type="model" sumI="0.52" maxI="0.3" fI="0.003"  >
+    <protein expect="2.8" id="131104_Berit_BSA2.19487.19487.2.1" uid="131104_Berit_BSA2.19487.19487.2.1" sumI="0.52"  >
     <file type="peptide"  />
     <peptide start="1" end="10"   >
-    <domain id="131104_Berit_BSA2.19487.19487.2.1.1" start="0" end="10" expect="4.9E002" mh="988.567" delta="1.598" hyperscore="90" nextscore="90" y_score="0" y_ions="0" b_score="0" b_ions="0" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="TASILDGLAK" missed_cleavages="0"  >
+    <domain id="131104_Berit_BSA2.19487.19487.2.1.1" start="0" end="10" expect="5.7E002" mh="988.567" delta="1.598" hyperscore="83" nextscore="83" y_score="0" y_ions="0" b_score="0" b_ions="0" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="TASILDGLAK" missed_cleavages="0"  >
     </domain>
     </peptide>
     </protein>
@@ -364,18 +419,18 @@
     </GAML:Xdata>
     <GAML:Ydata label="131104_Berit_BSA2.19487.19487.2.spectrum" units="UNKNOWN" >
     <GAML:values byteorder="INTEL" format="ASCII" numvalues="13">
-0 0 0 0 0 0 0 0 0 0 0 0 0 
+2479 13846 2237 2797 2733 3519 2989 8568 2950 3615 3208 4022 3156 
     </GAML:values>
     </GAML:Ydata>
 </GAML:trace>
 </group></group>
 
 <!--   sequence=QQER -->
-    <group id="131104_Berit_BSA2.11685.11685.3" mh="556.605448" z="3" rt="null" expect="2.1E002" type="model" sumI="0.59" maxI="0.3" fI="0.003"  >
-    <protein expect="2.3" id="131104_Berit_BSA2.11685.11685.3.1" uid="131104_Berit_BSA2.11685.11685.3.1" sumI="0.59"  >
+    <group id="131104_Berit_BSA2.11685.11685.3" mh="556.605448" z="3" rt="null" expect="2.0E002" type="model" sumI="0.58" maxI="0.3" fI="0.003"  >
+    <protein expect="2.3" id="131104_Berit_BSA2.11685.11685.3.1" uid="131104_Berit_BSA2.11685.11685.3.1" sumI="0.58"  >
     <file type="peptide"  />
     <peptide start="1" end="4"   >
-    <domain id="131104_Berit_BSA2.11685.11685.3.1.1" start="0" end="4" expect="2.1E002" mh="560.279" delta="3.673" hyperscore="130" nextscore="130" y_score="0" y_ions="1" b_score="0" b_ions="1" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="QQER" missed_cleavages="0"  >
+    <domain id="131104_Berit_BSA2.11685.11685.3.1.1" start="0" end="4" expect="2.0E002" mh="560.279" delta="3.673" hyperscore="133" nextscore="133" y_score="0" y_ions="1" b_score="0" b_ions="1" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="QQER" missed_cleavages="0"  >
     </domain>
     </peptide>
     </protein>
@@ -392,19 +447,46 @@
     </GAML:Xdata>
     <GAML:Ydata label="131104_Berit_BSA2.11685.11685.3.spectrum" units="UNKNOWN" >
     <GAML:values byteorder="INTEL" format="ASCII" numvalues="19">
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+4253 39722 3446 17916 29243 12860 4117 11700 6557 24257 5390 3518 10270 3841 3591 4133 3648 12101 5189 
     </GAML:values>
     </GAML:Ydata>
 </GAML:trace>
 </group></group>
 
+<!--   sequence=YLCNAAEGHR -->
+    <group id="131104_Berit_BSA2.15498.15498.3" mh="1188.225448" z="3" rt="null" expect="4.5E000" type="model" sumI="0.37" maxI="0.4" fI="0.004"  >
+    <protein expect="0.7" id="131104_Berit_BSA2.15498.15498.3.1" uid="131104_Berit_BSA2.15498.15498.3.1" sumI="0.37"  >
+    <file type="peptide"  />
+    <peptide start="1" end="10"   >
+    <domain id="131104_Berit_BSA2.15498.15498.3.1.1" start="0" end="10" expect="4.5E000" mh="1190.537" delta="2.312" hyperscore="317" nextscore="209" y_score="1" y_ions="1" b_score="1" b_ions="2" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="YLCNAAEGHR" missed_cleavages="0"  >
+    </domain>
+    </peptide>
+    </protein>
+    <group type="support" label="fragment ion mass spectrum">
+    <note label="Description">selectedProtein20.mgf scan 131104_Berit_BSA2.15498.15498.3 (charge 3)</note>
+<GAML:trace id="131104_Berit_BSA2.15498.15498.3" label="131104_Berit_BSA2.15498.15498.3.spectrum" type="tandem mass spectrum">
+    <GAML:attribute type="M+H">1188.23</GAML:attribute>
+    <GAML:attribute type="charge">3</GAML:attribute>
+    <GAML:Xdata label="131104_Berit_BSA2.15498.15498.3.spectrum" units="MASSTOCHARGERATIO" >
+    <GAML:values byteorder="INTEL" format="ASCII" numvalues="6">
+    151.212 155.076 175.034 246.035 276.885 311.127 
+
+    </GAML:values>
+    </GAML:Xdata>
+    <GAML:Ydata label="131104_Berit_BSA2.15498.15498.3.spectrum" units="UNKNOWN" >
+    <GAML:values byteorder="INTEL" format="ASCII" numvalues="6">
+2757 2145 4734 3240 3238 34700 
+    </GAML:values>
+    </GAML:Ydata>
+</GAML:trace>
+</group></group>
 
 <!--   sequence=C[57.021]PYGSR -->
-    <group id="131104_Berit_BSA2.15702.15702.3" mh="795.385448" z="3" rt="null" expect="2.1E002" type="model" sumI="0.51" maxI="0.3" fI="0.003"  >
-    <protein expect="2.3" id="131104_Berit_BSA2.15702.15702.3.1" uid="131104_Berit_BSA2.15702.15702.3.1" sumI="0.51"  >
+    <group id="131104_Berit_BSA2.15702.15702.3" mh="795.385448" z="3" rt="null" expect="2.3E002" type="model" sumI="0.51" maxI="0.3" fI="0.003"  >
+    <protein expect="2.4" id="131104_Berit_BSA2.15702.15702.3.1" uid="131104_Berit_BSA2.15702.15702.3.1" sumI="0.51"  >
     <file type="peptide"  />
     <peptide start="1" end="6"   >
-    <domain id="131104_Berit_BSA2.15702.15702.3.1.1" start="0" end="6" expect="2.1E002" mh="796.341" delta="0.955" hyperscore="130" nextscore="130" y_score="0" y_ions="1" b_score="0" b_ions="1" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="CPYGSR" missed_cleavages="0"  >
+    <domain id="131104_Berit_BSA2.15702.15702.3.1.1" start="0" end="6" expect="2.3E002" mh="796.341" delta="0.955" hyperscore="127" nextscore="127" y_score="0" y_ions="1" b_score="0" b_ions="1" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="CPYGSR" missed_cleavages="0"  >
     <aa  type="C" at="1" modified="57.021" />
     </domain>
     </peptide>
@@ -422,7 +504,7 @@
     </GAML:Xdata>
     <GAML:Ydata label="131104_Berit_BSA2.15702.15702.3.spectrum" units="UNKNOWN" >
     <GAML:values byteorder="INTEL" format="ASCII" numvalues="12">
-0 0 0 0 0 0 0 0 0 0 0 0 
+3595 2470 2636 5165 2382 7610 2536 2153 2838 2911 4484 7004 
     </GAML:values>
     </GAML:Ydata>
 </GAML:trace>
@@ -430,11 +512,11 @@
 
 
 <!--   sequence=SLLQAR -->
-    <group id="131104_Berit_BSA2.11254.11254.3" mh="686.602363" z="3" rt="null" expect="1.1E002" type="model" sumI="0.5" maxI="0.3" fI="0.003"  >
-    <protein expect="2.1" id="131104_Berit_BSA2.11254.11254.3.1" uid="131104_Berit_BSA2.11254.11254.3.1" sumI="0.5"  >
+    <group id="131104_Berit_BSA2.11254.11254.3" mh="686.602363" z="3" rt="null" expect="8.6E001" type="model" sumI="0.49" maxI="0.4" fI="0.004"  >
+    <protein expect="1.9" id="131104_Berit_BSA2.11254.11254.3.1" uid="131104_Berit_BSA2.11254.11254.3.1" sumI="0.49"  >
     <file type="peptide"  />
     <peptide start="1" end="6"   >
-    <domain id="131104_Berit_BSA2.11254.11254.3.1.1" start="0" end="6" expect="1.1E002" mh="687.415" delta="0.812" hyperscore="160" nextscore="160" y_score="1" y_ions="2" b_score="0" b_ions="0" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="SLLQAR" missed_cleavages="0"  >
+    <domain id="131104_Berit_BSA2.11254.11254.3.1.1" start="0" end="6" expect="8.6E001" mh="687.415" delta="0.812" hyperscore="174" nextscore="174" y_score="1" y_ions="2" b_score="0" b_ions="0" c_score="0" c_ions="0" z_score="0" z_ions="0" a_score="0" a_ions="0" x_score="0" x_ions="0" pre="" post="" seq="SLLQAR" missed_cleavages="0"  >
     </domain>
     </peptide>
     </protein>
@@ -451,7 +533,7 @@
     </GAML:Xdata>
     <GAML:Ydata label="131104_Berit_BSA2.11254.11254.3.spectrum" units="UNKNOWN" >
     <GAML:values byteorder="INTEL" format="ASCII" numvalues="11">
-0 0 0 0 0 0 0 0 0 0 0 
+2585 1848 2565 6015 3202 7789 14603 2945 2595 3121 4769 
     </GAML:values>
     </GAML:Ydata>
 </GAML:trace>

@@ -2,11 +2,9 @@ package com.lordjoe.distributed.hydra;
 
 import com.esotericsoftware.kryo.*;
 import org.apache.spark.serializer.*;
-
 import javax.annotation.*;
 import java.io.*;
 import java.lang.reflect.*;
-import java.util.*;
 
 /**
  * com.lordjoe.distributed.hydra.HydraKryoSerializer
@@ -15,164 +13,182 @@ import java.util.*;
  */
 public class HydraKryoSerializer implements KryoRegistrator, Serializable {
 
+ 
     public HydraKryoSerializer() {
     }
 
     /**
-     * register a class indicated by name but only if not already registered
+     * register a class indicated by name
      *
      * @param kryo
      * @param s       name of a class - might not exist
      * @param handled Set of classes already handles
      */
-    protected void doRegistration(@Nonnull Kryo kryo, @Nonnull String s, @Nonnull Set<Class> handled) {
+    protected void doRegistration(@Nonnull Kryo kryo, @Nonnull String s ) {
         Class c;
         try {
             c = Class.forName(s);
+            doRegistration(kryo,  c);
         }
         catch (ClassNotFoundException e) {
             return;
         }
-
-        // do not register interfaces
-        if (c.isInterface())
-            return;
-
-        // do not register enums
-        if (c.isEnum())
-            return;
-
-        // do not register abstract classes
-        if (Modifier.isAbstract(c.getModifiers()))
-            return;
-
-       // validateClass(c);
-
-        if (handled.contains(c))
-            return;
-        handled.add(c);
-        if (kryo != null)
-            kryo.register(c);
-    }
-
-
-    public static final Class[] EMPTY_ARGS = {};
-
-    /**
-     * make sure class is OK
-     *
-     * @param pC
-     */
-    private void validateClass(final Class pC) {
-        Constructor declaredConstructor;
-        try {
-            declaredConstructor = pC.getDeclaredConstructor(EMPTY_ARGS);
-            declaredConstructor.setAccessible(true);
-        }
-        catch (NoSuchMethodException e) {
-            Constructor[] declaredConstructors = pC.getDeclaredConstructors();
-            System.err.println("No Empty Constructor " + pC);
-                return;
-           // throw new IllegalArgumentException("No Empty Constructor " + pC);
-        }
-
-        if (!Serializable.class.isAssignableFrom(pC))
-            throw new IllegalArgumentException("Not Serializable " + pC);
-
-        try {
-            ObjectOutputStream os = new ObjectOutputStream(new ByteArrayOutputStream());
-            Object o = declaredConstructor.newInstance();
-            os.writeObject(o);
-        }
-        catch (IOException e) {
-            throw new IllegalArgumentException("Cant Serialize " + pC);
-        }
-        catch (InstantiationException e) {
-            throw new IllegalArgumentException("Cant instantiate " + pC);
-
-        }
-        catch (InvocationTargetException e) {
-            throw new IllegalArgumentException("Cant access " + pC);
-        }
-        catch (IllegalAccessException e) {
-            throw new IllegalArgumentException("Cant access " + pC);
-        }
-
-    }
-
-
-    @Override
-    public void registerClasses(@Nonnull Kryo kryo) {
-        Set<Class> handler = new HashSet<Class>();
-        doRegistration(kryo,"com.lordjoe.distributed.SparkUtilities",handler);
-        doRegistration(kryo,"com.lordjoe.distributed.SparkUtilities$1",handler);
-        doRegistration(kryo,"com.lordjoe.distributed.SparkUtilities$IdentityFunction",handler);
-        doRegistration(kryo,"com.lordjoe.distributed.SparkUtilities$TupleValues",handler);
-        doRegistration(kryo,"com.lordjoe.distributed.hydra.SparkFileOpener",handler);
-        doRegistration(kryo,"com.lordjoe.distributed.hydra.SparkXTandemMain",handler);
-        doRegistration(kryo,"com.lordjoe.distributed.hydra.protein.PolypeptideCombiner$MergePolyPeptides",handler);
-        doRegistration(kryo,"com.lordjoe.distributed.input.FastaInputFormat",handler);
-        doRegistration(kryo,"com.lordjoe.distributed.protein.DigestProteinFunction",handler);
-        doRegistration(kryo,"com.lordjoe.distributed.spark.IdentityFunction",handler);
-        doRegistration(kryo,"com.lordjoe.distributed.spark.LongAccumulableParam",handler);
-        doRegistration(kryo,"com.lordjoe.distributed.spark.MachineUseAccumulator",handler);
-        doRegistration(kryo,"com.lordjoe.distributed.spark.MachineUseAccumulator$MachineUseAccumulableParam",handler);
-        doRegistration(kryo,"com.lordjoe.distributed.spark.SparkAccumulators",handler);
-        doRegistration(kryo,"com.lordjoe.distributed.tandem.LibraryBuilder",handler);
-        doRegistration(kryo,"com.lordjoe.distributed.tandem.LibraryBuilder$1",handler);
-        doRegistration(kryo,"com.lordjoe.distributed.tandem.LibraryBuilder$MapPolyPeptideToSequenceKeys",handler);
-        doRegistration(kryo,"com.lordjoe.distributed.tandem.LibraryBuilder$ParsedProteinToProtein",handler);
-        doRegistration(kryo,"com.lordjoe.distributed.tandem.LibraryBuilder$PeptideByStringToByMass",handler);
-        doRegistration(kryo,"com.lordjoe.distributed.tandem.LibraryBuilder$ProcessByKey",handler);
-        doRegistration(kryo,"org.slf4j.impl.Log4jLoggerAdapter",handler);
-        doRegistration(kryo,"org.systemsbiology.hadoop.DelegatingFileStreamOpener",handler);
-        doRegistration(kryo,"org.systemsbiology.hadoop.FileStreamOpener",handler);
-        doRegistration(kryo,"org.systemsbiology.hadoop.HadoopMajorVersion",handler);
-        doRegistration(kryo,"org.systemsbiology.hadoop.StreamOpeners$ResourceStreamOpener",handler);
-        doRegistration(kryo,"org.systemsbiology.xtandem.BadAminoAcidException",handler);
-        doRegistration(kryo,"org.systemsbiology.xtandem.FastaAminoAcid",handler);
-        doRegistration(kryo,"org.systemsbiology.xtandem.MassCalculator",handler);
-        doRegistration(kryo,"org.systemsbiology.xtandem.MassCalculator$MassPair",handler);
-        doRegistration(kryo,"org.systemsbiology.xtandem.MassSpecRun",handler);
-        doRegistration(kryo,"org.systemsbiology.xtandem.MassType",handler);
-        doRegistration(kryo,"org.systemsbiology.xtandem.RawPeptideScan",handler);
-        doRegistration(kryo,"org.systemsbiology.xtandem.SequenceUtilities",handler);
-        doRegistration(kryo,"org.systemsbiology.xtandem.SpectrumCondition",handler);
-        doRegistration(kryo,"org.systemsbiology.xtandem.TandemKScoringAlgorithm",handler);
-        doRegistration(kryo,"org.systemsbiology.xtandem.TandemKScoringAlgorithm$KScoringConverter",handler);
-        doRegistration(kryo,"org.systemsbiology.xtandem.TaxonomyProcessor",handler);
-        doRegistration(kryo,"org.systemsbiology.xtandem.XTandemMain",handler);
-        doRegistration(kryo,"org.systemsbiology.xtandem.ionization.IonType",handler);
-        doRegistration(kryo,"org.systemsbiology.xtandem.ionization.IonUseCounter",handler);
-        doRegistration(kryo,"org.systemsbiology.xtandem.ionization.IonUseScore",handler);
-        doRegistration(kryo,"org.systemsbiology.xtandem.peptide.AminoTerminalType",handler);
-        doRegistration(kryo,"org.systemsbiology.xtandem.peptide.ModifiedPolypeptide",handler);
-        doRegistration(kryo,"org.systemsbiology.xtandem.peptide.PeptideBondDigester",handler);
-        doRegistration(kryo,"org.systemsbiology.xtandem.peptide.PeptideBondDigester$LysineC",handler);
-        doRegistration(kryo,"org.systemsbiology.xtandem.peptide.PeptideBondDigester$Trypsin",handler);
-        doRegistration(kryo,"org.systemsbiology.xtandem.peptide.PeptideModification",handler);
-        doRegistration(kryo,"org.systemsbiology.xtandem.peptide.PeptideModificationRestriction",handler);
-        doRegistration(kryo,"org.systemsbiology.xtandem.peptide.Polypeptide",handler);
-        doRegistration(kryo,"org.systemsbiology.xtandem.scoring.Scorer",handler);
-        doRegistration(kryo,"org.systemsbiology.xtandem.scoring.ScoringModifications",handler);
-        doRegistration(kryo,"org.systemsbiology.xtandem.taxonomy.Taxonomy",handler);
-        doRegistration(kryo,"com.lordjoe.distributed.database.PeptideDatabase",handler);
-        doRegistration(kryo,"com.lordjoe.distributed.SparkUtilities",handler);
-        doRegistration(kryo,"com.lordjoe.distributed.SparkUtilities$1",handler);
-        doRegistration(kryo,"com.lordjoe.distributed.SparkUtilities$IdentityFunction",handler);
-        doRegistration(kryo,"com.lordjoe.distributed.SparkUtilities$TupleValues",handler);
-        doRegistration(kryo,"com.lordjoe.distributed.hydra.scoring.SparkMapReduceScoringHandler",handler);
-        doRegistration(kryo,"com.lordjoe.distributed.spark.SparkAccumulators",handler);
-        doRegistration(kryo,"com.lordjoe.utilities.ElapsedTimer",handler);
-        doRegistration(kryo,"org.systemsbiology.xtandem.XTandemMain",handler);
      }
 
-
-    public static void main(String[] args) {
-        // Does not work and I am not sure we need it
-        // this will fail if there are issues with any registered classes
-        new HydraKryoSerializer().registerClasses(null);
+    /**
+      * register a class
+      *
+      * @param kryo
+      * @param s       name of a class - might not exist
+      * @param handled Set of classes already handles
+      */
+    protected void doRegistration(final Kryo kryo , final Class pC) {
+           if (kryo != null) {
+            kryo.register(pC);
+               // also register arrays of that class
+            Class arrayType = Array.newInstance(pC, 0).getClass();
+            kryo.register(arrayType);
+        }
     }
+
+
+    /**
+     * do the real work of registering all classes
+     * @param kryo
+     */
+     @Override
+    public void registerClasses(@Nonnull Kryo kryo) {
+        kryo.register(Object[].class);
+        kryo.register(scala.Tuple2[].class);
+        kryo.register(scala.Tuple3[].class);
+        kryo.register(int[].class);
+        kryo.register(double[].class);
+        kryo.register(short[].class);
+        kryo.register(long[].class);
+        kryo.register(byte[].class);
+        kryo.register(Class[].class);
+        kryo.register(long[].class);
+        kryo.register(boolean[].class);
+        kryo.register(String[].class);
+        kryo.register(String[].class);
+
+//        doRegistration(kryo,"XXX",handler);
+//        doRegistration(kryo,"XXX",handler);
+//        doRegistration(kryo,"XXX",handler);
+//        doRegistration(kryo,"XXX",handler);
+//        doRegistration(kryo,"XXX",handler);
+//        doRegistration(kryo,"XXX",handler);
+//        doRegistration(kryo,"XXX",handler);
+//        doRegistration(kryo,"XXX",handler);
+//        doRegistration(kryo,"XXX",handler);
+//        doRegistration(kryo,"XXX",handler);
+//        doRegistration(kryo,"XXX",handler);
+//        doRegistration(kryo,"XXX",handler);
+//        doRegistration(kryo,"XXX",handler);
+//        doRegistration(kryo,"XXX",handler);
+//        doRegistration(kryo,"XXX",handler);
+//        doRegistration(kryo,"XXX",handler);
+        doRegistration(kryo, "scala.collection.mutable.WrappedArray$ofRef");
+        doRegistration(kryo, "org.systemsbiology.xtandem.scoring.VariableStatistics");
+        doRegistration(kryo, "org.systemsbiology.xtandem.scoring.SpectralPeakUsage$PeakUsage");
+        doRegistration(kryo, "org.systemsbiology.xtandem.scoring.SpectralPeakUsage");
+        doRegistration(kryo, "org.systemsbiology.xtandem.ionization.TheoreticalPeak");
+        doRegistration(kryo, "org.systemsbiology.xtandem.ionization.ITheoreticalPeak");
+        doRegistration(kryo, "org.systemsbiology.xtandem.scoring.ScoringSpectrum");
+        doRegistration(kryo, "org.systemsbiology.xtandem.ionization.ITheoreticalSpectrum");
+        doRegistration(kryo, "org.systemsbiology.xtandem.ionization.TheoreticalSpectrumSet");
+        doRegistration(kryo, "org.systemsbiology.xtandem.testing.DebugMatchPeak");
+        doRegistration(kryo, "org.systemsbiology.xtandem.testing.ScanScoringIdentifier");
+        doRegistration(kryo, "org.systemsbiology.xtandem.testing.TheoreticalIonsScoring");
+        doRegistration(kryo, "org.systemsbiology.xtandem.testing.ITheoreticalIonsScoring");
+        doRegistration(kryo, "org.systemsbiology.xtandem.scoring.ExtendedSpectralMatch");
+        doRegistration(kryo, "org.systemsbiology.xtandem.scoring.BoundedMatchSet");
+        doRegistration(kryo, "org.systemsbiology.xtandem.ionization.IonUseCounter");
+        doRegistration(kryo, "org.systemsbiology.xtandem.scoring.HyperScoreStatistics");
+        doRegistration(kryo, "org.systemsbiology.xtandem.ScoringMeasuredSpectrum");
+        doRegistration(kryo, "org.systemsbiology.xtandem.scoring.OriginatingScoredScan");
+        doRegistration(kryo, "org.systemsbiology.xtandem.ScanTypeEnum");
+        doRegistration(kryo, "org.systemsbiology.xtandem.ScanPrecursorMz");
+        doRegistration(kryo, "org.systemsbiology.xtandem.ScanPolarity");
+        doRegistration(kryo, "rg.systemsbiology.xtandem.ScanPolarity");
+        doRegistration(kryo, "org.systemsbiology.xtandem.SpectrumPeak");
+        doRegistration(kryo, "com.lordjoe.distributed.hydra.fragment.BinChargeKey");
+        doRegistration(kryo, "org.systemsbiology.xtandem.ISpectrumPeak");
+        doRegistration(kryo, "java.util.HashMap");
+        doRegistration(kryo, "org.systemsbiology.xtandem.FragmentationMethod");
+        doRegistration(kryo, "org.apache.spark.scheduler.CompressedMapStatus");
+        doRegistration(kryo, "org.systemsbiology.xtandem.peptide.PeptideModification");
+        doRegistration(kryo, "org.systemsbiology.xtandem.peptide.PeptideValidity");
+        doRegistration(kryo, "org.systemsbiology.xtandem.peptide.Polypeptide");
+        doRegistration(kryo, "org.systemsbiology.xtandem.FastaAminoAcid");
+        doRegistration(kryo, "org.systemsbiology.xtandem.peptide.ProteinPosition");
+        doRegistration(kryo, "java.util.ArrayList");
+        doRegistration(kryo, "org.systemsbiology.xtandem.peptide.ModifiedPolypeptide");
+        doRegistration(kryo, "org.systemsbiology.xtandem.peptide.IProteinPosition");
+        doRegistration(kryo, "org.systemsbiology.xtandem.peptide.Protein");
+        doRegistration(kryo, "com.lordjoe.distributed.SparkUtilities");
+        doRegistration(kryo, "com.lordjoe.distributed.SparkUtilities$1");
+        doRegistration(kryo, "com.lordjoe.distributed.SparkUtilities$IdentityFunction");
+        doRegistration(kryo, "com.lordjoe.distributed.SparkUtilities$TupleValues");
+        doRegistration(kryo, "com.lordjoe.distributed.hydra.SparkFileOpener");
+        doRegistration(kryo, "com.lordjoe.distributed.hydra.SparkXTandemMain");
+        doRegistration(kryo, "com.lordjoe.distributed.hydra.protein.PolypeptideCombiner$MergePolyPeptides");
+        doRegistration(kryo, "com.lordjoe.distributed.input.FastaInputFormat");
+        doRegistration(kryo, "com.lordjoe.distributed.protein.DigestProteinFunction");
+        doRegistration(kryo, "com.lordjoe.distributed.spark.IdentityFunction");
+        doRegistration(kryo, "com.lordjoe.distributed.spark.LongAccumulableParam");
+        doRegistration(kryo, "com.lordjoe.distributed.spark.MachineUseAccumulator");
+        doRegistration(kryo, "com.lordjoe.distributed.spark.MachineUseAccumulator$MachineUseAccumulableParam");
+        doRegistration(kryo, "com.lordjoe.distributed.spark.SparkAccumulators");
+        doRegistration(kryo, "com.lordjoe.distributed.tandem.LibraryBuilder");
+        doRegistration(kryo, "com.lordjoe.distributed.tandem.LibraryBuilder$1");
+        doRegistration(kryo, "com.lordjoe.distributed.tandem.LibraryBuilder$MapPolyPeptideToSequenceKeys");
+        doRegistration(kryo, "com.lordjoe.distributed.tandem.LibraryBuilder$ParsedProteinToProtein");
+        doRegistration(kryo, "com.lordjoe.distributed.tandem.LibraryBuilder$PeptideByStringToByMass");
+        doRegistration(kryo, "com.lordjoe.distributed.tandem.LibraryBuilder$ProcessByKey");
+        doRegistration(kryo, "org.slf4j.impl.Log4jLoggerAdapter");
+        doRegistration(kryo, "org.systemsbiology.hadoop.DelegatingFileStreamOpener");
+        doRegistration(kryo, "org.systemsbiology.hadoop.FileStreamOpener");
+        doRegistration(kryo, "org.systemsbiology.hadoop.HadoopMajorVersion");
+        doRegistration(kryo, "org.systemsbiology.hadoop.StreamOpeners$ResourceStreamOpener");
+        doRegistration(kryo, "org.systemsbiology.xtandem.BadAminoAcidException");
+        doRegistration(kryo, "org.systemsbiology.xtandem.FastaAminoAcid");
+        doRegistration(kryo, "org.systemsbiology.xtandem.MassCalculator");
+        doRegistration(kryo, "org.systemsbiology.xtandem.MassCalculator$MassPair");
+        doRegistration(kryo, "org.systemsbiology.xtandem.MassSpecRun");
+        doRegistration(kryo, "org.systemsbiology.xtandem.MassType");
+        doRegistration(kryo, "org.systemsbiology.xtandem.RawPeptideScan");
+        doRegistration(kryo, "org.systemsbiology.xtandem.SequenceUtilities");
+        doRegistration(kryo, "org.systemsbiology.xtandem.SpectrumCondition");
+        doRegistration(kryo, "org.systemsbiology.xtandem.TandemKScoringAlgorithm");
+        doRegistration(kryo, "org.systemsbiology.xtandem.TandemKScoringAlgorithm$KScoringConverter");
+        doRegistration(kryo, "org.systemsbiology.xtandem.TaxonomyProcessor");
+        doRegistration(kryo, "org.systemsbiology.xtandem.XTandemMain");
+        doRegistration(kryo, "org.systemsbiology.xtandem.ionization.IonType");
+        doRegistration(kryo, "org.systemsbiology.xtandem.ionization.IonUseCounter");
+        doRegistration(kryo, "org.systemsbiology.xtandem.ionization.IonUseScore");
+        doRegistration(kryo, "org.systemsbiology.xtandem.peptide.AminoTerminalType");
+        doRegistration(kryo, "org.systemsbiology.xtandem.peptide.ModifiedPolypeptide");
+        doRegistration(kryo, "org.systemsbiology.xtandem.peptide.PeptideBondDigester");
+        doRegistration(kryo, "org.systemsbiology.xtandem.peptide.PeptideBondDigester$LysineC");
+        doRegistration(kryo, "org.systemsbiology.xtandem.peptide.PeptideBondDigester$Trypsin");
+        doRegistration(kryo, "org.systemsbiology.xtandem.peptide.PeptideModification");
+        doRegistration(kryo, "org.systemsbiology.xtandem.peptide.PeptideModificationRestriction");
+        doRegistration(kryo, "org.systemsbiology.xtandem.peptide.Polypeptide");
+        doRegistration(kryo, "org.systemsbiology.xtandem.scoring.Scorer");
+        doRegistration(kryo, "org.systemsbiology.xtandem.scoring.ScoringModifications");
+        doRegistration(kryo, "org.systemsbiology.xtandem.taxonomy.Taxonomy");
+        doRegistration(kryo, "com.lordjoe.distributed.database.PeptideDatabase");
+        doRegistration(kryo, "com.lordjoe.distributed.SparkUtilities");
+        doRegistration(kryo, "com.lordjoe.distributed.SparkUtilities$1");
+        doRegistration(kryo, "com.lordjoe.distributed.SparkUtilities$IdentityFunction");
+        doRegistration(kryo, "com.lordjoe.distributed.SparkUtilities$TupleValues");
+        doRegistration(kryo, "com.lordjoe.distributed.hydra.scoring.SparkMapReduceScoringHandler");
+        doRegistration(kryo, "com.lordjoe.distributed.spark.SparkAccumulators");
+        doRegistration(kryo, "com.lordjoe.utilities.ElapsedTimer");
+        doRegistration(kryo, "org.systemsbiology.xtandem.XTandemMain");
+    }
+
 
 }
 

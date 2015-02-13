@@ -10,30 +10,30 @@ import java.util.*;
  * Date: Jan 10, 2011
  */
 public class Polypeptide implements IPolypeptide, Comparable<IPolypeptide> {
-    public static final Polypeptide[] EMPTY_ARRAY = {};
 
     public static final Random RND = new Random();
 
     /**
      * fot testing only
-     * @return  maka a random peptide
+     *
+     * @return maka a random peptide
      */
-    public static IPolypeptide randomPeptide()
-    {
-        int length = 6 + RND.nextInt(20) ;
+    public static IPolypeptide randomPeptide() {
+        int length = 6 + RND.nextInt(20);
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i <  length; i++) {
+        for (int i = 0; i < length; i++) {
             sb.append(FastaAminoAcid.randomAminoAcid().toString());
 
         }
-        return new Polypeptide(sb.toString()) ;
+        return new Polypeptide(sb.toString());
     }
 
     public static final Comparator<IPolypeptide> SEQUENCE_COMPARATOR = new SequenceComparator();
 
     /**
      * reverse the sequence - used in creating Decoys
-     * @param p  !null polypeptide
+     *
+     * @param p !null polypeptide
      * @return
      */
     public static String getReversedSequence(IPolypeptide p) {
@@ -47,6 +47,7 @@ public class Polypeptide implements IPolypeptide, Comparable<IPolypeptide> {
 
     /**
      * make a decoy by reversing a non-decoy polypaptide
+     *
      * @param p
      * @return
      */
@@ -59,16 +60,16 @@ public class Polypeptide implements IPolypeptide, Comparable<IPolypeptide> {
 
     /**
      * make protein positions for decoy peptides
+     *
      * @param pps normal peptide positions
      * @return array of one position marked as a decoy
      */
-    public static IProteinPosition[] asDecoyPositions(IPolypeptide pp,IProteinPosition[] pps)
-    {
-        if(pps == null  )
-              return null;
-        if( pps.length == 0)
-              return pps;
-          IProteinPosition[] ret = {  ProteinPosition.asDecoy(pp,(ProteinPosition)pps[0]) };
+    public static IProteinPosition[] asDecoyPositions(IPolypeptide pp, IProteinPosition[] pps) {
+        if (pps == null)
+            return null;
+        if (pps.length == 0)
+            return pps;
+        IProteinPosition[] ret = {ProteinPosition.asDecoy(pp, (ProteinPosition) pps[0])};
         return ret;
     }
 
@@ -79,12 +80,13 @@ public class Polypeptide implements IPolypeptide, Comparable<IPolypeptide> {
         private DecoyPolyPeptide(IPolypeptide pp) {
             super(getReversedSequence(pp));
             IProteinPosition[] pps = pp.getProteinPositions();
-            if(pps != null )
+            if (pps != null)
                 setContainedInProteins(asDecoyPositions(this, pps));
         }
+
         private DecoyPolyPeptide(String sequence) {
-             super(sequence,0);
-         }
+            super(sequence, 0);
+        }
 
         @Override
         public IPolypeptide asDecoy() {
@@ -136,10 +138,12 @@ public class Polypeptide implements IPolypeptide, Comparable<IPolypeptide> {
     // ===================================
     // Really Important
     //====================================
+
     /**
      * create a peptide from a sequebnce string
-     *  liek STGHKKED or     ST[18.5]GHKK[15.6]ED
-     *  the later is a modified peptide
+     * liek STGHKKED or     ST[18.5]GHKK[15.6]ED
+     * the later is a modified peptide
+     *
      * @param s
      * @return
      */
@@ -156,6 +160,7 @@ public class Polypeptide implements IPolypeptide, Comparable<IPolypeptide> {
 
     /**
      * this is useful hwen reading deecoys from XML
+     *
      * @param sequence !null sequence - this is already reversed
      * @return
      */
@@ -165,7 +170,7 @@ public class Polypeptide implements IPolypeptide, Comparable<IPolypeptide> {
             return ModifiedPolypeptide.asAlreadyDecoy(s);
         else
             return new DecoyPolyPeptide(s);
-     }
+    }
 
 
     private double m_Mass;
@@ -177,7 +182,7 @@ public class Polypeptide implements IPolypeptide, Comparable<IPolypeptide> {
     //    private IProtein m_ParentProtein;   // not final since proteins need to set later
     //   private   int m_StartPosition = -1;
     private int m_MissedCleavages;
-    private IProteinPosition[] m_ContainedInProteins;
+    private final List<IProteinPosition> m_ContainedInProteins = new ArrayList<IProteinPosition>();
 
     protected Polypeptide() {
     }
@@ -237,31 +242,30 @@ public class Polypeptide implements IPolypeptide, Comparable<IPolypeptide> {
     public IProteinPosition[] getProteinPositions() {
         if (m_ContainedInProteins == null)
             return IProteinPosition.EMPTY_ARRAY;
-        return m_ContainedInProteins;
+        return m_ContainedInProteins.toArray(IProteinPosition.EMPTY_ARRAY);
     }
 
     public void setContainedInProteins(final IProteinPosition[] pContainedInProteins) {
         Set<String> stx = new HashSet<String>();
-        List<IProteinPosition> holder = new ArrayList<IProteinPosition>();
-        for (int i = 0; i < pContainedInProteins.length; i++) {
-            IProteinPosition tst = pContainedInProteins[i];
-            if(tst == null)
-                continue;
-            String protein = tst.getProtein();
-            if(protein == null)
-                continue;
-            if (!stx.contains(protein)) {
-                stx.add(protein);
-                holder.add(tst);
-            }
-            else {
-                continue;
-            }
+        synchronized (m_ContainedInProteins) {
+            m_ContainedInProteins.clear();
+            for (int i = 0; i < pContainedInProteins.length; i++) {
+                IProteinPosition tst = pContainedInProteins[i];
+                if (tst == null)
+                    continue;
+                String protein = tst.getProtein();
+                if (protein == null)
+                    continue;
+                if (!stx.contains(protein)) {
+                    stx.add(protein);
+                    m_ContainedInProteins.add(tst);
+                }
+                else {
+                    continue;
+                }
+             }
         }
-        IProteinPosition[] ret = new IProteinPosition[holder.size()];
-        holder.toArray(ret);
-        m_ContainedInProteins = ret;
-    }
+     }
 
     /**
      * true if there is at least one modification
@@ -310,10 +314,10 @@ public class Polypeptide implements IPolypeptide, Comparable<IPolypeptide> {
     @Override
     public FastaAminoAcid getNTerminal() {
         int sequenceLength = getSequenceLength();
-        if(sequenceLength == 0)
+        if (sequenceLength == 0)
             return null;
-        String aas = getSequence().substring(1) ;
-         return FastaAminoAcid.valueOf(aas);
+        String aas = getSequence().substring(1);
+        return FastaAminoAcid.valueOf(aas);
     }
 
     /**
@@ -324,9 +328,9 @@ public class Polypeptide implements IPolypeptide, Comparable<IPolypeptide> {
     @Override
     public FastaAminoAcid getCTerminal() {
         int sequenceLength = getSequenceLength();
-        if(sequenceLength == 0)
+        if (sequenceLength == 0)
             return null;
-         String aas = getSequence().substring(sequenceLength -1, sequenceLength) ;
+        String aas = getSequence().substring(sequenceLength - 1, sequenceLength);
         return FastaAminoAcid.valueOf(aas);
     }
 
@@ -511,7 +515,6 @@ public class Polypeptide implements IPolypeptide, Comparable<IPolypeptide> {
     }
 
 
-
     /**
      * mass used to see if scoring rowks
      *
@@ -567,7 +570,6 @@ public class Polypeptide implements IPolypeptide, Comparable<IPolypeptide> {
         }
         return true;
     }
-
 
 
     /**

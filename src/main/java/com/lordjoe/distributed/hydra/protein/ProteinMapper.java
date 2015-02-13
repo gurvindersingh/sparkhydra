@@ -19,7 +19,7 @@ public class ProteinMapper extends AbstractTandemFunction  implements  IMapperFu
 
 
     private long m_FragmentIndex;
-    private PeptideModification[] m_Modifications = PeptideModification.EMPTY_ARRAY;
+    private List<PeptideModification> m_Modifications = new ArrayList<PeptideModification>();
     private boolean m_GenerateDecoysForModifiedPeptides;
 
 
@@ -30,7 +30,7 @@ public class ProteinMapper extends AbstractTandemFunction  implements  IMapperFu
         ScoringModifications scoringMods = app.getScoringMods();
 
         PeptideModification[] modifications = scoringMods.getModifications();
-        m_Modifications = modifications;
+        m_Modifications.addAll(Arrays.asList(modifications));
 
         setGenerateDecoysForModifiedPeptides(app.getBooleanParameter(XTandemUtilities.CREATE_DECOY_FOR_MODIFIED_PEPTIDES_PROPERTY, Boolean.FALSE));
 
@@ -69,11 +69,12 @@ public class ProteinMapper extends AbstractTandemFunction  implements  IMapperFu
     }
 
     public PeptideModification[] getModifications() {
-        return m_Modifications;
+        return m_Modifications.toArray(PeptideModification.EMPTY_ARRAY);
     }
 
     public void setModifications(final PeptideModification[] pModifications) {
-        m_Modifications = pModifications;
+        m_Modifications.clear();
+        m_Modifications.addAll(Arrays.asList(pModifications));
     }
 
     //

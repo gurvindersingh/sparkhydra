@@ -44,6 +44,9 @@ public class SparkUtilities implements Serializable {
     private transient static JavaSQLContext sqlContext;
     private static final Properties sparkProperties = new Properties();
 
+    public static final String LOCAL_PROPERTIES_RESOURCE = "/DefaultSparkLocalCluster.properties";
+    public static final String CLUSTER_PROPERTIES_RESOURCE = "/DefaultSparkCluster.properties";
+
     public static final String DEFAULT_APP_NAME = "Anonymous";
     public static final String MARKER_PROPERTY_NAME = "com.lordjoe.distributed.marker_property";
     public static final String NUMBER_PARTITIONS_PROPERTY_NAME = "com.lordjoe.distributed.number_partitions";
@@ -487,22 +490,24 @@ public class SparkUtilities implements Serializable {
         if (forceLocalExecution || !option.isDefined()) {   // use local over nothing
             sparkConf.setMaster("local[*]");
             setLocal(true);
-//            /**
-//             * liquanpei@gmail.com suggests to correct
-//             * 14/10/08 09:36:35 ERROR broadcast.TorrentBroadcast: Reading broadcast variable 0 failed
-//             14/10/08 09:36:35 INFO broadcast.TorrentBroadcast: Reading broadcast variable 0 took 5.006378813 s
-//             14/10/08 09:36:35 INFO broadcast.TorrentBroadcast: Started reading broadcast variable 0
-//             14/10/08 09:36:35 ERROR executor.Executor: Exception in task 0.0 in stage 0.0 (TID 0)
-//             java.lang.NullPointerException
-//             at java.nio.ByteBuffer.wrap(ByteBuffer.java:392)
-//             at org.apache.spark.scheduler.ResultTask.runTask(ResultTask.scala:58)
-//
-//             */
-//            //  sparkConf.set("spark.broadcast.factory","org.apache.spark.broadcast.HttpBroadcastFactory" );
-        }
+         }
         else {
             setLocal(option.get().startsWith("local"));
         }
+        Properties defaults;
+        if(isLocal())   {
+            defaults = readResourceProperties(LOCAL_PROPERTIES_RESOURCE);
+        }
+        else {
+            defaults = readResourceProperties(CLUSTER_PROPERTIES_RESOURCE);
+
+        }
+
+        for (String property : defaults.stringPropertyNames()) {
+            if(!sparkProperties.containsKey(property))
+                sparkProperties.setProperty(property,defaults.getProperty(property)) ;
+         }
+
 //        // set all properties in the SparkProperties file
         sparkConf.set("spark.ui.killEnabled", "true");  // always allow a job to be killed
         for (String property : sparkProperties.stringPropertyNames()) {
@@ -519,6 +524,22 @@ public class SparkUtilities implements Serializable {
         }
 
     }
+
+
+    private static Properties readResourceProperties(String s) {
+        try {
+            InputStream resourceAsStream = SparkUtilities.class.getResourceAsStream(s);
+            Properties ret = new Properties();
+            ret.load(resourceAsStream);
+            resourceAsStream.close();
+            return ret;
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+
+        }
+    }
+
 
 
     /**

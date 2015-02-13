@@ -104,7 +104,7 @@ public class SparkAccumulators implements Serializable {
             MachineUseAccumulator value = accumulator.value();
             totalCalls.addAll(value);
             //noinspection StringConcatenationInsideStringBufferAppend
-            out.append(accumulatorName + "\n" + value + "\n");
+            out.append(accumulatorName + " " + value + "\n");
         }
         return totalCalls;
     }

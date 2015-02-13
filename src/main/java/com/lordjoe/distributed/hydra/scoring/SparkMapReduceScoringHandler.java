@@ -4,7 +4,6 @@ import com.lordjoe.distributed.*;
 import com.lordjoe.distributed.database.*;
 import com.lordjoe.distributed.hydra.*;
 import com.lordjoe.distributed.hydra.fragment.*;
-import com.lordjoe.distributed.hydra.test.*;
 import com.lordjoe.distributed.spark.*;
 import com.lordjoe.distributed.tandem.*;
 import com.lordjoe.utilities.*;
@@ -818,15 +817,13 @@ public class SparkMapReduceScoringHandler implements Serializable {
             String id = spec.getId();
             IPolypeptide pp = toScore._1();
 
-            if (TestUtilities.isInterestingSpectrum(spec)) {
-                Accumulator<SpectrumScoringAccumulator> specialAccumulator =  (Accumulator<SpectrumScoringAccumulator>)SparkAccumulators.getInstance().getSpecialAccumulator(id);
-
-                specialAccumulator.add(new SpectrumScoringAccumulator(id,pp.toString(),1));
-
-            }
-            if (TestUtilities.isInterestingPeptide(pp)) {
-                pp = toScore._1(); // break here
-            }
+//            if (TestUtilities.isInterestingSpectrum(spec)) {
+//                Accumulator<SpectrumScoringAccumulator> specialAccumulator =  (Accumulator<SpectrumScoringAccumulator>)SparkAccumulators.getInstance().getSpecialAccumulator(id);
+//                 specialAccumulator.add(new SpectrumScoringAccumulator(id,pp.toString(),1));
+//            }
+//            if (TestUtilities.isInterestingPeptide(pp)) {
+//                pp = toScore._1(); // break here
+//            }
 
             Scorer scoreRunner = application.getScoreRunner();
             ITandemScoringAlgorithm scorer1 = application.getScorer();

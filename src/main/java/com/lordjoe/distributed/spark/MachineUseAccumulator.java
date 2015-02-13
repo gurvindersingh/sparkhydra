@@ -65,9 +65,9 @@ public class MachineUseAccumulator implements Serializable {
     /**
      * will be called to count use on a single machine
      */
-    public MachineUseAccumulator(long n,long totalTime) {
+    public MachineUseAccumulator(long n, long totalTime) {
         this();
-        add(n,totalTime);
+        add(n, totalTime);
     }
 
     /**
@@ -80,10 +80,10 @@ public class MachineUseAccumulator implements Serializable {
     }
 
 
-    public void add(long value,long totalT) {
+    public void add(long value, long totalT) {
         String macAddress = SparkUtilities.getMacAddress();
         addEntry(macAddress, value);
-        totalTime +=  totalT;
+        totalTime += totalT;
     }
 
     protected void addEntry(String entry, long value) {
@@ -127,9 +127,8 @@ public class MachineUseAccumulator implements Serializable {
     }
 
 
-
     public long getTotalTime() {
-           return totalTime;
+        return totalTime;
     }
 
 
@@ -151,6 +150,44 @@ public class MachineUseAccumulator implements Serializable {
         return holder;
     }
 
+    public String getBalanceReport() {
+        List<CountedItem> items = asCountedItems();
+        int n = items.size();
+        if (n < 2)
+            return " variance 0"; // one machine is balanced
+
+        long[] calls = new long[n];
+        int index = 0;
+        for (CountedItem item : items) {
+            long count = item.getCount();
+            calls[index++] = count;
+        }
+        return generateVariance(  calls);
+    }
+
+    public static String generateVariance( final long[] pCalls) {
+        StringBuilder sb = new StringBuilder();
+        double min = Double.MAX_VALUE;
+        double max = 0;
+        double sum = 0;
+        double sumsq = 0;
+
+        for (int i = 0; i < pCalls.length; i++) {
+            long count = pCalls[i];
+            min = Math.min(min, count);
+            max = Math.max(max, count);
+            sum += count;
+            sumsq += count * count;
+
+        }
+        int n = pCalls.length;
+        double average = sum / n;
+        double sdsq = (n * sumsq - sum * sum) / (n * (n - 1));
+        double sd = Math.sqrt(sdsq);
+        sb.append(" variance " + String.format("%6.3f", (sd / average)));
+        return sb.toString();
+    }
+
 
     @Override
     public String toString() {
@@ -158,22 +195,21 @@ public class MachineUseAccumulator implements Serializable {
         sb.append(" totalCalls:");
         long total1 = getTotalCalls();
         sb.append(SparkUtilities.formatLargeNumber(total1));
-        sb.append("\n");
 
         sb.append(" totalTime:");
-          long totaltime = getTotalTime();
-          sb.append(SparkUtilities.formatNanosec(totaltime));
-          sb.append("\n");
+        long totaltime = getTotalTime();
+        sb.append(SparkUtilities.formatNanosec(totaltime));
 
-        sb.append(" totalCalls entries:");
+        sb.append(" machines:");
         sb.append(size());
-        sb.append("\n");
 
-        List<CountedItem> items = asCountedItems();
-        for (CountedItem item : items) {
-            sb.append(item.toString());
-            sb.append("\n");
-        }
+        sb.append(getBalanceReport());
+
+//        List<CountedItem> items = asCountedItems();
+//        for (CountedItem item : items) {
+//            sb.append(item.toString());
+//            sb.append("\n");
+//        }
 
         return sb.toString();
     }

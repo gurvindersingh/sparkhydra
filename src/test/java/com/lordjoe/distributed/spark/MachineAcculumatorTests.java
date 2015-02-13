@@ -3,6 +3,8 @@ package com.lordjoe.distributed.spark;
 import com.lordjoe.distributed.*;
 import org.junit.*;
 
+import java.util.*;
+
 /**
  * com.lordjoe.distributed.spark.MachineAcculumatorTests
  * User: Steve
@@ -12,6 +14,19 @@ public class MachineAcculumatorTests {
 
     public static final long NUMBER_ENTRIES = 10000;
     public static final long TIME_NAMO_SEC = 1000;
+    public static final Random RND = new Random();
+
+    @Test
+    public void testVariance() {
+        long[] counts = new long[12];
+        for (int i = 0; i < counts.length; i++) {
+            long count = (long) ((RND.nextGaussian() * 1000) + 10000);
+            counts[i] = count;
+        }
+
+        String s = MachineUseAccumulator.generateVariance(counts);
+    }
+
 
     @Test
     public void testMachineAccumulator() {

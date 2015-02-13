@@ -12,7 +12,6 @@ import java.util.*;
  * Date: 6/30/11
  */
 public class ModifiedPolypeptide extends Polypeptide implements IModifiedPeptide {
-    public static final ModifiedPolypeptide[] EMPTY_ARRAY = {};
 
     public static final String MAX_MODIFICASTIONS_PARAMETER_NAME = "org.systemsbiology.jxtandem.ModifiedPolypeptide.MaxPeptideModifications";
     public static final int DEFAULT_MAX_MODIFICATIONS = 2;
