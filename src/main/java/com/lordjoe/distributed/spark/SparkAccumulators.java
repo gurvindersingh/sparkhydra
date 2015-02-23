@@ -90,6 +90,7 @@ public class SparkAccumulators implements Serializable {
         List<String> accumulatorNames = pMe.getAccumulatorNames();
         for (String accumulatorName : accumulatorNames) {
             Accumulator<Long> accumulator = pMe.getAccumulator(accumulatorName);
+
             Long value = accumulator.value();
             //noinspection StringConcatenationInsideStringBufferAppend
             out.append(accumulatorName + " " + SparkUtilities.formatLargeNumber(value) + "\n");

@@ -43,8 +43,7 @@ public abstract class AbstractLoggingFunctionBase implements Serializable {
         if (accumulators != null) {
             String className = getClass().getSimpleName();
             SparkAccumulators.createFunctionAccumulator(className);
-            SparkAccumulators.createAccumulator(className);
-        }
+          }
     }
 
     public long getTotalTime() {
