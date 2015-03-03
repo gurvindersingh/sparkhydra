@@ -60,7 +60,7 @@ public class SparkConsolidator implements Serializable {
 
         List<String> footer = new ArrayList<String>();
         writer.appendFooter(sb, getApplication());
-        header.add(sb.toString());
+        footer.add(sb.toString());
         sb.setLength(0);
         JavaRDD<String> footerRDD = SparkUtilities.getCurrentContext().parallelize(footer);
 
