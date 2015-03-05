@@ -440,14 +440,32 @@ public class BiomlReporter implements Serializable,ScoredScanWriter {
 
     }
 
+    protected static String getBestProteinLabel(IScoredScan scan)
+    {
+        String proteinLabel = scan.getId();
+        final ISpectralMatch bestMatch = scan.getBestMatch();
+        if(bestMatch == null)
+            return  proteinLabel;
+         IProteinPosition[] proteinPositions = bestMatch.getPeptide().getProteinPositions();
+        if(proteinPositions.length  == 0)
+            return  proteinLabel;
+
+        proteinLabel =  proteinPositions[0].getProteinId();
+        return  proteinLabel;
+
+    }
+
     protected void outputHistogram(IScoredScan scan, Appendable out, int indent) {
         try {
             IMeasuredSpectrum raw = scan.getRaw();
             final HyperScoreStatistics hist = scan.getHyperScores();
             final ISpectralMatch bestMatch = scan.getBestMatch();
             final ITheoreticalSpectrumSet theory = bestMatch.getTheory();
+            IProteinPosition[] proteinPositions = bestMatch.getPeptide().getProteinPositions();
+
 
             int numvalues = 50;
+
             indent(out, indent);
             out.append("<group type=\"support\" label=\"fragment ion mass spectrum\">");
             out.append("\n");
@@ -459,7 +477,7 @@ public class BiomlReporter implements Serializable,ScoredScanWriter {
                     out, indent, false);
             //  <note label="Description">myocontrolSmall.mzXML scan 1676 (charge 3)</note>
             out.append(
-                    "<GAML:trace id=\"" + scan.getId() + "\" label=\"" + scan.getId() + ".spectrum\" type=\"tandem mass spectrum\">");
+                    "<GAML:trace id=\"" + scan.getId() + "\" label=\"" + getBestProteinLabel(scan) + "\" type=\"tandem mass spectrum\">");
             out.append("\n");
             writeGAMLAttribute(out, indent, "M+H",
                     XTandemUtilities.formatDouble(raw.getPrecursorMass(), 2));
@@ -486,7 +504,7 @@ public class BiomlReporter implements Serializable,ScoredScanWriter {
 
             indent(out, indent);
             out.append("<GAML:Xdata ");
-            out.append("label=\"" + scan.getId() + ".spectrum" + "\" ");
+            out.append("label=\"" + getBestProteinLabel(scan) +  "\" ");
             out.append("units=\"" + "MASSTOCHARGERATIO" + "\" ");
             out.append(">");
             out.append("\n" );
