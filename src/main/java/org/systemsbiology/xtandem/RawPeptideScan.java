@@ -192,6 +192,10 @@ public class RawPeptideScan implements IMeasuredSpectrum, ISpectralScan, Compara
             IScanPrecursorMZ precursorMz = getPrecursorMz();
             double massChargeRatio = precursorMz.getMassChargeRatio();
 
+            out.append("RTINSECONDS=" + getRetentionTime());
+            out.append("\n");
+
+
             double precursorMass = getPrecursorMass();
             out.append("PEPMASS=" + massChargeRatio);
             out.append("\n");
