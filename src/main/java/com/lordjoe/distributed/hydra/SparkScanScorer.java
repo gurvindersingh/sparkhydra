@@ -299,8 +299,10 @@ public class SparkScanScorer {
         long totalSpectra = 0;
         List<PairCounter> pairs = null;
 
-        String property = System.getProperty("java.class.path");
-        System.out.println(property);
+        // for debugging show class path
+       // String property = System.getProperty("java.class.path");
+        //System.out.println(property);
+
         // Force PepXMLWriter to load
         PepXMLWriter foo = null;
         // code to run class loader

@@ -1603,9 +1603,22 @@ public class XTandemUtilities {
     public static double parsePepMassLine(final String pLine) {
         final double mass;
         String numeric = pLine.substring("PEPMASS=".length());
-        String massStr = numeric.split(" ")[0];
-        mass = Double.parseDouble(massStr);
-        return mass;
+        String massStr;
+        // at least once we have seen \t as a separator
+        if(numeric.contains("\t"))  {
+            massStr = numeric.split("\t")[0].trim();
+        }
+        else {
+            massStr = numeric.split(" ")[0].trim();
+        }
+         try {
+            mass = Double.parseDouble(massStr);
+            return mass;
+        }
+        catch (NumberFormatException e) {
+            throw e;
+
+        }
     }
 
 
