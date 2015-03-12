@@ -13,7 +13,9 @@ public interface ISpectralScan
 
     public String getId();
 
-    public int getMsLevel();
+    public int getIndex();
+
+     public int getMsLevel();
 
     public  int getScanEvent();
 

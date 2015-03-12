@@ -14,15 +14,21 @@ import java.util.*;
  */
 public class TestUtilities {
 
-    public static final String[] INTERESTING_PEPTIDES_STRS = { "VSYAVYNR"};
+    public static final String[] INTERESTING_PEPTIDES_STRS = {
+            "FCYVTEEGDWITKPLPFKK",
+             "EWDFSEEQPEITIDEKKLAK",
+
+    };
     public static final Set<String> INTERESTING_PEPTIDES = new HashSet<String>(Arrays.asList(INTERESTING_PEPTIDES_STRS));
 
 
     public static final String[] INTERESTING_SPECTRUM_STRS = {
-            "131104_Berit_BSA2.17729.17729.2",     //  sequence=AVPGAIVR score 550   ;
-            "13697",     //  sequence=AVPGAIVR score 550   131104_Berit_BSA2.17729.17729.2";
-             "62963", // sequence=SVLRPDVDLR   score 720
-            "30788" //   sequence=Q[-17.026]TLVAQGTLR    hyperscore="629"
+            "131104_Berit_BSA2.16405.16405.3",
+       //     "131104_Berit_BSA2.13178.13178.3",
+        //    "131104_Berit_BSA2.17729.17729.2",     //  sequence=AVPGAIVR score 550   ;
+       //     "13697",     //  sequence=AVPGAIVR score 550   131104_Berit_BSA2.17729.17729.2";
+       //      "62963", // sequence=SVLRPDVDLR   score 720
+        //    "30788" //   sequence=Q[-17.026]TLVAQGTLR    hyperscore="629"
 
     } ;
 
@@ -41,7 +47,8 @@ public class TestUtilities {
     public static boolean isInterestingSpectrum(IMeasuredSpectrum... spec) {
         for (int i = 0; i < spec.length; i++) {
             IMeasuredSpectrum sp = spec[i];
-              if(INTERESTING_SPECTRUMS.contains(sp.getId()))
+            String id = sp.getId();
+            if(INTERESTING_SPECTRUMS.contains(id))
                   return true;
          }
          return false;

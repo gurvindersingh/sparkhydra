@@ -349,6 +349,16 @@ public class ScoringTestUtilities {
         }
 
         /**
+         * get index - return 0 if unknown
+         *
+         * @return as above
+         */
+        @Override
+        public int getIndex() {
+            return 0;
+        }
+
+        /**
          * return true if the spectrum is immutable
          *
          * @return

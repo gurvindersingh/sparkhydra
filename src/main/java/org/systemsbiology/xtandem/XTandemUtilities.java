@@ -838,6 +838,8 @@ public class XTandemUtilities {
 
 
     public static String formatScientific(double f, int rightOfDecimal) {
+        if(f == 0)
+            return "0.0";
         return getScientific(rightOfDecimal).format(f);
     }
 

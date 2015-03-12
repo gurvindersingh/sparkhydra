@@ -539,6 +539,7 @@ public class SparkMapReduceScoringHandler implements Serializable {
      */
     protected static IScoredScan scoreOnePeptide(IMeasuredSpectrum spec, IPolypeptide pp, Scorer scorer1, ITandemScoringAlgorithm algorithm1) {
         ITheoreticalSpectrumSet ts = scorer1.generateSpectrum(pp);
+
         IPolypeptide[] pps = {pp};
         ITheoreticalSpectrumSet[] tts = {ts};
         //     Scorer scorer1 = getScorer();

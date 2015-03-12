@@ -126,7 +126,7 @@ public class SpectrumCondition implements Serializable {
 
     public boolean isMassScored(double mass) {
         if (isUseMinMass()) {
-            final float requiredMin = getfMinMass();
+            final float requiredMin = getfLowestMass();
             if (mass < requiredMin)
                 return false;
         }

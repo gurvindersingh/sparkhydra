@@ -169,6 +169,8 @@ public class Protein extends Polypeptide implements IProtein {
         Protein ret = new Protein(id, pAnnotation);
         ret.setSequence(pSequence);
         //       ret.setAnnotation(pAnnotation);
+        if(url == null || url.length() == 0)
+            throw new IllegalStateException("problem"); // ToDo change
         ret.setURL(url);
         return ret;
         //    }

@@ -44,15 +44,20 @@ public class MGFStringTupleToSpectrumTuple extends AbstractLoggingPairFlatMapFun
         IMeasuredSpectrum spectrum = XTandemUtilities.readMGFScan(inp, "");
         if (scorer != null) {
             // added spectral conditioning and normalization
-            final double minMass = MINIMUM_MASS;
+              double minMass = MINIMUM_MASS;
+            if(spectrumParameters.getfLowestMass() > 0)
+                minMass = spectrumParameters.getfLowestMass();
             RawPeptideScan raw = (RawPeptideScan) spectrum;
             if (raw == null)
                 return ret;
+
             IMeasuredSpectrum spec = spectrumParameters.normalizeSpectrum(raw, minMass);
-            if (spec == null)
+           if (spec == null)
                 return ret;
-            IMeasuredSpectrum conditioned = scorer.conditionSpectrum(spec, raw);
-            ret.add(new Tuple2<String, IMeasuredSpectrum>(kv._1(), spectrum));
+     //       IMeasuredSpectrum conditioned = scorer.conditionSpectrum(spec, raw);
+     //       IMeasuredSpectrum normalized = spectrumParameters.normalizeSpectrum(conditioned, minMass);
+
+            ret.add(new Tuple2<String, IMeasuredSpectrum>(kv._1(), spec));
         }
         else {
             ret.add(new Tuple2<String, IMeasuredSpectrum>(kv._1(), spectrum));

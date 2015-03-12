@@ -91,7 +91,8 @@ public class MGFInputFormat extends FileInputFormat<String, String> implements S
         private long current;
         private LineReader m_Input;
         private FSDataInputStream m_RealFile;
-        private String key = null;
+        private String fileName = null;
+        private String keyX = null;
         private String value = null;
         private Text buffer; // must be
 
@@ -137,7 +138,7 @@ public class MGFInputFormat extends FileInputFormat<String, String> implements S
             }
 
             current = m_Start;
-            key = split.getPath().getName();
+            fileName = split.getPath().getName();
 
             current = 0;
         }
@@ -154,7 +155,7 @@ public class MGFInputFormat extends FileInputFormat<String, String> implements S
                 newSize = m_Input.readLine(buffer);
                 // we are done
                 if (newSize == 0) {
-                    key = null;
+                    keyX = null;
                     value = null;
                     return false;
                 }
@@ -167,12 +168,14 @@ public class MGFInputFormat extends FileInputFormat<String, String> implements S
                 str = buffer.toString();
 
                 if ("BEGIN IONS".equals(str)) {
+                    long currentPos = m_RealFile.getPos();
+                    keyX = String.format("%010d",currentPos) + "\t"  + fileName;
                     break;
                 }
                 current = m_RealFile.getPos();
                 // we are done
                 if (current > m_End) {
-                    key = null;
+                    keyX = null;
                     value = null;
                     return false;
 
@@ -183,14 +186,14 @@ public class MGFInputFormat extends FileInputFormat<String, String> implements S
             current = m_RealFile.getPos();
             // we are done
             if (current > m_End) {
-                key = null;
+                keyX = null;
                 value = null;
                 return false;
              }
 
 
             if (newSize == 0) {
-                key = null;
+                keyX = null;
                 value = null;
                 return false;
 
@@ -208,7 +211,7 @@ public class MGFInputFormat extends FileInputFormat<String, String> implements S
             value = sb.toString();
 
             if (sb.length() == 0) {
-                key = null;
+                keyX = null;
                 value = null;
                 return false;
             }
@@ -219,7 +222,7 @@ public class MGFInputFormat extends FileInputFormat<String, String> implements S
 
         @Override
         public String getCurrentKey() {
-            return key;
+            return keyX;
         }
 
         @Override

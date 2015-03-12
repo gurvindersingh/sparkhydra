@@ -1,5 +1,6 @@
 package org.systemsbiology.xtandem;
 
+import com.lordjoe.distributed.hydra.test.*;
 import org.systemsbiology.hadoop.*;
 import org.systemsbiology.xtandem.ionization.*;
 import org.systemsbiology.xtandem.peptide.*;
@@ -634,6 +635,9 @@ public abstract class AbstractScoringAlgorithm implements ITandemScoringAlgorith
             // debugging test
             IPolypeptide peptide = tsSet.getPeptide();
             double matching = peptide.getMatchingMass();
+
+            if(TestUtilities.isInterestingSpectrum(scan))
+                matching = peptide.getMatchingMass();  // break here
 
 
             if (scorer.isTheoreticalSpectrumScored(pConditionedScan, tsSet)) {

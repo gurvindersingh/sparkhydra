@@ -262,7 +262,7 @@ public class TandemKScoringAlgorithm extends TandemScoringAlgorithm {
      * @return null if the spectrum is to be ignored otherwise a conditioned spectrum
      */
     public IMeasuredSpectrum conditionSpectrum(IScoredScan scan, final SpectrumCondition sc) {
-        IMeasuredSpectrum in = sc.conditionSpectrum(scan, 150);
+        IMeasuredSpectrum in = sc.conditionSpectrum(scan, sc.getfLowestMass());
         IMeasuredSpectrum raw = scan.getRaw();
 
         if (in == null) {
@@ -329,8 +329,12 @@ public class TandemKScoringAlgorithm extends TandemScoringAlgorithm {
         ISpectrumPeak[] newPeaks = new ISpectrumPeak[holder.size()];
         holder.toArray(newPeaks);
 
+
         final MutableMeasuredSpectrum spectrum = pIn.asMmutable();
         spectrum.setPeaks(newPeaks);
+
+
+
 //             sc.doWindowedNormalization(spectrum);
 //         if (XTandemDebugging.isDebugging()) {
 //             XTandemDebugging.getLocalValues().addMeasuredSpectrums(ret.getId(), "after Perform mix-range modification", ret);

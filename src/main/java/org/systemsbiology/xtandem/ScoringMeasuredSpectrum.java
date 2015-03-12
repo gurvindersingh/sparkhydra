@@ -185,6 +185,19 @@ public class ScoringMeasuredSpectrum implements IMeasuredSpectrum {
     }
 
     /**
+     * get index - return 0 if unknown
+     *
+     * @return as above
+     */
+    @Override
+    public int getIndex() {
+        ISpectralScan scanData = getScanData();
+        if(scanData == null)
+            return 0;
+        return scanData.getIndex();
+    }
+
+    /**
      * get the charge of the spectrum precursor
      *
      * @return

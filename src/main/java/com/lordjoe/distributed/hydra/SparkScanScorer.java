@@ -32,6 +32,7 @@ import java.util.*;
  */
 public class SparkScanScorer {
 
+    public static final boolean DO_DEBUGGING_COUNT = true;
     public static final boolean EXIT_BEFORE_SCORINE = false;
 //    public static final String[] InterestingPeptides = {
 //            "WYEK[79.966]AAGNEDK[79.966]",
@@ -44,7 +45,7 @@ public class SparkScanScorer {
 //    };
 
 
-    private static boolean debuggingCountMade = false;
+    private static boolean debuggingCountMade = DO_DEBUGGING_COUNT;
 
     public static boolean isDebuggingCountMade() {
         return debuggingCountMade;
@@ -189,6 +190,8 @@ public class SparkScanScorer {
 
         JavaRDD<IMeasuredSpectrum> spectraToScore = scans.values();
 
+        spectraToScore = indexSpectra(spectraToScore);
+
         // drop bad ids
         spectraToScore = spectraToScore.filter(new Function<IMeasuredSpectrum, Boolean>() {
             @Override
@@ -219,6 +222,14 @@ public class SparkScanScorer {
         // spectraToScore = SparkUtilities.realizeAndReturn(spectraToScore);
         pTimer.showElapsed("got Spectra to Score");
         return spectraToScore;
+    }
+
+    public static JavaRDD<IMeasuredSpectrum> indexSpectra(JavaRDD<IMeasuredSpectrum> pSpectraToScore) {
+
+        JavaPairRDD<IMeasuredSpectrum,Long> indexed = pSpectraToScore.zipWithIndex();
+
+        pSpectraToScore = indexed.map(new AddIndexToSpectrum()) ;
+        return pSpectraToScore;
     }
 
 
@@ -415,6 +426,7 @@ public class SparkScanScorer {
         timer.reset();
         // now produce all peptide spectrum scores where spectrum and peptide are in the same bin
         JavaRDD<IScoredScan> bestScores = handler.scoreBinPairs(binPairs);
+
 
         if (isDebuggingCountMade())
             bestScores = SparkUtilities.persistAndCount("Best Scores", bestScores);

@@ -191,6 +191,8 @@ public class SparkSpectrumUtilities {
                 ctx.hadoopConfiguration()
         );
 
+
+
         spectraAsStrings = SparkUtilities.persist(spectraAsStrings);
         long spectraStringCount = spectraAsStrings.count();
 

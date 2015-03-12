@@ -1,5 +1,6 @@
 package org.systemsbiology.xtandem;
 
+import com.lordjoe.distributed.*;
 import org.systemsbiology.hadoop.*;
 import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.hadoop.*;
@@ -755,7 +756,8 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
                 paramName = m_DefaultParameters;
             }
             else {
-                File f = new File(m_DefaultParameters);
+                String defaults = SparkUtilities.buildPath(m_DefaultParameters);
+                 File f = new File(defaults);
                 if (f.exists() && f.isFile() && f.canRead()) {
                     try {
                         is = new FileInputStream(f);

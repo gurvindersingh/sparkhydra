@@ -264,7 +264,7 @@ public class VerboseMgfCleaner {
         InputStream is = new FileInputStream(in);
 
         // this routine comply combines spectra and writes a reduces file
-        //  writeCleanMgfFile(out, is);
+          writeCleanMgfFile(out, is);
 
         // this routine chops the number of spectra at  MAX_SPECTRA
         //writeShorterMgfFile(out, is, MAX_SPECTRA);
@@ -277,7 +277,7 @@ public class VerboseMgfCleaner {
 
        // writeCleanMGFFile(out, is);
 
-        writeSelectedFullMGFS(out, is,templateFile);
+       // writeSelectedFullMGFS(out, is,templateFile);
     }
 
 

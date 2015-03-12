@@ -78,6 +78,12 @@ public interface IMeasuredSpectrum extends ISpectrum
     public String getId();
 
     /**
+     * get index - return 0 if unknown
+     * @return  as above
+     */
+    public int getIndex();
+
+    /**
      * Mass spec characteristics
      * @return  as above
      */

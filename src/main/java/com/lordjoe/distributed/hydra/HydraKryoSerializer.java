@@ -71,6 +71,9 @@ public class HydraKryoSerializer implements KryoRegistrator, Serializable {
         kryo.register(boolean[].class);
         kryo.register(String[].class);
         kryo.register(String[].class);
+         Class cls =  scala.reflect.ClassTag.class;
+         kryo.register(cls);
+     //    kryo.register(scala.reflect.ClassTag$$anon$1.class);
 
 //        doRegistration(kryo,"XXX");
 //        doRegistration(kryo,"XXX");
@@ -173,8 +176,12 @@ public class HydraKryoSerializer implements KryoRegistrator, Serializable {
         doRegistration(kryo, "org.systemsbiology.xtandem.peptide.PeptideBondDigester$LysineC");
         doRegistration(kryo, "org.systemsbiology.xtandem.peptide.PeptideBondDigester$Trypsin");
         doRegistration(kryo, "org.systemsbiology.xtandem.peptide.PeptideModification");
-        doRegistration(kryo, "org.systemsbiology.xtandem.peptide.PeptideModificationRestriction");
-        doRegistration(kryo, "org.systemsbiology.xtandem.peptide.Polypeptide");
+         doRegistration(kryo, "org.systemsbiology.xtandem.peptide.PeptideModificationRestriction");
+         doRegistration(kryo, "com.lordjoe.distributed.hydra.scoring.AppendScanStringToWriter");
+
+         doRegistration(kryo,  "com.lordjoe.distributed.hydra.AddIndexToSpectrum");
+          doRegistration(kryo, "com.lordjoe.distributed.hydra.scoring.SortByIndex");
+          doRegistration(kryo, "org.systemsbiology.xtandem.peptide.Polypeptide");
         doRegistration(kryo, "org.systemsbiology.xtandem.scoring.Scorer");
         doRegistration(kryo, "org.systemsbiology.xtandem.scoring.ScoringModifications");
         doRegistration(kryo, "org.systemsbiology.xtandem.taxonomy.Taxonomy");
@@ -186,7 +193,11 @@ public class HydraKryoSerializer implements KryoRegistrator, Serializable {
         doRegistration(kryo, "com.lordjoe.distributed.hydra.scoring.SparkMapReduceScoringHandler");
         doRegistration(kryo, "com.lordjoe.distributed.spark.SparkAccumulators");
         doRegistration(kryo, "com.lordjoe.utilities.ElapsedTimer");
-        doRegistration(kryo, "org.systemsbiology.xtandem.XTandemMain");
+         doRegistration(kryo, "org.systemsbiology.xtandem.XTandemMain");
+         doRegistration(kryo, "org.systemsbiology.xtandem.reporting.BiomlReporter");
+         doRegistration(kryo, "com.lordjoe.distributed.hydra.scoring.ScoredScanWriter");
+         doRegistration(kryo, "com.lordjoe.distributed.hydra.scoring.ToIndexTuple");
+
     }
 
 

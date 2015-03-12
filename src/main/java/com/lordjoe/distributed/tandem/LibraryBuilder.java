@@ -66,9 +66,9 @@ public class LibraryBuilder implements Serializable {
 
 
         XTandemMain application1 = getApplication();
-        String fasta = application1.getDatabaseName();
+        String fastaBase = application1.getDatabaseName();
         Path defaultPath = XTandemHadoopUtilities.getDefaultPath();
-        fasta = defaultPath.toString() + "/" + fasta + ".fasta";
+        String fasta = defaultPath.toString() + "/" + fastaBase + ".fasta";
 
         // this is a list of proteins the key is the annotation line
         // the value is the sequence
@@ -77,7 +77,7 @@ public class LibraryBuilder implements Serializable {
         // if not commented out this line forces proteins to be realized
         //  parsed = SparkUtilities.realizeAndReturn(parsed, ctx);
 
-        return parsed.map(new ParsedProteinToProtein());
+        return parsed.map(new ParsedProteinToProtein(fastaBase  + ".fasta"));
     }
 
 
@@ -344,12 +344,18 @@ public class LibraryBuilder implements Serializable {
 
 
     public static class ParsedProteinToProtein extends AbstractLoggingFunction<Tuple2<String, String>, IProtein> {
+        private final String url;
+
+        public ParsedProteinToProtein(final String pUrl) {
+            url = pUrl;
+        }
+
         @Override
         public IProtein doCall(final Tuple2<String, String> v1) throws Exception {
             String annotation = v1._1();
             String sequence = v1._2();
             String id = Protein.idFromAnnotation(annotation);
-            return Protein.getProtein(id, annotation, sequence, null);
+            return Protein.getProtein(id, annotation, sequence, url);
 
         }
     }

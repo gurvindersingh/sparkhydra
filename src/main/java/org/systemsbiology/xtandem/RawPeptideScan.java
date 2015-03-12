@@ -75,6 +75,8 @@ public class RawPeptideScan implements IMeasuredSpectrum, ISpectralScan, Compara
     }
 
 
+
+
     public void addAddedValue(String key, String added) {
         m_AddedValues.put(key, added);
     }
@@ -361,6 +363,15 @@ public class RawPeptideScan implements IMeasuredSpectrum, ISpectralScan, Compara
         return m_Id;
     }
 
+    /**
+     * get index - return 0 if unknown
+     *
+     * @return as above
+     */
+    @Override
+    public int getIndex() {
+        return m_ScanNumber;
+    }
 
     /**
      * weak test for equality

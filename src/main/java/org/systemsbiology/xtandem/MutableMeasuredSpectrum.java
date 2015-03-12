@@ -1,7 +1,6 @@
 package org.systemsbiology.xtandem;
 
 import org.systemsbiology.sax.*;
-import org.systemsbiology.xtandem.sax.*;
 import org.systemsbiology.xtandem.scoring.*;
 
 import java.util.*;
@@ -188,6 +187,15 @@ public class MutableMeasuredSpectrum implements IMeasuredSpectrum {
     public String getId() {
         return getScanData().getId();
     }
+    /**
+      * get run identifier
+      *
+      * @return
+      */
+     @Override
+     public int getIndex() {
+         return getScanData().getIndex();
+     }
 
     /**
      * get the charge of the spectrum precursor

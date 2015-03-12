@@ -48,7 +48,16 @@ public class OriginatingScoredScan implements IScoredScan, IAddable<IScoredScan>
 
     public OriginatingScoredScan(IMeasuredSpectrum pRaw) {
         this();
-        m_Raw = pRaw;
+        if(pRaw instanceof ScoringMeasuredSpectrum) {
+            ScoringMeasuredSpectrum sm = (ScoringMeasuredSpectrum)pRaw;
+            m_NormalizedRawScan = sm;
+            m_ConditionedScan = sm;
+            m_Raw = sm;
+        }
+        else {
+            m_Raw = pRaw;
+
+        }
     }
 
     public OriginatingScoredScan() {
@@ -222,6 +231,18 @@ public class OriginatingScoredScan implements IScoredScan, IAddable<IScoredScan>
         return raw.getId();
     }
 
+    /**
+        * return the scan identifier
+        *
+        * @return as above
+        */
+       @Override
+       public int getIndex() {
+           IMeasuredSpectrum raw = getRaw();
+           if (raw == null)
+               return 0;
+           return raw.getIndex();
+       }
 
     @Override
     public IMeasuredSpectrum getRaw() {
@@ -525,7 +546,7 @@ public class OriginatingScoredScan implements IScoredScan, IAddable<IScoredScan>
     @Override
     public double getExpectedValue() {
         HyperScoreStatistics hyperScores = getHyperScores();
-        if (m_ExpectedValue != 0 && !Double.isNaN(m_ExpectedValue))
+        if (m_ExpectedValue != 0 && !Double.isNaN(m_ExpectedValue) &&!Double.isInfinite(m_ExpectedValue))
             return m_ExpectedValue;
         ISpectralMatch bestMatch = getBestMatch();
         if (!hyperScores.isEmpty()) {
@@ -533,10 +554,14 @@ public class OriginatingScoredScan implements IScoredScan, IAddable<IScoredScan>
                 return 1.0; // should not happen
             double hyperScore = bestMatch.getHyperScore();
             double expectedValue = hyperScores.getExpectedValue(hyperScore);
-            return expectedValue;    //  delegate the work
-            // when we have not set this (typical case) we get it from the hyperscores
+            if (expectedValue != 0 && !Double.isNaN(expectedValue) &&!Double.isInfinite(expectedValue))
+                 return expectedValue;
+           return 0;
+             // when we have not set this (typical case) we get it from the hyperscores
         }
-        return m_ExpectedValue;
+        if (m_ExpectedValue != 0 && !Double.isNaN(m_ExpectedValue) &&!Double.isInfinite(m_ExpectedValue))
+              return m_ExpectedValue;
+        return 0;
     }
 
     @Override

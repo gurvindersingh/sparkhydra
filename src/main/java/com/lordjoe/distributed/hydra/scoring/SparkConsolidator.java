@@ -3,13 +3,12 @@ package com.lordjoe.distributed.hydra.scoring;
 import com.lordjoe.distributed.*;
 import org.apache.hadoop.fs.*;
 import org.apache.spark.api.java.*;
-import org.apache.spark.api.java.function.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.hadoop.*;
 import org.systemsbiology.xtandem.reporting.*;
 import org.systemsbiology.xtandem.scoring.*;
 
-import java.io.*;
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -42,13 +41,8 @@ public class SparkConsolidator implements Serializable {
      * @param scans
      */
     public int writeScores(JavaRDD<IScoredScan> scans) {
-        // Print scans in sorted order
-        scans.sortBy(new Function<IScoredScan, Object>() {
-            @Override
-            public String call(final IScoredScan v1) throws Exception {
-                return v1.getId();
-            }
-        }, true, SparkUtilities.getDefaultNumberPartitions());
+
+        scans = sortByIndex(scans);
 
         List<String> header = new ArrayList<String>();
         StringBuilder sb = new StringBuilder();
@@ -62,13 +56,14 @@ public class SparkConsolidator implements Serializable {
         writer.appendFooter(sb, getApplication());
         footer.add(sb.toString());
         sb.setLength(0);
+        long[] scoreCounts = new long[1];
+
         JavaRDD<String> footerRDD = SparkUtilities.getCurrentContext().parallelize(footer);
 
-        // make an RDD of the text for every SPrectrum
+        // make an RDD of the text for every Spectrum
         JavaRDD<String> textOut = scans.map(new AppendScanStringToWriter(writer,getApplication()));
+         textOut = SparkUtilities.persistAndCount("Total Scored Scans",textOut,scoreCounts);
 
-        long[] scoreCounts = new long[1];
-        textOut = SparkUtilities.persistAndCount("Total Scored Scans",textOut,scoreCounts);
 
         JavaRDD<String> data = headerRDD.union(textOut).union(footerRDD).coalesce(1);
 
@@ -81,20 +76,14 @@ public class SparkConsolidator implements Serializable {
     }
 
 
-    public static  class AppendScanStringToWriter extends AbstractLoggingFunction<IScoredScan, String> {
-        private final ScoredScanWriter writer;
-        private final XTandemMain application;
+    public static JavaRDD<IScoredScan> sortByIndex(JavaRDD<IScoredScan> bestScores)
+      {
+          JavaPairRDD<Integer, IScoredScan> byIndex = bestScores.mapToPair(new ToIndexTuple());
+           JavaPairRDD<Integer, IScoredScan> sortedByIndex = byIndex.sortByKey();
 
-        public AppendScanStringToWriter(final ScoredScanWriter pWriter,XTandemMain app) {
-            writer = pWriter;
-            application = app;
-        }
+          return sortedByIndex.values();
+     //     return byIndex.values();
 
-        @Override
-        public String doCall(final IScoredScan v1) throws Exception {
-            StringBuilder sb = new StringBuilder();
-            writer.appendScan(sb, application, v1);
-            return sb.toString();
-        }
-    }
+      }
+
 }

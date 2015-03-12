@@ -143,6 +143,8 @@ public final class JavaBigDataWordCount {
     public static void main(String[] args) throws Exception {
         SparkConf sparkConf = new SparkConf().setAppName("JavaBigDataWordCount");
         sparkConf.set("spark.mesos.coarse", "true");
+        sparkConf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer") ;
+
         Option<String> option = sparkConf.getOption("spark.master");
         if (!option.isDefined())   // use local over nothing
             sparkConf.setMaster("local");
