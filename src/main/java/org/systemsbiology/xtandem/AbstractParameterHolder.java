@@ -46,6 +46,8 @@ public abstract class AbstractParameterHolder implements ISetableParameterHolder
      */
     public void setParameter(String key,String value)
     {
+        if(key == null || value == null)
+            throw new IllegalArgumentException("problem"); // ToDo change
         m_Parameters.put(key,value);
     }
 
@@ -117,8 +119,9 @@ public abstract class AbstractParameterHolder implements ISetableParameterHolder
     @Override
     public String[] getParameterKeys()
     {
-        final String[] strings = m_Parameters.keySet().toArray(new String[m_Parameters.size()]);
-        Arrays.sort(strings);
+        List<String>  temp = new ArrayList<String>(m_Parameters.keySet());
+         Collections.sort(temp);
+        final String[] strings = temp.toArray(new String[temp.size()]);
         return strings;
     }
 

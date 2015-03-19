@@ -4,6 +4,6 @@
 	<note type="input" label="list path, taxonomy information">taxonomy_searchGUI.xml</note>
 	<!-- <note type="input" label="protein, taxon">all</note> -->
 	<note type="input" label="protein, taxon">selectedProtein20.fasta</note>
-	<note type="input" label="spectrum, path">selectedProtein20.mgf</note>
+	<note type="input" label="spectrum, paths">selectedMGF20.mgf</note>
 	<note type="input" label="output, path">selectedProtein20.out.xml</note>
 </bioml>

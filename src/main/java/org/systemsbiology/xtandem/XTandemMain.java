@@ -8,6 +8,7 @@ import org.systemsbiology.xtandem.peptide.*;
 import org.systemsbiology.xtandem.sax.*;
 import org.systemsbiology.xtandem.scoring.*;
 import org.systemsbiology.xtandem.taxonomy.*;
+import org.systemsbiology.xtandem.testing.*;
 
 import java.io.*;
 import java.util.*;
@@ -110,17 +111,19 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
     }
 
 
+    public static final String DO_DEBUGGING_KEY = "org.systemsbiology.xtandem.XTandemMain.DO_DEBUGGING"; // fix this
+
     public XTandemMain(final InputStream is, String url) {
         //     Protein.resetNextId();
         initOpeners();
         Properties predefined = XTandemHadoopUtilities.getHadoopProperties();
         for (String key : predefined.stringPropertyNames()) {
             setPredefinedParameter(key, predefined.getProperty(key));
-        }
+         }
         handleInputs(is, url);
         //     if (gInstance != null)
         //        throw new IllegalStateException("Only one XTandemMain allowed");
-    }
+      }
 
 
     private void setPredefinedParameter(String key, String value) {
@@ -354,6 +357,11 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
 
         int maxMods = getIntParameter(ModifiedPolypeptide.MAX_MODIFICASTIONS_PARAMETER_NAME, ModifiedPolypeptide.DEFAULT_MAX_MODIFICATIONS);
         ModifiedPolypeptide.setMaxPeptideModifications(maxMods);
+
+        if(getBooleanParameter(DO_DEBUGGING_KEY,false))  {
+               XTandemDebugging.setDebugging(true, this);
+           }
+
 
     }
 

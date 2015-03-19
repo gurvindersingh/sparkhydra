@@ -7,6 +7,8 @@ import org.systemsbiology.xtandem.sax.*;
 import org.systemsbiology.xtandem.scoring.*;
 import org.xml.sax.*;
 
+import java.util.*;
+
 /**
  * org.systemsbiology.xtandem.bioml.sax.BiomlSaxHandler
  * User: steven
@@ -158,28 +160,37 @@ public class BiomlScanReportHandler extends AbstractXTandemElementSaxHandler<Sco
             ISpectralMatch match = prot.asSpectralMatch(scan.getRaw());
             if (match != null)
                 scan.addSpectralMatch(match);
+            Map<String, String> notes = handler.getNotes();
+            for (String s : notes.keySet()) {
+                addNote(s,notes.get(s));
+            }
             return;
             //      return;
         }
         if ("group".equals(el)) {
             ISaxHandler iSaxHandler = getHandler().popCurrentHandler();
             if (iSaxHandler instanceof ProteinXtandemReportHandler) {
-                  ProteinXtandemReportHandler handler = (ProteinXtandemReportHandler) iSaxHandler;
-                  XTandemReportProtein prot = handler.getElementObject();
-                  IMeasuredSpectrum measured = null;
-                  ScoredScan scan = getElementObject();
+                ProteinXtandemReportHandler handler = (ProteinXtandemReportHandler) iSaxHandler;
+                XTandemReportProtein prot = handler.getElementObject();
+                IMeasuredSpectrum measured = null;
+                ScoredScan scan = getElementObject();
                 Double expect = getExpect();
                 scan.setExpectedValue(expect);
-                  if (scan != null)
-                      measured = scan.getRaw();
+                if (scan != null)
+                    measured = scan.getRaw();
 
-                  ISpectralMatch match = prot.asSpectralMatch(scan.getRaw());
-                  if (match != null)
-                      scan.addSpectralMatch(match);
-                  return;
-              }
+                Map<String, String> notes = handler.getNotes();
+                  for (String s : notes.keySet()) {
+                      addNote(s,notes.get(s));
+                  }
+
+                ISpectralMatch match = prot.asSpectralMatch(scan.getRaw());
+                if (match != null)
+                    scan.addSpectralMatch(match);
+                return;
+            }
             if (iSaxHandler instanceof BiomlScanReportHandler) {
-                    getHandler().pushCurrentHandler(iSaxHandler); // let regular code repope #$#%#@$%# nested tags
+                getHandler().pushCurrentHandler(iSaxHandler); // let regular code repope #$#%#@$%# nested tags
 //                  BiomlScanReportHandler handler = (BiomlScanReportHandler) iSaxHandler;  // that is us
 //
 //                ScoredScan prot = handler.getElementObject();
@@ -190,8 +201,8 @@ public class BiomlScanReportHandler extends AbstractXTandemElementSaxHandler<Sco
 //
 //                  return;
                 // normal parent handler will handle this
-              }
- //                  return;
+            }
+            //                  return;
         }
         if ("file".equals(el)) {
             return;

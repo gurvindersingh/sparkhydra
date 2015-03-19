@@ -15,49 +15,50 @@ public class NoteSaxHandler extends AbstractXTandemElementSaxHandler<KeyValuePai
     public static Class THIS_CLASS = NoteSaxHandler.class;
 
     private String m_Key;
-      private String m_Type;
+    private String m_Type;
 
     public NoteSaxHandler(IElementHandler parent) {
         super("note", parent);
     }
 
 
-    public String getKey()
-    {
+    public String getKey() {
         return m_Key;
     }
 
-    public void setKey(String pKey)
-    {
+    public void setKey(String pKey) {
         m_Key = pKey;
     }
 
 
-    public String getType()
-    {
+    public String getType() {
         return m_Type;
     }
 
-    public void setType(String pType)
-    {
+    public void setType(String pType) {
         m_Type = pType;
     }
-
 
 
     @Override
     public void handleAttributes(String elx, String localName, String el, Attributes attr)
             throws SAXException {
 
-        setKey(attr.getValue("label")); 
-        setType(attr.getValue("type"));
-         return;
+        String key = attr.getValue("label");
+        setKey(key);
+        String type = attr.getValue("type");
+        setType(type);
+        return;
     }
 
     @Override
-    public void endElement(String elx, String localName, String el) throws SAXException
-    {
-          // added slewis
+    public void endElement(String elx, String localName, String el) throws SAXException {
+        String key = getKey();
+        if ("Description".equals(key)) {
+            setKey(key); // break here
+        }
+
+        // added slewis
         if (getInitiatingTag().equals(el)) {
             finishProcessing();
             getParent().endElement(elx, localName, el);
@@ -72,8 +73,15 @@ public class NoteSaxHandler extends AbstractXTandemElementSaxHandler<KeyValuePai
      */
     @Override
     public void finishProcessing() {
-        if("input".equals(getType())) {
-            setElementObject(new KeyValuePair(getKey(),getIncludedText()));
+        String key = getKey();
+        String includedText = getIncludedText();
+        if ("input".equals(getType())) {
+            setElementObject(new KeyValuePair(key, includedText));
+            return;
+        }
+        else {
+            setElementObject(new KeyValuePair(key, includedText));
+            return;
         }
 
 

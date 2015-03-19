@@ -19,9 +19,9 @@ public class XTandemDebugging
     private static boolean gDebugging;
     private static XTandemDebugging gInstance;
 
-    public static XTandemDebugging getInstance()
+    public static synchronized XTandemDebugging getInstance()
     {
-        return gInstance;
+         return gInstance;
     }
 
     public static boolean isDebugging()
@@ -83,7 +83,8 @@ public class XTandemDebugging
     {
         if (!isDebugging())
             throw new IllegalStateException("problem");
-        final DebugValues dv = getInstance().getValues();
+        XTandemDebugging instance = getInstance();
+        final DebugValues dv = instance.getValues();
         return dv;
     }
 
@@ -125,7 +126,7 @@ public class XTandemDebugging
         m_DotProducts.remove(removed);
     }
 
-    public DebugDotProduct[] getDotProductss()
+    public DebugDotProduct[] getDotProducts()
     {
         return m_DotProducts.values().toArray(new DebugDotProduct[0]);
     }

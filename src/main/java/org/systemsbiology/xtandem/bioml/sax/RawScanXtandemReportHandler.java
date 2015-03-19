@@ -2,7 +2,6 @@ package org.systemsbiology.xtandem.bioml.sax;
 
 import org.systemsbiology.sax.*;
 import org.systemsbiology.xtandem.*;
-import org.systemsbiology.xtandem.sax.*;
 import org.xml.sax.*;
 
 /**
@@ -59,6 +58,10 @@ public class RawScanXtandemReportHandler extends AbstractXTandemElementSaxHandle
             AttributeHandler handler = new AttributeHandler(this);
             getHandler().pushCurrentHandler(handler);
             handler.handleAttributes(uri, localName, qName, attributes);
+            return;
+        }
+        if ("note".equals(qName)) {
+            super.startElement(uri, localName, qName, attributes);
             return;
         }
         super.startElement(uri, localName, qName, attributes);
@@ -137,6 +140,7 @@ public class RawScanXtandemReportHandler extends AbstractXTandemElementSaxHandle
             
             return;
         }
+
         super.endElement(elx, localName, el);
     }
 
@@ -170,6 +174,11 @@ public class RawScanXtandemReportHandler extends AbstractXTandemElementSaxHandle
         raw.setPrecursorMz(new ScanPrecursorMz(1,m_Charge, mz,FragmentationMethod.CID));
         double m2 = raw.getPrecursorMass();
 
+        String Description = getNote("Description");
+        if(Description != null) {
+            String[] items = Description.split(" ");
+            raw.setLabel(items[0]);
+        }
         if(m_XData != null && m_YData != null) {
             ISpectrumPeak[] peaks = new ISpectrumPeak[m_XData.length];
             for (int i = 0; i < m_XData.length; i++) {

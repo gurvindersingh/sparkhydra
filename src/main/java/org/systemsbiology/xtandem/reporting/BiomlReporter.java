@@ -648,8 +648,8 @@ public class BiomlReporter implements Serializable, ScoredScanWriter {
             //      out.append("end=\"" + end + "\" ");
             double expect = scan.getExpectedValue();
 
-            out.append("start=\"0\" ");   // not supported
-            out.append("end=\"" + polypeptide.getSequenceLength() + "\" ");   // not supported
+            out.append("start=\"1\" ");
+            out.append("end=\"" + polypeptide.getSequenceLength() + "\" ");   // todo I guess
 
             out.append("expect=\"" + XTandemUtilities.formatScientific(expect, 1) + "\" ");
             final int charge = scan.getCharge();

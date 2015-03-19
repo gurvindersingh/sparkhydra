@@ -540,7 +540,8 @@ public abstract class AbstractScoringAlgorithm implements ITandemScoringAlgorith
                     case Y:
                         key = new ScanScoringIdentifier(sequence, charge, IonType.Y);
                         if (XTandemDebugging.isDebugging()) {
-                            logDotProductY.addMatchedPeaks(peak);
+                            if (logDotProductY != null)
+                                logDotProductY.addMatchedPeaks(peak);
                         }
                         break;
                 }
@@ -556,7 +557,8 @@ public abstract class AbstractScoringAlgorithm implements ITandemScoringAlgorith
             if (XTandemDebugging.isDebugging()) {
                 if (logDotProductB != null)
                     logDotProductB.setScore(useScore1);
-                logDotProductY.setScore(useScore1);
+                if (logDotProductY != null)
+                    logDotProductY.setScore(useScore1);
             }
 
 

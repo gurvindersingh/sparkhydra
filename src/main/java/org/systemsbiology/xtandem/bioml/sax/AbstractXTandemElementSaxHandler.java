@@ -1,7 +1,6 @@
 package org.systemsbiology.xtandem.bioml.sax;
 
 import org.systemsbiology.sax.*;
-import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.sax.*;
 import org.xml.sax.*;
@@ -44,6 +43,8 @@ public abstract class AbstractXTandemElementSaxHandler<T> extends AbstractElemen
      };
      public void addNote(String key, String value)
      {
+         if(key == null)
+             return;
          boolean  forgiven = false;
          if(m_Notes.containsKey(key) ) {
              for (int i = 0; i < FORGIVEN_DUPLICATES_FROM_DEFAULT_ISB.length; i++) {
@@ -83,7 +84,7 @@ public abstract class AbstractXTandemElementSaxHandler<T> extends AbstractElemen
          if ("note".equals(el)) {
              NoteSaxHandler handler = (NoteSaxHandler) getHandler().popCurrentHandler();
              final KeyValuePair valuePair = handler.getElementObject();
-             if (valuePair != null)
+             if (valuePair != null && valuePair.getKey() != null && valuePair.getValue() != null)
                  addNote(valuePair.getKey(), valuePair.getValue());
              return;
          }

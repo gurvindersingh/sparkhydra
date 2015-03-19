@@ -323,7 +323,7 @@ public class SparkScanScorer {
         ElapsedTimer totalTime = new ElapsedTimer();
 
         if (args.length < TANDEM_CONFIG_INDEX + 1) {
-            System.out.println("usage sparkconfig configFile fastaFile");
+            System.out.println("usage sparkconfig configFile");
             return;
         }
         SparkUtilities.readSparkProperties(args[SPARK_CONFIG_INDEX]);
@@ -350,7 +350,8 @@ public class SparkScanScorer {
         //Configuration hadoopConfiguration2 = SparkUtilities.getHadoopConfiguration();  // did we change the original or a copy
         SparkMapReduceScoringHandler handler = new SparkMapReduceScoringHandler(configStr, false);
 
-        String spectra = SparkUtilities.buildPath(args[SPECTRA_INDEX]);
+        String spectrumPath = handler.getApplication().getSpectrumPath();
+        String spectra = SparkUtilities.buildPath(spectrumPath);
         JavaRDD<IMeasuredSpectrum> spectraToScore = getMeasuredSpectra(timer, sparkProperties, spectra, handler.getApplication());
 
         // debugging

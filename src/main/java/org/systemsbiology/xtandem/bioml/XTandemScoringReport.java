@@ -17,6 +17,30 @@ public class XTandemScoringReport {
     private Map<String, ScoredScan> m_Scan = new HashMap<String, ScoredScan>();
 
 
+    public Map<String, ScoredScan> getScansMap() {
+        return new HashMap<String, ScoredScan>(m_Scan);
+    }
+
+    public Map<String, ScoredScan> getScoredScansMap() {
+        Map<String, ScoredScan> ret = new HashMap<String, ScoredScan>() ;
+        for (String key : m_Scan.keySet()) {
+            ScoredScan test = getScan(  key) ;
+            if(isScored(test))  {
+                ret.put(key,test) ;
+            }
+        }
+        return ret;
+      }
+
+    public static final double FAKE_HYPERSCORE = 1000;
+    private boolean isScored(final ScoredScan pTest) {
+        ISpectralMatch bestMatch = pTest.getBestMatch();
+        if(bestMatch == null)
+            return false;
+        double hyperScore = bestMatch.getHyperScore();
+        return FAKE_HYPERSCORE != hyperScore;
+    }
+
     public void addScan(  ScoredScan added) {
         String id = added.getKey();
         String algorithm = added.getAlgorithm();

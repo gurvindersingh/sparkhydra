@@ -17,6 +17,15 @@ public class VerboseMgfCleaner {
     public static final int MAX_SPECTRA = 1000;
     public static final int MAX_PROTEINS = 20000;
 
+    public static final String[] INTERESTING_SCANS = {
+            "131104_Berit_BSA2.11685.11685.3",
+            "131104_Berit_BSA2.16405.16405.3",
+            "131104_Berit_BSA2.13178.13178.3",
+            "131104_Berit_BSA2.10673.10673.3"
+    };
+
+    public static final Set<String>  INTERESTING_SCAN_SET = new HashSet<String>(Arrays.asList(INTERESTING_SCANS));
+
     private static void writeCleanMgfFile(final PrintWriter pOut, final InputStream pIs) {
         MassSpecRun[] massSpecRuns = XTandemUtilities.parseMgfFile(pIs, "");
 
@@ -44,7 +53,7 @@ public class VerboseMgfCleaner {
         LineNumberReader rdr = new LineNumberReader(new InputStreamReader(pIs));
         int scanCount = 0;
         String line = rdr.readLine();
-        while (line != null) {
+         while (line != null) {
             if (line.contains("BEGIN IONS")) {
                 scanCount++;
                 int average = totalLines / scanCount;
@@ -87,20 +96,25 @@ public class VerboseMgfCleaner {
 
 
         LineNumberReader rdr = new LineNumberReader(new InputStreamReader(pIs));
+        boolean retainScan = false;
         int scanCount = 0;
         String line = rdr.readLine();
         while (line != null) {
             if (line.contains("BEGIN IONS")) {
                 if (!holder.isEmpty()) {
-                    if (holder.size() > BIG_SPECTRUM_SIZE) {
+                    if (retainScan) {
                         scanCount++;
                         for (String s : holder) {
                             pOut.println(s);
                         }
                     }
                     holder.clear();
+                    retainScan = false;
                 }
                 linesPerItem = 0;
+            }
+            if(line.startsWith("TITLE="))  {
+                retainScan = INTERESTING_SCAN_SET.contains(line.substring("TITLE=".length()).trim());
             }
             if (scanCount < MaxSpectra) {
                 totalWritten++;
@@ -120,6 +134,49 @@ public class VerboseMgfCleaner {
         pOut.close();
     }
 
+    private static void writeInterestingScans(final PrintWriter pOut, final InputStream pIs) throws Exception {
+          int linesPerItem = 0;
+          int totalLines = 0;
+          int totalWritten = 0;
+          int totalBig = 0;
+          List<String> holder = new ArrayList<String>();
+           int numberWritten = 0;
+
+          LineNumberReader rdr = new LineNumberReader(new InputStreamReader(pIs));
+          boolean retainScan = false;
+          int scanCount = 0;
+          String line = rdr.readLine();
+          while (line != null) {
+              if (line.contains("BEGIN IONS")) {
+                  if (!holder.isEmpty()) {
+                      if (retainScan) {
+                          scanCount++;
+                          for (String s : holder) {
+                              pOut.println(s);
+                          }
+                          numberWritten++;
+                      }
+                      holder.clear();
+                      retainScan = false;
+                  }
+                  linesPerItem = 0;
+              }
+              if(line.startsWith("TITLE="))  {
+                  String testTitle = line.substring("TITLE=".length()).trim();
+                  if(INTERESTING_SCAN_SET.contains(testTitle))
+                        retainScan = true;
+              }
+               holder.add(line);
+               line = rdr.readLine();
+              linesPerItem++;
+              totalLines++;
+          }
+          System.out.println("Read " + scanCount + " scans  wrote " + numberWritten +
+                           " total lines " + totalLines
+            );
+          rdr.close();
+          pOut.close();
+      }
 
     private static void appendHolder(List<String> holder, final PrintWriter pOut) {
         if (!holder.isEmpty()) {
@@ -169,16 +226,16 @@ public class VerboseMgfCleaner {
         int scanCount = 0;
         String line = rdr.readLine();
         while (line != null) {
-            if(titles.contains(line))
+            if (titles.contains(line))
                 saveHolder = true;
             if (line.contains("BEGIN IONS")) {
-                if(saveHolder) {
+                if (saveHolder) {
                     appendHolder(holder, pOut);
                     totalWritten++;
                     saveHolder = false;
                 }
                 holder.clear();
-               linesPerItem = 0;
+                linesPerItem = 0;
 
             }
             holder.add(line);
@@ -264,9 +321,12 @@ public class VerboseMgfCleaner {
         InputStream is = new FileInputStream(in);
 
         // this routine comply combines spectra and writes a reduces file
-          writeCleanMgfFile(out, is);
+        writeCleanMgfFile(out, is);
 
-        // this routine chops the number of spectra at  MAX_SPECTRA
+        // this routine writes scans in INTERESTING_SCANS
+        // writeInterestingScans(out, is );
+
+       // this routine chops the number of spectra at  MAX_SPECTRA
         //writeShorterMgfFile(out, is, MAX_SPECTRA);
 
         // this routine chops the number of spectra at  MAX_SPECTRA
@@ -275,9 +335,9 @@ public class VerboseMgfCleaner {
         // this routine chops the number of proteins at  MAX_PROTEINS
         // writeShorterFastaFile(out, is, MAX_PROTEINS);
 
-       // writeCleanMGFFile(out, is);
+        // writeCleanMGFFile(out, is);
 
-       // writeSelectedFullMGFS(out, is,templateFile);
+        // writeSelectedFullMGFS(out, is,templateFile);
     }
 
 
