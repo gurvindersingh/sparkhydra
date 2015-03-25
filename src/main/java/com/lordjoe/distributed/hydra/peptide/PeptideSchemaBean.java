@@ -5,7 +5,7 @@ import com.lordjoe.distributed.database.*;
 import com.lordjoe.distributed.hydra.fragment.*;
 import org.apache.spark.api.java.function.*;
 import org.systemsbiology.xtandem.peptide.*;
-import org.apache.spark.sql.api.java.Row;
+import org.apache.spark.sql.Row;
 /**
  * com.lordjoe.distributed.hydra.peptide.PeptideSchemaBean
  * A simple bean representing a polypeptide

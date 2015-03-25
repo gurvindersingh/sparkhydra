@@ -4,7 +4,7 @@ import com.lordjoe.distributed.*;
 import com.lordjoe.distributed.hydra.fragment.*;
 import com.lordjoe.distributed.hydra.peptide.*;
 import org.apache.spark.api.java.*;
-import org.apache.spark.sql.api.java.*;
+import org.apache.spark.sql.*;
 import org.systemsbiology.xtandem.peptide.*;
 
 import java.util.*;
@@ -19,22 +19,22 @@ public class ParquetPeptideDatabaseTest {
     public static final String PARQUET_NAME = "E:/SparkHydra/trunk/data/Sample2/yeast_orfs_all_REV.20060126.short";
 
     public static void main(String[] args) {
-        JavaSQLContext sqlContext = SparkUtilities.getCurrentSQLContext();
+        SQLContext sqlContext = SparkUtilities.getCurrentSQLContext();
         // Read in the Parquet file created above.  Parquet files are self-describing so the schema is preserved.
         // The result of loading a parquet file is also a JavaSchemaRDD.
         String name = PARQUET_NAME;
         String parquetName = name + ".parquet";
-        JavaSchemaRDD parquetFile = sqlContext.parquetFile(parquetName);
+        DataFrame parquetFile = sqlContext.parquetFile(parquetName);
 
         int scanmass = 1214;
         //Parquet files can also be registered as tables and then used in SQL statements.
-        parquetFile.registerAsTable("peptides");
+        parquetFile.registerTempTable("peptides");
     //     JavaSchemaRDD binCounts = sqlContext.sql("SELECT * FROM " + "peptides");
    //     JavaSchemaRDD binCounts = sqlContext.sql("SELECT * FROM " + "peptides");
-        JavaSchemaRDD binCounts = sqlContext.sql("SELECT * FROM " + "peptides" + " Where  massBin BETWEEN " +
+        DataFrame binCounts = sqlContext.sql("SELECT * FROM " + "peptides" + " Where  massBin BETWEEN " +
                 BinChargeKey.mzAsInt(1214.0) + " AND " +  BinChargeKey.mzAsInt(1214.5)) ;
 
-        JavaRDD<PeptideSchemaBean> beancounts = binCounts.map(PeptideSchemaBean.FROM_ROW);
+        JavaRDD<PeptideSchemaBean> beancounts = binCounts.toJavaRDD().map(PeptideSchemaBean.FROM_ROW);
         beancounts = SparkUtilities.persist(beancounts);
         List<PeptideSchemaBean> beanlist = beancounts.collect();
 

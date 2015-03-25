@@ -4,6 +4,7 @@ import com.lordjoe.distributed.database.*;
 import com.lordjoe.distributed.hydra.test.*;
 import com.lordjoe.distributed.output.*;
 import com.lordjoe.distributed.spark.*;
+import com.lordjoe.distributed.spark.JavaSparkListener;
 import org.apache.hadoop.conf.*;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.*;
@@ -15,7 +16,7 @@ import org.apache.spark.api.java.*;
 import org.apache.spark.api.java.function.*;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.Function2;
-import org.apache.spark.sql.api.java.*;
+import org.apache.spark.sql.*;
 import org.apache.spark.storage.*;
 import org.systemsbiology.xtandem.hadoop.*;
 import parquet.org.slf4j.spi.*;
@@ -41,7 +42,7 @@ public class SparkUtilities implements Serializable {
     //  private transient static ThreadLocal<JavaSparkContext> threadContext;
     private transient static JavaSparkContext threadContext;
     //  private transient static ThreadLocal<JavaSQLContext> threadContext;
-    private transient static JavaSQLContext sqlContext;
+    private transient static SQLContext sqlContext;
     private static final Properties sparkProperties = new Properties();
 
     public static final String LOCAL_PROPERTIES_RESOURCE = "/DefaultSparkLocalCluster.properties";
@@ -101,11 +102,11 @@ public class SparkUtilities implements Serializable {
     };
 
 
-    public static synchronized JavaSQLContext getCurrentSQLContext() {
+    public static synchronized SQLContext getCurrentSQLContext() {
         if (sqlContext != null)
             return sqlContext;
 
-        sqlContext = new JavaSQLContext(getCurrentContext());
+        sqlContext = new SQLContext(getCurrentContext());
         return sqlContext;
     }
 

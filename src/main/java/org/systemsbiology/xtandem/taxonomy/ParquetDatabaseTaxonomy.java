@@ -4,7 +4,7 @@ import com.lordjoe.distributed.*;
 import com.lordjoe.distributed.hydra.peptide.*;
 import org.apache.hadoop.fs.*;
 import org.apache.spark.api.java.*;
-import org.apache.spark.sql.api.java.*;
+import org.apache.spark.sql.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.hadoop.*;
 import org.systemsbiology.xtandem.peptide.*;
@@ -144,14 +144,14 @@ public class ParquetDatabaseTaxonomy implements ITaxonomy {
             // The result of loading a parquet file is also a JavaSchemaRDD.
             String dbName = buildDatabaseName();
 
-            JavaSQLContext sqlContext = SparkUtilities.getCurrentSQLContext();
-            JavaSchemaRDD parquetFile = sqlContext.parquetFile(dbName);
+            SQLContext sqlContext = SparkUtilities.getCurrentSQLContext();
+            DataFrame parquetFile = sqlContext.parquetFile(dbName);
             //Parquet files can also be registered as tables and then used in SQL statements.
-            parquetFile.registerAsTable("peptides");
+            parquetFile.registerTempTable("peptides");
      //       JavaSchemaRDD binCounts = sqlContext.sql("SELECT * FROM " + "peptides" );
-            JavaSchemaRDD binCounts = sqlContext.sql("SELECT * FROM " + "peptides" + " Where  massBin =" + scanmass);
+            DataFrame binCounts = sqlContext.sql("SELECT * FROM " + "peptides" + " Where  massBin =" + scanmass);
 
-            JavaRDD<PeptideSchemaBean> beancounts = binCounts.map(PeptideSchemaBean.FROM_ROW);
+            JavaRDD<PeptideSchemaBean> beancounts = binCounts.toJavaRDD().map(PeptideSchemaBean.FROM_ROW);
             JavaRDD<IPolypeptide> counts = beancounts.map(PeptideSchemaBean.FROM_BEAN);
 
             List<IPolypeptide> collect = counts.collect();
@@ -175,17 +175,17 @@ public class ParquetDatabaseTaxonomy implements ITaxonomy {
             throw new UnsupportedOperationException("Fix This"); // ToDo
         try {
             JavaSparkContext sc = SparkUtilities.getCurrentContext();
-            JavaSQLContext sqlContext = SparkUtilities.getCurrentSQLContext();
+            SQLContext sqlContext = SparkUtilities.getCurrentSQLContext();
             // Read in the Parquet file created above.  Parquet files are self-describing so the schema is preserved.
             // The result of loading a parquet file is also a JavaSchemaRDD.
             String dbName = buildDatabaseName();
 
-            JavaSchemaRDD parquetFile = sqlContext.parquetFile(dbName);
+            DataFrame parquetFile = sqlContext.parquetFile(dbName);
             //Parquet files can also be registered as tables and then used in SQL statements.
-            parquetFile.registerAsTable("peptides");
-            JavaSchemaRDD binCounts = sqlContext.sql("SELECT * FROM " + "peptides" + " Where  massBin =" + scanmass);
+            parquetFile.registerTempTable("peptides");
+            DataFrame binCounts = sqlContext.sql("SELECT * FROM " + "peptides" + " Where  massBin =" + scanmass);
 
-            JavaRDD<PeptideSchemaBean> beancounts = binCounts.map(PeptideSchemaBean.FROM_ROW);
+            JavaRDD<PeptideSchemaBean> beancounts = binCounts.toJavaRDD().map(PeptideSchemaBean.FROM_ROW);
             JavaRDD<IPolypeptide> counts = beancounts.map(PeptideSchemaBean.FROM_BEAN);
 
             List<IPolypeptide> collect = counts.collect();

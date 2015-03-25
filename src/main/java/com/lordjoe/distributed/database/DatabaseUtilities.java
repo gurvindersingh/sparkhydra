@@ -4,7 +4,7 @@ import com.lordjoe.distributed.*;
 import org.apache.hadoop.conf.*;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.spark.api.java.*;
-import org.apache.spark.sql.api.java.*;
+import org.apache.spark.sql.*;
 import org.systemsbiology.hadoop.*;
 
 import java.io.*;
@@ -19,10 +19,10 @@ public class DatabaseUtilities {
     public static <K> void buildParaquetDatabase( String name,JavaRDD  data,Class  bean) {
         try {
             JavaSparkContext sc = SparkUtilities.getCurrentContext();
-            JavaSQLContext sqlContext = SparkUtilities.getCurrentSQLContext();
+            SQLContext sqlContext = SparkUtilities.getCurrentSQLContext();
 
             // Apply a schema to an RDD of JavaBeans and register it as a table.
-            JavaSchemaRDD schemaPeople = sqlContext.applySchema(data, bean);
+            DataFrame schemaPeople = sqlContext.applySchema(data, bean);
 
             Configuration conf = sc.hadoopConfiguration();
              FileSystem fs = FileSystem.get(conf);
