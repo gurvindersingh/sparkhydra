@@ -6,6 +6,7 @@ import com.lordjoe.distributed.hydra.test.*;
 import org.apache.spark.api.java.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.peptide.*;
+import org.systemsbiology.xtandem.scoring.*;
 import scala.*;
 
 import java.io.Serializable;
@@ -20,7 +21,8 @@ public class BinChargeMapper implements Serializable {
     // how wide are the bins
     public static final double binSize = BinChargeKey.QUANTIZATION;
     // how wide to we search
-    public static final double examineWidth = binSize * 3;
+    public static final double examineWidth = binSize * 7;
+    public static final int MAX_CHARGE_PLUS_ONE = 5;
 
 
     private final XTandemMain application;
@@ -80,10 +82,11 @@ public class BinChargeMapper implements Serializable {
      * @return
      */
     static public BinChargeKey oneKeyFromChargeMz(int charge, double mz) {
-        List<BinChargeKey> holder = new ArrayList<BinChargeKey>();
-        double mzStart = ((int) (0.5 + ((mz) / binSize))) * binSize;
-        double quantizedMz = mzStart ;
-        BinChargeKey ret = new BinChargeKey(charge, quantizedMz);
+//        List<BinChargeKey> holder = new ArrayList<BinChargeKey>();
+//        double v = (mz) / binSize;
+//        double mzStart = ((int) ( 0.5 +  v)   * binSize);
+//        double quantizedMz = mzStart ;
+        BinChargeKey ret = new BinChargeKey(charge, mz);
         double mzx = ret.getMz();
         if(Math.abs(mz - mzx) > binSize)
             throw new IllegalStateException("bad bin key");
@@ -98,17 +101,18 @@ public class BinChargeMapper implements Serializable {
         public Iterable<Tuple2<BinChargeKey, IPolypeptide>> doCall(final IPolypeptide pp) throws Exception {
             double matchingMass = pp.getMatchingMass();
 
-            if(TestUtilities.isInterestingPeptide(pp))
-                matchingMass = pp.getMatchingMass(); // break here
 
-             List<Tuple2<BinChargeKey, IPolypeptide>> holder = new ArrayList<Tuple2<BinChargeKey, IPolypeptide>>();
-            for (int charge = 1; charge < 4; charge++) {
+            List<Tuple2<BinChargeKey, IPolypeptide>> holder = new ArrayList<Tuple2<BinChargeKey, IPolypeptide>>();
+            for (int charge = 1; charge <= Scorer.MAX_CHARGE; charge++) {
                 BinChargeKey key = oneKeyFromChargeMz(charge, matchingMass / charge );
                 holder.add(new Tuple2<BinChargeKey, IPolypeptide>(key, pp));
             }
             if (holder.isEmpty())
                 throw new IllegalStateException("problem"); // ToDo change
 
+            if(TestUtilities.isInterestingPeptide(pp)) {
+                  TestUtilities.savePeptideKey(holder);
+              }
             return holder;
         }
     }
@@ -116,22 +120,30 @@ public class BinChargeMapper implements Serializable {
     private class mapMeasuredSpectraToBins extends AbstractLoggingPairFlatMapFunction<IMeasuredSpectrum, BinChargeKey, IMeasuredSpectrum> {
         @Override
         public Iterable<Tuple2<BinChargeKey, IMeasuredSpectrum>> doCall(final IMeasuredSpectrum spec) throws Exception {
-            double matchingMass = spec.getPrecursorMass();   // todo decide whether mass or mz is better
-            double specMZ = spec.getPrecursorMassChargeRatio();
-            int charge = spec.getPrecursorCharge();
-
-            if(TestUtilities.isInterestingSpectrum(spec))
-                charge = spec.getPrecursorCharge(); // break here
+               int charge = spec.getPrecursorCharge();
 
 
             List<Tuple2<BinChargeKey, IMeasuredSpectrum>> holder = new ArrayList<Tuple2<BinChargeKey, IMeasuredSpectrum>>();
-            BinChargeKey[] keys = keysFromChargeMz(charge, specMZ);
+
+            // code using MZ
+         //   double specMZ = spec.getPrecursorMassChargeRatio();
+         //   BinChargeKey[] keys = keysFromChargeMz(charge, specMZ);
+
+           // code using MZ
+            double matchingMass = spec.getPrecursorMass();   // todo decide whether mass or mz is better
+             BinChargeKey[] keys = keysFromChargeMz(charge, matchingMass);
+
             for (int i = 0; i < keys.length; i++) {
                 BinChargeKey key = keys[i];
                 holder.add(new Tuple2<BinChargeKey, IMeasuredSpectrum>(key, spec));
             }
             if (holder.isEmpty())
                 throw new IllegalStateException("problem"); // ToDo change
+
+            if(TestUtilities.isInterestingSpectrum(spec)) {
+                TestUtilities.saveSpectrumKey(holder);
+            }
+
             return holder;
         }
     }
@@ -149,7 +161,8 @@ public class BinChargeMapper implements Serializable {
             }
             if (holder.isEmpty())
                 throw new IllegalStateException("problem"); // ToDo change
-            return holder;
+
+              return holder;
         }
     }
 }

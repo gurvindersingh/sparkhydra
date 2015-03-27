@@ -2,8 +2,10 @@ package com.lordjoe.distributed.hydra.scoring;
 
 import com.lordjoe.distributed.hydra.*;
 import org.systemsbiology.xtandem.*;
+import org.systemsbiology.xtandem.bioml.*;
 import org.systemsbiology.xtandem.fdr.*;
 import org.systemsbiology.xtandem.peptide.*;
+import org.systemsbiology.xtandem.scoring.*;
 import org.systemsbiology.xtandem.taxonomy.*;
 
 import java.io.*;
@@ -49,7 +51,7 @@ public class GoodSampleConstructor {
         FastaParser fp = new FastaParser();
         fp.addHandler(handler);
         FileInputStream is = new FileInputStream(pFastaFileName);
-        fp.parseFastaFile(is, "");
+        fp.parseFastaFile(is, pFastaFileName);
         handler.showHandled();
         if (pPeptides.size() > 0) {
             throw new UnsupportedOperationException("There are " + pPeptides.size() + " Unfound peptides");
@@ -59,7 +61,7 @@ public class GoodSampleConstructor {
     public static void writeSelectedSpectra(final String mgfFileName, final String pOutMgfName, final Set<String> pSpectralIds) throws IOException {
         PrintWriter mgfOut = new PrintWriter(new FileWriter(pOutMgfName));
         InputStream is = new FileInputStream(mgfFileName);
-        MassSpecRun[] runs = XTandemUtilities.parseMgfFile(is, "");
+        MassSpecRun[] runs = XTandemUtilities.parseMgfFile(is, mgfFileName);
         for (int i = 0; i < runs.length; i++) {
             MassSpecRun run = runs[i];
             for (String spectralId : pSpectralIds) {
@@ -96,10 +98,16 @@ public class GoodSampleConstructor {
 
         @Override
         public void handleProtein(final String annotation, final String sequence) {
+            handleProtein( annotation, sequence,  "");
+        }
+
+
+        @Override
+        public void handleProtein(final String annotation, final String sequence,String url) {
             Set<String> removed = new HashSet<String>();
             for (String peptide : m_peptides) {
                 if (sequence.contains(peptide)) {
-                    Protein protein = Protein.getProtein(annotation, annotation, sequence, "");
+                    Protein protein = Protein.getProtein(annotation, annotation, sequence, url);
                     m_proteins.add(protein);
                     removed.add(peptide);
                 }
@@ -124,15 +132,17 @@ public class GoodSampleConstructor {
     }
 
 
-    public static void main(String[] args) throws Exception {
+
+    public static void samplePepXML(final String[] args) throws IOException {
         int index = 0;
         String inFileName = args[index++];
+        String inFileBase = inFileName.substring(0, inFileName.length() - ".xml".length());
         int keepBest = Integer.parseInt(args[index++]);
 
         String mgfFileName = args[index++];
         String fastaFileName = args[index++];
-        String outMgfName = "selectedMGF" + keepBest + ".mgf";
-        String outProteinName = "selectedProtein" + keepBest + ".fasta";
+        String outMgfName = inFileBase + "selectedMGF" + keepBest + ".mgf";
+        String outProteinName = inFileBase + "selectedProtein" + keepBest + ".fasta";
 
         ProteinPepxmlParser pp = readOnePepXML(inFileName);
 
@@ -159,6 +169,51 @@ public class GoodSampleConstructor {
         writeProteins(outProteinName, proteins);
     }
 
+    public static void sampleTandemOutput(final String[] args) throws IOException {
+        int index = 0;
+        String inFileName = args[index++];
+        XTandemScoringReport report1 = XTandemUtilities.readXTandemFile(inFileName);
+
+
+        String inFileBase = inFileName.substring(0, inFileName.length() - ".xml".length());
+        int keepBest = Integer.parseInt(args[index++]);
+
+        String mgfFileName = args[index++];
+        String fastaFileName = args[index++];
+        String outMgfName = inFileBase + "selectedMGF" + keepBest + ".mgf";
+        String outProteinName = inFileBase + "selectedProtein" + keepBest + ".fasta";
+
+        List<ScoredScan> scans = Arrays.asList(report1.getScans());
+
+        Collections.sort(scans, new ScoredScanComparator());
+
+        scans = scans.subList(0, Math.min(scans.size(), keepBest));
+
+        showBestScans(scans, keepBest);
+
+        Set<String> peptides = new HashSet<String>();
+        Set<String> spectralIds = new HashSet<String>();
+        Set<IProtein> proteins = new HashSet<IProtein>();
+        Map<String, IMeasuredSpectrum> spectra = new HashMap<String, IMeasuredSpectrum>();
+
+        for (ScoredScan sortedHit : scans) {
+            ISpectralMatch bestMatch = sortedHit.getBestMatch();
+            if(bestMatch == null)
+                continue;
+            String id= ((RawPeptideScan)sortedHit.getRaw()).getLabel();
+            IMeasuredSpectrum measured = bestMatch.getMeasured();
+            spectralIds.add(id);
+            IPolypeptide peptide = bestMatch.getPeptide();
+            peptides.add(peptide.getSequence());
+        }
+
+        writeSelectedSpectra(mgfFileName, outMgfName, spectralIds);
+
+        peptidesToProteins(fastaFileName, peptides, proteins);
+        writeProteins(outProteinName, proteins);
+    }
+
+
     private static void showBestHits(final List<ProteinPepxmlParser.SpectrumHit> hits, int number) {
         try {
             PrintWriter mgfOut = new PrintWriter(new FileWriter("FoundHits" + number + ".txt"));
@@ -169,7 +224,7 @@ public class GoodSampleConstructor {
                 mgfOut.append("\t");
                 mgfOut.append(String.format("%10.1f", hit.hypderscore));
                 mgfOut.append("\n");
-         }
+            }
 
             mgfOut.close();
         }
@@ -178,5 +233,31 @@ public class GoodSampleConstructor {
 
         }
     }
+    private static void showBestScans(final List<ScoredScan> hits, int number) {
+        try {
+            PrintWriter mgfOut = new PrintWriter(new FileWriter("FoundHits" + number + ".txt"));
+            for (ScoredScan hit : hits) {
+                ISpectralMatch bestMatch = hit.getBestMatch();
+                mgfOut.append(hit.getId());
+                mgfOut.append("\t");
+                mgfOut.append(bestMatch.getPeptide().toString());
+                mgfOut.append("\t");
+                mgfOut.append(String.format("%10.1f", bestMatch.getHyperScore()));
+                mgfOut.append("\n");
+            }
+
+            mgfOut.close();
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+ //        samplePepXML(args);
+        sampleTandemOutput(args);
+     }
+
 
 }

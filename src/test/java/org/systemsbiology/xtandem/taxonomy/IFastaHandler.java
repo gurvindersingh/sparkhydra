@@ -15,5 +15,12 @@ public interface IFastaHandler {
      * @param sequence   !null sequence
      */
     public void handleProtein(String annotation,String sequence);
+    /**
+     * do whatever you what with the porotein
+     * @param annotation !null annotation - should be unique
+     * @param sequence   !null sequence
+     * @param url   !null url
+      */
+    public void handleProtein(String annotation,String sequence,String url);
 
 }

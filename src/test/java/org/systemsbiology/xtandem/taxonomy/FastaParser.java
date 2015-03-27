@@ -35,7 +35,7 @@ public class FastaParser implements IFastaHandler{
                   if (line.startsWith(">")) {
                       if(annotation != null && sb.length() > 0) {
                           numberProtein = showProteinProgress(numberProtein);
-                            handleProtein(annotation,sb.toString());
+                            handleProtein(annotation,sb.toString(),url);
                           sb.setLength(0);
                       }
                       annotation = line.substring(1); // annotation is the rest o fthe line
@@ -82,12 +82,17 @@ public class FastaParser implements IFastaHandler{
 
 
     @Override
-    public void handleProtein(final String annotation,   String sequence) {
+    public void handleProtein(final String annotation,   String sequence ) {
+        handleProtein( annotation,  sequence,"");
+    }
+
+    @Override
+    public void handleProtein(final String annotation,   String sequence,String url) {
         sequence = sequence.trim();
         if(sequence.length() == 0)
             return;
          for(IFastaHandler handler : m_Handlers) {
-              handler.handleProtein(annotation,  sequence);
+              handler.handleProtein(annotation,  sequence,url);
          }
     }
 }

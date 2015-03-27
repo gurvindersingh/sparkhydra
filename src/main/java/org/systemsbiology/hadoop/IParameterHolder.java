@@ -10,8 +10,6 @@ import java.io.*;
  * @author Steve Lewis
  */
 public interface IParameterHolder extends IStreamOpener {
-    public static IParameterHolder[] EMPTY_ARRAY = {};
-    public static Class THIS_CLASS = IParameterHolder.class;
 
     /**
      * for testing this has no data

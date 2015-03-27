@@ -1077,7 +1077,8 @@ public class SparkUtilities implements Serializable {
     @Nonnull
     public static <V> JavaRDD<V> persistAndCount(@Nonnull final String message, @Nonnull final JavaRDD<V> inp) {
         JavaRDD<V> ret = persist(inp);
-        System.err.println(message + " has " + Long_Formatter.format(ret.count()));
+        long count = ret.count();
+        System.err.println(message + " has " + Long_Formatter.format(count));
         return ret;
     }
 
@@ -1091,7 +1092,8 @@ public class SparkUtilities implements Serializable {
     @Nonnull
     public static <K extends Serializable, V extends Serializable> JavaPairRDD<K, V> persistAndCount(@Nonnull final String message, @Nonnull final JavaPairRDD<K, V> inp) {
         JavaPairRDD<K, V> ret = persist(inp);
-        System.err.println(message + " has " + Long_Formatter.format(ret.count()));
+        long count = ret.count();
+        System.err.println(message + " has " + Long_Formatter.format(count));
         return ret;
     }
 

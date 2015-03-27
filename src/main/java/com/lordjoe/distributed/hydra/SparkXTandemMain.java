@@ -24,6 +24,12 @@ public class SparkXTandemMain extends XTandemMain {
             XTandemHadoopUtilities.setDefaultPath(pathPrepend);
             setParameter("com.lordjoe.distributed.PathPrepend",pathPrepend);
         }
+        try {
+            is.close();
+        }
+        catch (IOException e) {
+             // just ignore
+         }
     }
 
     /**

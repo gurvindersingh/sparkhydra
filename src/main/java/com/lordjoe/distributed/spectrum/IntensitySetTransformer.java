@@ -11,8 +11,9 @@ import java.util.*;
  */
 public class IntensitySetTransformer {
 
+    public static final double MIN_ALLOWED_PEAK_DIFFERENCE = 0.005;
     public static final double MIN_PEAK_DIFFERENCE = 0.05;
-    private static final double MINIMUM_MZ = 150;
+     private static final double MINIMUM_MZ = 150;
     private static final int MAX_PEAKS = 100;
 
     public static IMeasuredSpectrum findSpectrum(IMeasuredSpectrum inp) {
@@ -36,7 +37,7 @@ public class IntensitySetTransformer {
                 return false;
             double mz = peak.getMassChargeRatio();
             double del = mz - lastMz;
-            if (del < MIN_PEAK_DIFFERENCE)
+            if (del < MIN_ALLOWED_PEAK_DIFFERENCE)
                 return false;
             lastMz = mz;
         }

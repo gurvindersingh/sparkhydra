@@ -102,6 +102,10 @@ public class ScoredScan extends OriginatingScoredScan   {
     }
 
 
-
-
+    public double getBestHyperscore() {
+        if(getBestMatch() != null)
+            return getBestMatch().getHyperScore();
+        else
+            return 0;
+    }
 }

@@ -467,9 +467,13 @@ public abstract class AbstractScoringAlgorithm implements ITandemScoringAlgorith
         }
     }
 
-    protected int scoreOnePeptide(final IonUseCounter pCounter, final IScoredScan pConditionedScan, final IMeasuredSpectrum pScan, final double[] pPeaksByMass, final int pPrecursorCharge, final ITheoreticalSpectrumSet pTsSet) {
+    protected int scoreOnePeptide(final IonUseCounter pCounter, final IScoredScan pConditionedScan, final IMeasuredSpectrum pScan, final double[] pPeaksByMass, final int pPrecursorCharge, final ITheoreticalSpectrumSet pTsSet,boolean logCalculations) {
         double oldscore = 0;
         int numberScored = 0;
+
+        if(logCalculations) {
+            TestUtilities.breakHere();
+        }
 
 
         OriginatingScoredScan conditionedScan = (OriginatingScoredScan) pConditionedScan;
@@ -606,13 +610,22 @@ public abstract class AbstractScoringAlgorithm implements ITandemScoringAlgorith
     @Override
     public int scoreScan(final Scorer scorer, final IonUseCounter pCounter, final ITheoreticalSpectrumSet[] pSpectrums, final IScoredScan pConditionedScan) {
         int numberScoredSpectra = 0;
-        boolean LOG_INTERMEDIATE_RESULTS = false;
         SpectrumCondition sc = scorer.getSpectrumCondition();
-        IMeasuredSpectrum scan = pConditionedScan.conditionScan(this, sc);
-        if (scan == null)
+         IMeasuredSpectrum scan = pConditionedScan.conditionScan(this, sc);
+
+        // DEBUGGING CODE
+        IPolypeptide pp = pSpectrums[0].getPeptide();
+        IMeasuredSpectrum scn  = pConditionedScan.getRaw();
+        boolean logCalculations = TestUtilities.isInterestingScoringPair(pp, scn);
+        if(logCalculations)
+             TestUtilities.breakHere();
+        // DEBUGGING CODE
+
+         if (scan == null)
             return 0; // not scoring this one
         if (!canScore(scan))
             return 0; // not scoring this one
+
 
         // NOTE this is totally NOT Thread Safe
         fillSpectrumPeaks(scan);
@@ -643,7 +656,7 @@ public abstract class AbstractScoringAlgorithm implements ITandemScoringAlgorith
 
 
             if (scorer.isTheoreticalSpectrumScored(pConditionedScan, tsSet)) {
-                numberScoredSpectra += scoreOnePeptide(pCounter, pConditionedScan, scan, Scorer.PEAKS_BY_MASS, precursorCharge, tsSet);
+                numberScoredSpectra += scoreOnePeptide(pCounter, pConditionedScan, scan, Scorer.PEAKS_BY_MASS, precursorCharge, tsSet,logCalculations);
             }
 
             // debugging code -t look at why some specrta are NOT scored

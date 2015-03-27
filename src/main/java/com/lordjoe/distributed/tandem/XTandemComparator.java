@@ -99,15 +99,29 @@ public class XTandemComparator {
         for (String s : scanById.keySet()) {
             System.out.println(s);
         }
+
+        int numberComparisons = scanByScore.size();
+        int[] precentiles = new int[10];
+        for (int i = 0; i < 10; i++) {
+             precentiles[i] = ((1 + i) * numberComparisons) / 10;
+          }
+
         int numberSame = 0;
         int numberDifferent = 0;
+        int precentileIndex = 0;
+        int index = 0;
         for (MultiScanComparison ms : scanByScore) {
             if (ms.isPeptideSame())
                   numberSame++;
             else {
                 numberDifferent++;
             }
+           if(index++ >= precentiles[precentileIndex])  {
+               System.out.println("pctile " + precentileIndex + " number " + index + " same " + numberSame + " different " + numberDifferent);
+               precentileIndex++;
+           }
         }
+        System.out.println("pctile " + precentileIndex + " number " + index + " same " + numberSame + " different " + numberDifferent);
         System.out.println("Number same " + numberSame);
 
         for (ScoredScan scoredScan : scanByScore1Only) {

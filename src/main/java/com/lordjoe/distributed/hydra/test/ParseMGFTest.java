@@ -15,7 +15,7 @@ import java.util.*;
  */
 public class ParseMGFTest {
 
-    private static String readOneSpectrum(final LineNumberReader pRdr) throws IOException {
+    public static String readOneSpectrum(final LineNumberReader pRdr) throws IOException {
         StringBuilder sb = new StringBuilder();
 
         String line = pRdr.readLine();
@@ -29,8 +29,10 @@ public class ParseMGFTest {
             sb.append("\n");
             line = pRdr.readLine();
         }
-        if (line.startsWith("END IONS"))
+        if (line.startsWith("END IONS")) {
+            sb.append("END IONS" + "\n");
             return sb.toString();
+        }
         return null;
     }
 

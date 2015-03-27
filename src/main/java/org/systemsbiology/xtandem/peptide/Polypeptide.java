@@ -1,5 +1,6 @@
 package org.systemsbiology.xtandem.peptide;
 
+import com.lordjoe.distributed.hydra.test.*;
 import org.systemsbiology.xtandem.*;
 
 import java.util.*;
@@ -122,6 +123,8 @@ public class Polypeptide implements IPolypeptide, Comparable<IPolypeptide> {
         }
     }
 
+
+
     public static final Comparator<IPolypeptide> STRING_COMPARATOR = new StringComparator();
 
     public static class StringComparator implements Comparator<IPolypeptide> {
@@ -155,6 +158,10 @@ public class Polypeptide implements IPolypeptide, Comparable<IPolypeptide> {
         // mot modified - make from sequence
         Polypeptide ret = new Polypeptide(s);
         ret.setMissedCleavages(PeptideBondDigester.getDefaultDigester().probableNumberMissedCleavages(ret));
+
+        if(TestUtilities.isInterestingPeptide(ret))
+            return ret; // break here
+
         return ret;
     }
 
@@ -191,6 +198,10 @@ public class Polypeptide implements IPolypeptide, Comparable<IPolypeptide> {
         m_Sequence = pSequence;
         m_SequenceLength = m_Sequence.length();
         m_MissedCleavages = missedCleavages;
+
+        // let's see how peptides are being made
+//        if(this.getClass() ==  Polypeptide.class && TestUtilities.isInterestingPeptide(this))
+//            TestUtilities.isInterestingPeptide(this);  // break here
     }
 
     public Polypeptide(String pSequence) {

@@ -27,6 +27,12 @@ import java.util.*;
 /**
  * com.lordjoe.distributed.hydra.SparkScanScorer
  * Attempt to exploit Spark - not converted Hadoop design for scoring
+ *
+ * 25-Mar modifications
+ * 1) raised quantization
+ *  2) exaination Width
+ *  3) caused NinChargeKey to igore charge // todo see is XTandem cares abotu charge
+ *
  * User: Steve
  * Date: 10/7/2014
  */
@@ -150,15 +156,15 @@ public class SparkScanScorer {
         JavaRDD<IPolypeptide> databasePeptides = pHandler.buildLibrary(max_proteins);
 
         // DEBUGGING why do we see more than one instance of interesting peptide
-        List<IPolypeptide> interesting1 = new ArrayList<IPolypeptide>();
-        databasePeptides = TestUtilities.findInterestingPeptides(databasePeptides, interesting1);
+        //List<IPolypeptide> interesting1 = new ArrayList<IPolypeptide>();
+        //databasePeptides = TestUtilities.findInterestingPeptides(databasePeptides, interesting1);
 
         if (isDebuggingCountMade())
             databasePeptides = SparkUtilities.persistAndCount("Database peptides", databasePeptides);
 
         // DEBUGGING why do we see more than one instance of interesting peptide
-        List<IPolypeptide> interesting2 = new ArrayList<IPolypeptide>();
-        databasePeptides = TestUtilities.findInterestingPeptides(databasePeptides, interesting2);
+        //List<IPolypeptide> interesting2 = new ArrayList<IPolypeptide>();
+       // databasePeptides = TestUtilities.findInterestingPeptides(databasePeptides, interesting2);
 
         databasePeptides = SparkUtilities.repartitionIfNeeded(databasePeptides);
 
@@ -183,6 +189,10 @@ public class SparkScanScorer {
         // read spectra
         JavaPairRDD<String, IMeasuredSpectrum> scans = SparkSpectrumUtilities.parseSpectrumFile(pSpectra, application);
 
+        long[] spectraCountRef = new long[1];
+        scans = SparkUtilities.persistAndCountPair("Scans  to Score", scans, spectraCountRef);
+
+
         int numberPartitions = scans.partitions().size();
         System.err.println("Scans Partitions " + numberPartitions);
         if (numberPartitions == 1)
@@ -190,7 +200,12 @@ public class SparkScanScorer {
 
         JavaRDD<IMeasuredSpectrum> spectraToScore = scans.values();
 
+        spectraToScore = SparkUtilities.persistAndCount("Spectra  to Score", spectraToScore, spectraCountRef);
+
+
         spectraToScore = indexSpectra(spectraToScore);
+
+        spectraToScore = SparkUtilities.persistAndCount("Spectra  to Score", spectraToScore, spectraCountRef);
 
         // drop bad ids
         spectraToScore = spectraToScore.filter(new Function<IMeasuredSpectrum, Boolean>() {
@@ -201,8 +216,10 @@ public class SparkScanScorer {
             }
         });
 
+        spectraToScore = SparkUtilities.persistAndCount("Spectra  to Score", spectraToScore, spectraCountRef);
+
+
         if (isDebuggingCountMade()) {
-            long[] spectraCountRef = new long[1];
             spectraToScore = SparkUtilities.persistAndCount("Spectra  to Score", spectraToScore, spectraCountRef);
 
             long spectraCount = spectraCountRef[0];
@@ -455,6 +472,8 @@ public class SparkScanScorer {
 
         totalTime.showElapsed("Finished Scoring");
 
+        // purely debugging
+        TestUtilities.writeSavedKeysAndSpectra();
     }
 
     private static void showAnalysisTotals(final long totalSpectra, final long peptidecounts, final long keyedSpectrumCounts, final List<PairCounter> pPairs) {

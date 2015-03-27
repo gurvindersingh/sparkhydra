@@ -295,4 +295,8 @@ public class ScoringMeasuredSpectrum implements IMeasuredSpectrum {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return getId();
+    }
 }

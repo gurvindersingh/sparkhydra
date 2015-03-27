@@ -22,7 +22,7 @@ public class Scorer  implements Serializable  {
     public static final double INDEXING_FACTOR = 0.4;
     public static final double MASS_DIFFERENCE_FOR_SCORE = 25;
     public static final int DEFAULT_CHARGE = 3;
-    public static final int MAX_CHARGE = 3;
+    public static final int MAX_CHARGE = 4;
 
     // if non-zero ise to split up spectral groups to same memory
     private int m_SpectrumBatch;
@@ -35,7 +35,7 @@ public class Scorer  implements Serializable  {
 
 //    private final Map<String, IPolypeptide> m_Peptides = new HashMap<String, IPolypeptide>();
 //    private IPolypeptide[] m_CachedPeptides;   // lazy away to get all peptide
-    private final ScoringModifications m_Modifications;
+ //   private final ScoringModifications m_Modifications;
 
 
 
@@ -46,7 +46,7 @@ public class Scorer  implements Serializable  {
         m_SpectrumCondition = sc;
 
         m_Params = params;
-        m_Modifications = new ScoringModifications(params);
+//        m_Modifications = new ScoringModifications(params);
 
     }
 

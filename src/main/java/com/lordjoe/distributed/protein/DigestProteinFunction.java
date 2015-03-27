@@ -34,10 +34,12 @@ public class DigestProteinFunction extends AbstractLoggingFlatMapFunction<IProte
         List holder = new ArrayList<IPolypeptide>();
             // do a boolean for a peptide belonging to a decoy protein, but use the public isDecoy boolean/method in Protein class
 
-        boolean isDecoy = prot.isDecoy();
 
         IPolypeptide[] pps = digester.digest(prot);
-         for (int i = 0; i < pps.length; i++) {
+
+        boolean isDecoy = prot.isDecoy();
+
+           for (int i = 0; i < pps.length; i++) {
             IPolypeptide pp = pps[i];
 
             if (!pp.isValid())
@@ -62,21 +64,23 @@ public class DigestProteinFunction extends AbstractLoggingFlatMapFunction<IProte
 
         }
 
-        boolean semiTryptic = digester.isSemiTryptic();
-        if (semiTryptic) {
-            IPolypeptide[] semipps = digester.addSemiCleavages(prot);
-            for (int j = 0; j < semipps.length; j++) {
-                IPolypeptide semipp = semipps[j];
-                if (!semipp.isValid())
-                    continue;
-                holder.add(semipp);
-                IModifiedPeptide[] modifications = ModifiedPolypeptide.buildModifications(semipp, peptideModifications);
-                for (int k = 0; k < modifications.length; k++) {
-                    IModifiedPeptide modification = modifications[k];
-                    holder.add(modification);
-                  }
-            }
-        }
+// All this should happen at the digest step
+//        boolean semiTryptic = digester.isSemiTryptic();
+//        if (semiTryptic) {
+//            IPolypeptide[] semipps = digester.addSemiCleavages(prot);
+//            for (int j = 0; j < semipps.length; j++) {
+//                IPolypeptide semipp = semipps[j];
+//                if (!semipp.isValid())
+//                    continue;
+//                holder.add(semipp);
+//                IModifiedPeptide[] modifications = ModifiedPolypeptide.buildModifications(semipp, peptideModifications);
+//                for (int k = 0; k < modifications.length; k++) {
+//                    IModifiedPeptide modification = modifications[k];
+//                    holder.add(modification);
+//                  }
+//            }
+//        }
+
          return holder;
       }
 }

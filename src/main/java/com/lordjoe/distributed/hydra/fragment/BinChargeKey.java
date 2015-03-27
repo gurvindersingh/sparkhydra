@@ -12,7 +12,7 @@ import java.io.*;
  */
 public class BinChargeKey implements Serializable, Comparable<BinChargeKey> {
 
-    public static final double QUANTIZATION = 0.2;
+    public static final double QUANTIZATION = 0.4;
 
     public static int mzAsInt(double mz) {
         return (int) (0.5 + (mz / QUANTIZATION));
@@ -69,7 +69,7 @@ public class BinChargeKey implements Serializable, Comparable<BinChargeKey> {
 
         final BinChargeKey that = (BinChargeKey) o;
 
-        if (charge != that.charge) return false;
+    //    if (charge != that.charge) return false;
 
         if ( mzInt != that.mzInt) return false;
 
@@ -80,15 +80,15 @@ public class BinChargeKey implements Serializable, Comparable<BinChargeKey> {
     public int hashCode() {
         int result;
         result = mzInt;
-        result = 31 * result + (charge ^ (charge >>> 32));
+   //     result = 31 * result + (charge ^ (charge >>> 32));
         return result;
     }
 
     @Override
     public int compareTo(final BinChargeKey o) {
-        int ret = Integer.compare(charge, o.charge);
-        if (ret != 0)
-            return ret;
+//        int ret = Integer.compare(charge, o.charge);
+//        if (ret != 0)
+//            return ret;
         int x = mzInt;
         int y = o.mzInt;
         if (x == y)

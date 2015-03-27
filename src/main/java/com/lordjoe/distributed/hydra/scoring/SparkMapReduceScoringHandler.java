@@ -4,6 +4,7 @@ import com.lordjoe.distributed.*;
 import com.lordjoe.distributed.database.*;
 import com.lordjoe.distributed.hydra.*;
 import com.lordjoe.distributed.hydra.fragment.*;
+import com.lordjoe.distributed.hydra.test.*;
 import com.lordjoe.distributed.spark.*;
 import com.lordjoe.distributed.tandem.*;
 import com.lordjoe.utilities.*;
@@ -628,7 +629,15 @@ public class SparkMapReduceScoringHandler implements Serializable {
         @Override
         public IScoredScan doCall(final IScoredScan original, final Tuple2<IMeasuredSpectrum, IPolypeptide> v2) throws Exception {
             IMeasuredSpectrum spec = v2._1();
+
+            if(TestUtilities.isInterestingSpectrum(spec))
+                spec = v2._1();  // break here
+
             IPolypeptide pp = v2._2();
+
+            if(TestUtilities.isInterestingPeptide(pp))
+                pp = v2._2();   // break here
+
             if (!(spec instanceof RawPeptideScan))
                 throw new IllegalStateException("We can only handle RawScans Here");
             RawPeptideScan rs = (RawPeptideScan) spec;
@@ -818,13 +827,28 @@ public class SparkMapReduceScoringHandler implements Serializable {
             String id = spec.getId();
             IPolypeptide pp = toScore._1();
 
-//            if (TestUtilities.isInterestingSpectrum(spec)) {
+            //====================================================
+            // THIS IS ALL DEBUGGGING
+            if (TestUtilities.isInterestingSpectrum(spec)) {
+                pp = toScore._1(); // break here
 //                Accumulator<SpectrumScoringAccumulator> specialAccumulator =  (Accumulator<SpectrumScoringAccumulator>)SparkAccumulators.getInstance().getSpecialAccumulator(id);
-//                 specialAccumulator.add(new SpectrumScoringAccumulator(id,pp.toString(),1));
-//            }
-//            if (TestUtilities.isInterestingPeptide(pp)) {
-//                pp = toScore._1(); // break here
-//            }
+ //                specialAccumulator.add(new SpectrumScoringAccumulator(id,pp.toString(),1));
+            }
+            if (TestUtilities.isInterestingPeptide(pp)) {
+                pp = toScore._1(); // break here
+            }
+
+            if(TestUtilities.isInterestingScoringPair(pp,spec)) {
+                pp = toScore._1(); // break here
+                TestUtilities.setLogCalculations(application,true); // log this
+            }
+            else {
+                String log = TestUtilities.setLogCalculations(application,false); // log off
+                if(log != null)
+                    System.out.println(log);
+            }
+              //====================================================
+            // END DEBUGGGING
 
             Scorer scoreRunner = application.getScoreRunner();
             ITandemScoringAlgorithm scorer1 = application.getScorer();

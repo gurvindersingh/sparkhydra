@@ -107,7 +107,7 @@ public class MultiScanComparison implements Comparable<MultiScanComparison> {
         int ret = Double.compare(o.getScore(), getScore());
         if (ret != 0)
             return ret;
-        return Integer.compare(System.identityHashCode(this), System.identityHashCode(o));
+        return id.compareTo(o.id);
     }
 
 

@@ -26,8 +26,8 @@ public class VerboseMgfCleaner {
 
     public static final Set<String>  INTERESTING_SCAN_SET = new HashSet<String>(Arrays.asList(INTERESTING_SCANS));
 
-    private static void writeCleanMgfFile(final PrintWriter pOut, final InputStream pIs) {
-        MassSpecRun[] massSpecRuns = XTandemUtilities.parseMgfFile(pIs, "");
+    private static void writeCleanMgfFile(final PrintWriter pOut, final InputStream pIs,String url) {
+        MassSpecRun[] massSpecRuns = XTandemUtilities.parseMgfFile(pIs, url);
 
 
         int scanCount = 0;
@@ -42,6 +42,7 @@ public class VerboseMgfCleaner {
                 scanCount++;
             }
             pOut.close();
+            System.out.println("Saved " + scanCount + " scans");
         }
     }
 
@@ -321,7 +322,7 @@ public class VerboseMgfCleaner {
         InputStream is = new FileInputStream(in);
 
         // this routine comply combines spectra and writes a reduces file
-        writeCleanMgfFile(out, is);
+        writeCleanMgfFile(out, is,args[0]);
 
         // this routine writes scans in INTERESTING_SCANS
         // writeInterestingScans(out, is );

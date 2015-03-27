@@ -101,9 +101,8 @@ public class LibraryBuilder implements Serializable {
         JavaRDD<IProtein> proteins = readProteins(jctx);
 
         long[] proteinCountRef = new long[1];
-        //proteins = SparkUtilities.persistAndCount("Proteins  to Score", proteins, proteinCountRef);
-
-        long proteinCount = proteinCountRef[0];
+         proteins = SparkUtilities.persistAndCount("Proteins  to Score", proteins, proteinCountRef);
+         long proteinCount = proteinCountRef[0];
 
         // filter to fewer spectra todo place in loop
         if (max_proteins > 0 && proteinCount > max_proteins) {
@@ -125,10 +124,19 @@ public class LibraryBuilder implements Serializable {
         proteins = SparkUtilities.guaranteePartition(proteins);
 
 
+        proteins = SparkUtilities.persistAndCount("Proteins  to Score", proteins, proteinCountRef);
+        proteinCount = proteinCountRef[0];
         //proteins = SparkUtilities.persistAndCount("Total Proteins", proteins);
+        List<IProtein> proteinList  = proteins.collect();
+        Collections.sort(proteinList);
 
         JavaRDD<IPolypeptide> digested = proteins.flatMap(new DigestProteinFunction(app));
 
+        digested = SparkUtilities.persistAndCount("Digested Proteins", digested);
+
+        digested = digested.distinct();
+
+         digested = SparkUtilities.persistAndCount("Digested Proteins Distinct", digested);
         //digested = SparkUtilities.persistAndCount("Digested Proteins", digested);
 
         // digested = digested.repartition(SparkUtilities.getDefaultNumberPartitions());

@@ -16,3 +16,16 @@ hs_err_pid*
 *.idea
 /target
 /pyteomics-2.5.5
+/data/animesh/eg0
+/data/animesh/eg1
+/data/Sample2
+/data/animesh/eg2
+/data/animesh/eg3
+/data/eg0
+/data/eg1
+/data/eg2
+/data/eg3/*.crc
+/data/*.exe
+/*.ipr
+/testPairs/_temporary/0/_temporary/attempt_201502021734_0001_r_000000_1/*.crc
+/*.iws

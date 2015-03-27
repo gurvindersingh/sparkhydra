@@ -25,6 +25,16 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
     public static final String HARDCODED_MODIFICATIONS_PROPERTY = "org.systemsbiology.xtandem.HardCodeModifications";
     public static final String NUMBER_REMEMBERED_MATCHES = "org.systemsbiology.numberRememberedMatches";
 
+    private static boolean gShowParameters = true;
+
+    public static boolean isShowParameters() {
+        return gShowParameters;
+    }
+
+    public static void setShowParameters(final boolean pGShowParameters) {
+        gShowParameters = pGShowParameters;
+    }
+
     private static final List<IStreamOpener> gPreLoadOpeners =
             new ArrayList<IStreamOpener>();
 
@@ -62,7 +72,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
     private String m_OutputPath;
     private String m_OutputResults;
     private String m_TaxonomyName;
-
+    private final StringBuffer m_Log = new StringBuffer();
 
     //    private IScoringAlgorithm m_Scorer;
     private SpectrumCondition m_SpectrumParameters;
@@ -132,6 +142,18 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
             addAlternateParameters(value);
 
         }
+    }
+
+    public void appendLog(String added) {
+        m_Log.append(added);
+    }
+
+    public void clearLog( ) {
+        m_Log.setLength(0);
+    }
+
+    public String getLog( ) {
+        return m_Log.toString();
     }
 
 
@@ -286,11 +308,13 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
     public void handleInputs(final InputStream is, String url) {
         Map<String, String> notes = XTandemUtilities.readNotes(is, url);
 
-        for (String key : notes.keySet()) {
-            setParameter(key, notes.get(key));
-            System.err.println(key + " = " + notes.get(key));
-        }
-        m_DefaultParameters = notes.get(
+        if(isShowParameters())  {
+            for (String key : notes.keySet()) {
+                setParameter(key, notes.get(key));
+                System.err.println(key + " = " + notes.get(key));
+            }
+          }
+         m_DefaultParameters = notes.get(
                 "list path, default parameters"); //, "default_input.xml");
         m_TaxonomyInfo = notes.get(
                 "list path, taxonomy information"); //, "taxonomy.xml");
@@ -339,8 +363,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
         XTandemUtilities.setMaxHandledScans(getIntParameter("org.systemsbiology.xtandem.MaxScoredScans", Integer.MAX_VALUE));
 
         String digesterSpec = getParameter("protein, cleavage site", "trypsin");
-        int missedCleavages = getIntParameter("scoring, maximum missed cleavage sites",
-                0);
+        int missedCleavages = getIntParameter("scoring, maximum missed cleavage sites", 0);
 
 
         IPeptideDigester digester = PeptideBondDigester.getDigester(digesterSpec);
@@ -595,12 +618,15 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
             value = getParameter(strKeyBase + (a++));
         }
 
-//        strKey = "residue, potential modification mass";
-//        value = getParameter(strKey);
+        strKeyBase = "residue, potential modification mass";
+        value = getParameter(strKeyBase + (a++));
+        value = getParameter(strKey);
+        if(true)
+            throw new UnsupportedOperationException("Fix This"); // ToDo
 //        if (m_xmlValues.get(strKey, strValue)) {
-//            m_pScore - > m_seqUtil.modify_maybe(strValue);
-//            m_pScore - > m_seqUtilAvg.modify_maybe(strValue);
-//        }
+//           m_pScore - > m_seqUtil.modify_maybe(strValue);
+//           m_pScore - > m_seqUtilAvg.modify_maybe(strValue);
+//       }
 //        strKey = "residue, potential modification motif";
 //        if (m_xmlValues.get(strKey, strValue)) {
 //            m_pScore - > m_seqUtil.modify_motif(strValue);
@@ -807,6 +833,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
         }
         // parameters in the input file override parameters in the default file
         parametersMap.putAll(inputParameters);
+        inputParameters.putAll(parametersMap);
     }
 
     public static void usage() {

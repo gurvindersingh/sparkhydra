@@ -15,15 +15,18 @@ import java.util.*;
 public class MGFStringTupleToSpectrumTuple extends AbstractLoggingPairFlatMapFunction<Tuple2<String, String>, String, IMeasuredSpectrum> {
     private final ITandemScoringAlgorithm scorer;
     private final SpectrumCondition spectrumParameters;
+    private final String url;
 
     public MGFStringTupleToSpectrumTuple(XTandemMain application) {
         if (application == null) {
             scorer = null;
             spectrumParameters = null;
+            url = "";
         }
         else {
             scorer = application.getScorer();
             spectrumParameters = application.getSpectrumParameters();
+            url = application.getSpectrumPath() ;
 
         }
     }
@@ -41,7 +44,7 @@ public class MGFStringTupleToSpectrumTuple extends AbstractLoggingPairFlatMapFun
 
         String s = kv._2(); // .toString();   // _2 is really a StringBuffer
         LineNumberReader inp = new LineNumberReader(new StringReader(s));
-        IMeasuredSpectrum spectrum = XTandemUtilities.readMGFScan(inp, "");
+        IMeasuredSpectrum spectrum = XTandemUtilities.readMGFScan(inp, url);
         if (scorer != null) {
             // added spectral conditioning and normalization
               double minMass = MINIMUM_MASS;
@@ -52,8 +55,12 @@ public class MGFStringTupleToSpectrumTuple extends AbstractLoggingPairFlatMapFun
                 return ret;
 
             IMeasuredSpectrum spec = spectrumParameters.normalizeSpectrum(raw, minMass);
-           if (spec == null)
-                return ret;
+           if (spec == null) {
+               inp = new LineNumberReader(new StringReader(s));
+               spectrum = XTandemUtilities.readMGFScan(inp, url);
+                spec = spectrumParameters.normalizeSpectrum(raw, minMass);    // repeat to look at why
+               return ret;
+           }
      //       IMeasuredSpectrum conditioned = scorer.conditionSpectrum(spec, raw);
      //       IMeasuredSpectrum normalized = spectrumParameters.normalizeSpectrum(conditioned, minMass);
 
