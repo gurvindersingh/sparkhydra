@@ -4,7 +4,7 @@ import org.apache.hadoop.conf.*;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.spark.*;
 import org.apache.spark.api.java.*;
-import org.apache.spark.sql.api.java.*;
+import org.apache.spark.sql.SQLContext;
 import org.systemsbiology.common.*;
 import org.systemsbiology.hadoop.*;
 import scala.*;
@@ -24,7 +24,7 @@ public class SparkContextGetter {
     //  private transient static ThreadLocal<JavaSparkContext> threadContext;
     private transient static JavaSparkContext threadContext;
     //  private transient static ThreadLocal<JavaSQLContext> threadContext;
-    private transient static JavaSQLContext sqlContext;
+    private transient static SQLContext sqlContext;
     private transient static boolean local;
 
     public static boolean isLocal() {
@@ -46,11 +46,11 @@ public class SparkContextGetter {
         defaultNumberPartitions = pDefaultNumberPartitions;
     }
 
-    public static synchronized JavaSQLContext getCurrentSQLContext() {
+    public static synchronized SQLContext getCurrentSQLContext() {
         if (sqlContext != null)
             return sqlContext;
 
-        sqlContext = new JavaSQLContext(getCurrentContext());
+        sqlContext = new SQLContext(getCurrentContext());
         return sqlContext;
     }
 

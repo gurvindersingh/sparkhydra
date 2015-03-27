@@ -70,4 +70,14 @@ public class JavaSparkListener implements SparkListener {
     @Override
     public void onExecutorMetricsUpdate(final SparkListenerExecutorMetricsUpdate executorMetricsUpdate) {
      }
+
+    @Override
+    public void onExecutorAdded(SparkListenerExecutorAdded sparkListenerExecutorAdded) {
+
+    }
+
+    @Override
+    public void onExecutorRemoved(SparkListenerExecutorRemoved sparkListenerExecutorRemoved) {
+
+    }
 }

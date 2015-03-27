@@ -4,7 +4,7 @@ import com.lordjoe.distributed.*;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.spark.api.java.*;
 import org.apache.spark.api.java.function.*;
-import org.apache.spark.sql.api.java.*;
+import org.apache.spark.sql.*;
 import org.junit.*;
 import org.systemsbiology.hadoop.*;
 
@@ -64,16 +64,16 @@ public class PersonDatabaseTest {
     public static final int TEENAGER_COUNT = 8815;
 
     private static void showTeenAgersCount(final JavaSparkContext sc, final String name) {
-        JavaSQLContext sqlContext = SparkUtilities.getCurrentSQLContext();
+        SQLContext sqlContext = SparkUtilities.getCurrentSQLContext();
          // Read in the Parquet file created above.  Parquet files are self-describing so the schema is preserved.
          // The result of loading a parquet file is also a JavaSchemaRDD.
          String parquetName = name + ".parquet";
-         JavaSchemaRDD parquetFile = sqlContext.parquetFile(parquetName);
+         DataFrame parquetFile = sqlContext.parquetFile(parquetName);
 
          //Parquet files can also be registered as tables and then used in SQL statements.
-         parquetFile.registerAsTable(name);
-         JavaSchemaRDD teenagers = sqlContext.sql("SELECT COUNT(*) FROM " +  name + "  WHERE age >= 13 AND age <= 19");
-         List<String> teenagerNames = teenagers.map(new Function<Row, String>() {
+         parquetFile.registerTempTable(name);
+         DataFrame teenagers = sqlContext.sql("SELECT COUNT(*) FROM " +  name + "  WHERE age >= 13 AND age <= 19");
+         List<String> teenagerNames = teenagers.toJavaRDD().map(new Function<Row, String>() {
              public String call(Row row) {
                  int length = row.length();
                  for (int i = 0; i <  length; i++) {
@@ -99,16 +99,16 @@ public class PersonDatabaseTest {
      }
 
     private static void showTeenAgers(final JavaSparkContext sc, final String name) {
-        JavaSQLContext sqlContext = SparkUtilities.getCurrentSQLContext();
+        SQLContext sqlContext = SparkUtilities.getCurrentSQLContext();
         // Read in the Parquet file created above.  Parquet files are self-describing so the schema is preserved.
         // The result of loading a parquet file is also a JavaSchemaRDD.
         String parquetName = name + ".parquet";
-        JavaSchemaRDD parquetFile = sqlContext.parquetFile(parquetName);
+        DataFrame parquetFile = sqlContext.parquetFile(parquetName);
 
         //Parquet files can also be registered as tables and then used in SQL statements.
-        parquetFile.registerAsTable(name);
-        JavaSchemaRDD teenagers = sqlContext.sql("SELECT name FROM "  + name + "  WHERE age >= 13 AND age <= 19");
-        List<String> teenagerNames = teenagers.map(new Function<Row, String>() {
+        parquetFile.registerTempTable(name);
+        DataFrame teenagers = sqlContext.sql("SELECT name FROM "  + name + "  WHERE age >= 13 AND age <= 19");
+        List<String> teenagerNames = teenagers.toJavaRDD().map(new Function<Row, String>() {
             public String call(Row row) {
                 String name = row.getString(0);
                 return "Name: " + name;
@@ -124,13 +124,13 @@ public class PersonDatabaseTest {
 
     public static void buildParaquetDatabase(JavaSparkContext sc , String name) {
         try {
-            JavaSQLContext sqlContext = SparkUtilities.getCurrentSQLContext();
+            SQLContext sqlContext = SparkUtilities.getCurrentSQLContext();
             String fileName = name + ".txt";
             JavaRDD < Person > people = sc.textFile(fileName).map(
                     new ReadPeopleFile());
 
             // Apply a schema to an RDD of JavaBeans and register it as a table.
-            JavaSchemaRDD schemaPeople = sqlContext.applySchema(people, Person.class);
+            DataFrame schemaPeople = sqlContext.applySchema(people, Person.class);
 
             HDFSAccessor accessor = new HDFSAccessor(FileSystem.get(sc.hadoopConfiguration()));
             String parquetName = name + ".parquet";

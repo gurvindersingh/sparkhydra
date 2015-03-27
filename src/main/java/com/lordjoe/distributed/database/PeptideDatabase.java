@@ -6,7 +6,7 @@ import com.lordjoe.distributed.hydra.peptide.*;
 import org.apache.hadoop.fs.*;
 import org.apache.spark.api.java.*;
 import org.apache.spark.api.java.function.Function;
-import org.apache.spark.sql.api.java.*;
+import org.apache.spark.sql.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.hadoop.*;
 import org.systemsbiology.xtandem.peptide.*;
@@ -44,17 +44,17 @@ public class PeptideDatabase implements Serializable {
     private void buildKeyCounts() {
         if(possibllyReadKeyCounts())
             return;
-        JavaSQLContext sqlContext = SparkUtilities.getCurrentSQLContext();
+        SQLContext sqlContext = SparkUtilities.getCurrentSQLContext();
         String databaseName1 = getDatabaseName();
         try {
-            JavaSchemaRDD parquetFile = sqlContext.parquetFile(databaseName1);
+            DataFrame parquetFile = sqlContext.parquetFile(databaseName1);
 
             //Parquet files can also be registered as tables and then used in SQL statements.
-            parquetFile.registerAsTable("peptides");
+            parquetFile.registerTempTable("peptides");
 
-               JavaSchemaRDD binCounts = sqlContext.sql("SELECT massBin,count(*) FROM  peptides  group by massBin ");
+            DataFrame binCounts = sqlContext.sql("SELECT massBin,count(*) FROM  peptides  group by massBin ");
 
-            Iterator<Row> rowIterator = binCounts.toLocalIterator();
+            Iterator<Row> rowIterator = binCounts.toJavaRDD().toLocalIterator();
             while (rowIterator.hasNext()) {
                 Row rw = rowIterator.next();
                 Integer bin = rw.getInt(0);
@@ -157,15 +157,15 @@ public class PeptideDatabase implements Serializable {
 
         int mzAsInt = key.getMzInt();
         try {
-            JavaSQLContext sqlContext = SparkUtilities.getCurrentSQLContext();
+            SQLContext sqlContext = SparkUtilities.getCurrentSQLContext();
             SparkUtilities.setLogToWarn();
             String databaseName1 = getDatabaseName();
-            JavaSchemaRDD parquetFile = sqlContext.parquetFile(databaseName1);
+            DataFrame parquetFile = sqlContext.parquetFile(databaseName1);
 
             //Parquet files can also be registered as tables and then used in SQL statements.
-            parquetFile.registerAsTable("peptides");
-            JavaSchemaRDD binCounts = sqlContext.sql("SELECT * FROM " + "peptides" + " Where  massBin = " + mzAsInt);
-            Iterator<Row> rowIterator = binCounts.toLocalIterator();
+            parquetFile.registerTempTable("peptides");
+            DataFrame binCounts = sqlContext.sql("SELECT * FROM " + "peptides" + " Where  massBin = " + mzAsInt);
+            Iterator<Row> rowIterator = binCounts.toJavaRDD().toLocalIterator();
             while (rowIterator.hasNext()) {
                 Row rw = rowIterator.next();
                 PeptideSchemaBean bean = PeptideSchemaBean.FROM_ROW.call(rw);

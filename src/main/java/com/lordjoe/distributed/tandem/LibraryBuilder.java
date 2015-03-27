@@ -16,7 +16,7 @@ import org.apache.log4j.*;
 import org.apache.spark.api.java.*;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.*;
-import org.apache.spark.sql.api.java.*;
+import org.apache.spark.sql.*;
 import org.apache.spark.storage.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.hadoop.*;
@@ -322,17 +322,17 @@ public class LibraryBuilder implements Serializable {
     public Map<Integer, Integer> getParquetDatabaseSizes() {
         try {
             JavaSparkContext sc = SparkUtilities.getCurrentContext();
-            JavaSQLContext sqlContext = SparkUtilities.getCurrentSQLContext();
+            SQLContext sqlContext = SparkUtilities.getCurrentSQLContext();
             // Read in the Parquet file created above.  Parquet files are self-describing so the schema is preserved.
             // The result of loading a parquet file is also a JavaSchemaRDD.
             String dbName = buildDatabaseName();
 
-            JavaSchemaRDD parquetFile = sqlContext.parquetFile(dbName);
+            DataFrame parquetFile = sqlContext.parquetFile(dbName);
             //Parquet files can also be registered as tables and then used in SQL statements.
-            parquetFile.registerAsTable("peptides");
-            JavaSchemaRDD binCounts = sqlContext.sql("SELECT massBin,COUNT(massBin) FROM " + "peptides" + "  GROUP BY  massBin");
+            parquetFile.registerTempTable("peptides");
+            DataFrame binCounts = sqlContext.sql("SELECT massBin,COUNT(massBin) FROM " + "peptides" + "  GROUP BY  massBin");
             final Map<Integer, Integer> ret = new HashMap<Integer, Integer>();
-            JavaRDD<Tuple2<Integer, Integer>> counts = binCounts.map(new Function<Row, Tuple2<Integer, Integer>>() {
+            JavaRDD<Tuple2<Integer, Integer>> counts = binCounts.toJavaRDD().map(new Function<Row, Tuple2<Integer, Integer>>() {
                 public Tuple2<Integer, Integer> call(Row row) {
                     int mass = row.getInt(0);
                     int count = (int) row.getLong(1);
