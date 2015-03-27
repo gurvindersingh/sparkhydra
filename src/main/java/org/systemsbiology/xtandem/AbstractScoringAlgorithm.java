@@ -471,9 +471,7 @@ public abstract class AbstractScoringAlgorithm implements ITandemScoringAlgorith
         double oldscore = 0;
         int numberScored = 0;
 
-        if(logCalculations) {
-            TestUtilities.breakHere();
-        }
+        Boolean doLogging = logCalculations; // this allows this to be passd to the ... clause in dot_product
 
 
         OriginatingScoredScan conditionedScan = (OriginatingScoredScan) pConditionedScan;
@@ -520,7 +518,7 @@ public abstract class AbstractScoringAlgorithm implements ITandemScoringAlgorith
             // handleDebugging(pScan, logDotProductB, logDotProductY, ts, scoredScan);
 
             double dot_product = 0;
-            dot_product = dot_product(pScan, scoredScan, pCounter, holder, pPeaksByMass, usage);
+            dot_product = dot_product(pScan, scoredScan, pCounter, holder, pPeaksByMass, usage,doLogging);
 
             if (dot_product == 0)
                 continue; // really nothing further to do
@@ -617,9 +615,6 @@ public abstract class AbstractScoringAlgorithm implements ITandemScoringAlgorith
         IPolypeptide pp = pSpectrums[0].getPeptide();
         IMeasuredSpectrum scn  = pConditionedScan.getRaw();
         boolean logCalculations = TestUtilities.isInterestingScoringPair(pp, scn);
-        if(logCalculations)
-             TestUtilities.breakHere();
-        // DEBUGGING CODE
 
          if (scan == null)
             return 0; // not scoring this one
@@ -651,8 +646,6 @@ public abstract class AbstractScoringAlgorithm implements ITandemScoringAlgorith
             IPolypeptide peptide = tsSet.getPeptide();
             double matching = peptide.getMatchingMass();
 
-            if(TestUtilities.isInterestingSpectrum(scan))
-                matching = peptide.getMatchingMass();  // break here
 
 
             if (scorer.isTheoreticalSpectrumScored(pConditionedScan, tsSet)) {

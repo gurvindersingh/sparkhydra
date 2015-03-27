@@ -773,6 +773,13 @@ public class TandemKScoringAlgorithm extends TandemScoringAlgorithm {
     public double dot_product(IMeasuredSpectrum measured, ITheoreticalSpectrum theory,
                               IonUseCounter counter, List<DebugMatchPeak> holder,
                               Object... otherData) {
+
+        // we may need to follow what is happening
+        boolean log = false;
+        if(otherData.length > 0)  {
+            log = (Boolean)otherData[0];
+        }
+
         double[] peaksByMass = (double[]) otherData[0];
         SpectralPeakUsage usage = (SpectralPeakUsage) otherData[1];    // marks peaks as being already used in this calculation
 //        double[] used = (double[]) otherData[1];    // marks peaks as being already used in this calculation
