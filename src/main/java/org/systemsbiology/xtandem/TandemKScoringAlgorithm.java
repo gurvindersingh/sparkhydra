@@ -776,8 +776,8 @@ public class TandemKScoringAlgorithm extends TandemScoringAlgorithm {
 
         // we may need to follow what is happening
         boolean log = false;
-        if(otherData.length > 0)  {
-            log = (Boolean)otherData[0];
+        if(otherData.length > 3)  {
+            log = (Boolean)otherData[2];
         }
 
         double[] peaksByMass = (double[]) otherData[0];

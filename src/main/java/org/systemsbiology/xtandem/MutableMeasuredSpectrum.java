@@ -40,7 +40,7 @@ public class MutableMeasuredSpectrum implements IMeasuredSpectrum {
         m_Scan = scan;
         m_PrecursorCharge = precursorCharge;
         m_PrecursorMassChargeRatio = precursorMassChargeRatio;
-        m_PrecursorMass = m_PrecursorMassChargeRatio * m_PrecursorCharge - PROTON_MASS ;
+        m_PrecursorMass = (m_PrecursorMassChargeRatio - PROTON_MASS) * m_PrecursorCharge + PROTON_MASS ;
         // copy array making sure the peaks are ummutable
         setPeaks(peaks);
     }

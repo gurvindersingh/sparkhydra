@@ -27,5 +27,4 @@
 	<taxon label="eg3.out.PeaksOnlyAnimeshselectedProtein20.fasta">
 		<file format="peptide" URL="eg3.out.PeaksOnlyAnimeshselectedProtein20.fasta" />
 	</taxon>
-	
- </bioml>
+  </bioml>

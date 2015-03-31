@@ -59,8 +59,10 @@ public class MultiScanComparison implements Comparable<MultiScanComparison> {
         peptide2 = peptide(scan2);
         RawPeptideScan raw1 = (RawPeptideScan) scan1.getRaw();
         RawPeptideScan raw2 = (RawPeptideScan) scan2.getRaw();
-        id = raw1.getLabel();
-        String id2 = raw2.getLabel();
+        id = raw1.getId();
+   //     id = raw1.getLabel();
+         String id2 = raw2.getId();
+ //       String id2 = raw2.getLabel();
         if (!id.equals(id2))
             throw new IllegalStateException("nod same id " + id + " " + id2);
     }

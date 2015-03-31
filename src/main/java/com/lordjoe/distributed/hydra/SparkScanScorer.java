@@ -3,7 +3,6 @@ package com.lordjoe.distributed.hydra;
 import com.lordjoe.distributed.*;
 import com.lordjoe.distributed.hydra.fragment.*;
 import com.lordjoe.distributed.hydra.scoring.*;
-import com.lordjoe.distributed.hydra.test.*;
 import com.lordjoe.distributed.output.*;
 import com.lordjoe.distributed.spark.*;
 import com.lordjoe.distributed.spectrum.*;
@@ -456,11 +455,12 @@ public class SparkScanScorer {
         XTandemMain application = handler.getApplication();
 
         // code using PepXMLWriter new uses tandem writer
-//              PepXMLWriter pwrtr = new PepXMLWriter(application);
-//              PepXMLScoredScanWriter pWrapper = new PepXMLScoredScanWriter(pwrtr);
+              PepXMLWriter pwrtr = new PepXMLWriter(application);
+            PepXMLScoredScanWriter pWrapper = new PepXMLScoredScanWriter(pwrtr);
+        SparkConsolidator consolidator = new SparkConsolidator(pWrapper, application);
 
-        BiomlReporter writer = new BiomlReporter(application);
-        SparkConsolidator consolidator = new SparkConsolidator(writer, application);
+   //      BiomlReporter writer = new BiomlReporter(application);
+    //   SparkConsolidator consolidator = new SparkConsolidator(writer, application);
 
 
         int numberScores = consolidator.writeScores(bestScores);
@@ -472,8 +472,8 @@ public class SparkScanScorer {
 
         totalTime.showElapsed("Finished Scoring");
 
-        // purely debugging
-        TestUtilities.writeSavedKeysAndSpectra();
+        // purely debugging  code to see whether interesting peptides scored with interesting spectra
+        //TestUtilities.writeSavedKeysAndSpectra();
     }
 
     private static void showAnalysisTotals(final long totalSpectra, final long peptidecounts, final long keyedSpectrumCounts, final List<PairCounter> pPairs) {

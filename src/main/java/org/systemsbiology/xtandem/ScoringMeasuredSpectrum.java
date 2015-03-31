@@ -31,7 +31,7 @@ public class ScoringMeasuredSpectrum implements IMeasuredSpectrum {
         int charge = precursorCharge;
         if (charge == 0)
             charge = 1;
-        m_PrecursorMass = (chargeRatio - protonMass) * charge + protonMass;
+        m_PrecursorMass = ((chargeRatio - protonMass) * charge) + protonMass;
         if (m_PrecursorMass < 0)
             XTandemUtilities.breakHere();
 

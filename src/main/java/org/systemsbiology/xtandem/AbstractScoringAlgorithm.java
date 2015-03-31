@@ -471,7 +471,9 @@ public abstract class AbstractScoringAlgorithm implements ITandemScoringAlgorith
         double oldscore = 0;
         int numberScored = 0;
 
-        Boolean doLogging = logCalculations; // this allows this to be passd to the ... clause in dot_product
+        Boolean doLogging = false;
+        if(logCalculations)
+            doLogging = true; // this allows this to be passd to the ... clause in dot_product
 
 
         OriginatingScoredScan conditionedScan = (OriginatingScoredScan) pConditionedScan;
@@ -527,23 +529,26 @@ public abstract class AbstractScoringAlgorithm implements ITandemScoringAlgorith
 
 
             final IonUseScore useScore1 = new IonUseScore(pCounter);
+            boolean debugging = logCalculations; //  || XTandemDebugging.isDebugging();
             for (DebugMatchPeak peak : holder) {
                 ScanScoringIdentifier key = null;
 
                 switch (peak.getType()) {
                     case B:
                         key = new ScanScoringIdentifier(sequence, charge, IonType.B);
-                        if (XTandemDebugging.isDebugging()) {
-                            if (logDotProductB != null)
+                        if ( debugging) {
+                            if (logDotProductB != null) {
                                 logDotProductB.addMatchedPeaks(peak);
+                            }
                         }
                         break;
 
                     case Y:
                         key = new ScanScoringIdentifier(sequence, charge, IonType.Y);
-                        if (XTandemDebugging.isDebugging()) {
-                            if (logDotProductY != null)
+                        if (debugging) {
+                            if (logDotProductY != null) {
                                 logDotProductY.addMatchedPeaks(peak);
+                            }
                         }
                         break;
                 }
@@ -556,7 +561,12 @@ public abstract class AbstractScoringAlgorithm implements ITandemScoringAlgorith
 
 
             }
-            if (XTandemDebugging.isDebugging()) {
+            if (debugging) {
+                System.out.println(sequence + "\n");
+                for (DebugMatchPeak debugMatchPeak : holder) {
+                    System.out.println(debugMatchPeak);
+                }
+                System.out.println("=========================================================");
                 if (logDotProductB != null)
                     logDotProductB.setScore(useScore1);
                 if (logDotProductY != null)

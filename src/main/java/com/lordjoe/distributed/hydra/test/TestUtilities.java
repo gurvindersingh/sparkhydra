@@ -132,7 +132,10 @@ public class TestUtilities {
 
 
     public static boolean isInterestingScoringPair(IPolypeptide  pp,IMeasuredSpectrum  spec) {
-         return isInterestingPeptide(pp) && isInterestingSpectrum(spec);
+        boolean b = isInterestingPeptide(pp) && isInterestingSpectrum(spec);
+        if(b)
+            return b;
+        return false;
     }
 
 

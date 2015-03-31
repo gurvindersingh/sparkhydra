@@ -22,6 +22,17 @@
                 <role>Software Engineer</role>
             </roles>
         </developer>
+        <developer>
+            <id>gurvinder</id>
+            <email>gurvinder.singh@uninett.no</email>
+            <name>GurvinderSingh</name>
+            <organization>Uninett</organization>
+            <organizationUrl>https://www.uninett.no</organizationUrl>
+            <roles>
+                <role>Project Manager</role>
+                <role>Software Engineer</role>
+            </roles>
+        </developer>
     </developers>
 
     <dependencies>

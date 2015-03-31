@@ -1,6 +1,7 @@
 package com.lordjoe.distributed.hydra.scoring;
 
 import com.lordjoe.distributed.spectrum.*;
+import org.systemsbiology.sax.*;
 import org.systemsbiology.xtandem.*;
 
 import java.io.*;
@@ -38,11 +39,40 @@ public class VerboseMgfCleaner {
             for (int j = 0; j < scans.length; j++) {
                 RawPeptideScan scan = scans[j];
                 String id = scan.getId();
+                validateScan(  scan);
                 scan.appendAsMGF(pOut);
                 scanCount++;
             }
             pOut.close();
             System.out.println("Saved " + scanCount + " scans");
+        }
+    }
+    private static void writeCleanMzMLFile(final PrintWriter pOut, final InputStream pIs,String url) {
+          MassSpecRun[] massSpecRuns = XTandemUtilities.parseMgfFile(pIs, url);
+
+        XMLAppender xmlOut = new  XMLAppender(pOut);
+          int scanCount = 0;
+          for (int i = 0; i < massSpecRuns.length; i++) {
+              MassSpecRun massSpecRun = massSpecRuns[i];
+
+              RawPeptideScan[] scans = massSpecRun.getScans();
+              for (int j = 0; j < scans.length; j++) {
+                  RawPeptideScan scan = scans[j];
+                  String id = scan.getId();
+                  validateScan(  scan);
+                  scan.serializeAsMzMLString(xmlOut);
+                  scanCount++;
+              }
+              pOut.close();
+              System.out.println("Saved " + scanCount + " scans");
+          }
+      }
+
+    public static void validateScan(IMeasuredSpectrum scan)
+    {
+        for (ISpectrumPeak sp : scan.getPeaks()) {
+            if(sp.getPeak() == 0)
+                throw new IllegalStateException("problem"); // ToDo change
         }
     }
 
@@ -320,6 +350,9 @@ public class VerboseMgfCleaner {
         PrintWriter out = new PrintWriter(new FileWriter(outFile));
 
         InputStream is = new FileInputStream(in);
+
+        // convert to mzML
+        //writeCleanMzMLFile(out, is,args[0]);
 
         // this routine comply combines spectra and writes a reduces file
         writeCleanMgfFile(out, is,args[0]);

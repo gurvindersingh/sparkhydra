@@ -2417,6 +2417,9 @@ use contrast angle - controls the use of contrast angle duplicate spectrum delet
         BiomlSaxHandler handler = new BiomlSaxHandler((DelegatingSaxHandler) null);
         InputStream is = XTandemUtilities.getDescribedStream(resource);
         String name = resource.replace("res://", "");
+        if(name.endsWith("pep.xml"))   {
+             throw new UnsupportedOperationException("Fix This"); // ToDo
+        }
         XMLUtilities.parseFile(is, handler, name);
         XTandemScoringReport ret = handler.getElementObject();
 

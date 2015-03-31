@@ -235,7 +235,7 @@ public class SpectrumCondition implements Serializable {
          /*
         * if conditioning is turned off, then simply accept the spectrum.
         */
-        if (!isSpectrumConditioned()) {
+        if (isSpectrumConditioned()) {
                 return raw;
         }
         MutableMeasuredSpectrum in = new MutableMeasuredSpectrum(raw);

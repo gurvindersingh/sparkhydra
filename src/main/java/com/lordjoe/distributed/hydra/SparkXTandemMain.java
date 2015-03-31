@@ -2,6 +2,7 @@ package com.lordjoe.distributed.hydra;
 
 import com.lordjoe.distributed.*;
 import org.systemsbiology.xtandem.*;
+import org.systemsbiology.xtandem.comet.*;
 import org.systemsbiology.xtandem.hadoop.*;
 
 import java.io.*;
@@ -16,20 +17,29 @@ public class SparkXTandemMain extends XTandemMain {
 
     public SparkXTandemMain(final InputStream is, final String url) {
         super(is, url);
+        String algorithm = getParameter("scoring, algorithm");
+        if (algorithm != null) {
+            if (algorithm.equalsIgnoreCase(CometScoringAlgorithm.ALGORITHM_NAME)) {
+                addAlgorithm(CometScoringAlgorithm.DEFAULT_ALGORITHM);
+            }
+            if (algorithm.equalsIgnoreCase(TandemKScoringAlgorithm.ALGORITHM_NAME)) {
+                addAlgorithm(TandemKScoringAlgorithm.DEFAULT_ALGORITHM);
+            }
+        }
         addOpener(new SparkFileOpener(this));
         String pathPrepend = SparkUtilities.getSparkProperties().getProperty("com.lordjoe.distributed.PathPrepend");
 
         if (pathPrepend != null) {
             System.err.println("Setting default path " + pathPrepend);
             XTandemHadoopUtilities.setDefaultPath(pathPrepend);
-            setParameter("com.lordjoe.distributed.PathPrepend",pathPrepend);
+            setParameter("com.lordjoe.distributed.PathPrepend", pathPrepend);
         }
         try {
             is.close();
         }
         catch (IOException e) {
-             // just ignore
-         }
+            // just ignore
+        }
     }
 
     /**

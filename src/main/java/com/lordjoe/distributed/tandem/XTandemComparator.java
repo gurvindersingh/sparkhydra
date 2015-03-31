@@ -37,8 +37,9 @@ public class XTandemComparator {
             IMeasuredSpectrum raw = scoredScan.getRaw();
             if (raw instanceof RawPeptideScan) {
                 RawPeptideScan rs = (RawPeptideScan) raw;
-                String label = rs.getLabel();
-                if (label != null)
+                String label = rs.getId();
+         //       String label = rs.getLabel();
+                 if (label != null)
                     byLabel1.put(label, scoredScan);
             }
         }

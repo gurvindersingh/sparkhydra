@@ -23,13 +23,18 @@ public class AddIndexToSpectrum extends AbstractLoggingFunction<Tuple2<IMeasured
     }
 
     public static void setIndex(IMeasuredSpectrum spec,int index)    {
-        if(spec instanceof ScoringMeasuredSpectrum)  {
-            ScoringMeasuredSpectrum realSpectrum = (ScoringMeasuredSpectrum)spec;
-            ISpectralScan scanData = realSpectrum.getScanData();
-            RawPeptideScan rs = (RawPeptideScan)scanData;
-            rs.setScanNumber(index);
+        if(spec instanceof RawPeptideScan)  {
+            RawPeptideScan realSpectrum = (RawPeptideScan)spec;
+            realSpectrum.setScanNumber(index);
             return;
         }
-        throw new IllegalStateException("cannot handle spectrum of class " + spec.getClass());
+        if(spec instanceof ScoringMeasuredSpectrum)  {
+              ScoringMeasuredSpectrum realSpectrum = (ScoringMeasuredSpectrum)spec;
+              ISpectralScan scanData = realSpectrum.getScanData();
+              RawPeptideScan rs = (RawPeptideScan)scanData;
+              rs.setScanNumber(index);
+              return;
+          }
+          throw new IllegalStateException("cannot handle spectrum of class " + spec.getClass());
     }
 }

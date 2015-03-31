@@ -266,7 +266,10 @@ public class RawPeptideScan implements IMeasuredSpectrum, ISpectralScan, Compara
     protected void appendActivation(final IXMLAppender adder) {
         adder.openEmptyTag("activation");
         adder.cr();
-        switch (getActivationMethod()) {
+        FragmentationMethod activationMethod = getActivationMethod();
+        if(activationMethod == null)
+            activationMethod =  FragmentationMethod.CID;
+        switch (activationMethod) {
             case CID:
                 MzMlUtilities.appendCVParam(adder, "MS:1000133", "collision-induced dissociation");
                 break;
@@ -651,8 +654,8 @@ public class RawPeptideScan implements IMeasuredSpectrum, ISpectralScan, Compara
      */
     @Override
     public MutableMeasuredSpectrum asMmutable() {
-        if (true) throw new UnsupportedOperationException("Fix This");
-        return null;
+       // if (true) throw new UnsupportedOperationException("Fix This");
+        return new MutableMeasuredSpectrum(this);
     }
 
     @Override
