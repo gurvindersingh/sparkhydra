@@ -21,14 +21,12 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
     public static final int NUMBER_ION_TYPES = 2; // B and I
 
     public static final ITandemScoringAlgorithm DEFAULT_ALGORITHM = new CometScoringAlgorithm();
-    public static final ITandemScoringAlgorithm[] DEFAULT_ALGORITHMS = { DEFAULT_ALGORITHM };
+    public static final ITandemScoringAlgorithm[] DEFAULT_ALGORITHMS = {DEFAULT_ALGORITHM};
 
     public static final int MAX_MASS = 5000;
 
     public static final double PPM_UNITS_FACTOR = 1000000;
 
-
-    public static final double PROTON_MASS = MassCalculator.getDefaultCalculator().calcMass("H");
 
     public static final double LOG_PI = Math.log(Math.sqrt(2 * Math.PI));
     public static final double NORMALIZATION_MAX = 100.0;
@@ -71,69 +69,138 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
 //
 
     public CometScoringAlgorithm() {
-        //  throw new UnsupportedOperationException("This Algorithm is NOT ready for prime time");
     }
 
     /**
-      * use the parameters to configure local properties
-      *
-      * @param !null params
-      */
-     @Override
-     public void configure(final IParameterHolder params) {
-         super.configure(params);
-         final String units = params.getParameter("spectrum, parent monoisotopic mass error units",
-                 "Daltons");
-         if ("ppm".equalsIgnoreCase(units)) {
-             m_UnitsFactor = PPM_UNITS_FACTOR;
-             setMinusLimit(-0.5);      // the way the databasse works better send a wider limits
-             setPlusLimit(0.5);
-         }
-         m_BinTolerance = params.getDoubleParameter("comet.fragment_bin_tol", DEFAULT_BIN_WIDTH);
-         m_InverseBinWidth = 1.0 / m_BinTolerance;
+     * use the parameters to configure local properties
+     *
+     * @param !null params
+     */
+    @Override
+    public void configure(final IParameterHolder params) {
+        super.configure(params);
+        final String units = params.getParameter("spectrum, parent monoisotopic mass error units",
+                "Daltons");
+        if ("ppm".equalsIgnoreCase(units)) {
+            m_UnitsFactor = PPM_UNITS_FACTOR;
+            setMinusLimit(-0.5);      // the way the databasse works better send a wider limits
+            setPlusLimit(0.5);
+        }
+        m_BinTolerance = params.getDoubleParameter("comet.fragment_bin_tol", DEFAULT_BIN_WIDTH);
+        m_InverseBinWidth = 1.0 / m_BinTolerance;
 
-         m_BinStartOffset = params.getDoubleParameter("comet.fragment_bin_offset", DEFAULT_BIN_OFFSET);
-         m_OneMinusBinOffset = 1.0 - m_BinStartOffset;
+        m_BinStartOffset = params.getDoubleParameter("comet.fragment_bin_offset", DEFAULT_BIN_OFFSET);
+        m_OneMinusBinOffset = 1.0 - m_BinStartOffset;
 
 
-         m_MassTolerance =  params.getDoubleParameter("comet.mass_tolerance", DEFAULT_MASS_TOLERANCE);
-         //    if (g_StaticParams.tolerances.dFragmentBinSize == 0.0)
-         //       g_StaticParams.tolerances.dFragmentBinSize = DEFAULT_BIN_WIDTH;
-         //
-         //    // Set dInverseBinWidth to its inverse in order to use a multiply instead of divide in BIN macro.
-         //    g_StaticParams.dInverseBinWidth = 1.0 /g_StaticParams.tolerances.dFragmentBinSize;
-         //    g_StaticParams.dOneMinusBinOffset = 1.0 - g_StaticParams.tolerances.dFragmentBinStartOffset;
-         //
+        m_MassTolerance = params.getDoubleParameter("comet.mass_tolerance", DEFAULT_MASS_TOLERANCE);
+        //    if (g_StaticParams.tolerances.dFragmentBinSize == 0.0)
+        //       g_StaticParams.tolerances.dFragmentBinSize = DEFAULT_BIN_WIDTH;
+        //
+        //    // Set dInverseBinWidth to its inverse in order to use a multiply instead of divide in BIN macro.
+        //    g_StaticParams.dInverseBinWidth = 1.0 /g_StaticParams.tolerances.dFragmentBinSize;
+        //    g_StaticParams.dOneMinusBinOffset = 1.0 - g_StaticParams.tolerances.dFragmentBinStartOffset;
+        //
 
-     }
+    }
 
     /**
-      * actually do the scorring
-      *
-      * @param scorer !null scorrer
-      * @param scan   !null scan to score
-      * @param pPps   !null set of peptides ot score
-      * @return !null score
-      */
-     @Override
-     public IScoredScan handleScan(final Scorer scorer, final IMeasuredSpectrum scan, final IPolypeptide[] pPps, ITheoreticalSpectrumSet[] tss) {
-         String id = scan.getId();
- //        for (int i = 0; i < pPps.length; i++) {
- //            IPolypeptide pp = pPps[i];
- //            System.out.println("      \"" + pp + "\"," + " //" + id);
- //        }
-         OriginatingScoredScan scoring = new OriginatingScoredScan(scan);
-         IMeasuredSpectrum normalize = normalize(scan.asMmutable());
-         scoring.setNormalizedRawScan(normalize);
-         scoring.setConditionedScan(normalize); // normalize IS contifion
-//         IMeasuredSpectrum conditioned = scoring.conditionScan(this, scorer.getSpectrumCondition());
-//         scoring.setConditionedScan(conditioned);
-         scoring.setAlgorithm(getName());
-         IonUseCounter counter = new IonUseCounter();
+     * actually do the scorring
+     *
+     * @param scorer !null scorrer
+     * @param scan   !null scan to score
+     * @param pPps   !null set of peptides ot score
+     * @return !null score
+     */
+    @Override
+    public IScoredScan handleScan(final Scorer scorer, final IMeasuredSpectrum scan, final IPolypeptide[] pPps, ITheoreticalSpectrumSet[] tss) {
+        String id = scan.getId();
+        //        for (int i = 0; i < pPps.length; i++) {
+        //            IPolypeptide pp = pPps[i];
+        //            System.out.println("      \"" + pp + "\"," + " //" + id);
+        //        }
+        CometScoredScan scoring = new CometScoredScan(scan, this);
+        windowedNormalize(scoring.getBinnedPeaks());
+        IonUseCounter counter = new IonUseCounter();
 
-         int numberDotProducts = scoreScan(scorer, counter, tss, scoring);
-         return scoring;
-     }
+        int numberDotProducts = scoreScan(scorer, counter, tss, scoring);
+        return scoring;
+    }
+
+    /**
+     * @param scorer
+     * @param sa
+     * @param pCounter
+     * @param pSpectrums
+     * @param pConditionedScan
+     * @return
+     */
+    @Override
+    public int scoreScan(final Scorer scorer, final IonUseCounter pCounter, final ITheoreticalSpectrumSet[] pSpectrums, final IScoredScan conditionedScan) {
+        CometScoredScan pConditionedScan = (CometScoredScan) conditionedScan;
+        float[] binnedPeaks = pConditionedScan.getBinnedPeaks();
+
+
+        if(true)
+            throw new UnsupportedOperationException("Fix This"); // ToDo
+
+        int numberScoredSpectra = 0;
+        SpectrumCondition sc = scorer.getSpectrumCondition();
+        IMeasuredSpectrum scan = pConditionedScan.conditionScan(this, sc);
+
+        // DEBUGGING CODE
+        IPolypeptide pp = pSpectrums[0].getPeptide();
+        IMeasuredSpectrum scn = pConditionedScan.getRaw();
+        boolean logCalculations = TestUtilities.isInterestingScoringPair(pp, scn);
+
+        if (scan == null)
+            return 0; // not scoring this one
+        if (!canScore(scan))
+            return 0; // not scoring this one
+
+
+        // NOTE this is totally NOT Thread Safe
+        fillSpectrumPeaks(scan);
+
+        //        DebugDotProduct logDotProductB = null;
+        //        DebugDotProduct logDotProductY = null;
+
+        if (!pConditionedScan.isValid())
+            return 0;
+        String scanid = scan.getId();
+        //        if (scanid.equals("7868"))
+        //            XTandemUtilities.breakHere();
+        int precursorCharge = scan.getPrecursorCharge();
+
+        double testmass = scan.getPrecursorMass();
+        if (pSpectrums.length == 0)
+            return 0; // nothing to do
+        // for debugging isolate one case
+
+        for (int j = 0; j < pSpectrums.length; j++) {
+            ITheoreticalSpectrumSet tsSet = pSpectrums[j];
+            // debugging test
+            IPolypeptide peptide = tsSet.getPeptide();
+            double matching = peptide.getMatchingMass();
+
+
+            if (scorer.isTheoreticalSpectrumScored(pConditionedScan, tsSet)) {
+                numberScoredSpectra += scoreOnePeptide(pCounter, pConditionedScan, scan, Scorer.PEAKS_BY_MASS, precursorCharge, tsSet, logCalculations);
+            }
+
+            // debugging code -t look at why some specrta are NOT scored
+            //             else {
+            //                 // for the moment reiterate the code to find out why not scored
+            //                 if (XTandemHadoopUtilities.isNotScored(pConditionedScan.getRaw())) {
+            //                     XTandemUtilities.breakHere();
+            //                     boolean notDone = scorer.isTheoreticalSpectrumScored(pConditionedScan, tsSet);
+            //                     ScoringReducer.gNumberNotScored++;
+            //
+            //                 }
+            //             }
+        }
+        return numberScoredSpectra;
+    }
 
 
     @Override
@@ -157,7 +224,6 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
         m_Spectrum = ms;
         populateWeights(ms);
     }
-
 
 
     /**
@@ -389,12 +455,12 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
     /**
      * an algorithm may choose not to score a petide - for example high resolution algorithms may
      * choose not to score ppetides too far away
-     * @param ts !null peptide spectrum
-     * @param pScan  !null scan to score
+     *
+     * @param ts    !null peptide spectrum
+     * @param pScan !null scan to score
      * @return true if scoring is desired
      */
-    public boolean isTheoreticalSpectrumScored(ITheoreticalSpectrum ts,IMeasuredSpectrum pScan)
-    {
+    public boolean isTheoreticalSpectrumScored(ITheoreticalSpectrum ts, IMeasuredSpectrum pScan) {
         int charge = ts.getCharge();
         IPolypeptide peptide = ts.getPeptide();
         double matchingMass = peptide.getMatchingMass();
@@ -405,18 +471,18 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
         double del = Math.abs(matchingMass - precursorMass);
         double massTolerance = getMassTolerance();
         //noinspection SimplifiableIfStatement
-        if(del < massTolerance)
+        if (del < massTolerance)
             return true;
         return false;
     }
 
     @Override
-    protected int scoreOnePeptide(IonUseCounter pCounter, IScoredScan pConditionedScan, IMeasuredSpectrum pScan, double[] pPeaksByMass, int pPrecursorCharge, ITheoreticalSpectrumSet pTsSet,boolean logCalculations) {
+    protected int scoreOnePeptide(IonUseCounter pCounter, IScoredScan pConditionedScan, IMeasuredSpectrum pScan, double[] pPeaksByMass, int pPrecursorCharge, ITheoreticalSpectrumSet pTsSet, boolean logCalculations) {
 
         double scanMass = pScan.getPrecursorMass();
         double matchingMass = pTsSet.getPeptide().getMatchingMass();
 
-        return super.scoreOnePeptide(pCounter, pConditionedScan, pScan, pPeaksByMass, pPrecursorCharge, pTsSet,logCalculations);    //To change body of overridden methods use File | Settings | File Templates.
+        return super.scoreOnePeptide(pCounter, pConditionedScan, pScan, pPeaksByMass, pPrecursorCharge, pTsSet, logCalculations);    //To change body of overridden methods use File | Settings | File Templates.
     }
 
     /**
@@ -437,8 +503,8 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
         IPolypeptide peptide = theory.getPeptide();
 
         boolean isInteresting = TestUtilities.isInterestingPeptide();
-        if(isInteresting)
-          System.out.println("Scoring " + peptide   );
+        if (isInteresting)
+            System.out.println("Scoring " + peptide);
 
         int[] items = new int[1];
         double peptideError = getPeptideError();
@@ -453,15 +519,15 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
             int bin = asBin(tp.getMassChargeRatio());
 
             IonType type = tp.getType();
-             if(17027 == bin || 18211 == bin)
+            if (17027 == bin || 18211 == bin)
                 bin = asBin(tp.getMassChargeRatio()); // break here  track two 'bad" peaks
 
             float weight = weights[bin];
             if (weight == 0)
                 continue;
             counter.addCount(type);
-            if(isInteresting)
-                System.out.println(" add " + bin + " = " + String.format("%9.4f",weight));
+            if (isInteresting)
+                System.out.println(" add " + bin + " = " + String.format("%9.4f", weight));
 
             score += weight; //  * tp.getPeak();
         }
@@ -472,8 +538,8 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
             score *= 0.005;  // Scale intensities to 50 and divide score by 1E5.
 
 
-        if(isInteresting)
-             System.out.println(" originalScore " +  String.format("%9.2f",originalScore)  + " = " + String.format("%9.4f",score));
+        if (isInteresting)
+            System.out.println(" originalScore " + String.format("%9.2f", originalScore) + " = " + String.format("%9.4f", score));
         return (score);
     }
 
@@ -505,9 +571,9 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
      */
     @Override
     public IMeasuredSpectrum conditionSpectrum(IScoredScan inx, final SpectrumCondition sc) {
-         OriginatingScoredScan scan = (OriginatingScoredScan) inx;
-          IMeasuredSpectrum in = scan.getNormalizedRawScan();
-        if(in instanceof RawPeptideScan)   {
+        OriginatingScoredScan scan = (OriginatingScoredScan) inx;
+        IMeasuredSpectrum in = scan.getNormalizedRawScan();
+        if (in instanceof RawPeptideScan) {
             in = sc.normalizeSpectrum(in, scan.getNormalizationFactor());
             scan.setNormalizedRawScan(in);
         }
@@ -518,7 +584,7 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
 
     @Override
     public IMeasuredSpectrum conditionSpectrum(final IMeasuredSpectrum pIn, final IMeasuredSpectrum pRaw) {
-        if(true)
+        if (true)
             throw new UnsupportedOperationException("Fix This"); // ToDo
         return null;
     }
@@ -623,7 +689,7 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
                 pk = 0;
             int bin = asBin(mz);
             double maxWindowPk = maxWindow[nWindow];
-            if(maxWindowPk <= 0)
+            if (maxWindowPk <= 0)
                 continue;
             float normalizationFactor = (float) (WINDOW_NORMALIZATION / maxWindowPk);
             float normalizedValue = normalizationFactor * pk;
@@ -632,6 +698,40 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
         }
 
 
+    }
+
+    /**
+     * normalize windows to a max of 50
+     * @param peaks
+     */
+    public void windowedNormalize(float[] peaks) {
+        double maxPeak = 0;
+        // peaks are in order
+        int windowWidth = (peaks.length + NUMBER_WINDOWS / 2) / NUMBER_WINDOWS;
+        double[] maxWindow = new double[NUMBER_WINDOWS];
+        double[] windowFactor = new double[NUMBER_WINDOWS];
+         for (int i = 0; i < peaks.length; i++) {
+            float pk = peaks[i];
+            if(pk == 0)
+                continue;
+            int nWindow = i / windowWidth;
+             maxWindow[nWindow] = Math.max(maxWindow[nWindow], pk);
+        }
+        for (int i = 0; i < maxWindow.length; i++) {
+            if(maxWindow[i] > 0)
+                windowFactor[i] = 50 / maxWindow[i];
+            else
+                windowFactor[i] = 1;
+        }
+
+
+         for (int i = 0; i < peaks.length; i++) {
+            double pk = peaks[i];
+            if(pk == 0)
+                continue;
+            int nWindow = i / windowWidth;
+            peaks[i] *= windowFactor[nWindow];
+        }
     }
 
 
@@ -757,7 +857,7 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
             Arrays.fill(peaks, 0);
             for (ISpectrumPeak pk : getPeaks()) {
                 int index = (int) pk.getMassChargeRatio();
-                float peak =   pk.getPeak();
+                float peak = pk.getPeak();
                 peaks[index] = peak;
                 peaks[index - 1] = Math.max(peaks[index - 1], peak / 2);
                 peaks[index + 1] = Math.max(peaks[index + 1], peak / 2);

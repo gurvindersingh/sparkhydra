@@ -415,13 +415,14 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
     }
 
     public void addAlgorithm(ITandemScoringAlgorithm added) {
+        added.configure(this);
         if (m_Algorithms.size() > 0) {
             ITandemScoringAlgorithm[] existing = getAlgorithms();
             for (int i = 0; i < existing.length; i++) {
                 ITandemScoringAlgorithm present = existing[i];
                 if (added.getClass() == present.getClass())
-                    return; // one aogorithm per class
-            }
+                    return; // one algorithm per class
+               }
         }
         m_Algorithms.add(added);
     }
@@ -440,7 +441,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
     @Override
     public ITandemScoringAlgorithm[] getAlgorithms() {
         if (m_Algorithms.size() == 0) {
-            return TandemKScoringAlgorithm.DEFAULT_ALGORITHMS;
+                return TandemKScoringAlgorithm.DEFAULT_ALGORITHMS;
            // return CometScoringAlgorithm.DEFAULT_ALGORITHMS;
          }
         return m_Algorithms.toArray(ITandemScoringAlgorithm.EMPTY_ARRAY);

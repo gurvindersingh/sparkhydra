@@ -1361,7 +1361,7 @@ public class XTandemUtilities {
             String line = inp.readLine();
             while (line != null) {
                 if (line.startsWith("BEGIN IONS")) {
-                    RawPeptideScan scan = readMGFScan(inp, url,line);
+                    RawPeptideScan scan = readMGFScan(inp, url,line,true);
                     if (scan != null) {
                         run.addScan(scan);
                         readScans++;
@@ -1397,14 +1397,27 @@ public class XTandemUtilities {
             String line = inp.readLine();
             if(line == null)
                 return null;
-            return readMGFScan(inp, url, line);
+            boolean normalize = true;
+            return readMGFScan(inp, url, line,normalize);
         }
         catch (IOException e) {
             throw new RuntimeException(e);
          }
     }
+    public static RawPeptideScan readRawMGFScan(LineNumberReader inp, String url) {
+           try {
+               String line = inp.readLine();
+               if(line == null)
+                   return null;
+               boolean normalize = false;
+               return readMGFScan(inp, url, line,normalize);
+           }
+           catch (IOException e) {
+               throw new RuntimeException(e);
+            }
+       }
 
-    public static RawPeptideScan readMGFScan(LineNumberReader inp, String url, String line) {
+    public static RawPeptideScan readMGFScan(LineNumberReader inp, String url, String line,boolean normalize) {
         try {
             RawPeptideScan ret;
             String retentionTime = null;
@@ -1495,7 +1508,9 @@ public class XTandemUtilities {
 //                      }
 
                     // if peaks have multiple readings choose real peaks
-                    List<ISpectrumPeak> realPeaks = IntensitySetTransformer.findRealPeaks(holder);
+                    List<ISpectrumPeak> realPeaks = holder;
+                    if(normalize)
+                         realPeaks = IntensitySetTransformer.findRealPeaks(holder);
                     ISpectrumPeak[] peaks = realPeaks.toArray(new ISpectrumPeak[realPeaks.size()]);
 
                     ret.setPeaks(peaks);
