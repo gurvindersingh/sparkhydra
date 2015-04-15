@@ -40,7 +40,7 @@ public class SparkConsolidator implements Serializable {
      *
      * @param scans
      */
-    public int writeScores(JavaRDD<IScoredScan> scans) {
+    public <T extends IScoredScan>  int writeScores(JavaRDD<T> scans) {
 
         scans = sortByIndex(scans);
 
@@ -76,10 +76,10 @@ public class SparkConsolidator implements Serializable {
     }
 
 
-    public static JavaRDD<IScoredScan> sortByIndex(JavaRDD<IScoredScan> bestScores)
+    public static  <T extends IScoredScan> JavaRDD<T> sortByIndex(JavaRDD<T> bestScores)
       {
-          JavaPairRDD<Integer, IScoredScan> byIndex = bestScores.mapToPair(new ToIndexTuple());
-           JavaPairRDD<Integer, IScoredScan> sortedByIndex = byIndex.sortByKey();
+          JavaPairRDD<Integer, T> byIndex = bestScores.mapToPair(new ToIndexTuple());
+           JavaPairRDD<Integer, T> sortedByIndex = byIndex.sortByKey();
 
           return sortedByIndex.values();
      //     return byIndex.values();

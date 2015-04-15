@@ -9,9 +9,9 @@ import scala.*;
 * User: Steve
 * Date: 3/11/2015
 */
-public class ToIndexTuple implements PairFunction<IScoredScan, Integer, IScoredScan> {
+public class ToIndexTuple <T extends IScoredScan> implements PairFunction<T, Integer, T> {
     @Override
-    public Tuple2<Integer, IScoredScan> call(final IScoredScan t) throws Exception {
-        return new Tuple2<Integer, IScoredScan>(t.getIndex(), t);
+    public Tuple2<Integer, T> call(final T t) throws Exception {
+        return new Tuple2<Integer, T>(t.getIndex(), t);
     }
 }

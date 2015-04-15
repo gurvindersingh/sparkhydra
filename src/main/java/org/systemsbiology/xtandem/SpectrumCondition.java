@@ -953,7 +953,7 @@ public class SpectrumCondition implements Serializable {
         ISpectralScan scan = spectrum.getScanData();
         final float lower = -getfParentLower() / precursorCharge;
         final float upper = getfParentUpper() / precursorCharge;
-        float fParentMz = (float) (1.00727 + (precursorMass - 1.00727) / precursorCharge);
+        float fParentMz = (float) (XTandemUtilities.getProtonMass() + (precursorMass - XTandemUtilities.getProtonMass()) / precursorCharge);
 
 //        while(itMI != _s.m_vMI.end())	{
 //            if(fParentMz - itMI->m_fM >= 0.0 && fParentMz - itMI->m_fM < m_fParentLower/_s.m_fZ)	{

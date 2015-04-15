@@ -17,17 +17,26 @@ public class PeptideIon implements IPeptideIon, ITheoreticalPeak {
     private final int m_Charge;
     private final int m_IndexInParent;
     private final double m_MassChargeRatio;
+    private final int m_BinnedIndexInParent;
 
-    public PeptideIon(final IPolypeptide pPetide, final org.systemsbiology.xtandem.ionization.IonType pType, int charge, double massChargeRatio, int index) {
+    public PeptideIon(final IPolypeptide pPetide, final org.systemsbiology.xtandem.ionization.IonType pType, int charge, double massChargeRatio, int index, int binnedIndex) {
         m_Peptide = pPetide;
         m_Type = pType;
         m_Charge = charge;
         m_MassChargeRatio = massChargeRatio;
         m_IndexInParent = index;
+        m_BinnedIndexInParent = binnedIndex;
+   //     if (index >= pPetide.getSequenceLength())
+     //       throw new IllegalStateException("problem"); // ToDo change      m_Peptide = pPetide;
+
     }
 
     public int getIndexInParent() {
         return m_IndexInParent;
+    }
+
+    public int getBinnedIndexInParent() {
+        return m_BinnedIndexInParent;
     }
 
     /**
@@ -36,9 +45,8 @@ public class PeptideIon implements IPeptideIon, ITheoreticalPeak {
      * @return
      */
     @Override
-    public boolean isImmutable()
-    {
-          return true;
+    public boolean isImmutable() {
+        return true;
     }
 
     @Override
@@ -123,22 +131,21 @@ public class PeptideIon implements IPeptideIon, ITheoreticalPeak {
      * @return as above
      */
     @Override
-    public boolean equivalent(ISpectrumPeak o)
-    {
+    public boolean equivalent(ISpectrumPeak o) {
         if (this == o)
-              return true;
-          double m1 = getMassChargeRatio();
-          double m2 = o.getMassChargeRatio();
-          if (!XTandemUtilities.equivalentDouble(m1,m2))
-              return false;
-
-          m1 = getPeak();
-          m2 = o.getPeak();
-        if (!XTandemUtilities.equivalentDouble(m1,m2))
+            return true;
+        double m1 = getMassChargeRatio();
+        double m2 = o.getMassChargeRatio();
+        if (!XTandemUtilities.equivalentDouble(m1, m2))
             return false;
-          return true;
+
+        m1 = getPeak();
+        m2 = o.getPeak();
+        if (!XTandemUtilities.equivalentDouble(m1, m2))
+            return false;
+        return true;
     }
-    
+
 
     /**
      * return the mass - which depends on charge

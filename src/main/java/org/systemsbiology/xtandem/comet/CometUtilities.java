@@ -1,6 +1,7 @@
 package org.systemsbiology.xtandem.comet;
 
 //import org.proteios.io.*;
+
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.testing.*;
 
@@ -14,14 +15,14 @@ import java.io.*;
 public class CometUtilities {
     public static final CometUtilities[] EMPTY_ARRAY = {};
 
-    public static RawPeptideScan[] readMzXML(String f)   {
+    public static RawPeptideScan[] readMzXML(String f) {
         File file = new File(f);
         return readMzXML(file);
 
     }
 
-    private static  RawPeptideScan[]  readMzXML(final File pFile) {
-              return MZXMLReader.processFile(pFile);
+    private static RawPeptideScan[] readMzXML(final File pFile) {
+        return MZXMLReader.processFile(pFile);
 
     }
 
@@ -40,6 +41,28 @@ public class CometUtilities {
         }
     }
 
+    /**
+     * normalize an array to a maximum of maximum also set negative values to 0
+     * @param values
+     * @param maximum
+     */
+    public static void normalizeTo(float[] values, float maximum) {
+        float max = Float.MIN_VALUE;
+        for (int i = 0; i < values.length; i++) {
+            values[i] = Math.max(0, values[i]);   // might as well drop negative values
+            max = Math.max(max, values[i]);
+        }
+        if (max == 0)
+            return;
+        if (max < 0)
+            throw new IllegalStateException("normalizeTo assumes poisitc data");
+        float factor = maximum / max;
+        for (int i = 0; i < values.length; i++) {
+            values[i] *= factor;
+        }
+
+    }
+
     public static void main(String[] args) {
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
@@ -47,9 +70,7 @@ public class CometUtilities {
             writeSpectra(arg, spectra);
 
         }
-     }
-
-
+    }
 
 
 }

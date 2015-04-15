@@ -98,7 +98,8 @@ public class Scorer  implements Serializable  {
 
         SpectrumCondition sc = getSpectrumCondition();
         final IPolypeptide pp = ts.getPeptide();
-        IMeasuredSpectrum scan = pConditionedScan.conditionScan(getAlgorithm(), sc);
+        IScoringAlgorithm alg = getAlgorithm();
+        IMeasuredSpectrum scan = pConditionedScan.conditionScan(alg, sc);
         int charge = scan.getPrecursorCharge();
         double testmass = scan.getPrecursorMass();
 
@@ -112,9 +113,15 @@ public class Scorer  implements Serializable  {
 
         double mass = pp.getMass();
         double matchmass = pp.getMatchingMass();
+
+        if(true) {
+            boolean withinLimits = alg.isWithinLimits(testmass, matchmass, charge);
+            return withinLimits;
+        }
+
         //  matchmass = mass; // todo !!!!!!!!!!!!!!!!! is this good take out if not
         OriginatingScoredScan pConditionedScan1 = (OriginatingScoredScan) pConditionedScan;
-        IScoringAlgorithm algorithm = getAlgorithm();
+        IScoringAlgorithm algorithm = alg;
         boolean massWithinRange = pConditionedScan1.isMassWithinRange(matchmass,charge, algorithm);
         //  matchmass = mass; // todo !!!!!!!!!!!!!!!!! WHY WHY WHY DO I Need this to score all scans xtandem scores
         if (massWithinRange)
@@ -425,6 +432,17 @@ public class Scorer  implements Serializable  {
 
 
 
+    /**
+      * best leave in the air what the theoretical set is
+      * @param scorer
+      * @param pPeptide
+      * @return
+      */
+     public ITheoreticalSpectrumSet generateSpectrum( final IPolypeptide pPeptide)
+     {
+         IScoringAlgorithm algorithm = getAlgorithm();
+         return algorithm.generateSpectrum(this,pPeptide);
+     }
 
 
 
@@ -438,35 +456,6 @@ public class Scorer  implements Serializable  {
         }
     }
 
-
-
-    public ITheoreticalSpectrumSet generateSpectrum(final IPolypeptide pPeptide) {
-        if (pPeptide.isModified())
-            XTandemUtilities.breakHere();
-
-        final SequenceUtilities su = getSequenceUtilities();
-        double massPlusH = pPeptide.getMass() + XTandemUtilities.getProtonMass() + XTandemUtilities.getCleaveCMass() + XTandemUtilities.getCleaveNMass();
-        ITheoreticalSpectrumSet set = new TheoreticalSpectrumSet(MAX_CHARGE, massPlusH,
-                pPeptide);
-        for (int charge = 1; charge <= MAX_CHARGE; charge++) {
-            ITheoreticalSpectrum spectrum = generateTheoreticalSpectra(set, charge);
-            // spectrum is added to the set
-        }
-          return set;
-    }
-
-
-
-
-    public ITheoreticalSpectrum generateTheoreticalSpectra(ITheoreticalSpectrumSet peptide,
-                                                           int charge) {
-        PeptideSpectrum ps = new PeptideSpectrum(peptide, charge, IonType.B_ION_TYPES,
-                m_SequenceUtilities);
-        ITheoreticalSpectrum conditioned = ScoringUtilities.applyConditioner(ps,
-                new XTandemTheoreticalScoreConditioner());
-        return conditioned;
-
-    }
 
 
     /**

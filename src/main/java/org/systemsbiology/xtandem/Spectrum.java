@@ -282,7 +282,7 @@ public class Spectrum
     public void removeParent(double parentLower)
     {
         final float fZ = m_fZ;
-        float fParentMz = (float) (1.00727 + (m_dMH - 1.00727) / fZ);
+        float fParentMz = (float) (XTandemUtilities.getProtonMass() + (m_dMH - XTandemUtilities.getProtonMass()) / fZ);
         final double mh = getdMH();
         List<ISpectrumPeak> holder = new ArrayList<ISpectrumPeak>();
         for (ISpectrumPeak peak : m_vMI) {

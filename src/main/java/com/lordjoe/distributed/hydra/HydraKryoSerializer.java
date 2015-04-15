@@ -2,6 +2,7 @@ package com.lordjoe.distributed.hydra;
 
 import com.esotericsoftware.kryo.*;
 import org.apache.spark.serializer.*;
+
 import javax.annotation.*;
 import java.io.*;
 import java.lang.reflect.*;
@@ -13,7 +14,7 @@ import java.lang.reflect.*;
  */
 public class HydraKryoSerializer implements KryoRegistrator, Serializable {
 
- 
+
     public HydraKryoSerializer() {
     }
 
@@ -24,28 +25,28 @@ public class HydraKryoSerializer implements KryoRegistrator, Serializable {
      * @param s       name of a class - might not exist
      * @param handled Set of classes already handles
      */
-    protected void doRegistration(@Nonnull Kryo kryo, @Nonnull String s ) {
+    protected void doRegistration(@Nonnull Kryo kryo, @Nonnull String s) {
         Class c;
         try {
             c = Class.forName(s);
-            doRegistration(kryo,  c);
+            doRegistration(kryo, c);
         }
         catch (ClassNotFoundException e) {
             return;
         }
-     }
+    }
 
     /**
-      * register a class
-      *
-      * @param kryo
-      * @param s       name of a class - might not exist
-      * @param handled Set of classes already handles
-      */
-    protected void doRegistration(final Kryo kryo , final Class pC) {
-           if (kryo != null) {
+     * register a class
+     *
+     * @param kryo
+     * @param s       name of a class - might not exist
+     * @param handled Set of classes already handles
+     */
+    protected void doRegistration(final Kryo kryo, final Class pC) {
+        if (kryo != null) {
             kryo.register(pC);
-               // also register arrays of that class
+            // also register arrays of that class
             Class arrayType = Array.newInstance(pC, 0).getClass();
             kryo.register(arrayType);
         }
@@ -54,9 +55,10 @@ public class HydraKryoSerializer implements KryoRegistrator, Serializable {
 
     /**
      * do the real work of registering all classes
+     *
      * @param kryo
      */
-     @Override
+    @Override
     public void registerClasses(@Nonnull Kryo kryo) {
         kryo.register(Object[].class);
         kryo.register(scala.Tuple2[].class);
@@ -71,9 +73,9 @@ public class HydraKryoSerializer implements KryoRegistrator, Serializable {
         kryo.register(boolean[].class);
         kryo.register(String[].class);
         kryo.register(String[].class);
-         Class cls =  scala.reflect.ClassTag.class;
-         kryo.register(cls);
-     //    kryo.register(scala.reflect.ClassTag$$anon$1.class);
+        Class cls = scala.reflect.ClassTag.class;
+        kryo.register(cls);
+        //    kryo.register(scala.reflect.ClassTag$$anon$1.class);
 
 //        doRegistration(kryo,"XXX");
 //        doRegistration(kryo,"XXX");
@@ -90,7 +92,7 @@ public class HydraKryoSerializer implements KryoRegistrator, Serializable {
 //        doRegistration(kryo,"XXX");
 //        doRegistration(kryo,"XXX");
 //        doRegistration(kryo,"XXX");
-        doRegistration(kryo,"org.apache.spark.util.collection.CompactBuffer");
+        doRegistration(kryo, "org.apache.spark.util.collection.CompactBuffer");
         doRegistration(kryo, "scala.collection.mutable.WrappedArray$ofRef");
         doRegistration(kryo, "org.systemsbiology.xtandem.scoring.VariableStatistics");
         doRegistration(kryo, "org.systemsbiology.xtandem.scoring.SpectralPeakUsage$PeakUsage");
@@ -176,12 +178,12 @@ public class HydraKryoSerializer implements KryoRegistrator, Serializable {
         doRegistration(kryo, "org.systemsbiology.xtandem.peptide.PeptideBondDigester$LysineC");
         doRegistration(kryo, "org.systemsbiology.xtandem.peptide.PeptideBondDigester$Trypsin");
         doRegistration(kryo, "org.systemsbiology.xtandem.peptide.PeptideModification");
-         doRegistration(kryo, "org.systemsbiology.xtandem.peptide.PeptideModificationRestriction");
-         doRegistration(kryo, "com.lordjoe.distributed.hydra.scoring.AppendScanStringToWriter");
+        doRegistration(kryo, "org.systemsbiology.xtandem.peptide.PeptideModificationRestriction");
+        doRegistration(kryo, "com.lordjoe.distributed.hydra.scoring.AppendScanStringToWriter");
 
-         doRegistration(kryo,  "com.lordjoe.distributed.hydra.AddIndexToSpectrum");
-          doRegistration(kryo, "com.lordjoe.distributed.hydra.scoring.SortByIndex");
-          doRegistration(kryo, "org.systemsbiology.xtandem.peptide.Polypeptide");
+        doRegistration(kryo, "com.lordjoe.distributed.hydra.AddIndexToSpectrum");
+        doRegistration(kryo, "com.lordjoe.distributed.hydra.scoring.SortByIndex");
+        doRegistration(kryo, "org.systemsbiology.xtandem.peptide.Polypeptide");
         doRegistration(kryo, "org.systemsbiology.xtandem.scoring.Scorer");
         doRegistration(kryo, "org.systemsbiology.xtandem.scoring.ScoringModifications");
         doRegistration(kryo, "org.systemsbiology.xtandem.taxonomy.Taxonomy");
@@ -193,10 +195,11 @@ public class HydraKryoSerializer implements KryoRegistrator, Serializable {
         doRegistration(kryo, "com.lordjoe.distributed.hydra.scoring.SparkMapReduceScoringHandler");
         doRegistration(kryo, "com.lordjoe.distributed.spark.SparkAccumulators");
         doRegistration(kryo, "com.lordjoe.utilities.ElapsedTimer");
-         doRegistration(kryo, "org.systemsbiology.xtandem.XTandemMain");
-         doRegistration(kryo, "org.systemsbiology.xtandem.reporting.BiomlReporter");
-         doRegistration(kryo, "com.lordjoe.distributed.hydra.scoring.ScoredScanWriter");
-         doRegistration(kryo, "com.lordjoe.distributed.hydra.scoring.ToIndexTuple");
+        doRegistration(kryo, "org.systemsbiology.xtandem.XTandemMain");
+        doRegistration(kryo, "org.systemsbiology.xtandem.reporting.BiomlReporter");
+        doRegistration(kryo, "com.lordjoe.distributed.hydra.scoring.ScoredScanWriter");
+        doRegistration(kryo, "com.lordjoe.distributed.hydra.scoring.ToIndexTuple");
+        doRegistration(kryo, "org.systemsbiology.xtandem.comet.CometScoredScan");
 
     }
 

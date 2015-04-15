@@ -603,8 +603,8 @@ public class XTandemUtilities {
         gDataCachedForTesting = pDataCachedForTesting;
     }
 
-    private static double gProtonMass = 1.007276;
-    private static double gCleaveNMass = 1.007276;
+    private static double gProtonMass = 1.00727646688; // 1.007276;
+    private static double gCleaveNMass = gProtonMass;
     private static double gCleaveCMass = 17.002735;
 
     public static final boolean SHOW_MASS_CALCULATION = false;
@@ -627,19 +627,21 @@ public class XTandemUtilities {
         double added = XTandemUtilities.getCleaveCMass();
         //      mayBeShowAddedMassX(  mass,  added,"getCleaveCMass");
         mass += added;
-        added = XTandemUtilities.getCleaveNMass();
-        //     mayBeShowAddedMassX(  mass,  added,"getCleaveNMass");
-        mass += added;
-        added = XTandemUtilities.getProtonMass();
-        //    mayBeShowAddedMassX(  mass,  added,"getProtonMass");
-        mass += added;
+// changed to match comet  8-apr-2015
+//        added = XTandemUtilities.getCleaveNMass();
+//        //     mayBeShowAddedMassX(  mass,  added,"getCleaveNMass");
+//        mass += added;
+//        added = XTandemUtilities.getProtonMass();
+//        //    mayBeShowAddedMassX(  mass,  added,"getProtonMass");
+//        mass += added;
         return mass;
     }
 
     public static double calculateMassFromMatchingMass(double mass) {
         mass -= XTandemUtilities.getCleaveCMass();
-        mass -= XTandemUtilities.getCleaveNMass();
-        mass -= XTandemUtilities.getProtonMass();
+// changed to match comet  8-apr-2015
+//        mass -= XTandemUtilities.getCleaveNMass();
+//        mass -= XTandemUtilities.getProtonMass();
         return mass;
     }
 

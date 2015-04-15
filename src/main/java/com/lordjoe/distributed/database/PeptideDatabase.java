@@ -198,10 +198,10 @@ public class PeptideDatabase implements Serializable {
      * @param pAllSpectrumPairs
      * @return keys with peptides
      */
-    public JavaPairRDD<BinChargeKey, Tuple2<BinChargeKey, IMeasuredSpectrum>> filterKeysWithData(final JavaPairRDD<BinChargeKey, Tuple2<BinChargeKey, IMeasuredSpectrum>> pAllSpectrumPairs) {
-        return pAllSpectrumPairs.filter(new Function<Tuple2<BinChargeKey, Tuple2<BinChargeKey, IMeasuredSpectrum>>, java.lang.Boolean>() {
+    public <T  extends IMeasuredSpectrum> JavaPairRDD<BinChargeKey, Tuple2<BinChargeKey, T>> filterKeysWithData(final JavaPairRDD<BinChargeKey, Tuple2<BinChargeKey, T>> pAllSpectrumPairs) {
+        return pAllSpectrumPairs.filter(new Function<Tuple2<BinChargeKey, Tuple2<BinChargeKey, T>>, java.lang.Boolean>() {
             @Override
-            public Boolean call(final Tuple2<BinChargeKey, Tuple2<BinChargeKey, IMeasuredSpectrum>> v1) throws Exception {
+            public Boolean call(final Tuple2<BinChargeKey, Tuple2<BinChargeKey, T>> v1) throws Exception {
                 BinChargeKey binChargeKey = v1._1();
                 boolean hasData = getKeyCounts(binChargeKey) > 0;
                 //noinspection RedundantIfStatement

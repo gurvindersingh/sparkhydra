@@ -2,6 +2,7 @@ package org.systemsbiology.xtandem;
 
 import org.systemsbiology.hadoop.*;
 import org.systemsbiology.xtandem.ionization.*;
+import org.systemsbiology.xtandem.peptide.*;
 import org.systemsbiology.xtandem.scoring.*;
 import org.systemsbiology.xtandem.testing.*;
 
@@ -136,4 +137,15 @@ public interface IScoringAlgorithm  extends Serializable {
      * @return !null modified spectrum
      */
     public ITheoreticalSpectrum buildScoredScan(ITheoreticalSpectrum pTs);
+
+
+
+    /**
+      * best leave in the air what the theoretical set is
+      * @param scorer
+      * @param pPeptide
+      * @return
+      */
+     public ITheoreticalSpectrumSet generateSpectrum(Scorer scorer,final IPolypeptide pPeptide);
+
 }

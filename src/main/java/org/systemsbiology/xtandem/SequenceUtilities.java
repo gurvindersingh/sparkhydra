@@ -93,7 +93,7 @@ public class SequenceUtilities  implements Serializable {
 
         }
         m_dCleaveCdefault = m_calc.calcMass("OH");
-        m_dCleaveNdefault = m_calc.calcMass("H");
+        m_dCleaveNdefault = XTandemUtilities.getProtonMass(); // m_calc.calcMass("H");
         XTandemUtilities.setCleaveCMass(m_dCleaveCdefault);
         XTandemUtilities.setCleaveNMass(m_dCleaveNdefault);
 
@@ -127,9 +127,9 @@ public class SequenceUtilities  implements Serializable {
         if (fValue != null) {
             modify_c(fValue);
         }
-        fValue = params.getFloatParameter("protein, cleavage N-terminal mass change",1.007825F);
-        if (fValue != null) {
-            XTandemUtilities.setCleaveNMass(fValue);
+        Double dValue = params.getDoubleParameter("protein, cleavage N-terminal mass change", XTandemUtilities.getProtonMass());
+        if (dValue != null) {
+            XTandemUtilities.setCleaveNMass(dValue);
           }
         fValue = params.getFloatParameter("protein, cleavage C-terminal mass change",17.002735F);
         if (fValue != null) {
@@ -257,21 +257,23 @@ public class SequenceUtilities  implements Serializable {
      */
     public double getAddedMass(IonType type) {
         double ret = getAddedMass(type.getTerminal());
-        switch (type) {
-            case A:
-                return ret + m_dA;
-            case B:
-                return ret + m_dB;
-            case C:
-                return ret + m_dC;
-            case X:
-                return ret + m_dX;
-            case Y:
-                return ret + m_dY;
-            case Z:
-                return ret + m_dZ;
-        }
-        throw new UnsupportedOperationException("Cannot get here");
+        return ret;
+        // todo look hard here I think we are ALREADY Adding the proper mass
+//        switch (type) {
+//            case A:
+//                return ret + m_dA;
+//            case B:
+//                return ret + m_dB;
+//            case C:
+//                return ret + m_dC;
+//            case X:
+//                return ret + m_dX;
+//            case Y:
+//                return ret + m_dY;
+//            case Z:
+//                return ret + m_dZ;
+//        }
+//        throw new UnsupportedOperationException("Cannot get here");
     }
 
     /**
@@ -637,7 +639,7 @@ public class SequenceUtilities  implements Serializable {
     protected void initializeMasses() {
         set_aa();
         setdAmmonia(m_calc.calcMass("H3N"));
-        setdProton(m_calc.calcMass("H"));
+        setdProton(XTandemUtilities.getProtonMass());
         setdWater(m_calc.calcMass("H20"));
        setdY(2 * getdProton());   // todo why is this needed
        setdX(2 * getdProton());  // todo why is this needed

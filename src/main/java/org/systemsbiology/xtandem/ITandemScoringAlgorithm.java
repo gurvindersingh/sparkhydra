@@ -66,5 +66,4 @@ public interface ITandemScoringAlgorithm extends IScoringAlgorithm {
 
     public int scoreScan(final Scorer scorer, final IonUseCounter pCounter, final ITheoreticalSpectrumSet[] pSpectrums, final IScoredScan pConditionedScan);
 
-
-}
+ }

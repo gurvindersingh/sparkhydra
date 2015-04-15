@@ -1,5 +1,6 @@
 package org.systemsbiology.xtandem.ionization;
 
+import com.lordjoe.distributed.hydra.test.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.peptide.*;
 import org.systemsbiology.xtandem.scoring.*;
@@ -15,7 +16,7 @@ public class PeptideSpectrum implements ITheoreticalSpectrum {
     public static final PeptideSpectrum[] EMPTY_ARRAY = {};
 
 
-    private final  ITheoreticalSpectrumSet m_SpectrumSet;
+    private final ITheoreticalSpectrumSet m_SpectrumSet;
     private final int m_Charge;
     private final IonType[] m_IonTypes;
     private PeptideIon[] m_Spectrum;
@@ -23,7 +24,7 @@ public class PeptideSpectrum implements ITheoreticalSpectrum {
     private double m_SumIntensity;
     private double m_MaxIntensity;
 
-    public PeptideSpectrum(final ITheoreticalSpectrumSet pPeptide,int charge, final IonType[] pIonTypes, SequenceUtilities su) {
+    public PeptideSpectrum(final ITheoreticalSpectrumSet pPeptide, int charge, final IonType[] pIonTypes, SequenceUtilities su) {
         m_SpectrumSet = pPeptide;
         m_IonTypes = pIonTypes;
         m_Utilities = su;
@@ -64,29 +65,28 @@ public class PeptideSpectrum implements ITheoreticalSpectrum {
      * @return true if equivalent
      */
     @Override
-    public boolean equivalent(ITheoreticalSpectrum test)
-    {
-        if (!equivalent((ISpectrum)test))
+    public boolean equivalent(ITheoreticalSpectrum test) {
+        if (!equivalent((ISpectrum) test))
             return false;
-        if (!getPeptide().equivalent( test.getPeptide()))
+        if (!getPeptide().equivalent(test.getPeptide()))
             return false;
-        if (!getSpectrumSet().equivalent( test.getSpectrumSet()))
+        if (!getSpectrumSet().equivalent(test.getSpectrumSet()))
             return false;
         final ISpectrumPeak[] s1 = getPeaks();
-         final ISpectrumPeak[] s2 = test.getPeaks();
-         if(s1.length != s2.length)
+        final ISpectrumPeak[] s2 = test.getPeaks();
+        if (s1.length != s2.length)
+            return false;
+        for (int i = 0; i < s2.length; i++) {
+            ISpectrumPeak st1 = s1[i];
+            ISpectrumPeak st2 = s2[i];
+            if (st1.equivalent(st2))
                 return false;
-         for (int i = 0; i < s2.length; i++) {
-             ISpectrumPeak st1 = s1[i];
-             ISpectrumPeak st2 = s2[i];
-             if(st1.equivalent(st2) )
-                  return false;
 
-         }
-            return true;
-     }
+        }
+        return true;
+    }
 
-     
+
     public SequenceUtilities getUtilities() {
         return m_Utilities;
     }
@@ -97,9 +97,8 @@ public class PeptideSpectrum implements ITheoreticalSpectrum {
      * @return
      */
     @Override
-    public int getCharge()
-    {
-         return m_Charge;
+    public int getCharge() {
+        return m_Charge;
     }
 
     /**
@@ -110,7 +109,7 @@ public class PeptideSpectrum implements ITheoreticalSpectrum {
      */
     @Override
     public ITheoreticalSpectrum asImmutable() {
-        return new  ScoringSpectrum(this);
+        return new ScoringSpectrum(this);
     }
 
     /**
@@ -130,9 +129,8 @@ public class PeptideSpectrum implements ITheoreticalSpectrum {
      * @return !null set
      */
     @Override
-    public ITheoreticalSpectrumSet getSpectrumSet()
-    {
-         return m_SpectrumSet;
+    public ITheoreticalSpectrumSet getSpectrumSet() {
+        return m_SpectrumSet;
     }
 
     //
@@ -170,8 +168,8 @@ public class PeptideSpectrum implements ITheoreticalSpectrum {
 //        return ret;
 //    }
 
-    public static double getMass(SequenceUtilities su,double sequenceMass, int charge,IonType type) {
-          double added = su.getAddedMass(type);
+    public static double getMass(SequenceUtilities su, double sequenceMass, int charge, IonType type) {
+        double added = su.getAddedMass(type);
         sequenceMass += added;
         // every charge adds the mass of a proton
         sequenceMass += (charge - 1) * su.getdProton();
@@ -216,7 +214,7 @@ public class PeptideSpectrum implements ITheoreticalSpectrum {
         ISpectrumPeak[] peaks = getPeaks();
         for (int i = 0; i < peaks.length; i++) {
             ISpectrumPeak peak = peaks[i];
-            if(peak.getPeak() > 0)
+            if (peak.getPeak() > 0)
                 holder.add(peak);
         }
         ISpectrumPeak[] ret = new ISpectrumPeak[holder.size()];
@@ -224,7 +222,6 @@ public class PeptideSpectrum implements ITheoreticalSpectrum {
         return ret;
 
     }
-
 
 
     /**
@@ -255,8 +252,9 @@ public class PeptideSpectrum implements ITheoreticalSpectrum {
     protected PeptideIon[] buildSpectrum() {
         IPolypeptide pp = getPeptide();
         String sequence = pp.getSequence();
+        int peptideLength = pp.getSequenceLength();
 
-        if(pp.isModified())
+        if (pp.isModified())
             XTandemUtilities.breakHere();
         // one debug case
 //        if("VPETTRINYVGEPTGWVSGK".equals(sequence))
@@ -268,14 +266,24 @@ public class PeptideSpectrum implements ITheoreticalSpectrum {
             IPolypeptide[] frags = pp.cleave(i);
             for (IonType type : getIonTypes()) {
                 int charge = getCharge();
+
+                if(charge > 1)
+                    TestUtilities.breakHere();
+
                 double sequenceMass = frags[0].getMass();
-      //          double sequenceMass = m_Utilities.getSequenceMass(frags[0]);
+                 //          double sequenceMass = m_Utilities.getSequenceMass(frags[0]);
                 double added = m_Utilities.getAddedMass(type);
                 sequenceMass += added;
-                // every charge adds the mass of a proton
+                 // every charge adds the mass of a proton
                 sequenceMass += (charge - 1) * m_Utilities.getdProton();
 
-                PeptideIon ion = new PeptideIon(frags[0], type, charge, sequenceMass / charge, i);
+                int parentIndex = i;
+                if (type == IonType.Y) {
+                    parentIndex = peptideLength -  i;
+                }
+
+                double mz = sequenceMass / charge;
+                PeptideIon ion = new PeptideIon(frags[0], type, charge, mz, parentIndex,parentIndex);
                 holder.add(ion);
 
                 // peptide bonds < 0 is a 0 length sequence
@@ -287,7 +295,12 @@ public class PeptideSpectrum implements ITheoreticalSpectrum {
                     // every charge adds the mass of a proton
                     sequenceMass2 += (charge - 1) * m_Utilities.getdProton();
 
-                    PeptideIon peptideIon = new PeptideIon(frags[1], otherType, charge, sequenceMass2 / charge, i);
+                    parentIndex = i;
+                    if (type == IonType.Y) {
+                        parentIndex = peptideLength -  i;
+                    }
+
+                    PeptideIon peptideIon = new PeptideIon(frags[1], otherType, charge, sequenceMass2 / charge, parentIndex,parentIndex);
                     holder.add(peptideIon);
                 }
             }
@@ -299,26 +312,25 @@ public class PeptideSpectrum implements ITheoreticalSpectrum {
 
     }
 
-      /**
+    /**
      * return true if this and o are 'close enough'
      *
      * @param !null o
      * @return as above
      */
     @Override
-    public boolean equivalent(ISpectrum  o)
-    {
+    public boolean equivalent(ISpectrum o) {
         if (this == o)
-              return true;
-         ISpectrum realO = o;
+            return true;
+        ISpectrum realO = o;
         final ISpectrumPeak[] peaks1 = getPeaks();
         final ISpectrumPeak[] peaks2 = realO.getPeaks();
-        if(peaks1.length != peaks2.length)
+        if (peaks1.length != peaks2.length)
             return false;
         for (int i = 0; i < peaks2.length; i++) {
             ISpectrumPeak p1 = peaks1[i];
             ISpectrumPeak p2 = peaks2[i];
-            if(!p1.equivalent(p2))
+            if (!p1.equivalent(p2))
                 return false;
 
 

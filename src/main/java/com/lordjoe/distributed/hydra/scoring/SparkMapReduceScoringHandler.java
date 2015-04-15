@@ -182,14 +182,14 @@ public class SparkMapReduceScoringHandler implements Serializable {
     }
 
 
-    public JavaPairRDD<BinChargeKey, IMeasuredSpectrum> mapMeasuredSpectrumToKeys(JavaRDD<IMeasuredSpectrum> inp) {
+    public <T  extends IMeasuredSpectrum> JavaPairRDD<BinChargeKey, T> mapMeasuredSpectrumToKeys(JavaRDD<T> inp) {
         inp = SparkUtilities.repartitionIfNeeded(inp);
         return binMapper.mapMeasuredSpectrumToKeys(inp);
     }
 
-    public JavaPairRDD<BinChargeKey, Tuple2<BinChargeKey, IMeasuredSpectrum>> mapMeasuredSpectrumToKeySpectrumPair(JavaRDD<IMeasuredSpectrum> inp) {
+    public  <T  extends IMeasuredSpectrum> JavaPairRDD<BinChargeKey, Tuple2<BinChargeKey, T>> mapMeasuredSpectrumToKeySpectrumPair(JavaRDD<T> inp) {
         inp = SparkUtilities.repartitionIfNeeded(inp);
-        JavaPairRDD<BinChargeKey, Tuple2<BinChargeKey, IMeasuredSpectrum>> allSpectrumPairs = binMapper.mapMeasuredSpectrumToKeySpectrumPair(inp);
+        JavaPairRDD<BinChargeKey, Tuple2<BinChargeKey, T>> allSpectrumPairs = binMapper.mapMeasuredSpectrumToKeySpectrumPair(inp);
         // debugging only remove
         // allSpectrumPairs = SparkUtilities.persistAndCount("MapSpectraTo Keys",allSpectrumPairs);
         allSpectrumPairs = peptideDatabase.filterKeysWithData(allSpectrumPairs);
@@ -201,6 +201,10 @@ public class SparkMapReduceScoringHandler implements Serializable {
     public JavaPairRDD<BinChargeKey, IPolypeptide> mapFragmentsToKeys(JavaRDD<IPolypeptide> inp) {
         return binMapper.mapFragmentsToKeys(inp);
     }
+
+    public JavaPairRDD<BinChargeKey, ITheoreticalSpectrumSet> mapFragmentsToTheoreticalSets(JavaRDD<IPolypeptide> inp) {
+         return binMapper.mapFragmentsToTheoreticalSets(inp);
+     }
 
 
     private static class MapToSpectrumIDKey extends AbstractLoggingPairFunction<Tuple2<IMeasuredSpectrum, IPolypeptide>, String, Tuple2<IMeasuredSpectrum, IPolypeptide>> {
@@ -285,10 +289,10 @@ public class SparkMapReduceScoringHandler implements Serializable {
      * @param binPairs
      * @return
      */
-    public JavaRDD<IScoredScan> scoreBinPairs(JavaPairRDD<BinChargeKey, Tuple2<IPolypeptide, IMeasuredSpectrum>> binPairs) {
+    public <T extends IMeasuredSpectrum> JavaRDD<IScoredScan> scoreBinPairs(JavaPairRDD<BinChargeKey, Tuple2<IPolypeptide, T>> binPairs) {
         ElapsedTimer timer = new ElapsedTimer();
 
-        JavaPairRDD<String, Tuple2<IPolypeptide, IMeasuredSpectrum>> bySpectrumId =
+        JavaPairRDD<String, Tuple2<IPolypeptide, T>> bySpectrumId =
                 binPairs.mapToPair(new MapBinChargeTupleToSpectrumIDTuple());
 
         bySpectrumId = SparkUtilities.repartitionIfNeeded(bySpectrumId);
@@ -771,13 +775,13 @@ public class SparkMapReduceScoringHandler implements Serializable {
         }
     }
 
-    public static class MapBinChargeTupleToSpectrumIDTuple extends AbstractLoggingPairFunction<Tuple2<BinChargeKey, Tuple2<IPolypeptide, IMeasuredSpectrum>>, String, Tuple2<IPolypeptide, IMeasuredSpectrum>> {
+    public static class MapBinChargeTupleToSpectrumIDTuple<T extends IMeasuredSpectrum> extends AbstractLoggingPairFunction<Tuple2<BinChargeKey, Tuple2<IPolypeptide, T>>, String, Tuple2<IPolypeptide, T>> {
         @Override
-        public Tuple2<String, Tuple2<IPolypeptide, IMeasuredSpectrum>> doCall(final Tuple2<BinChargeKey, Tuple2<IPolypeptide, IMeasuredSpectrum>> t) throws Exception {
-            Tuple2<IPolypeptide, IMeasuredSpectrum> pair = t._2();
+        public Tuple2<String, Tuple2<IPolypeptide, T>> doCall(final Tuple2<BinChargeKey, Tuple2<IPolypeptide, T>> t) throws Exception {
+            Tuple2<IPolypeptide, T> pair = t._2();
             IMeasuredSpectrum spec = pair._2();
             String id = spec.getId();
-            return new Tuple2<String, Tuple2<IPolypeptide, IMeasuredSpectrum>>(id, pair);
+            return new Tuple2<String, Tuple2<IPolypeptide, T>>(id, pair);
         }
     }
 
@@ -819,10 +823,10 @@ public class SparkMapReduceScoringHandler implements Serializable {
     }
 
     public class
-            CombineScoredScanWithScore extends AbstractLoggingFunction2<IScoredScan, Tuple2<IPolypeptide, IMeasuredSpectrum>, IScoredScan> {
+            CombineScoredScanWithScore<T extends IMeasuredSpectrum> extends AbstractLoggingFunction2<IScoredScan, Tuple2<IPolypeptide, T>, IScoredScan> {
         @Override
-        public IScoredScan doCall(final IScoredScan v1, final Tuple2<IPolypeptide, IMeasuredSpectrum> v2) throws Exception {
-            Tuple2<IPolypeptide, IMeasuredSpectrum> toScore = v2;
+        public IScoredScan doCall(final IScoredScan v1, final Tuple2<IPolypeptide, T> v2) throws Exception {
+            Tuple2<IPolypeptide, T> toScore = v2;
             IMeasuredSpectrum spec = toScore._2();
             String id = spec.getId();
             IPolypeptide pp = toScore._1();

@@ -10,11 +10,12 @@ import org.systemsbiology.xtandem.testing.*;
 import java.util.*;
 
 /**
- * org.systemsbiology.xtandem.scoring.OriginatingScoredScan
+ * org.systemsbiology.xtandem.comet.CometScoredScan
  * User: steven
+ * made this implement IMeasured spectrum
  * Date: 12/5/11
  */
-public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IEquivalent<IScoredScan> {
+public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>,IMeasuredSpectrum {
     public static final int MAX_SERIALIZED_MATCHED = 8;
     public static final String TAG = "score";
     public static final int TEST_BIN = 7653;
@@ -44,10 +45,8 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IEqu
     private double m_ExpectedValue = Double.NaN;
     private String m_Version = DEFAULT_VERSION;
     private String m_Algorithm = DEFAULT_ALGORITHM;
-    private float[] m_BinnedPeaks;
-    private transient CometScoringAlgorithm algorithm;
 
-    public CometScoredScan(IMeasuredSpectrum pRaw, CometScoringAlgorithm alg) {
+    public CometScoredScan(IMeasuredSpectrum pRaw ) {
         this();
         if (pRaw instanceof ScoringMeasuredSpectrum) {
             ScoringMeasuredSpectrum sm = (ScoringMeasuredSpectrum) pRaw;
@@ -57,18 +56,23 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IEqu
             m_Raw = pRaw;
 
         }
-        algorithm = alg;
-        generateBinnedPeaks();
-    }
+      }
 
     public CometScoredScan() {
     }
 
-    protected float[] getBinnedPeaks() {
-        return m_BinnedPeaks;
+    public void setAlgorithm(CometScoringAlgorithm alg)
+    {
+        generateBinnedPeaks(alg);
+        alg.windowedNormalize();
     }
 
-    protected void generateBinnedPeaks() {
+    /**
+     * same as Comet LoadIOns
+     * @param binned
+     */
+    protected void generateBinnedPeaks(CometScoringAlgorithm algorithm) {
+        float[] binned = algorithm.getWeights();
         ISpectrumPeak[] peaks = getRaw().getPeaks();
         double maxPeak = 0;
         double maxMass = 0;
@@ -77,41 +81,157 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IEqu
             double intensity = peak.getPeak();
             if (intensity > 0) {
                 maxMass = Math.max(massChargeRatio, maxMass);
-                maxPeak = Math.max(massChargeRatio, maxPeak);
+                maxPeak = Math.max(intensity, maxPeak);
             }
 
         }
         int maxBin = algorithm.asBin(maxMass);
+        int lastBin = 0;
         // put in bins
-        m_BinnedPeaks = new float[maxBin + 5];
         for (ISpectrumPeak peak : peaks) {
             double intensity = peak.getPeak();
             if (intensity > 0) {
-                double massChargeRatio = peak.getMassChargeRatio();
-                int bin =  algorithm.asBin(massChargeRatio);
+                float massChargeRatio = (float)peak.getMassChargeRatio();
+                int bin = algorithm.asBin(massChargeRatio);
+                if(bin > lastBin)  { // look at when the bin changes really debigging code
+                    lastBin = algorithm.asBin(massChargeRatio);
+                }
                 double sqrtIntensity = Math.sqrt(intensity);
-                float value = (float)(sqrtIntensity );
-                if(value > m_BinnedPeaks[bin])
-                    m_BinnedPeaks[bin] = value;
+                float value = (float) (sqrtIntensity);
+                if (value > binned[bin])
+                    binned[bin] = value;
             }
-         }
+        }
 
-        double testIntensity = m_BinnedPeaks[TEST_BIN];
-
-        // normalize to 100
-        float factor = (float)(100 * Math.sqrt(maxPeak));
-        for (int i = 0; i < m_BinnedPeaks.length; i++) {
-            m_BinnedPeaks[i] /= factor ;
-          }
-     }
-
-    public void windowedNormalize()
-    {
-        throw new UnsupportedOperationException("Fix This"); // ToDo
     }
 
+    /**
+     * weak test for equality
+     *
+     * @param test !null test
+     * @return true if equivalent
+     */
+    @Override
+    public boolean equivalent(final IMeasuredSpectrum test) {
+        return false;
+    }
 
+    /**
+     * return true if the spectrum is immutable
+     *
+     * @return
+     */
+    @Override
+    public boolean isImmutable() {
+        return true;
+    }
 
+    /**
+     * if the spectrum is not immutable build an immutable version
+     * Otherwise return this
+     *
+     * @return as above
+     */
+    @Override
+    public IMeasuredSpectrum asImmutable() {
+        return this;
+    }
+
+    /**
+     * if the spectrum is not  mutable build an  mutable version
+     * Otherwise return this
+     *
+     * @return as above
+     */
+    @Override
+    public MutableMeasuredSpectrum asMmutable() {
+        throw new UnsupportedOperationException("DOn't do this");
+    }
+
+    /**
+     * get the charge of the spectrum precursor
+     *
+     * @return as above
+     */
+    @Override
+    public int getPrecursorCharge() {
+        return getRaw().getPrecursorCharge();
+    }
+
+    /**
+     * get the mass of the spectrum precursor
+     *
+     * @return as above
+     */
+    @Override
+    public double getPrecursorMass() {
+        return getRaw().getPrecursorMass();
+    }
+
+    /**
+     * get the mz of the spectrum precursor
+     *
+     * @return as above
+     */
+    @Override
+    public double getPrecursorMassChargeRatio() {
+        return getRaw().getPrecursorMassChargeRatio();
+    }
+
+    /**
+     * Mass spec characteristics
+     *
+     * @return as above
+     */
+    @Override
+    public ISpectralScan getScanData() {
+        return getRaw().getScanData();
+    }
+
+    /**
+     * get the number of peaks without returning the peaks
+     *
+     * @return as above
+     */
+    @Override
+    public int getPeaksCount() {
+        return getRaw().getPeaksCount();
+    }
+
+    /**
+     * spectrum - this might have been adjusted
+     *
+     * @return 1=!null array
+     */
+    @Override
+    public ISpectrumPeak[] getPeaks() {
+        return getRaw().getPeaks();
+    }
+
+    /**
+     * get all peaks with non-zero intensity
+     *
+     * @return
+     */
+    @Override
+    public ISpectrumPeak[] getNonZeroPeaks() {
+        return getRaw().getNonZeroPeaks();
+    }
+
+    /**
+     * return true if this and o are 'close enough'
+     *
+     * @param o !null test object
+     * @return as above
+     */
+    @Override
+    public boolean equivalent(final ISpectrum o) {
+        return false;
+    }
+
+    public void windowedNormalize() {
+        throw new UnsupportedOperationException("Fix This"); // ToDo
+    }
 
 
     /**
@@ -131,12 +251,12 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IEqu
 
     @Override
     public IMeasuredSpectrum getConditionedScan() {
-        throw new UnsupportedOperationException("Fix This"); // ToDo
-    }
+        return getRaw();
+     }
 
     @Override
     public IMeasuredSpectrum conditionScan(final IScoringAlgorithm alg, final SpectrumCondition sc) {
-        throw new UnsupportedOperationException("Fix This"); // ToDo
+        return getRaw();
     }
 
     @Override
@@ -241,10 +361,7 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IEqu
 //            return false;
         if (raw.getPeaksCount() < 8) // 20)  // todo make it right
             return false;
-        if (getConditionedScan() == null) {
-            return false; // we have already tried and failed to condition the scan
-        }
-        return true;
+         return true;
     }
 
     public ISpectralMatch[] getSpectralMatches() {

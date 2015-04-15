@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<bioml label="x! taxon-to-file matching list">
+	<taxon label="all">
+		<file format="peptide" URL="contaminants_concatenated_target_decoy.fasta" />
+	</taxon>
+	<taxon label="contaminants_concatenated_target_decoy.fasta">
+		<file format="peptide" URL="contaminants_concatenated_target_decoy.fasta" />
+	</taxon>
+	<taxon label="contaminants_concatenated_target_decoy_reduced.fasta">
+		<file format="peptide" URL="contaminants_concatenated_target_decoy_reduced.fasta" />
+	</taxon>
+	<taxon label="selectedProtein20.fasta">
+		<file format="peptide" URL="selectedProtein20.fasta" />
+	</taxon>
+	<taxon label="selectedProtein200.fasta">
+		<file format="peptide" URL="selectedProtein200.fasta" />
+	</taxon>
+	<taxon label="selectedProtein1000.fasta">
+		<file format="peptide" URL="selectedProtein1000.fasta" />
+	</taxon>
+	<taxon label="eg3PeaksOnlyTopProtein20.fasta">
+		<file format="peptide" URL="eg3PeaksOnlyTopProtein20.fasta" />
+	</taxon>
+	<taxon label="eg3PeaksOnlyAnimeshselectedProtein20.fasta">
+		<file format="peptide" URL="eg3.out.PeaksOnlyAnimeshselectedProtein20.fasta" />
+	</taxon>
+	<taxon label="eg3.out.PeaksOnlyAnimeshselectedProtein20.fasta">
+		<file format="peptide" URL="eg3.out.PeaksOnlyAnimeshselectedProtein20.fasta" />
+	</taxon>
+	<taxon label="WayReduced.fasta">
+		<file format="peptide" URL="WayReduced.fasta" />
+	</taxon>
+  </bioml>

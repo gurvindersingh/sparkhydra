@@ -70,7 +70,7 @@ public abstract class AbstractScoringAlgorithm implements ITandemScoringAlgorith
 
     public static final AbstractScoringAlgorithm[] EMPTY_ARRAY = {};
     public static final int MAX_MASS = 10000;
-    protected MassType m_MassType = MassType.average;
+    protected MassType m_MassType = MassType.monoisotopic;
     private boolean m_SemiTryptic;
     private double m_PlusLimit = 4.1;
     private double m_MinusLimit = 2.1;
@@ -675,6 +675,36 @@ public abstract class AbstractScoringAlgorithm implements ITandemScoringAlgorith
         }
         return numberScoredSpectra;
     }
+
+
+    @Override
+    public ITheoreticalSpectrumSet generateSpectrum(Scorer scorer,final IPolypeptide pPeptide) {
+        if (pPeptide.isModified())
+            XTandemUtilities.breakHere();
+
+        final SequenceUtilities su = scorer.getSequenceUtilities();
+        double massPlusH = pPeptide.getMass() + XTandemUtilities.getProtonMass() + XTandemUtilities.getCleaveCMass() + XTandemUtilities.getCleaveNMass();
+        ITheoreticalSpectrumSet set = new TheoreticalSpectrumSet(scorer.MAX_CHARGE, massPlusH,
+                pPeptide);
+        for (int charge = 1; charge <= scorer.MAX_CHARGE; charge++) {
+            ITheoreticalSpectrum spectrum = generateTheoreticalSpectra(scorer,set, charge);
+          }
+          return set;
+    }
+
+
+
+
+    protected ITheoreticalSpectrum generateTheoreticalSpectra(Scorer scorer,ITheoreticalSpectrumSet peptide,
+                                                           int charge) {
+        PeptideSpectrum ps = new PeptideSpectrum(peptide, charge, IonType.B_ION_TYPES,
+                scorer.getSequenceUtilities());
+        ITheoreticalSpectrum conditioned = ScoringUtilities.applyConditioner(ps,
+                new XTandemTheoreticalScoreConditioner());
+        return conditioned;
+
+    }
+
 
 
     /**

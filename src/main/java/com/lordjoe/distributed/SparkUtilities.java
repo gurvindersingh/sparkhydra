@@ -5,6 +5,7 @@ import com.lordjoe.distributed.hydra.test.*;
 import com.lordjoe.distributed.output.*;
 import com.lordjoe.distributed.spark.*;
 import com.lordjoe.distributed.spark.JavaSparkListener;
+import com.lordjoe.distributed.test.*;
 import org.apache.hadoop.conf.*;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.*;
@@ -18,7 +19,9 @@ import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.Function2;
 import org.apache.spark.sql.*;
 import org.apache.spark.storage.*;
+import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.hadoop.*;
+import org.systemsbiology.xtandem.peptide.*;
 import parquet.org.slf4j.spi.*;
 import scala.*;
 
@@ -56,6 +59,39 @@ public class SparkUtilities implements Serializable {
 
     private static String appName = DEFAULT_APP_NAME;
     private static String pathPrepend = "";
+
+    private static CometSpectraUse desiredUses;
+
+    public static void setDesiredUse(CometSpectraUse desired)  {
+        desiredUses = desired;
+    }
+
+    private static int numberNotFound;
+    private static int numberFound;
+     public static boolean validateDesiredUse(IMeasuredSpectrum spec,IPolypeptide pp,double score)  {
+
+        CometSpectraUse desiredUses = SparkUtilities.desiredUses;
+        if(desiredUses == null)
+            return false;
+        CometSpectralScoring scoring = desiredUses.getScoring(spec, pp);
+        double desiredScore  = 0;
+        if(scoring != null)    {
+            numberFound++;
+            desiredScore = scoring.score;
+            double comparison = score / 0.005;
+            if(Math.abs(desiredScore - comparison) > 0.1)  {
+                System.out.println(scoring + "\t" + " found " + comparison);
+            }
+            return true;
+           }
+        else {
+            numberNotFound++;
+            return false;
+        }
+        // todo check now
+
+    }
+
 
     private static transient boolean logSetToWarn;
     private static boolean local;

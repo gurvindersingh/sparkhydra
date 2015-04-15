@@ -3,6 +3,7 @@ package org.systemsbiology.xtandem;
 import com.lordjoe.distributed.*;
 import org.systemsbiology.hadoop.*;
 import org.systemsbiology.xml.*;
+import org.systemsbiology.xtandem.comet.*;
 import org.systemsbiology.xtandem.hadoop.*;
 import org.systemsbiology.xtandem.peptide.*;
 import org.systemsbiology.xtandem.sax.*;
@@ -441,8 +442,8 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
     @Override
     public ITandemScoringAlgorithm[] getAlgorithms() {
         if (m_Algorithms.size() == 0) {
-                return TandemKScoringAlgorithm.DEFAULT_ALGORITHMS;
-           // return CometScoringAlgorithm.DEFAULT_ALGORITHMS;
+           //     return TandemKScoringAlgorithm.DEFAULT_ALGORITHMS;
+             return CometScoringAlgorithm.DEFAULT_ALGORITHMS;
          }
         return m_Algorithms.toArray(ITandemScoringAlgorithm.EMPTY_ARRAY);
     }

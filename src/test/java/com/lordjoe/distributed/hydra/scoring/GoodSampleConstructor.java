@@ -255,8 +255,8 @@ public class GoodSampleConstructor {
     }
 
     public static void main(String[] args) throws Exception {
- //        samplePepXML(args);
-        sampleTandemOutput(args);
+         samplePepXML(args);
+  //      sampleTandemOutput(args);
      }
 
 

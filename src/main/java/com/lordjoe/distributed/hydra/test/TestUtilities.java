@@ -5,6 +5,7 @@ import com.lordjoe.distributed.hydra.fragment.*;
 import org.apache.spark.api.java.*;
 import org.systemsbiology.hadoop.*;
 import org.systemsbiology.xtandem.*;
+import org.systemsbiology.xtandem.comet.*;
 import org.systemsbiology.xtandem.peptide.*;
 import scala.*;
 
@@ -19,7 +20,7 @@ import java.util.*;
 public class TestUtilities {
 
     private final static List<Tuple2<BinChargeKey, IPolypeptide>> peptideKeys = new ArrayList<Tuple2<BinChargeKey, IPolypeptide>>();
-    private final static List<Tuple2<BinChargeKey, IMeasuredSpectrum>> spectrumKeys = new ArrayList<Tuple2<BinChargeKey, IMeasuredSpectrum>>();
+    private final static List<Tuple2<BinChargeKey,IMeasuredSpectrum>> spectrumKeys = new ArrayList<Tuple2<BinChargeKey, IMeasuredSpectrum>>();
 
     public static final String LOG_CALCULATIONS_PROPERTY = "com.lordjoe.distributed.hydra.test.TestUtilities.LogCalculations";
 
@@ -68,9 +69,9 @@ public class TestUtilities {
         peptideKeys.addAll(pHolder);
     }
 
-    public static void saveSpectrumKey(final List< Tuple2<BinChargeKey, IMeasuredSpectrum>> holder) {
-        for (Tuple2<BinChargeKey, IMeasuredSpectrum> added : holder) {
-             spectrumKeys.add(added);
+    public static  <T extends IMeasuredSpectrum> void saveSpectrumKey(final List< Tuple2<BinChargeKey, T>> holder) {
+        for (Tuple2<BinChargeKey, T> added : holder) {
+             spectrumKeys.add((Tuple2<BinChargeKey, IMeasuredSpectrum>)added);
         }
     }
 
@@ -92,6 +93,13 @@ public class TestUtilities {
             //   "FCYVTEEGDWITKPLPFKK",
             //    "EWDFSEEQPEITIDEKKLAK",
             "KGGELASAVHAYTKTGDPSMR",
+            "LKPDPNTLCDEFK",
+            "QEPERNECFLSHKDDSPDLPK",
+            "NECFLSHKDDSPDLPK",
+            "LKPDPNTLCDEFK",
+            "RHPYFYAPELLYYANK",
+            "YNGVFQECCQAEDK",
+
 
     };
     public static final Set<String> INTERESTING_PEPTIDES = new HashSet<String>(Arrays.asList(INTERESTING_PEPTIDES_STRS));
@@ -201,6 +209,19 @@ public class TestUtilities {
                 continue;
             }
         }
+
+    }
+
+    public static List<SpectrinBinnedScore>  activeValues(float[] all)
+    {
+        List<SpectrinBinnedScore> holder = new ArrayList<SpectrinBinnedScore>();
+        for (int i = 0; i < all.length; i++) {
+            float v = all[i];
+            if(Math.abs(v) > 0.001)  {
+               holder.add(new SpectrinBinnedScore(i,v));
+            }
+        }
+        return holder;
 
     }
 

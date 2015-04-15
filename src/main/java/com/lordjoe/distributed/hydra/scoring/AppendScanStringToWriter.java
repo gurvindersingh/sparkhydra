@@ -9,7 +9,7 @@ import org.systemsbiology.xtandem.scoring.*;
 * User: Steve
 * Date: 3/11/2015
 */
-public class AppendScanStringToWriter extends AbstractLoggingFunction<IScoredScan, String> {
+public class AppendScanStringToWriter <T extends IScoredScan> extends AbstractLoggingFunction<T, String> {
     private final ScoredScanWriter writer;
     private final XTandemMain application;
 
@@ -19,7 +19,7 @@ public class AppendScanStringToWriter extends AbstractLoggingFunction<IScoredSca
     }
 
     @Override
-    public String doCall(final  IScoredScan  v1) throws Exception {
+    public String doCall(final  T  v1) throws Exception {
         StringBuilder sb = new StringBuilder();
         writer.appendScan(sb, application, v1);
         return sb.toString();
