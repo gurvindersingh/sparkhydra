@@ -7,7 +7,6 @@ package org.systemsbiology.xtandem.taxonomy;
  * Date: Apr 11, 2011
  */
 public interface IFastaHandler {
-    public static final IFastaHandler[] EMPTY_ARRAY = {};
 
     /**
      * do whatever you what with the porotein

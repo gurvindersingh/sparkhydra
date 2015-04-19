@@ -3,6 +3,7 @@ package com.lordjoe.distributed.wordcount;
 import org.apache.spark.*;
 import org.apache.spark.api.java.*;
 import org.apache.spark.api.java.function.*;
+import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.Function2;
 import scala.*;
 
@@ -117,18 +118,29 @@ public class ExampleWordCount {
         JavaRDD<String> words = lines.flatMap(new FlatMapFunction<String, String>() {
             @Override
             public Iterable<String> call(final String s) throws Exception {
-                   String[] split = SPACE.split(s);
+                String[] split = SPACE.split(s);
                 List<String> ret = new ArrayList<String>();
                 //noinspection ForLoopReplaceableByForEach
                 for (int i = 0; i < split.length; i++) {
                     String nextWord = regularizeString(split[i]);
                     if (nextWord.length() > 0) {
                         ret.add(nextWord);
-                     }
+                    }
                 }
                 return ret;
             }
         });
+
+        //  here to test use of Optional to return null
+        JavaRDD< Optional<String>> word2 = words.map(new Function<String, Optional<String>>() {
+           @Override
+           public Optional<String> call(String s) throws Exception {
+               if ((s.length()) % 2 == 1)
+                   return Optional.empty();
+               else
+                   return Optional.of(s);
+           }
+       });
 
 
         // Standard go to word pairs
@@ -148,6 +160,8 @@ public class ExampleWordCount {
         });
 
         counts = counts.sortByKey();
+
+
 
         // This line is critical to force work to happen
         List<Tuple2<String, Integer>> collect = counts.collect(); // make the count happen

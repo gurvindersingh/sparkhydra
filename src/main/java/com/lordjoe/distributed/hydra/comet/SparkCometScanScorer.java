@@ -174,7 +174,7 @@ public class SparkCometScanScorer {
         long totalSpectra = 0;
         List<PairCounter> pairs = null;
 
-        System.setProperty("-log4j.configuration","conf/log4j.properties") ;
+      //  System.setProperty("log4j.configuration","conf/log4j.properties") ;
 
         TestUtilities.setCaseLogger(new PrintWriter(new FileWriter("TestedPairs.data")));
 
