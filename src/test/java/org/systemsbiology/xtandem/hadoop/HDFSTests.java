@@ -1,12 +1,12 @@
-package org.systemsbiology.hadoop;
+package org.systemsbiology.xtandem.hadoop;
 
 
 import org.junit.*;
+import org.systemsbiology.hadoop.*;
 import org.systemsbiology.remotecontrol.*;
 import org.systemsbiology.xtandem.*;
 
 import java.io.*;
-import java.lang.annotation.*;
 
 /**
  * org.systemsbiology.hadoop.HDFSTests
@@ -42,8 +42,9 @@ public class HDFSTests {
      public void versionTest()
      {
          HadoopMajorVersion mv = HadoopMajorVersion.CURRENT_VERSION;
-         Assert.assertEquals(HadoopMajorVersion.Version1,mv);
-       }
+ //        Assert.assertEquals(HadoopMajorVersion.Version1,mv);
+         Assert.assertEquals(HadoopMajorVersion.Version2,mv);
+        }
 
     public static boolean isHDFSAccessible() {
 
@@ -108,21 +109,21 @@ public class HDFSTests {
 
        // We can tell from the code - hard wired to use security over 0.2
         boolean isVersion1 = HadoopMajorVersion.CURRENT_VERSION != HadoopMajorVersion.Version0;
-        HDFSAccessor.setHDFSHasSecurity(isVersion1);
+//        HDFSAccessor.setHDFSHasSecurity(isVersion1);
 
-        if(isVersion1) {
-            RemoteUtilities.setPort(8020); // todo make better
-            RemoteUtilities.setHost("hadoop-master-01.ebi.ac.uk");   // todo make not hard coded
-            RemoteUtilities.setUser("slewis");
-            String user = RemoteUtilities.getUser();
-            RemoteUtilities.setDefaultPath("/user/" + user + "/foobar" );
-              String defaultPath = RemoteUtilities.getDefaultPath();
-          }
+//        if(isVersion1) {
+//            RemoteUtilities.setPort(8020); // todo make better
+//            RemoteUtilities.setHost("hadoop-master-01.ebi.ac.uk");   // todo make not hard coded
+//            RemoteUtilities.setUser("slewis");
+//            String user = RemoteUtilities.getUser();
+//            RemoteUtilities.setDefaultPath("/user/" + user + "/foobar" );
+//              String defaultPath = RemoteUtilities.getDefaultPath();
+//          }
 
-        if(!isHDFSAccessible())  {
-            System.out.println("Not running HDFS tests");
-            return;
-        }
+//        if(!isHDFSAccessible())  {
+//            System.out.println("Not running HDFS tests");
+//            return;
+//        }
         try {
             String NAME_NODE = RemoteUtilities.getHost();
             int HDFS_PORT = RemoteUtilities.getPort();

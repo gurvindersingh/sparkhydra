@@ -199,7 +199,20 @@ public class HydraKryoSerializer implements KryoRegistrator, Serializable {
         doRegistration(kryo, "org.systemsbiology.xtandem.reporting.BiomlReporter");
         doRegistration(kryo, "com.lordjoe.distributed.hydra.scoring.ScoredScanWriter");
         doRegistration(kryo, "com.lordjoe.distributed.hydra.scoring.ToIndexTuple");
-        doRegistration(kryo, "org.systemsbiology.xtandem.comet.CometScoredScan");
+
+        // Comet classes
+        doRegistration(kryo, "com.lordjoe.distributed.hydra.comet.CometScoredScan");
+        doRegistration(kryo, "com.lordjoe.distributed.hydra.comet.BinnedChargeIonIndex");
+        doRegistration(kryo, "com.lordjoe.distributed.hydra.comet.SpectrinBinnedScore");
+        doRegistration(kryo, "com.lordjoe.distributed.hydra.comet.CometParameterTests");
+        doRegistration(kryo, "com.lordjoe.distributed.hydra.comet.XCorrUsedData");
+        doRegistration(kryo, "com.lordjoe.distributed.hydra.comet.CometUtilities");
+        doRegistration(kryo, "com.lordjoe.distributed.hydra.comet.CometTheoreticalBinnedSet");
+        doRegistration(kryo, "com.lordjoe.distributed.hydra.comet.CometScoringAlgorithm");
+        doRegistration(kryo, "com.lordjoe.distributed.hydra.comet.CometPeak");
+        doRegistration(kryo, "com.lordjoe.distributed.hydra.comet.BinnedChargeIonIndex");
+
+
 
     }
 

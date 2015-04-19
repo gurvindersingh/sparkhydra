@@ -64,7 +64,7 @@ public class HDFSAccessor implements IHDFSFileSystem {
     }
 
     public static IHDFSFileSystem getFileSystem(final String host, final int port) {
-        if (HadoopMajorVersion.CURRENT_VERSION != HadoopMajorVersion.Version0 && HDFSAccessor.isHDFSHasSecurity()) {
+        if (false && HadoopMajorVersion.CURRENT_VERSION != HadoopMajorVersion.Version0 && HDFSAccessor.isHDFSHasSecurity()) {
             try {
                 Class<? extends IHDFSFileSystem> cls = (Class<? extends IHDFSFileSystem>) Class.forName("org.systemsbiology.hadoop.HDFWithNameAccessor");
 

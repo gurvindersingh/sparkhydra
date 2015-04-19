@@ -7,7 +7,6 @@ import com.lordjoe.distributed.hydra.test.*;
 import com.lordjoe.utilities.*;
 import org.apache.spark.api.java.*;
 import org.systemsbiology.xtandem.*;
-import org.systemsbiology.xtandem.comet.*;
 import org.systemsbiology.xtandem.ionization.*;
 import org.systemsbiology.xtandem.peptide.*;
 import org.systemsbiology.xtandem.scoring.*;
@@ -33,8 +32,12 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
         public CometScoredScan doCall(final CometScoredScan s1, final CometScoredScan s2) throws Exception {
             if(s1.getRaw() == null)
                 return s2;
-            if(s2.getRaw() == null)
+            if(s1.getBestMatch() == null)
+                 return s2;
+             if(s2.getRaw() == null)
                 return s1;
+            if(s2.getBestMatch() == null)
+                  return s1;
             if(!s1.getId().equals(s2.getId()))
                 throw new IllegalStateException("Attempting to combine " + s1.getId() + " and " + s2.getId());
             s1.addTo(s2);
@@ -53,55 +56,26 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
             CometScoredScan scoring = toScore._2();
             ITheoreticalSpectrumSet ts = toScore._1();
 
+            XTandemMain application = getApplication();
+             double xcorr = doRealScoring(scoring, ts, application);
+
             IPolypeptide peptide = ts.getPeptide();
-            IMeasuredSpectrum spec = scoring.getConditionedScan();
-            //====================================================
-            // THIS IS ALL DEBUGGGING
-            if (TestUtilities.isInterestingSpectrum(scoring)) {
-                TestUtilities.breakHere();
-            }
-            if (TestUtilities.isInterestingPeptide(peptide)) {
-                TestUtilities.breakHere();
-            }
-
-            if (TestUtilities.isInterestingScoringPair(peptide, scoring)) {
-                TestUtilities.breakHere();
-                TestUtilities.setLogCalculations(getApplication(), true); // log this
-            }
-            else {
-                String log = TestUtilities.setLogCalculations(getApplication(), false); // log off
-                if (log != null)
-                    System.out.println(log);
-            }
-            //====================================================
-            // END DEBUGGGING
-
-            Scorer scoreRunner = getApplication().getScoreRunner();
-            CometScoringAlgorithm comet = (CometScoringAlgorithm) getApplication().getScorer();
-            IonUseCounter counter = new IonUseCounter();
-            List<XCorrUsedData> used = new ArrayList<XCorrUsedData>();
-
-            if( SparkUtilities.validateDesiredUse(spec,peptide,0) )
-                TestUtilities.breakHere(); // look at these cases
-
-            scoring.setAlgorithm(comet);
-
-            double mass = scoring.getPrecursorMass();    // todo is this peptide or
-            int MaxArraySize = comet.asBin(mass) + 100; // ((int) ((mass + 100) / getBinTolerance()); //  pScoring->_spectrumInfoInternal.iArraySize
-
-             comet.normalizeBinnedPeaks(MaxArraySize);
-             comet.normalizeForNL(MaxArraySize);
+            String id = scoring.getId();
 
 
-            float[] specPeaks = comet.getScoringFastXcorrData();
-            float[] specPeaksNL = comet.getFastXcorrDataNL();
-             List<SpectrinBinnedScore> scoredPeaksPlain =  TestUtilities.activeValues(specPeaks);
-             List<SpectrinBinnedScore> scoredPeaksNL =  TestUtilities.activeValues(specPeaksNL);
+            SpectralMatch scan = new SpectralMatch(peptide, scoring, xcorr, xcorr, xcorr, scoring, null);
+            scoring.addSpectralMatch(scan);
 
-            double xcorr = comet.doXCorr((CometTheoreticalBinnedSet) ts, counter, scoring, used);
+            if(TestUtilities.isCaseLogging())  {
+                  StringBuilder sb = new StringBuilder();
+                double precursorMass = scoring.getPrecursorMass();
 
-            SparkUtilities.validateDesiredUse(spec,peptide,xcorr) ;
+                double matchingMass = peptide.getMatchingMass();
+                double del = precursorMass - matchingMass;
 
+                sb.append(scoring.getId() + "\t" + peptide + "\t"  + precursorMass + "\t" + matchingMass + "\t" + del + "\t" + xcorr );
+                 TestUtilities.logCase(sb.toString());
+              }
 
             if (v1.getRaw() == null)
                 return scoring;
@@ -112,18 +86,97 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
 
     }
 
+    /**
+     * for testing - these are usually wrapped before serialization
+     * @param spec
+     * @param pp
+     * @param application
+     * @return
+     */
+    public static double doRealScoring(IMeasuredSpectrum spec, IPolypeptide pp, XTandemMain application ) {
+        CometScoringAlgorithm comet = (CometScoringAlgorithm) application.getScorer();
+        Scorer scorer = application.getScoreRunner();
+        CometTheoreticalBinnedSet ts = new  CometTheoreticalBinnedSet(spec.getPrecursorCharge(),spec.getPrecursorMass(),pp,comet,scorer);
+        CometScoredScan scan = new CometScoredScan(spec);
+        return  doRealScoring(scan, ts,  application );
+    }
 
-    public JavaRDD<CometScoredScan> scoreCometBinPairs(final JavaPairRDD<BinChargeKey, Tuple2<ITheoreticalSpectrumSet, CometScoredScan>> binPairs) {
+    /**
+     * IMPORTANT the real word is done here
+     * @param pScoring
+     * @param pTs
+     * @param application
+     * @return
+     */
+    public static double doRealScoring(final CometScoredScan pScoring, final ITheoreticalSpectrumSet pTs, XTandemMain application ) {
+        IPolypeptide peptide = pTs.getPeptide();
+        IMeasuredSpectrum spec = pScoring.getConditionedScan();
+        //====================================================
+        // THIS IS ALL DEBUGGGING
+        if (TestUtilities.isInterestingSpectrum(pScoring)) {
+            TestUtilities.breakHere();
+        }
+        if (TestUtilities.isInterestingPeptide(peptide)) {
+            TestUtilities.breakHere();
+        }
+         if (TestUtilities.isInterestingScoringPair(peptide, pScoring)) {
+            TestUtilities.breakHere();
+            TestUtilities.setLogCalculations(application, true); // log this
+        }
+        else {
+            String log = TestUtilities.setLogCalculations(application, false); // log off
+            if (log != null)
+                System.out.println(log);
+        }
+        //====================================================
+        // END DEBUGGGING
+
+          CometScoringAlgorithm comet = (CometScoringAlgorithm) application.getScorer();
+        IonUseCounter counter = new IonUseCounter();
+        List<XCorrUsedData> used = new ArrayList<XCorrUsedData>();
+
+        if( SparkUtilities.validateDesiredUse(spec, peptide, 0) )
+            TestUtilities.breakHere(); // look at these cases
+
+        pScoring.setAlgorithm(comet);
+
+        double mass = pScoring.getPrecursorMass();    // todo is this peptide or
+        int MaxArraySize = comet.asBin(mass) + 100; // ((int) ((mass + 100) / getBinTolerance()); //  pScoring->_spectrumInfoInternal.iArraySize
+
+//        comet.normalizeBinnedPeaks(MaxArraySize);
+//        comet.normalizeForNL(MaxArraySize);
+
+           //====================================================
+        // THIS IS ALL DEBUGGGING
+        List<SpectrumBinnedScore> fastScoringData = pScoring.getFastScoringData();
+        List<SpectrumBinnedScore> fastScoringDataNL = pScoring.getNLScoringData();
+        //====================================================
+        // END DEBUGGGING
+
+        double xcorr = comet.doXCorr((CometTheoreticalBinnedSet) pTs, counter, pScoring, used);
+
+      //  SparkUtilities.validateDesiredUse(spec,peptide,xcorr) ;
+
+
+        return xcorr;
+    }
+
+
+    public JavaRDD<CometScoredScan> scoreCometBinPairs(final JavaPairRDD<BinChargeKey, Tuple2<ITheoreticalSpectrumSet, CometScoredScan>> binPairs,long[] countRef) {
         ElapsedTimer timer = new ElapsedTimer();
+        XTandemMain application = getApplication();
+        CometScoringAlgorithm comet = (CometScoringAlgorithm)application.getAlgorithms()[0];
 
         JavaPairRDD<String, Tuple2<ITheoreticalSpectrumSet, CometScoredScan>> bySpectrumId =
-                binPairs.mapToPair(new MapBinChargeTupleToSpectrumIDTuple());
+                binPairs.flatMapToPair(new CometMapBinChargeTupleToSpectrumIDTuple(comet));
+
+
+        bySpectrumId = SparkUtilities.persistAndCountPair("ScoredPairs", bySpectrumId, countRef);
 
           JavaPairRDD<String, CometScoredScan> scores = bySpectrumId.aggregateByKey(
-                   new CometScoredScan(),
+                  new CometScoredScan(),
                   new CometCombineScoredScanWithScore(),
-
-                   new CometCombineScoredScans()
+                  new CometCombineScoredScans()
            );
            //     JavaRDD<IScoredScan> scores = bySpectrumId.mapPartitions(new ScoreSpectrumAgainstAllPeptides());
 
@@ -132,4 +185,36 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
 
         return scores.values();
     }
+
+    public static class CometMapBinChargeTupleToSpectrumIDTuple<T extends IMeasuredSpectrum> extends AbstractLoggingPairFlatMapFunction<Tuple2<BinChargeKey, Tuple2<ITheoreticalSpectrumSet, T>>, String, Tuple2<ITheoreticalSpectrumSet, T>> {
+         private final CometScoringAlgorithm comet;
+
+        public CometMapBinChargeTupleToSpectrumIDTuple(final CometScoringAlgorithm pComet) {
+            comet = pComet;
+        }
+
+
+        @Override
+        public Iterable<Tuple2<String, Tuple2<ITheoreticalSpectrumSet, T>>> doCall(final Tuple2<BinChargeKey, Tuple2<ITheoreticalSpectrumSet, T>> t) throws Exception {
+            List<Tuple2<String, Tuple2<ITheoreticalSpectrumSet, T>>> holder = new ArrayList<Tuple2<String, Tuple2<ITheoreticalSpectrumSet, T>>>();
+
+            Tuple2<ITheoreticalSpectrumSet, T> pair = t._2();
+            IMeasuredSpectrum spec = pair._2();
+            IPolypeptide pp = pair._1().getPeptide();
+
+            // if we do'nt score give up
+            if(!comet.isPairScored(spec,pp)) {
+                return holder;
+            }
+
+            String id = spec.getId();
+            holder.add(new Tuple2<String, Tuple2<ITheoreticalSpectrumSet, T>>(id, pair));
+            return holder;
+
+        }
+
+
+    }
+
+
 }

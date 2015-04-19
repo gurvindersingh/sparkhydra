@@ -182,12 +182,12 @@ public class SparkMapReduceScoringHandler implements Serializable {
     }
 
 
-    public <T  extends IMeasuredSpectrum> JavaPairRDD<BinChargeKey, T> mapMeasuredSpectrumToKeys(JavaRDD<T> inp) {
+    public <T extends IMeasuredSpectrum> JavaPairRDD<BinChargeKey, T> mapMeasuredSpectrumToKeys(JavaRDD<T> inp) {
         inp = SparkUtilities.repartitionIfNeeded(inp);
         return binMapper.mapMeasuredSpectrumToKeys(inp);
     }
 
-    public  <T  extends IMeasuredSpectrum> JavaPairRDD<BinChargeKey, Tuple2<BinChargeKey, T>> mapMeasuredSpectrumToKeySpectrumPair(JavaRDD<T> inp) {
+    public <T extends IMeasuredSpectrum> JavaPairRDD<BinChargeKey, Tuple2<BinChargeKey, T>> mapMeasuredSpectrumToKeySpectrumPair(JavaRDD<T> inp) {
         inp = SparkUtilities.repartitionIfNeeded(inp);
         JavaPairRDD<BinChargeKey, Tuple2<BinChargeKey, T>> allSpectrumPairs = binMapper.mapMeasuredSpectrumToKeySpectrumPair(inp);
         // debugging only remove
@@ -203,8 +203,8 @@ public class SparkMapReduceScoringHandler implements Serializable {
     }
 
     public JavaPairRDD<BinChargeKey, ITheoreticalSpectrumSet> mapFragmentsToTheoreticalSets(JavaRDD<IPolypeptide> inp) {
-         return binMapper.mapFragmentsToTheoreticalSets(inp);
-     }
+        return binMapper.mapFragmentsToTheoreticalSets(inp);
+    }
 
 
     private static class MapToSpectrumIDKey extends AbstractLoggingPairFunction<Tuple2<IMeasuredSpectrum, IPolypeptide>, String, Tuple2<IMeasuredSpectrum, IPolypeptide>> {
@@ -293,7 +293,7 @@ public class SparkMapReduceScoringHandler implements Serializable {
         ElapsedTimer timer = new ElapsedTimer();
 
         JavaPairRDD<String, Tuple2<IPolypeptide, T>> bySpectrumId =
-                binPairs.mapToPair(new MapBinChargeTupleToSpectrumIDTuple());
+                binPairs.flatMapToPair(new MapBinChargeTupleToSpectrumIDTuple());
 
         bySpectrumId = SparkUtilities.repartitionIfNeeded(bySpectrumId);
 
@@ -634,12 +634,12 @@ public class SparkMapReduceScoringHandler implements Serializable {
         public IScoredScan doCall(final IScoredScan original, final Tuple2<IMeasuredSpectrum, IPolypeptide> v2) throws Exception {
             IMeasuredSpectrum spec = v2._1();
 
-            if(TestUtilities.isInterestingSpectrum(spec))
+            if (TestUtilities.isInterestingSpectrum(spec))
                 spec = v2._1();  // break here
 
             IPolypeptide pp = v2._2();
 
-            if(TestUtilities.isInterestingPeptide(pp))
+            if (TestUtilities.isInterestingPeptide(pp))
                 pp = v2._2();   // break here
 
             if (!(spec instanceof RawPeptideScan))
@@ -775,13 +775,19 @@ public class SparkMapReduceScoringHandler implements Serializable {
         }
     }
 
-    public static class MapBinChargeTupleToSpectrumIDTuple<T extends IMeasuredSpectrum> extends AbstractLoggingPairFunction<Tuple2<BinChargeKey, Tuple2<IPolypeptide, T>>, String, Tuple2<IPolypeptide, T>> {
+    public static class MapBinChargeTupleToSpectrumIDTuple<T extends IMeasuredSpectrum> extends AbstractLoggingPairFlatMapFunction<Tuple2<BinChargeKey, Tuple2<IPolypeptide, T>>, String, Tuple2<IPolypeptide, T>> {
         @Override
-        public Tuple2<String, Tuple2<IPolypeptide, T>> doCall(final Tuple2<BinChargeKey, Tuple2<IPolypeptide, T>> t) throws Exception {
+        public Iterable<Tuple2<String, Tuple2<IPolypeptide, T>>> doCall(final Tuple2<BinChargeKey, Tuple2<IPolypeptide, T>> t) throws Exception {
+            List<Tuple2<String, Tuple2<IPolypeptide, T>>> holder = new ArrayList<Tuple2<String, Tuple2<IPolypeptide, T>>>();
+
             Tuple2<IPolypeptide, T> pair = t._2();
             IMeasuredSpectrum spec = pair._2();
+            IPolypeptide pp = pair._1();
+
             String id = spec.getId();
-            return new Tuple2<String, Tuple2<IPolypeptide, T>>(id, pair);
+            holder.add(new Tuple2<String, Tuple2<IPolypeptide, T>>(id, pair));
+            return holder;
+
         }
     }
 
@@ -836,22 +842,22 @@ public class SparkMapReduceScoringHandler implements Serializable {
             if (TestUtilities.isInterestingSpectrum(spec)) {
                 pp = toScore._1(); // break here
 //                Accumulator<SpectrumScoringAccumulator> specialAccumulator =  (Accumulator<SpectrumScoringAccumulator>)SparkAccumulators.getInstance().getSpecialAccumulator(id);
- //                specialAccumulator.add(new SpectrumScoringAccumulator(id,pp.toString(),1));
+                //                specialAccumulator.add(new SpectrumScoringAccumulator(id,pp.toString(),1));
             }
             if (TestUtilities.isInterestingPeptide(pp)) {
                 pp = toScore._1(); // break here
             }
 
-            if(TestUtilities.isInterestingScoringPair(pp,spec)) {
+            if (TestUtilities.isInterestingScoringPair(pp, spec)) {
                 pp = toScore._1(); // break here
-                TestUtilities.setLogCalculations(application,true); // log this
+                TestUtilities.setLogCalculations(application, true); // log this
             }
             else {
-                String log = TestUtilities.setLogCalculations(application,false); // log off
-                if(log != null)
+                String log = TestUtilities.setLogCalculations(application, false); // log off
+                if (log != null)
                     System.out.println(log);
             }
-              //====================================================
+            //====================================================
             // END DEBUGGGING
 
             Scorer scoreRunner = application.getScoreRunner();

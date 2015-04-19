@@ -5,6 +5,7 @@ import com.lordjoe.distributed.hydra.scoring.*;
 import com.lordjoe.distributed.hydra.test.*;
 import org.apache.spark.api.java.*;
 import org.systemsbiology.xtandem.*;
+import com.lordjoe.distributed.hydra.comet.*;
 import org.systemsbiology.xtandem.ionization.*;
 import org.systemsbiology.xtandem.peptide.*;
 import org.systemsbiology.xtandem.scoring.*;
@@ -135,7 +136,8 @@ public class BinChargeMapper implements Serializable {
 
         @Override
         public Iterable<Tuple2<BinChargeKey, ITheoreticalSpectrumSet>> doCall(final IPolypeptide pp) throws Exception {
-            double matchingMass = pp.getMatchingMass();
+            //    double matchingMass = pp.getMatchingMass();
+            double matchingMass = CometScoringAlgorithm.getCometMetchingMass(pp);
 
             Scorer scorer = application.getScoreRunner();
 

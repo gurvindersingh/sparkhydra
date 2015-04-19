@@ -5,10 +5,11 @@ import com.lordjoe.distributed.hydra.fragment.*;
 import org.apache.spark.api.java.*;
 import org.systemsbiology.hadoop.*;
 import org.systemsbiology.xtandem.*;
-import org.systemsbiology.xtandem.comet.*;
+import com.lordjoe.distributed.hydra.comet.*;
 import org.systemsbiology.xtandem.peptide.*;
 import scala.*;
 
+import java.io.*;
 import java.lang.Boolean;
 import java.util.*;
 
@@ -23,6 +24,30 @@ public class TestUtilities {
     private final static List<Tuple2<BinChargeKey,IMeasuredSpectrum>> spectrumKeys = new ArrayList<Tuple2<BinChargeKey, IMeasuredSpectrum>>();
 
     public static final String LOG_CALCULATIONS_PROPERTY = "com.lordjoe.distributed.hydra.test.TestUtilities.LogCalculations";
+
+
+    private static PrintWriter caseLogger;
+
+    public static void setCaseLogger(PrintWriter wtr)  {
+        if(caseLogger != null)
+            throw new IllegalStateException("can only set caselogger once");
+        caseLogger = wtr;
+    }
+
+    public static void closeCaseLoggers()  {
+        if(caseLogger != null)
+            caseLogger.close();
+    }
+
+    public static boolean isCaseLogging()  {
+        return (caseLogger != null);
+      }
+
+    public static void logCase(String data)  {
+        if(caseLogger != null)
+              caseLogger.println(data);
+
+    }
 
     /**
      *   set logging on or off and if set off return the log and clear it
@@ -212,13 +237,13 @@ public class TestUtilities {
 
     }
 
-    public static List<SpectrinBinnedScore>  activeValues(float[] all)
+    public static List<SpectrumBinnedScore>  activeValues(float[] all)
     {
-        List<SpectrinBinnedScore> holder = new ArrayList<SpectrinBinnedScore>();
+        List<SpectrumBinnedScore> holder = new ArrayList<SpectrumBinnedScore>();
         for (int i = 0; i < all.length; i++) {
             float v = all[i];
             if(Math.abs(v) > 0.001)  {
-               holder.add(new SpectrinBinnedScore(i,v));
+               holder.add(new SpectrumBinnedScore(i,v));
             }
         }
         return holder;
@@ -231,4 +256,7 @@ public class TestUtilities {
     public static void breakHere() {
         int i = 0;i++;
      }
+
+
+
 }

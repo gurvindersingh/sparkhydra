@@ -644,6 +644,8 @@ public class SparkUtilities implements Serializable {
         String prepend = sparkProperties.getProperty(PATH_PREPEND_PROPERTY);
         if (prepend == null)
             return pathName;
+        if(pathName.startsWith(prepend))
+            return pathName; // already there
         return prepend + pathName;
     }
 

@@ -92,6 +92,7 @@ public class ExampleWordCount {
     public static void main(final String[] args) {
         if(args.length == 0) { usage(); return; }
 
+        org.apache.hadoop.fs.FSDataInputStream someFs = null;
 
         SparkConf sparkConf = new SparkConf();
         sparkConf.setAppName("ExampleWordCount");

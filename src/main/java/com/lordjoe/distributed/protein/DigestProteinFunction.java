@@ -3,6 +3,7 @@ package com.lordjoe.distributed.protein;
 import com.lordjoe.distributed.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.peptide.*;
+import org.systemsbiology.xtandem.scoring.*;
 
 import java.util.*;
 
@@ -20,7 +21,8 @@ public class DigestProteinFunction extends AbstractLoggingFlatMapFunction<IProte
     public DigestProteinFunction(XTandemMain pApp) {
         app = pApp;
         digester = app.getDigester();
-        peptideModifications = app.getScoringMods().getModifications();
+        ScoringModifications scoringMods = app.getScoringMods();
+        peptideModifications = scoringMods.getModifications();
         m_GenerateDecoysForModifiedPeptides = app.getBooleanParameter(XTandemUtilities.CREATE_DECOY_FOR_MODIFIED_PEPTIDES_PROPERTY, Boolean.FALSE);
 
      }

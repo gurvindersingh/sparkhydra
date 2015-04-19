@@ -298,6 +298,7 @@ public class XTandemHadoopUtilities {
     private static Path gDefaultPath;
 
     public static void setDefaultPath(String s) {
+        XTandemMain.setRequiredPathPrefix(s);
         if (s == null || s.length() == 0)
             gDefaultPath = null;
         else

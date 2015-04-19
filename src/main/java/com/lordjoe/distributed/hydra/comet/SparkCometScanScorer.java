@@ -4,13 +4,13 @@ import com.lordjoe.distributed.*;
 import com.lordjoe.distributed.hydra.*;
 import com.lordjoe.distributed.hydra.fragment.*;
 import com.lordjoe.distributed.hydra.scoring.*;
+import com.lordjoe.distributed.hydra.test.*;
 import com.lordjoe.distributed.output.*;
 import com.lordjoe.distributed.spark.*;
 import com.lordjoe.distributed.test.*;
 import com.lordjoe.utilities.*;
 import org.apache.spark.api.java.*;
 import org.systemsbiology.xtandem.*;
-import org.systemsbiology.xtandem.comet.*;
 import org.systemsbiology.xtandem.hadoop.*;
 import org.systemsbiology.xtandem.ionization.*;
 import org.systemsbiology.xtandem.peptide.*;
@@ -22,8 +22,8 @@ import java.lang.Long;
 import java.util.*;
 
 /**
- * com.lordjoe.distributed.hydra.SparkScanScorer
- * a Copy of  SparkScanScorer specialized foe Comet analysis
+ * com.lordjoe.distributed.hydra.comet.SparkCometScanScorer
+ * a Copy of  SparkScanScorer specialized for Comet analysis
  * User: Steve
  * Date: 10/7/2014
  */
@@ -174,6 +174,10 @@ public class SparkCometScanScorer {
         long totalSpectra = 0;
         List<PairCounter> pairs = null;
 
+        System.setProperty("-log4j.configuration","conf/log4j.properties") ;
+
+        TestUtilities.setCaseLogger(new PrintWriter(new FileWriter("TestedPairs.data")));
+
         // for debugging show class path
         // String property = System.getProperty("java.class.path");
         //System.out.println(property);
@@ -200,9 +204,12 @@ public class SparkCometScanScorer {
 
 
         Properties sparkProperties = SparkUtilities.getSparkProperties();
-        String pathPrepend = sparkProperties.getProperty("com.lordjoe.distributed.PathPrepend");
-        if (pathPrepend != null)
+        String pathPrepend = sparkProperties.getProperty(SparkUtilities.PATH_PREPEND_PROPERTY);
+        if (pathPrepend != null) {
             XTandemHadoopUtilities.setDefaultPath(pathPrepend);
+        }
+
+         System.err.println(SparkUtilities.PATH_PREPEND_PROPERTY + "=" + pathPrepend);
 
         String maxScoringPartitionSize = sparkProperties.getProperty(SCORING_PARTITIONS_SCANS_NAME);
         if (maxScoringPartitionSize != null)
@@ -294,7 +301,8 @@ public class SparkCometScanScorer {
 
         timer.reset();
         // now produce all peptide spectrum scores where spectrum and peptide are in the same bin
-        JavaRDD<CometScoredScan> bestScores = handler.scoreCometBinPairs(binPairs);  //  todo fix and restore
+        JavaRDD<CometScoredScan> bestScores = handler.scoreCometBinPairs(binPairs,counts);  //  todo fix and restore
+        long scoringCounts = counts[0];
 
 
         if (isDebuggingCountMade())
@@ -320,10 +328,11 @@ public class SparkCometScanScorer {
 
         SparkAccumulators.showAccumulators(totalTime);
         if (isDebuggingCountMade())
-            showAnalysisTotals(totalSpectra, peptidecounts, keyedSpectrumCounts, pairs);
+            showAnalysisTotals(totalSpectra, peptidecounts, keyedSpectrumCounts,scoringCounts, pairs);
 
         totalTime.showElapsed("Finished Scoring");
 
+        TestUtilities.closeCaseLoggers();
         // purely debugging  code to see whether interesting peptides scored with interesting spectra
         //TestUtilities.writeSavedKeysAndSpectra();
     }
@@ -337,7 +346,11 @@ public class SparkCometScanScorer {
         }
     }
 
-    private static void showAnalysisTotals(final long totalSpectra, final long peptidecounts, final long keyedSpectrumCounts, final List<PairCounter> pPairs) {
+    private static void showAnalysisTotals(final long totalSpectra,
+                                           final long peptidecounts,
+                                           final long keyedSpectrumCounts,
+                                           final long scoringCounts,
+                                            final List<PairCounter> pPairs) {
         System.out.println("=========================================");
         System.out.println("========    Totals              =========");
         System.out.println("=========================================");
@@ -349,7 +362,8 @@ public class SparkCometScanScorer {
             pairCount += pair.product;
         }
         System.out.println("Total Pairs " + SparkUtilities.formatLargeNumber(pairCount));
-        System.out.println("Spectra times Peptides " + SparkUtilities.formatLargeNumber(totalSpectra * peptidecounts));
+        System.out.println("Scored Pairs " + scoringCounts);
+         System.out.println("Spectra times Peptides " + SparkUtilities.formatLargeNumber(totalSpectra * peptidecounts));
 
     }
 

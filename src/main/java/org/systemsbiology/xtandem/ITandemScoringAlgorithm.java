@@ -5,6 +5,8 @@ import org.systemsbiology.xtandem.ionization.*;
 import org.systemsbiology.xtandem.peptide.*;
 import org.systemsbiology.xtandem.scoring.*;
 
+import javax.annotation.*;
+
 /**
  * org.systemsbiology.xtandem.ITandemScoringAlgorithm
  * User: steven
@@ -42,7 +44,15 @@ public interface ITandemScoringAlgorithm extends IScoringAlgorithm {
      * @param pScan  !null scan to score
      * @return true if scoring is desired
      */
-    public boolean isTheoreticalSpectrumScored(ITheoreticalSpectrum ts,IMeasuredSpectrum pScan);
+    public boolean isTheoreticalSpectrumScored(@Nonnull ITheoreticalSpectrum ts,@Nonnull IMeasuredSpectrum pScan);
+
+    /**
+     * test whether so score a pair if not we can save a lot of time
+     * @param pSpec
+     * @param pPp
+     * @return
+     */
+    public  boolean isPairScored(@Nonnull final IMeasuredSpectrum pSpec,@Nonnull  final IPolypeptide pPp);
 
     /**
      * score the two spectra
@@ -51,7 +61,7 @@ public interface ITandemScoringAlgorithm extends IScoringAlgorithm {
      * @param theory   !null theoretical spectrum
      * @return value of the score
      */
-    public double scoreSpectrum(IMeasuredSpectrum measured, ITheoreticalSpectrum theory, Object... otherdata);
+    public double scoreSpectrum(@Nonnull IMeasuredSpectrum measured,@Nonnull  ITheoreticalSpectrum theory, Object... otherdata);
 
     /**
      * actually do the scorring
@@ -61,9 +71,12 @@ public interface ITandemScoringAlgorithm extends IScoringAlgorithm {
      * @param tss  !null set of Theoretical Spectra ot score
       * @return !null score
      */
-    public IScoredScan handleScan(final Scorer scorer,  final IMeasuredSpectrum scan, final IPolypeptide[] pPps, ITheoreticalSpectrumSet[] tss );
+    public IScoredScan handleScan(@Nonnull final Scorer scorer, @Nonnull  final IMeasuredSpectrum scan, final IPolypeptide[] pPps, ITheoreticalSpectrumSet[] tss );
 
 
-    public int scoreScan(final Scorer scorer, final IonUseCounter pCounter, final ITheoreticalSpectrumSet[] pSpectrums, final IScoredScan pConditionedScan);
+    public int scoreScan(@Nonnull final Scorer scorer, final IonUseCounter pCounter, final ITheoreticalSpectrumSet[] pSpectrums, final IScoredScan pConditionedScan);
+
+
+
 
  }

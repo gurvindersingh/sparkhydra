@@ -3,7 +3,7 @@ package org.systemsbiology.xtandem;
 import com.lordjoe.distributed.*;
 import org.systemsbiology.hadoop.*;
 import org.systemsbiology.xml.*;
-import org.systemsbiology.xtandem.comet.*;
+import com.lordjoe.distributed.hydra.comet.*;
 import org.systemsbiology.xtandem.hadoop.*;
 import org.systemsbiology.xtandem.peptide.*;
 import org.systemsbiology.xtandem.sax.*;
@@ -329,6 +329,8 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
         m_OutputResults = notes.get("output, results");
 
         String requiredPrefix = getRequiredPathPrefix();
+        //System.err.println("requiredPrefix " + requiredPrefix);
+
         if (requiredPrefix != null) {
             if (m_DefaultParameters != null && !m_DefaultParameters.startsWith(requiredPrefix))
                 m_DefaultParameters = requiredPrefix + m_DefaultParameters;
@@ -344,6 +346,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
             readDefaultParameters(notes);
         }
         catch (Exception e) {
+            e.printStackTrace();
             // forgive
             System.err.println("Cannot find file " + m_DefaultParameters);
         }
@@ -793,8 +796,12 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
                 paramName = m_DefaultParameters;
             }
             else {
-                String defaults = SparkUtilities.buildPath(m_DefaultParameters);
+                String defaults = m_DefaultParameters;
                  File f = new File(defaults);
+                if(!f.exists()) {
+                     defaults = SparkUtilities.buildPath(m_DefaultParameters);
+                     f = new File(defaults);
+                }
                 if (f.exists() && f.isFile() && f.canRead()) {
                     try {
                         is = new FileInputStream(f);

@@ -730,4 +730,15 @@ public abstract class AbstractScoringAlgorithm implements ITandemScoringAlgorith
      */
     @Override
     public abstract ITheoreticalSpectrum buildScoredScan(final ITheoreticalSpectrum pTs);
+
+    /**
+     * test whether so score a pair if not we can save a lot of time
+     * @param pSpec
+     * @param pPp
+     * @return
+     */
+    public  boolean isPairScored(final IMeasuredSpectrum pSpec, final IPolypeptide pPp)
+    {
+          return true; // override this
+    }
 }

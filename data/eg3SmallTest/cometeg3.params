@@ -2,8 +2,9 @@
 # Comet MS/MS search engine parameters file.
 # Everything following the '#' symbol is treated as a comment.
 
-#database_name = ./eg3.out.PeaksOnlyAnimeshselectedProtein20.fasta
-database_name = ./contaminants_concatenated_target_decoy.fasta
+database_name = ./contaminants_concatenated_target_decoy_reduced.fasta
+#database_name = ./contaminants_concatenated_target_decoy.fasta
+
 decoy_search = 0                       # 0=no (default), 1=concatenated search, 2=separate search
 
 num_threads = 1                        # 0=poll CPU to set num threads; else specify num threads directly (max 64)

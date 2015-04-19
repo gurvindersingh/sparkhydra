@@ -52,7 +52,7 @@ public abstract class AbstractLoggingFunctionBase implements Serializable {
 
 
     public long getRunningTimeMillisec() {
-        return getStartTIme() - System.currentTimeMillis();
+        return System.currentTimeMillis() - getStartTIme();
     }
 
     /**
@@ -119,13 +119,13 @@ public abstract class AbstractLoggingFunctionBase implements Serializable {
     public static final double DAY_IN_NANOSEC = HOUR_IN_NANOSEC * 24;
 
     public static String formatNanosec(long timeNanosec) {
-        if (timeNanosec < 10 * SEC_IN_NANOSEC)
+        if (Math.abs(timeNanosec) < 10 * SEC_IN_NANOSEC)
             return String.format("%10.2f", timeNanosec / MILLISEC_IN_NANOSEC) + " msec";
-        if (timeNanosec < 10 * MIN_IN_NANOSEC)
+        if (Math.abs(timeNanosec) < 10 * MIN_IN_NANOSEC)
             return String.format("%10.2f", timeNanosec / SEC_IN_NANOSEC) + " sec";
-        if (timeNanosec < 10 * HOUR_IN_NANOSEC)
+        if (Math.abs(timeNanosec) < 10 * HOUR_IN_NANOSEC)
             return String.format("%10.2f", timeNanosec / MIN_IN_NANOSEC) + " min";
-        if (timeNanosec < 10 * DAY_IN_NANOSEC)
+        if (Math.abs(timeNanosec) < 10 * DAY_IN_NANOSEC)
             return String.format("%10.2f", timeNanosec / HOUR_IN_NANOSEC) + " hour";
         return String.format("%10.2f", timeNanosec / DAY_IN_NANOSEC) + " days";
     }
