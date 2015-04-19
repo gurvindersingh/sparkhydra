@@ -52,7 +52,7 @@ public class BinChargeMapper implements Serializable {
 
 
     public JavaPairRDD<BinChargeKey, ITheoreticalSpectrumSet> mapFragmentsToTheoreticalSets(JavaRDD<IPolypeptide> inp) {
-        return inp.flatMapToPair(new mapPolypeptidesToTheoreticalBins(application));
+           return inp.flatMapToPair(new mapPolypeptidesToTheoreticalBins(application));
     }
 
     public JavaPairRDD<BinChargeKey, IPolypeptide> mapFragmentsToKeys(JavaRDD<IPolypeptide> inp) {

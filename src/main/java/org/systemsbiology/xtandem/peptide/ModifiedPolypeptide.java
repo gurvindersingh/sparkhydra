@@ -790,8 +790,6 @@ public class ModifiedPolypeptide extends Polypeptide implements IModifiedPeptide
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (m_SequenceModifications != null ? Arrays.hashCode(m_SequenceModifications) : 0);
-        return result;
+         return toString().hashCode();
     }
 }
