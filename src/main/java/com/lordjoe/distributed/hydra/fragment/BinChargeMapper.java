@@ -53,7 +53,7 @@ public class BinChargeMapper implements Serializable {
 
 
     public JavaPairRDD<BinChargeKey, ITheoreticalSpectrumSet> mapFragmentsToTheoreticalSets(JavaRDD<IPolypeptide> inp) {
-           return inp.flatMapToPair(new mapPolypeptidesToTheoreticalBins(application));
+        return inp.flatMapToPair(new mapPolypeptidesToTheoreticalBins(application));
     }
 
     public JavaPairRDD<BinChargeKey, IPolypeptide> mapFragmentsToKeys(JavaRDD<IPolypeptide> inp) {
@@ -107,6 +107,8 @@ public class BinChargeMapper implements Serializable {
         public Iterable<Tuple2<BinChargeKey, IPolypeptide>> doCall(final IPolypeptide pp) throws Exception {
             double matchingMass = pp.getMatchingMass();
 
+            if (TestUtilities.isInterestingPeptide(pp))
+                TestUtilities.breakHere();
 
             List<Tuple2<BinChargeKey, IPolypeptide>> holder = new ArrayList<Tuple2<BinChargeKey, IPolypeptide>>();
             for (int charge = 1; charge <= Scorer.MAX_CHARGE; charge++) {
@@ -139,6 +141,9 @@ public class BinChargeMapper implements Serializable {
             //    double matchingMass = pp.getMatchingMass();
             double matchingMass = CometScoringAlgorithm.getCometMetchingMass(pp);
 
+            if (TestUtilities.isInterestingPeptide(pp))
+                TestUtilities.breakHere();
+
             Scorer scorer = application.getScoreRunner();
 
             List<Tuple2<BinChargeKey, ITheoreticalSpectrumSet>> holder = new ArrayList<Tuple2<BinChargeKey, ITheoreticalSpectrumSet>>();
@@ -146,7 +151,7 @@ public class BinChargeMapper implements Serializable {
             ITheoreticalSpectrumSet ts = scorer.generateSpectrum(pp);
 
             holder.add(new Tuple2<BinChargeKey, ITheoreticalSpectrumSet>(key, ts));
-             return holder;
+            return holder;
         }
     }
 
@@ -154,7 +159,10 @@ public class BinChargeMapper implements Serializable {
         @Override
         public Iterable<Tuple2<BinChargeKey, T>> doCall(final T spec) throws Exception {
             int charge = spec.getPrecursorCharge();
+            charge = 1; // all peptides use 1 now
 
+            if(TestUtilities.isInterestingSpectrum(spec))
+                TestUtilities.breakHere();
 
             List<Tuple2<BinChargeKey, T>> holder = new ArrayList<Tuple2<BinChargeKey, T>>();
 
@@ -181,8 +189,8 @@ public class BinChargeMapper implements Serializable {
         }
     }
 
-    private class  mapMeasuredSpectraToBinTuples <T extends IMeasuredSpectrum> extends AbstractLoggingPairFlatMapFunction<T, BinChargeKey, Tuple2<BinChargeKey, T>> {
-          /**
+    private class mapMeasuredSpectraToBinTuples<T extends IMeasuredSpectrum> extends AbstractLoggingPairFlatMapFunction<T, BinChargeKey, Tuple2<BinChargeKey, T>> {
+        /**
          * do work here
          *
          * @param t@return
@@ -190,17 +198,17 @@ public class BinChargeMapper implements Serializable {
         @Override
         public Iterable<Tuple2<BinChargeKey, Tuple2<BinChargeKey, T>>> doCall(final T spec) throws Exception {
             double matchingMass = spec.getPrecursorMass();
-              int charge = spec.getPrecursorCharge();
-              List<Tuple2<BinChargeKey, Tuple2<BinChargeKey, T>>> holder = new ArrayList<Tuple2<BinChargeKey, Tuple2<BinChargeKey, T>>>();
-              BinChargeKey[] keys = keysFromChargeMz(charge, matchingMass);
-              for (int i = 0; i < keys.length; i++) {
-                  BinChargeKey key = keys[i];
-                  holder.add(new Tuple2<BinChargeKey, Tuple2<BinChargeKey, T>>(key, new Tuple2<BinChargeKey, T>(key, spec)));
-              }
-              if (holder.isEmpty())
-                  throw new IllegalStateException("problem"); // ToDo change
+            int charge = spec.getPrecursorCharge();
+            List<Tuple2<BinChargeKey, Tuple2<BinChargeKey, T>>> holder = new ArrayList<Tuple2<BinChargeKey, Tuple2<BinChargeKey, T>>>();
+            BinChargeKey[] keys = keysFromChargeMz(charge, matchingMass);
+            for (int i = 0; i < keys.length; i++) {
+                BinChargeKey key = keys[i];
+                holder.add(new Tuple2<BinChargeKey, Tuple2<BinChargeKey, T>>(key, new Tuple2<BinChargeKey, T>(key, spec)));
+            }
+            if (holder.isEmpty())
+                throw new IllegalStateException("problem"); // ToDo change
 
-              return holder;
-          }
+            return holder;
+        }
     }
 }

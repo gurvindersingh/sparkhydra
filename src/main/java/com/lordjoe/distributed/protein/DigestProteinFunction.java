@@ -1,6 +1,7 @@
 package com.lordjoe.distributed.protein;
 
 import com.lordjoe.distributed.*;
+import com.lordjoe.distributed.hydra.test.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.peptide.*;
 import org.systemsbiology.xtandem.scoring.*;
@@ -36,6 +37,8 @@ public class DigestProteinFunction extends AbstractLoggingFlatMapFunction<IProte
         List holder = new ArrayList<IPolypeptide>();
             // do a boolean for a peptide belonging to a decoy protein, but use the public isDecoy boolean/method in Protein class
 
+        if(TestUtilities.isInterestingProtein(prot))
+            TestUtilities.breakHere();
 
         IPolypeptide[] pps = digester.digest(prot);
 

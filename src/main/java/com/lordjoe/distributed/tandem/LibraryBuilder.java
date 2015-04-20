@@ -6,6 +6,7 @@ import com.lordjoe.distributed.hydra.*;
 import com.lordjoe.distributed.hydra.peptide.*;
 import com.lordjoe.distributed.hydra.protein.*;
 import com.lordjoe.distributed.hydra.scoring.*;
+import com.lordjoe.distributed.hydra.test.*;
 import com.lordjoe.distributed.protein.*;
 import com.lordjoe.distributed.spectrum.*;
 import com.lordjoe.utilities.*;
@@ -128,6 +129,10 @@ public class LibraryBuilder implements Serializable {
         proteinCount = proteinCountRef[0];
         //proteins = SparkUtilities.persistAndCount("Total Proteins", proteins);
         List<IProtein> proteinList  = proteins.collect();
+        for (IProtein p : proteinList) {
+            final String id = p.getId();
+         //   System.out.println(id);    we could look is these are not correct slewis
+        }
         Collections.sort(proteinList);
 
         JavaRDD<IPolypeptide> digested = proteins.flatMap(new DigestProteinFunction(app));
@@ -362,6 +367,10 @@ public class LibraryBuilder implements Serializable {
         public IProtein doCall(final Tuple2<String, String> v1) throws Exception {
             String annotation = v1._1();
             String sequence = v1._2();
+
+            if(annotation.contains("Q29RL1-2"))
+                TestUtilities.breakHere();
+
             String id = Protein.idFromAnnotation(annotation);
             return Protein.getProtein(id, annotation, sequence, url);
 

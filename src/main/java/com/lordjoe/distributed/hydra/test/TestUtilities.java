@@ -114,16 +114,25 @@ public class TestUtilities {
     }
 
 
+    public static final String[] INTERESTING_PROTEIN_IDS = {
+                 "Q29RL1-2_REVERSED",
+
+
+    };
+    public static final Set<String> INTERESTING_PROTEINS = new HashSet<String>(Arrays.asList(INTERESTING_PROTEIN_IDS));
+
+
+
     public static final String[] INTERESTING_PEPTIDES_STRS = {
             //   "FCYVTEEGDWITKPLPFKK",
-            //    "EWDFSEEQPEITIDEKKLAK",
-            "KGGELASAVHAYTKTGDPSMR",
-            "LKPDPNTLCDEFK",
-            "QEPERNECFLSHKDDSPDLPK",
-            "NECFLSHKDDSPDLPK",
-            "LKPDPNTLCDEFK",
-            "RHPYFYAPELLYYANK",
-            "YNGVFQECCQAEDK",
+               "YSKKSSEDGSPTPGK",
+            "RLEWENWEYSR",
+//            "LKPDPNTLCDEFK",
+//            "QEPERNECFLSHKDDSPDLPK",
+//            "NECFLSHKDDSPDLPK",
+//            "LKPDPNTLCDEFK",
+//            "RHPYFYAPELLYYANK",
+//            "YNGVFQECCQAEDK",
 
 
     };
@@ -132,32 +141,12 @@ public class TestUtilities {
 
     public static final String[] INTERESTING_SPECTRUM_STRS = {
       //      "131104_Berit_BSA2.16056.16056.4",
-            "131104_Berit_BSA2.11526.11526.4",
+            "000000009075",
 //            "131104_Berit_BSA2.8368.8368.4",
 //            "31104_Berit_BSA2.10734.10734.2",
 //            "131104_Berit_BSA2.15845.15845.4",
 //            "131104_Berit_BSA2.9243.9243.3",
-//            "131104_Berit_BSA2.15907.15907.4",
-//            "131104_Berit_BSA2.8402.8402.4",
-//            "131104_Berit_BSA2.22243.22243.3",
-//            "131104_Berit_BSA2.8404.8404.4",   //10
-//            "131104_Berit_BSA2.15512.15512.4",
-//            "131104_Berit_BSA2.12537.12537.4",
-//            "131104_Berit_BSA2.8734.8734.4",
-//            "131104_Berit_BSA2.9292.9292.3",
-//            "131104_Berit_BSA2.11975.11975.2",   // 15
-//            "131104_Berit_BSA2.15755.15755.4",
-//            "131104_Berit_BSA2.9991.9991.4",
-//            "131104_Berit_BSA2.18064.18064.3",
-//            "131104_Berit_BSA2.10106.10106.2",
-//            "131104_Berit_BSA2.15516.15516.4",
 
-
-            //     "131104_Berit_BSA2.13178.13178.3",
-            //    "131104_Berit_BSA2.17729.17729.2",     //  sequence=AVPGAIVR score 550   ;
-            //     "13697",     //  sequence=AVPGAIVR score 550   131104_Berit_BSA2.17729.17729.2";
-            //      "62963", // sequence=SVLRPDVDLR   score 720
-            //    "30788" //   sequence=Q[-17.026]TLVAQGTLR    hyperscore="629"
 
     };
 
@@ -168,6 +157,13 @@ public class TestUtilities {
         boolean b = isInterestingPeptide(pp) && isInterestingSpectrum(spec);
         if(b)
             return b;
+        return false;
+    }
+
+    public static boolean isInterestingProtein(IProtein prot) {
+        final String id = prot.getId();
+        if (INTERESTING_PROTEINS.contains(id))
+                     return true;
         return false;
     }
 
@@ -182,7 +178,7 @@ public class TestUtilities {
                     return true;
 
             }
-             if (INTERESTING_PEPTIDES.contains(completeString))
+            if (INTERESTING_PEPTIDES.contains(completeString))
                 return true;
         }
         return false;

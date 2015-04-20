@@ -1,6 +1,7 @@
 package org.systemsbiology.xtandem;
 
 import com.lordjoe.distributed.*;
+import com.lordjoe.distributed.spark.*;
 import org.systemsbiology.hadoop.*;
 import org.systemsbiology.xml.*;
 import com.lordjoe.distributed.hydra.comet.*;
@@ -112,8 +113,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
         try {
             InputStream is = new FileInputStream(m_TaskFile);
             handleInputs(is, pTaskFile.getName());
-        }
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
 
         }
@@ -130,11 +130,11 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
         Properties predefined = XTandemHadoopUtilities.getHadoopProperties();
         for (String key : predefined.stringPropertyNames()) {
             setPredefinedParameter(key, predefined.getProperty(key));
-         }
+        }
         handleInputs(is, url);
         //     if (gInstance != null)
         //        throw new IllegalStateException("Only one XTandemMain allowed");
-      }
+    }
 
 
     private void setPredefinedParameter(String key, String value) {
@@ -149,11 +149,11 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
         m_Log.append(added);
     }
 
-    public void clearLog( ) {
+    public void clearLog() {
         m_Log.setLength(0);
     }
 
-    public String getLog( ) {
+    public String getLog() {
         return m_Log.toString();
     }
 
@@ -220,7 +220,6 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
     }
 
 
-
     @Override
     public RawPeptideScan getRawScan(String key) {
         return m_RawScans.get(key);
@@ -236,7 +235,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
         m_Scorings.remove(removed);
     }
 
-       /**
+    /**
      * remove all retained data
      */
     @Override
@@ -309,13 +308,13 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
     public void handleInputs(final InputStream is, String url) {
         Map<String, String> notes = XTandemUtilities.readNotes(is, url);
 
-        if(isShowParameters())  {
+        if (isShowParameters()) {
             for (String key : notes.keySet()) {
                 setParameter(key, notes.get(key));
                 System.err.println(key + " = " + notes.get(key));
             }
-          }
-         m_DefaultParameters = notes.get(
+        }
+        m_DefaultParameters = notes.get(
                 "list path, default parameters"); //, "default_input.xml");
         m_TaxonomyInfo = notes.get(
                 "list path, taxonomy information"); //, "taxonomy.xml");
@@ -344,8 +343,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
 
         try {
             readDefaultParameters(notes);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             // forgive
             System.err.println("Cannot find file " + m_DefaultParameters);
@@ -385,9 +383,9 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
         int maxMods = getIntParameter(ModifiedPolypeptide.MAX_MODIFICASTIONS_PARAMETER_NAME, ModifiedPolypeptide.DEFAULT_MAX_MODIFICATIONS);
         ModifiedPolypeptide.setMaxPeptideModifications(maxMods);
 
-        if(getBooleanParameter(DO_DEBUGGING_KEY,false))  {
-               XTandemDebugging.setDebugging(true, this);
-           }
+        if (getBooleanParameter(DO_DEBUGGING_KEY, false)) {
+            XTandemDebugging.setDebugging(true, this);
+        }
 
 
     }
@@ -408,12 +406,10 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
             ITandemScoringAlgorithm algorithm = (ITandemScoringAlgorithm) cls.newInstance();
             algorithm.configure(this);
             addAlgorithm(algorithm);
-        }
-        catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             throw e;
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -426,7 +422,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
                 ITandemScoringAlgorithm present = existing[i];
                 if (added.getClass() == present.getClass())
                     return; // one algorithm per class
-               }
+            }
         }
         m_Algorithms.add(added);
     }
@@ -445,9 +441,9 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
     @Override
     public ITandemScoringAlgorithm[] getAlgorithms() {
         if (m_Algorithms.size() == 0) {
-           //     return TandemKScoringAlgorithm.DEFAULT_ALGORITHMS;
-             return CometScoringAlgorithm.DEFAULT_ALGORITHMS;
-         }
+            //     return TandemKScoringAlgorithm.DEFAULT_ALGORITHMS;
+            return CometScoringAlgorithm.DEFAULT_ALGORITHMS;
+        }
         return m_Algorithms.toArray(ITandemScoringAlgorithm.EMPTY_ARRAY);
     }
 
@@ -574,7 +570,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
     }
 
 
-     public void loadScoring() {
+    public void loadScoring() {
         //  loadTaxonomy(); // read the taxonomy files
 
         buildScoringAlgorithm();
@@ -590,7 +586,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
             IScoringAlgorithm algorithm = getScorer();
             SequenceUtilities su = getSequenceUtilities();
             SpectrumCondition sp = getSpectrumParameters();
-            m_ScoreRunner = new Scorer(this, su, sp, algorithm );
+            m_ScoreRunner = new Scorer(this, su, sp, algorithm);
 
         }
         return m_ScoreRunner;
@@ -627,7 +623,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
         strKeyBase = "residue, potential modification mass";
         value = getParameter(strKeyBase + (a++));
         value = getParameter(strKey);
-        if(true)
+        if (true)
             throw new UnsupportedOperationException("Fix This"); // ToDo
 //        if (m_xmlValues.get(strKey, strValue)) {
 //           m_pScore - > m_seqUtil.modify_maybe(strValue);
@@ -748,8 +744,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
             is = open(path);
             String[] annotationfiles = XTandemUtilities.parseFile(is, taxonHandler, path);
 
-        }
-        else {
+        } else {
 
         }
 
@@ -789,33 +784,27 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
     protected void readDefaultParameters(Map<String, String> inputParameters) {
         Map<String, String> parametersMap = getParametersMap();
         if (m_DefaultParameters != null) {
-            String paramName;
+            String paramName = m_DefaultParameters;
             InputStream is;
+            final String path = SparkUtilities.buildPath(m_DefaultParameters);
             if (m_DefaultParameters.startsWith("res://")) {
                 is = XTandemUtilities.getDescribedStream(m_DefaultParameters);
                 paramName = m_DefaultParameters;
-            }
-            else {
-                String defaults = m_DefaultParameters;
-                 File f = new File(defaults);
-                if(!f.exists()) {
-                     defaults = SparkUtilities.buildPath(m_DefaultParameters);
-                     f = new File(defaults);
-                }
-                if (f.exists() && f.isFile() && f.canRead()) {
-                    try {
-                        is = new FileInputStream(f);
-                    }
-                    catch (FileNotFoundException e) {
-                        throw new RuntimeException(e);
-
-                    }
-                    paramName = f.getName();
-                }
-                else {
-                    paramName = XMLUtilities.asLocalFile(m_DefaultParameters);
-                    is = open(paramName);
-                }
+            } else {
+                is = HydraSparkUtilities.readFrom(path);
+//                        File f = new File(defaults);
+//                if (f.exists() && f.isFile() && f.canRead()) {
+//                    try {
+//                        is = new FileInputStream(f);
+//                    } catch (FileNotFoundException e) {
+//                        throw new RuntimeException(e);
+//
+//                    }
+//                    paramName = f.getName();
+//                } else {
+//                    paramName = XMLUtilities.asLocalFile(m_DefaultParameters);
+//                    is = open(paramName);
+//                }
             }
             if (is == null) {
                 // maybe this is a resource
@@ -824,20 +813,18 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
                     if (paramName.toLowerCase().contains(DefaultKScoreProperties.IMPLEMENTED_DEFAULT_FILE)) {
                         DefaultKScoreProperties.addDefaultProperties(parametersMap);
                         return;
-                    }
-                    else {    // give up
+                    } else {    // give up
                         throw new IllegalArgumentException("the default input file designated by \"list path, default parameters\" " + m_DefaultParameters + "  does not exist"); // ToDo change
 
                     }
                 }
             }
-            else {
-                Map<String, String> map = XTandemUtilities.readNotes(is, paramName);
-                for (String key : map.keySet()) {
-                    if (!parametersMap.containsKey(key)) {
-                        String value = map.get(key);
-                        parametersMap.put(key, value);
-                    }
+
+            Map<String, String> map = XTandemUtilities.readNotes(is, paramName);
+            for (String key : map.keySet()) {
+                if (!parametersMap.containsKey(key)) {
+                    String value = map.get(key);
+                    parametersMap.put(key, value);
                 }
             }
         }

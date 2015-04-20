@@ -112,7 +112,8 @@ public class GoodSampleConstructor {
                     removed.add(peptide);
                 }
             }
-            m_peptides.removeAll(removed);
+            if(!removed.isEmpty())
+              m_peptides.removeAll(removed);
 
         }
 

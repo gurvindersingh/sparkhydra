@@ -202,8 +202,16 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
             IMeasuredSpectrum spec = pair._2();
             IPolypeptide pp = pair._1().getPeptide();
 
-            // if we do'nt score give up
-            if(!comet.isPairScored(spec,pp)) {
+            // if we dont score give up
+             boolean pairScored = comet.isPairScored(spec, pp);
+            if(!pairScored) {
+
+                if(TestUtilities.isInterestingPeptide(pp))
+                    pairScored = comet.isPairScored(spec, pp); // repeat and look
+                if(TestUtilities.isInterestingSpectrum(spec))
+                     pairScored = comet.isPairScored(spec, pp);   // repeat and look
+
+
                 return holder;
             }
 

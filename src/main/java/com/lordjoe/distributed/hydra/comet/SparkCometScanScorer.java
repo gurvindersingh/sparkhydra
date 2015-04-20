@@ -176,7 +176,6 @@ public class SparkCometScanScorer {
 
       //  System.setProperty("log4j.configuration","conf/log4j.properties") ;
 
-        TestUtilities.setCaseLogger(new PrintWriter(new FileWriter("TestedPairs.data")));
 
         // for debugging show class path
         // String property = System.getProperty("java.class.path");
@@ -195,6 +194,9 @@ public class SparkCometScanScorer {
             return;
         }
 
+        // debug logging
+    //    TestUtilities.setCaseLogger(new PrintWriter(new FileWriter("TestedPairs.data")));
+
        buildDesiredScoring(args);
 
         SparkUtilities.readSparkProperties(args[SPARK_CONFIG_INDEX]);
@@ -203,13 +205,11 @@ public class SparkCometScanScorer {
         SparkUtilities.setLogToWarn();
 
 
+
         Properties sparkProperties = SparkUtilities.getSparkProperties();
         String pathPrepend = sparkProperties.getProperty(SparkUtilities.PATH_PREPEND_PROPERTY);
-        if (pathPrepend != null) {
+        if (pathPrepend != null)
             XTandemHadoopUtilities.setDefaultPath(pathPrepend);
-        }
-
-         System.err.println(SparkUtilities.PATH_PREPEND_PROPERTY + "=" + pathPrepend);
 
         String maxScoringPartitionSize = sparkProperties.getProperty(SCORING_PARTITIONS_SCANS_NAME);
         if (maxScoringPartitionSize != null)
@@ -338,9 +338,9 @@ public class SparkCometScanScorer {
     }
 
     private static void buildDesiredScoring(final String[] pArgs) {
-        if (pArgs.length >= TANDEM_CONFIG_INDEX + 1) {
-            String fileNmae = pArgs[TANDEM_CONFIG_INDEX + 1];
-            File file = new File(fileNmae);
+        if (pArgs.length > TANDEM_CONFIG_INDEX + 1) {
+            String fileName = pArgs[TANDEM_CONFIG_INDEX + 1];
+            File file = new File(fileName);
             CometSpectraUse desired = new CometSpectraUse(file);
             SparkUtilities.setDesiredUse(desired);
         }
