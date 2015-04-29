@@ -131,16 +131,6 @@ public class ExampleWordCount {
             }
         });
 
-        //  here to test use of Optional to return null
-        JavaRDD< Optional<String>> word2 = words.map(new Function<String, Optional<String>>() {
-           @Override
-           public Optional<String> call(String s) throws Exception {
-               if ((s.length()) % 2 == 1)
-                   return Optional.empty();
-               else
-                   return Optional.of(s);
-           }
-       });
 
 
         // Standard go to word pairs
