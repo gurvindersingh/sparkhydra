@@ -213,7 +213,6 @@ public class HydraKryoSerializer implements KryoRegistrator, Serializable {
         doRegistration(kryo, "com.lordjoe.distributed.hydra.comet.BinnedChargeIonIndex");
 
 
-
     }
 
 

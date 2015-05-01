@@ -2,6 +2,7 @@ package com.lordjoe.distributed.hydra.comet;
 
 import org.systemsbiology.xtandem.ionization.*;
 
+import java.io.*;
 import java.util.*;
 
 /**
@@ -10,7 +11,7 @@ import java.util.*;
  * similat to p_uiBinnedIonMasses in comet
  * Date: 4/3/2015
  */
-public class BinnedChargeIonIndex implements Comparable<BinnedChargeIonIndex> {
+public class BinnedChargeIonIndex implements Comparable<BinnedChargeIonIndex>,Serializable {
 
     public static final Comparator<BinnedChargeIonIndex>  BY_BIN  = new Comparator<BinnedChargeIonIndex>() {
         @Override
