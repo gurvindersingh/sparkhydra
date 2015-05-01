@@ -128,20 +128,20 @@ public class LibraryBuilder implements Serializable {
         proteins = SparkUtilities.persistAndCount("Proteins  to Score", proteins, proteinCountRef);
         proteinCount = proteinCountRef[0];
         //proteins = SparkUtilities.persistAndCount("Total Proteins", proteins);
-        List<IProtein> proteinList  = proteins.collect();
-        for (IProtein p : proteinList) {
-            final String id = p.getId();
-         //   System.out.println(id);    we could look is these are not correct slewis
-        }
-        Collections.sort(proteinList);
+//        List<IProtein> proteinList  = proteins.collect();
+//        for (IProtein p : proteinList) {
+//            final String id = p.getId();
+//         //   System.out.println(id);    we could look is these are not correct slewis
+//        }
+//        Collections.sort(proteinList);
 
         JavaRDD<IPolypeptide> digested = proteins.flatMap(new DigestProteinFunction(app));
 
-        digested = SparkUtilities.persistAndCount("Digested Proteins", digested);
+   //     digested = SparkUtilities.persistAndCount("Digested Proteins", digested);
 
-        digested = digested.distinct();
+   //     digested = digested.distinct();
 
-         digested = SparkUtilities.persistAndCount("Digested Proteins Distinct", digested);
+  //       digested = SparkUtilities.persistAndCount("Digested Proteins Distinct", digested);
         //digested = SparkUtilities.persistAndCount("Digested Proteins", digested);
 
         // digested = digested.repartition(SparkUtilities.getDefaultNumberPartitions());
