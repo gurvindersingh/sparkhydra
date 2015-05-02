@@ -259,6 +259,8 @@ public class HyperScoreStatistics implements Serializable {
     }
 
     public void incrementBin(int bin, int added) {
+        if(bin < 0)
+            return;    // we need to deal with negative scores todo kill them at an earlier stage
         while (m_Bins.size() < bin + 1)
             m_Bins.add(0);
         m_Bins.set(bin, m_Bins.get(bin) + added);
