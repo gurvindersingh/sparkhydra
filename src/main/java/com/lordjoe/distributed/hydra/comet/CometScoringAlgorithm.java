@@ -245,7 +245,7 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
 
             used.clear();
             if (scorer.isTheoreticalSpectrumScored(pConditionedScan, tsSet)) {
-                score = doXCorr((CometTheoreticalBinnedSet) tsSet, pCounter, pConditionedScan, used);
+                score = doXCorr((CometTheoreticalBinnedSet) tsSet,scorer, pCounter, pConditionedScan, used);
                 numberScoredSpectra++;
                 SpectralMatch sm = new SpectralMatch(
                         pp,
@@ -306,9 +306,10 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
         return ret;
     }
 
-    public double doXCorr(final CometTheoreticalBinnedSet pTs, final IonUseCounter pCounter, CometScoredScan scorer, List<XCorrUsedData> used) {
+    public double doXCorr(final CometTheoreticalBinnedSet pTs,final Scorer scorerData, final IonUseCounter pCounter, CometScoredScan scorer, List<XCorrUsedData> used) {
         CometTheoreticalBinnedSet sts = pTs;
-        List<BinnedChargeIonIndex> binnedIndex = sts.getBinnedIndex();
+
+        List<BinnedChargeIonIndex> binnedIndex = sts.getBinnedIndex(this,scorerData);
         double xcorr = 0;
 
         int maxCharge = scorer.getCharge();

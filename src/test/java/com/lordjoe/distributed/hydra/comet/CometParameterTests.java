@@ -53,7 +53,7 @@ public class CometParameterTests {
 
         ITheoreticalSpectrumSet ts = scorer.generateSpectrum(pp);
 
-        CometParameterTests.testCometTheoreticalSet((CometTheoreticalBinnedSet) ts, "/egoParameters.txt");
+        CometParameterTests.testCometTheoreticalSet((CometTheoreticalBinnedSet) ts, "/egoParameters.txt",comet,scorer);
 
 
         IPolypeptide[] pps = {pp};
@@ -92,8 +92,7 @@ public class CometParameterTests {
         List<XCorrUsedData> used = new ArrayList<XCorrUsedData>();
 
         CometTesting.testFastXcorrDataAtXCorr(comet, scoring);
-
-        double xcorr = comet.doXCorr((CometTheoreticalBinnedSet) ts, counter, scoring, used);
+            double xcorr = comet.doXCorr((CometTheoreticalBinnedSet) ts,scorer, counter, scoring, used);
 
         Assert.assertEquals(2.870912, xcorr, 0.001);
 
@@ -165,7 +164,7 @@ public class CometParameterTests {
         assertScanScore(application, scanById, "M[15.995]PCTEDYLSLILNR", "8852", 1.858);
 
 
-        double xcorr = CometScoringHandler.doRealScoring(scan, ts, application);
+        double xcorr = CometScoringHandler.doRealScoring(scan, pp, application);
 
         Assert.assertEquals(1.2996, xcorr, 0001);
     }
@@ -186,7 +185,7 @@ public class CometParameterTests {
         int charge = scan.getCharge();
         Assert.assertTrue(comet.isWithinLimits(precursorMass, ppMass, charge));
 
-         double xcorr = CometScoringHandler.doRealScoring(scan, ts, application);
+         double xcorr = CometScoringHandler.doRealScoring(scan,scorer, ts, application);
 
         Assert.assertEquals(score, xcorr, 0001);
 
@@ -343,8 +342,8 @@ public class CometParameterTests {
         return ret;
     }
 
-    public static void testCometTheoreticalSet(CometTheoreticalBinnedSet data, String resourceName) {
-        List<BinnedChargeIonIndex> binnedIndexX = data.getBinnedIndex();
+    public static void testCometTheoreticalSet(CometTheoreticalBinnedSet data, String resourceName,CometScoringAlgorithm comet,Scorer scorer) {
+        List<BinnedChargeIonIndex> binnedIndexX = data.getBinnedIndex(comet,  scorer);
 
         // binnedIndexX is immutable ^&)*&%*&^$%^$
         List<BinnedChargeIonIndex> binnedIndexY = new ArrayList<BinnedChargeIonIndex>(binnedIndexX);

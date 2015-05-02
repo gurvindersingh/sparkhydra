@@ -57,7 +57,8 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
             ITheoreticalSpectrumSet ts = toScore._1();
 
             XTandemMain application = getApplication();
-             double xcorr = doRealScoring(scoring, ts, application);
+            Scorer scorer = application.getScoreRunner();
+             double xcorr = doRealScoring(scoring,scorer, ts, application);
 
             IPolypeptide peptide = ts.getPeptide();
             String id = scoring.getId();
@@ -98,7 +99,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
         Scorer scorer = application.getScoreRunner();
         CometTheoreticalBinnedSet ts = new  CometTheoreticalBinnedSet(spec.getPrecursorCharge(),spec.getPrecursorMass(),pp,comet,scorer);
         CometScoredScan scan = new CometScoredScan(spec);
-        return  doRealScoring(scan, ts,  application );
+        return  doRealScoring(scan,scorer, ts,  application );
     }
 
     /**
@@ -108,7 +109,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
      * @param application
      * @return
      */
-    public static double doRealScoring(final CometScoredScan pScoring, final ITheoreticalSpectrumSet pTs, XTandemMain application ) {
+    public static double doRealScoring(final CometScoredScan pScoring,final Scorer scorer, final ITheoreticalSpectrumSet pTs, XTandemMain application ) {
         IPolypeptide peptide = pTs.getPeptide();
         IMeasuredSpectrum spec = pScoring.getConditionedScan();
         //====================================================
@@ -153,7 +154,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
         //====================================================
         // END DEBUGGGING
 
-        double xcorr = comet.doXCorr((CometTheoreticalBinnedSet) pTs, counter, pScoring, used);
+        double xcorr = comet.doXCorr((CometTheoreticalBinnedSet) pTs,scorer, counter, pScoring, used);
 
       //  SparkUtilities.validateDesiredUse(spec,peptide,xcorr) ;
 

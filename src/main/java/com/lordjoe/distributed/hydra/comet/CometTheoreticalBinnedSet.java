@@ -14,15 +14,16 @@ import java.util.*;
  * Date: 4/3/2015
  */
 public class CometTheoreticalBinnedSet extends TheoreticalSpectrumSet {
-    private final List<BinnedChargeIonIndex> binnedIndex = new ArrayList<BinnedChargeIonIndex>();
-    private final List<BinnedChargeIonIndex> binnedIndexNL = new ArrayList<BinnedChargeIonIndex>();
+ //   private final List<BinnedChargeIonIndex> binnedIndex = new ArrayList<BinnedChargeIonIndex>();
+ //   private final List<BinnedChargeIonIndex> binnedIndexNL = new ArrayList<BinnedChargeIonIndex>();
 
     public CometTheoreticalBinnedSet(final int pMaxCharge, final double mPlusH, final IPolypeptide pPeptide, CometScoringAlgorithm cmt, Scorer scorer) {
         super(pMaxCharge, mPlusH, pPeptide);
-        buildBinnedList(cmt, scorer);
+     //   buildBinnedList(cmt, scorer);
     }
 
-    private void buildBinnedList(CometScoringAlgorithm comet, Scorer scorer) {
+    private List<BinnedChargeIonIndex> buildBinnedList(CometScoringAlgorithm comet, Scorer scorer) {
+        final List<BinnedChargeIonIndex> binnedIndex = new ArrayList<BinnedChargeIonIndex>();
         int maxFragmentCharge = comet.getMaxFragmentCharge();
         for (int charge = 1; charge < maxFragmentCharge; charge++) {
             PeptideSpectrum ps = new PeptideSpectrum(this, charge, IonType.B_ION_TYPES, scorer.getSequenceUtilities());
@@ -52,14 +53,20 @@ public class CometTheoreticalBinnedSet extends TheoreticalSpectrumSet {
             }
         }
         Collections.sort(binnedIndex);
+        return binnedIndex;
     }
 
-    public List<BinnedChargeIonIndex> getBinnedIndex() {
-        return Collections.unmodifiableList(binnedIndex);
+    public List<BinnedChargeIonIndex> getBinnedIndex( CometScoringAlgorithm cmt, Scorer scorer) {
+
+        return    buildBinnedList(cmt, scorer);
+
     }
 
-    public List<BinnedChargeIonIndex> getBinnedIndexNL() {
-        return Collections.unmodifiableList(binnedIndexNL);
+    public List<BinnedChargeIonIndex> getBinnedIndexNL( CometScoringAlgorithm cmt, Scorer scorer) {
+        throw new UnsupportedOperationException("Fix This"); // ToDo
+//        if(binnedIndex.isEmpty())
+//             buildBinnedList(cmt,scorer);
+//        return Collections.unmodifiableList(binnedIndexNL);
     }
 
 //    public void populateBinnedArray(CometScoringAlgorithm alg) {
