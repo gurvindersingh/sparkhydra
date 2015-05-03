@@ -172,7 +172,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
                 binPairs.flatMapToPair(new CometMapBinChargeTupleToSpectrumIDTuple(comet));
 
 
-        bySpectrumId = SparkUtilities.persistAndCountPair("ScoredPairs", bySpectrumId, countRef);
+      //  bySpectrumId = SparkUtilities.persistAndCountPair("ScoredPairs", bySpectrumId, countRef);
 
           JavaPairRDD<String, CometScoredScan> scores = bySpectrumId.aggregateByKey(
                   new CometScoredScan(),

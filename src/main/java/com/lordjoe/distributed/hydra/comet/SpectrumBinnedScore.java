@@ -1,5 +1,6 @@
 package com.lordjoe.distributed.hydra.comet;
 
+import com.lordjoe.distributed.util.*;
 import org.systemsbiology.xtandem.*;
 
 import java.io.*;
@@ -43,9 +44,9 @@ public class SpectrumBinnedScore implements Comparable<SpectrumBinnedScore>,IEqu
     }
 
     public final int bin;
-    public final double score;
+    public final float score;
 
-    public SpectrumBinnedScore(final int pBin, final double pScore) {
+    public SpectrumBinnedScore(final int pBin, final float pScore) {
         bin = pBin;
         score = pScore;
     }
@@ -53,7 +54,7 @@ public class SpectrumBinnedScore implements Comparable<SpectrumBinnedScore>,IEqu
     public SpectrumBinnedScore(String s) {
         String[] split = s.trim().split("\t");
         bin = Integer.parseInt(split[0]);
-        score = Double.parseDouble(split[1]);
+        score = Float.parseFloat(split[1]);
 
     }
 
@@ -63,7 +64,7 @@ public class SpectrumBinnedScore implements Comparable<SpectrumBinnedScore>,IEqu
         int ret = Integer.compare(bin, o.bin);
         if (ret != 0)
             return ret;
-        ret = Double.compare(score, o.score);
+        ret = Float.compare(score, o.score);
         if (ret != 0)
             return ret;
         return 0;
@@ -77,7 +78,7 @@ public class SpectrumBinnedScore implements Comparable<SpectrumBinnedScore>,IEqu
         final SpectrumBinnedScore that = (SpectrumBinnedScore) o;
 
         if (bin != that.bin) return false;
-        return Double.compare(that.score, score) == 0;
+        return Float.compare(that.score, score) == 0;
 
     }
 

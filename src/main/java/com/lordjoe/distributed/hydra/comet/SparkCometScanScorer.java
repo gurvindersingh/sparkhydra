@@ -29,7 +29,7 @@ import java.util.*;
  */
 public class SparkCometScanScorer {
 
-    public static final boolean DO_DEBUGGING_COUNT = true;
+    public static final boolean DO_DEBUGGING_COUNT = false;
 
     private static boolean debuggingCountMade = DO_DEBUGGING_COUNT;
 

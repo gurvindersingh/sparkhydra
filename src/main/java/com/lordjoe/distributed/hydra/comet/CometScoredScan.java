@@ -287,7 +287,7 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
         float[] weights = scoringData.getWeights();
         int length = weights.length;
         for (int i = 0; i < length; i++) {
-            double weight = weights[i];
+            float weight = weights[i];
             if(Math.abs(weight) > 0.001)
                 holder.add(new SpectrumBinnedScore(i, weight));
            }
@@ -298,7 +298,7 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
         float[] weights = scoringData.getTmpFastXcorrData();
         int length = weights.length;
         for (int i = 0; i < length; i++) {
-            double weight = weights[i];
+            float weight = weights[i];
             if(Math.abs(weight) > 0.001)
                 holder.add(new SpectrumBinnedScore(i, weight));
            }
@@ -310,7 +310,7 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
          float[] weights = scoringData.getScoringFastXcorrData();
          int length = weights.length;
          for (int i = 0; i < length; i++) {
-             double weight = weights[i];
+             float weight = weights[i];
              if(Math.abs(weight) > 0.001)
                  holder.add(new SpectrumBinnedScore(i, weight));
             }
@@ -322,7 +322,7 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
         float[] weights = scoringData.getTmpFastXcorrData2();
         int length = weights.length;
         for (int i = 0; i < length; i++) {
-            double weight = weights[i];
+            float weight = weights[i];
             if(Math.abs(weight) > 0.001)
                 holder.add(new SpectrumBinnedScore(i, weight));
            }

@@ -43,7 +43,7 @@ public class SparkScanDatabaseScorer {
 //
 //    };
 
-    private static boolean debuggingCountMade = true;
+    private static boolean debuggingCountMade = false;
 
     public static boolean isDebuggingCountMade() {
         return debuggingCountMade;
@@ -309,7 +309,7 @@ public class SparkScanDatabaseScorer {
 
         timer.reset();
 
-        keyedSpectra = SparkUtilities.persistAndCount("Counted Scoring pairs",keyedSpectra);
+      //  keyedSpectra = SparkUtilities.persistAndCount("Counted Scoring pairs",keyedSpectra);
 
         // now produce all peptide spectrum scores where spectrum and peptide are in the same bin
         JavaRDD<IScoredScan> bestScores = handler.scoreSpectra(keyedSpectra);
