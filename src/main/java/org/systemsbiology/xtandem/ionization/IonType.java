@@ -19,6 +19,7 @@ public enum IonType {
 
     public static final IonType[] A_ION_TYPES = {IonType.A};
     public static final IonType[] B_ION_TYPES = {IonType.B};
+    public static final IonType[] BY_ION_TYPES = {IonType.B,IonType.Y};
     public static final IonType[] C_ION_TYPES = {IonType.C};
     public static final int NUMBER_ION_TYPES = IonType.values().length;
     /**
