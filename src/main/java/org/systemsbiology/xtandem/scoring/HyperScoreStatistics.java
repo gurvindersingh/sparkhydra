@@ -40,7 +40,7 @@ public class HyperScoreStatistics implements Serializable {
     }
 
 
-    private final List<Integer> m_Bins = new ArrayList<Integer>();
+    private final List<Integer> m_BinsX = new ArrayList<Integer>();
     private int m_Count;
     private VariableStatisticsXY m_Statistics;
 
@@ -238,7 +238,7 @@ public class HyperScoreStatistics implements Serializable {
      * remove all data
      */
     public void clear() {
-        m_Bins.clear();
+        m_BinsX.clear();
         m_Count = 0;
         m_Statistics = null;
     }
@@ -258,12 +258,16 @@ public class HyperScoreStatistics implements Serializable {
         incrementBin(bin, 1);
     }
 
+    public static final int MAX_BIN = 10000;
+
     public void incrementBin(int bin, int added) {
-        if(bin < 0)
-            return;    // we need to deal with negative scores todo kill them at an earlier stage
-        while (m_Bins.size() < bin + 1)
-            m_Bins.add(0);
-        m_Bins.set(bin, m_Bins.get(bin) + added);
+        bin = Math.max(0,bin);
+        bin = Math.min(MAX_BIN,bin);
+    // we need to deal with bad scores todo kill them at an earlier stage
+        while (m_BinsX.size() < bin + 1)
+            m_BinsX.add(0);
+        final Integer originalValue = m_BinsX.get(bin);
+        m_BinsX.set(bin, originalValue + added);
         incrementCount(added);
         m_Statistics = null;  // reset until needed
 
@@ -301,7 +305,7 @@ public class HyperScoreStatistics implements Serializable {
     }
 
     protected Integer[] getValues() {
-        return m_Bins.toArray(new Integer[0]);
+        return m_BinsX.toArray(new Integer[m_BinsX.size()]);
     }
 
     protected VariableStatisticsXY getStatistics() {
