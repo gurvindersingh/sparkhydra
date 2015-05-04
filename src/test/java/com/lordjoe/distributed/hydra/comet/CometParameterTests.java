@@ -115,7 +115,7 @@ public class CometParameterTests {
         cometPeaks = SpectrumBinnedScore.fromResource(header + "/pdTmpFastXcorrData.data");
         Collections.sort(cometPeaks);
         CometTesting.comparePeakSets(cometPeaks, tmp2);
-        // look for debugging
+          // look for debugging
         List<SpectrumBinnedScore> fast = pScoring.getFastScoringData();
         List<SpectrumBinnedScore> nl = pScoring.getNLScoringData();
         List<SpectrumBinnedScore> weights = pScoring.getWeights();

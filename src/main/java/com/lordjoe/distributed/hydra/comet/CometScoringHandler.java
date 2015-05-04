@@ -158,6 +158,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
 
       //  SparkUtilities.validateDesiredUse(spec,peptide,xcorr) ;
 
+        pScoring.clearScoringData();
 
         return xcorr;
     }
