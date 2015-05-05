@@ -14,8 +14,7 @@ import java.util.*;
  * A low mwmory version os a scoring result
  *
  * @author Steve Lewis
- * @date 5/5/2015
- */
+  */
 public class CometScoringResult implements IScoredScan, IAddable<IScoredScan>, IMeasuredSpectrum {
 
 
@@ -121,7 +120,7 @@ public class CometScoringResult implements IScoredScan, IAddable<IScoredScan>, I
      */
     @Override
     public MutableMeasuredSpectrum asMmutable() {
-        if (true) throw new UnsupportedOperationException("Fix This");
+        if (true) throw new UnsupportedOperationException("Fix This"); // we are not mutable and do not need to be
         return null;
     }
 
