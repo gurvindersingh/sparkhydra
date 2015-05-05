@@ -127,7 +127,7 @@ public class TestUtilities {
             //   "FCYVTEEGDWITKPLPFKK",
                "YSKKSSEDGSPTPGK",
             "RLEWENWEYSR",
-//            "LKPDPNTLCDEFK",
+            "LDEIDMSQELFKEK",
 //            "QEPERNECFLSHKDDSPDLPK",
 //            "NECFLSHKDDSPDLPK",
 //            "LKPDPNTLCDEFK",

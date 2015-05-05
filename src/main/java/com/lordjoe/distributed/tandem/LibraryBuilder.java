@@ -137,17 +137,21 @@ public class LibraryBuilder implements Serializable {
 
         JavaRDD<IPolypeptide> digested = proteins.flatMap(new DigestProteinFunction(app));
 
-   //     digested = SparkUtilities.persistAndCount("Digested Proteins", digested);
+        long[] answer = new long[1];
+         digested = SparkUtilities.persistAndCount("Digested Proteins", digested,answer);
 
-   //     digested = digested.distinct();
+         digested = digested.distinct();
 
-  //       digested = SparkUtilities.persistAndCount("Digested Proteins Distinct", digested);
+        long[] answer2 = new long[1];
+        digested = SparkUtilities.persistAndCount("Digested Proteins Distinct", digested,answer2);
         //digested = SparkUtilities.persistAndCount("Digested Proteins", digested);
 
         // digested = digested.repartition(SparkUtilities.getDefaultNumberPartitions());
         // uncomment when you want to look
         //  digested = SparkUtilities.realizeAndReturn(digested, jctx);
 
+        if(true)
+            return digested;
 
         // Peptide Sequence is the key
 

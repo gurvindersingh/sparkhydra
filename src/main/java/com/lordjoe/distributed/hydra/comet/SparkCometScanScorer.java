@@ -15,6 +15,7 @@ import org.systemsbiology.xtandem.hadoop.*;
 import org.systemsbiology.xtandem.ionization.*;
 import org.systemsbiology.xtandem.peptide.*;
 import org.systemsbiology.xtandem.pepxml.*;
+import org.systemsbiology.xtandem.scoring.*;
 import scala.*;
 
 import java.io.*;
@@ -301,7 +302,7 @@ public class SparkCometScanScorer {
 
         timer.reset();
         // now produce all peptide spectrum scores where spectrum and peptide are in the same bin
-        JavaRDD<CometScoredScan> bestScores = handler.scoreCometBinPairs(binPairs,counts);  //  todo fix and restore
+        JavaRDD<? extends IScoredScan> bestScores = handler.scoreCometBinPairs(binPairs,counts);  //  todo fix and restore
         long scoringCounts = counts[0];
 
 

@@ -785,7 +785,13 @@ public class ModifiedPolypeptide extends Polypeptide implements IModifiedPeptide
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        return toString().equals(o.toString());
+        final String me = toString();
+        final String them = o.toString();
+        final boolean equals = me.equals(them);
+        if(!equals)
+            return false; // isolate interesting cases
+
+        return equals;
     }
 
     @Override

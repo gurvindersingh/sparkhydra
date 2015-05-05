@@ -34,9 +34,9 @@ public class XTandemScoringReport {
 
     public static final double FAKE_HYPERSCORE = 1000;
     private boolean isScored(final ScoredScan pTest) {
-        ISpectralMatch bestMatch = pTest.getBestMatch();
-        if(bestMatch == null)
+        if (!pTest.isValidMatch() )
             return false;
+        ISpectralMatch bestMatch = pTest.getBestMatch();
         double hyperScore = bestMatch.getHyperScore();
         return FAKE_HYPERSCORE != hyperScore;
     }

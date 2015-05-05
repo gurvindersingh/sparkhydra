@@ -216,10 +216,10 @@ public class TandemKScoringAlgorithm extends TandemScoringAlgorithm {
      * @return as above
      */
     public double getExpectedValue(final IScoredScan scan) {
+        if (!scan.isValidMatch() )
+              return DEFAULT_EXPECTED_VALUE;
         final ISpectralMatch bestMatch = scan.getBestMatch();
-        if (bestMatch == null)
-            return DEFAULT_EXPECTED_VALUE;
-        double hyper = bestMatch.getHyperScore();
+           double hyper = bestMatch.getHyperScore();
         double convertedScore = hconvert(hyper);
         final HyperScoreStatistics scores = scan.getHyperScores();
 //        final double slope = scores.getSlope();

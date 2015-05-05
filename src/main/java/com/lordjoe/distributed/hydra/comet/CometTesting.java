@@ -88,12 +88,12 @@ public class CometTesting {
     }
 
     private static float[] getWeights(final CometScoringAlgorithm alg, CometScoredScan scan) {
-        CometScoringData scoringData = scan.getScoringData(alg);
+        CometScoringData scoringData = CometScoringData.getScoringData();
         return scoringData.getWeights();
     }
 
     private static float[] getTmpFastXcorrData(final CometScoringAlgorithm alg, CometScoredScan scan) {
-        CometScoringData scoringData = scan.getScoringData(alg);
+        CometScoringData scoringData = CometScoringData.getScoringData();
         return scoringData.getWeights();
     }
 

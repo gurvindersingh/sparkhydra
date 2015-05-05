@@ -48,13 +48,12 @@ public class OriginatingScoredScan implements IScoredScan, IAddable<IScoredScan>
 
     public OriginatingScoredScan(IMeasuredSpectrum pRaw) {
         this();
-        if(pRaw instanceof ScoringMeasuredSpectrum) {
-            ScoringMeasuredSpectrum sm = (ScoringMeasuredSpectrum)pRaw;
+        if (pRaw instanceof ScoringMeasuredSpectrum) {
+            ScoringMeasuredSpectrum sm = (ScoringMeasuredSpectrum) pRaw;
             m_NormalizedRawScan = sm;
             m_ConditionedScan = sm;
             m_Raw = sm;
-        }
-        else {
+        } else {
             m_Raw = pRaw;
 
         }
@@ -187,6 +186,19 @@ public class OriginatingScoredScan implements IScoredScan, IAddable<IScoredScan>
         return true;
     }
 
+    /**
+     * return true of the scan is OK  and there is a best match
+     * This means we do not have to construct a best match
+     *
+     * @return as above
+     */
+    @Override
+    public boolean isValidMatch() {
+        if (!isValid())
+            return false;
+        return getBestMatch() != null;
+    }
+
     public ISpectralMatch[] getSpectralMatches() {
         guaranteeNormalized();
         ISpectralMatch[] ret = m_Matches.getMatches();
@@ -232,17 +244,17 @@ public class OriginatingScoredScan implements IScoredScan, IAddable<IScoredScan>
     }
 
     /**
-        * return the scan identifier
-        *
-        * @return as above
-        */
-       @Override
-       public int getIndex() {
-           IMeasuredSpectrum raw = getRaw();
-           if (raw == null)
-               return 0;
-           return raw.getIndex();
-       }
+     * return the scan identifier
+     *
+     * @return as above
+     */
+    @Override
+    public int getIndex() {
+        IMeasuredSpectrum raw = getRaw();
+        if (raw == null)
+            return 0;
+        return raw.getIndex();
+    }
 
     @Override
     public IMeasuredSpectrum getRaw() {
@@ -277,8 +289,7 @@ public class OriginatingScoredScan implements IScoredScan, IAddable<IScoredScan>
                 try {
                     double ret = Double.parseDouble(str);
                     return ret;
-                }
-                catch (NumberFormatException e) {
+                } catch (NumberFormatException e) {
                     return 0;
                 }
             }
@@ -373,8 +384,7 @@ public class OriginatingScoredScan implements IScoredScan, IAddable<IScoredScan>
     public static int idFromKey(String in) {
         if (in.contains(":")) {
             return Integer.parseInt(in.substring(0, in.indexOf(":")));
-        }
-        else {
+        } else {
             return Integer.parseInt(in);
         }
     }
@@ -422,7 +432,7 @@ public class OriginatingScoredScan implements IScoredScan, IAddable<IScoredScan>
      * @param added
      */
     public void addTo(IScoredScan added) {
-         if (!added.getId().equals(getId()))
+        if (!added.getId().equals(getId()))
             throw new IllegalArgumentException("incompatable scan");
 
         ISpectralMatch newMatch = added.getBestMatch();
@@ -546,7 +556,7 @@ public class OriginatingScoredScan implements IScoredScan, IAddable<IScoredScan>
     @Override
     public double getExpectedValue() {
         HyperScoreStatistics hyperScores = getHyperScores();
-        if (m_ExpectedValue != 0 && !Double.isNaN(m_ExpectedValue) &&!Double.isInfinite(m_ExpectedValue))
+        if (m_ExpectedValue != 0 && !Double.isNaN(m_ExpectedValue) && !Double.isInfinite(m_ExpectedValue))
             return m_ExpectedValue;
         ISpectralMatch bestMatch = getBestMatch();
         if (!hyperScores.isEmpty()) {
@@ -554,13 +564,13 @@ public class OriginatingScoredScan implements IScoredScan, IAddable<IScoredScan>
                 return 1.0; // should not happen
             double hyperScore = bestMatch.getHyperScore();
             double expectedValue = hyperScores.getExpectedValue(hyperScore);
-            if (expectedValue != 0 && !Double.isNaN(expectedValue) &&!Double.isInfinite(expectedValue))
-                 return expectedValue;
-           return 0;
-             // when we have not set this (typical case) we get it from the hyperscores
+            if (expectedValue != 0 && !Double.isNaN(expectedValue) && !Double.isInfinite(expectedValue))
+                return expectedValue;
+            return 0;
+            // when we have not set this (typical case) we get it from the hyperscores
         }
-        if (m_ExpectedValue != 0 && !Double.isNaN(m_ExpectedValue) &&!Double.isInfinite(m_ExpectedValue))
-              return m_ExpectedValue;
+        if (m_ExpectedValue != 0 && !Double.isNaN(m_ExpectedValue) && !Double.isInfinite(m_ExpectedValue))
+            return m_ExpectedValue;
         return 0;
     }
 

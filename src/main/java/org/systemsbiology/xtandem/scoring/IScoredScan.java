@@ -62,6 +62,14 @@ public interface IScoredScan extends IonTypeScorer, Comparable<IScoredScan> {
     public boolean isValid();
 
     /**
+      * return true of the scan is OK  and there is a best match
+     * This means we do not have to construct a best match
+       * @return as above
+      */
+     public boolean isValidMatch();
+
+
+    /**
      * true if some match is scored
      *
      * @return as above

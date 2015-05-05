@@ -26,6 +26,7 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
 
     public static final ITandemScoringAlgorithm DEFAULT_ALGORITHM = new CometScoringAlgorithm();
     public static final ITandemScoringAlgorithm[] DEFAULT_ALGORITHMS = {DEFAULT_ALGORITHM};
+    public static final String DEFAULT_VERSION = "1.0";
 
     public static final int MAX_MASS = 5000;
     public static final int NORMALIZATION_FACTOR = 100;
@@ -44,10 +45,12 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
     public static final int PEAK_NORMALIZATION_BINS = 5;
     public static final int MINIMUM_SCORED_IONS = 10;
 
-    public static final double DEFAULT_BIN_WIDTH = 0.03;
+    public static final double DEFAULT_BIN_WIDTH = 0.02;
     public static final double DEFAULT_BIN_OFFSET = 0.00;
 
     public static final String ALGORITHM_NAME = "Comet";
+
+    public static int ALLOCATED_DATA_SIZE = (int)(MAX_MASS / DEFAULT_BIN_WIDTH);
 
 
     private double m_PeptideError = DEFAULT_PEPTIDE_ERROR;
@@ -90,6 +93,7 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
         final String units = params.getParameter("spectrum, parent monoisotopic mass error units",
                 "Daltons");
         m_BinTolerance = params.getDoubleParameter("comet.fragment_bin_tol", DEFAULT_BIN_WIDTH);
+        ALLOCATED_DATA_SIZE = (int)(MAX_MASS / m_BinTolerance);
 
         m_BinStartOffset = params.getDoubleParameter("comet.fragment_bin_offset", DEFAULT_BIN_OFFSET);
         m_OneMinusBinOffset = 1.0 - m_BinStartOffset;
@@ -308,6 +312,9 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
 
     public double doXCorr(final CometTheoreticalBinnedSet pTs,final Scorer scorerData, final IonUseCounter pCounter, CometScoredScan scorer, List<XCorrUsedData> used) {
         CometTheoreticalBinnedSet sts = pTs;
+        final CometScoringData scoringData = CometScoringData.getScoringData();
+        final Map<Integer, Float> fastScoringMap = scoringData.getFastScoringMap();
+        final Map<Integer, Float> fastScoringMapNL = scoringData.getFastScoringMapNL();
 
         List<BinnedChargeIonIndex> binnedIndex = sts.getBinnedIndex(this,scorerData);
         double xcorr = 0;
@@ -321,7 +328,7 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
             if(peak.charge > maxCharge)
                 continue;
 
-            float value = scorer.getScoredData(index, peak.charge);
+            float value = scorer.getScoredData(fastScoringMap, fastScoringMapNL,index, peak.charge);
             if (Math.abs(value) > 0.001) {
                 xcorr += value;
                 scoredPeaks++;
