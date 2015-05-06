@@ -30,7 +30,7 @@ import java.util.*;
  */
 public class SparkCometScanScorer {
 
-    public static final boolean DO_DEBUGGING_COUNT = false;
+    public static final boolean DO_DEBUGGING_COUNT = true;
 
     private static boolean debuggingCountMade = DO_DEBUGGING_COUNT;
 
@@ -256,6 +256,10 @@ public class SparkCometScanScorer {
         timer.showElapsed("Mapped Peptides", System.err);
 
         long[] counts = new long[1];
+        if (isDebuggingCountMade()) {
+            keyedPeptides = SparkUtilities.persistAndCountPair("Peptides as Theoretical Spectra",keyedPeptides,counts);
+        }
+
         if (isDebuggingCountMade()) {
             keyedPeptides = SparkUtilities.persistAndCountPair("Mapped Peptides", keyedPeptides, counts);
         }
