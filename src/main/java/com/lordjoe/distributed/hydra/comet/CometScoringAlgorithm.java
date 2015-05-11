@@ -311,10 +311,24 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
     }
 
     public double doXCorr(final CometTheoreticalBinnedSet pTs,final Scorer scorerData, final IonUseCounter pCounter, CometScoredScan scorer, List<XCorrUsedData> used) {
+        //if(true)
+        //    return Math.random();
         CometTheoreticalBinnedSet sts = pTs;
-  ///      final CometScoringData scoringData = CometScoringData.getScoringData();
+        final CometScoringData scoringData = CometScoringData.getScoringData();
+        scoringData.clearData();
+
         final Map<Integer, Float> fastScoringMap = scorer.getFastScoringMap();
+
+        float[] fastXcorrDataMap = scoringData.getTmpFastXcorrData();
+        for (Integer i : fastScoringMap.keySet()) {
+            fastXcorrDataMap[i] = fastScoringMap.get(i);
+        }
+
         final Map<Integer, Float> fastScoringMapNL = scorer.getFastScoringMapNL();   // we used to get from commented scoring data
+        float[] fastXcorrDataNL = scoringData.getTmpFastXcorrData2();
+        for (Integer i : fastScoringMapNL.keySet()) {
+            fastXcorrDataNL[i] = fastScoringMapNL.get(i);
+        }
 
         List<BinnedChargeIonIndex> binnedIndex = sts.getBinnedIndex(this,scorerData);
         double xcorr = 0;
@@ -328,12 +342,12 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
             if(peak.charge > maxCharge)
                 continue;
 
-            float value = scorer.getScoredData(fastScoringMap, fastScoringMapNL,index, peak.charge);
+            float value = scorer.getScoredData(fastXcorrDataMap, fastXcorrDataNL,index, peak.charge);
             if (Math.abs(value) > 0.001) {
                 xcorr += value;
                 scoredPeaks++;
-                if (used != null)
-                    used.add(new XCorrUsedData(peak.charge, peak.type, index, value));
+                //if (used != null)
+                //    used.add(new XCorrUsedData(peak.charge, peak.type, index, value));
                 pCounter.addCount(peak.type);
             }
         }

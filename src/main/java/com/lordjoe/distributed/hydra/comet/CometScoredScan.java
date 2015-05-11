@@ -397,6 +397,16 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
         }
     }
 
+    public float getScoredData(final float[] fastScoringMap,final float[] fastScoringMapNL,int index, int charge) {
+        // TODO fix the index issue, as it should not happen
+        if (index >= fastScoringMap.length)
+            return 0;
+        if (charge == 1) {
+                return fastScoringMapNL[index];
+        } else {
+                return fastScoringMap[index];
+        }
+    }
     /**
      * same as Comet LoadIOns
      *

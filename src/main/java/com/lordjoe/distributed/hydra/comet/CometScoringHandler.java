@@ -230,13 +230,11 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
     @SuppressWarnings("JavaDoc")
     public static double doRealScoring(final CometScoredScan pScoring, final Scorer scorer, final ITheoreticalSpectrumSet pTs, XTandemMain application) {
 
-        if(true)
-            return Math.random();
         IPolypeptide peptide = pTs.getPeptide();
         IMeasuredSpectrum spec = pScoring.getConditionedScan();
         //====================================================
         // THIS IS ALL DEBUGGGING
-        if (TestUtilities.isInterestingSpectrum(pScoring)) {
+        /*if (TestUtilities.isInterestingSpectrum(pScoring)) {
             breakHere();
         }
         if (TestUtilities.isInterestingPeptide(peptide)) {
@@ -245,7 +243,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
         if (TestUtilities.isInterestingScoringPair(peptide, pScoring)) {
             breakHere();
             TestUtilities.setLogCalculations(application, true); // log this
-        } /*else {
+        } else {
             String log = TestUtilities.setLogCalculations(application, false); // log off
             if (log != null)
                 System.out.println(log);
@@ -257,15 +255,15 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
         IonUseCounter counter = new IonUseCounter();
         List<XCorrUsedData> used = new ArrayList<XCorrUsedData>();
 
-        if (SparkUtilities.validateDesiredUse(spec, peptide, 0))
-            breakHere(); // look at these cases
+        //if (SparkUtilities.validateDesiredUse(spec, peptide, 0))
+        //    breakHere(); // look at these cases
 
         // TODO Put it in constructor
         //pScoring.setAlgorithm(comet);
 
-        double mass = pScoring.getPrecursorMass();    // todo is this peptide or
+        //double mass = pScoring.getPrecursorMass();    // todo is this peptide or
         //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
-        int MaxArraySize = comet.asBin(mass) + 100; // ((int) ((mass + 100) / getBinTolerance()); //  pScoring->_spectrumInfoInternal.iArraySize
+        //int MaxArraySize = comet.asBin(mass) + 100; // ((int) ((mass + 100) / getBinTolerance()); //  pScoring->_spectrumInfoInternal.iArraySize
 
 //        comet.normalizeBinnedPeaks(MaxArraySize);
 //        comet.normalizeForNL(MaxArraySize);
@@ -282,7 +280,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
 
         //  SparkUtilities.validateDesiredUse(spec,peptide,xcorr) ;
 
-        pScoring.clearScoringData();
+       // pScoring.clearScoringData();
 
         return xcorr;
     }
