@@ -296,6 +296,10 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
         JavaPairRDD<String, Tuple2<ITheoreticalSpectrumSet,? extends IScoredScan>> bySpectrumId =
                 binPairs.flatMapToPair(new CometMapBinChargeTupleToSpectrumIDTuple(comet));
 
+        if(SparkCometScanScorer.isDebuggingCountMade())
+            bySpectrumId = TestUtilities.saveInterestingPairs(bySpectrumId);
+
+
         long[] counts = new long[1];
         bySpectrumId = SparkUtilities.persistAndCountPair("By SpectrumID: ", bySpectrumId, counts);
         //  bySpectrumId = SparkUtilities.persistAndCountPair("ScoredPairs", bySpectrumId, countRef);
