@@ -182,8 +182,8 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
         //            System.out.println("      \"" + pp + "\"," + " //" + id);
         //        }
 
-        CometScoredScan scoring = new CometScoredScan(scan);
-        scoring.setAlgorithm(this);
+        CometScoredScan scoring = new CometScoredScan(scan, this);
+        //scoring.setAlgorithm(this);
         IonUseCounter counter = new IonUseCounter();
 
         int numberDotProducts = scoreScan(scorer, counter, tss, scoring);
@@ -312,9 +312,9 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
 
     public double doXCorr(final CometTheoreticalBinnedSet pTs,final Scorer scorerData, final IonUseCounter pCounter, CometScoredScan scorer, List<XCorrUsedData> used) {
         CometTheoreticalBinnedSet sts = pTs;
-        final CometScoringData scoringData = CometScoringData.getScoringData();
-        final Map<Integer, Float> fastScoringMap = scoringData.getFastScoringMap();
-        final Map<Integer, Float> fastScoringMapNL = scoringData.getFastScoringMapNL();
+  ///      final CometScoringData scoringData = CometScoringData.getScoringData();
+        final Map<Integer, Float> fastScoringMap = scorer.getFastScoringMap();
+        final Map<Integer, Float> fastScoringMapNL = scorer.getFastScoringMapNL();   // we used to get from commented scoring data
 
         List<BinnedChargeIonIndex> binnedIndex = sts.getBinnedIndex(this,scorerData);
         double xcorr = 0;

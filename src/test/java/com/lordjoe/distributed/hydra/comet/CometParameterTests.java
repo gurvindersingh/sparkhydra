@@ -58,8 +58,8 @@ public class CometParameterTests {
 
         IPolypeptide[] pps = {pp};
         ITheoreticalSpectrumSet[] tts = {ts};
-        CometScoredScan scoring = new CometScoredScan(spectrum);
-        scoring.setAlgorithm(comet);
+        CometScoredScan scoring = new CometScoredScan(spectrum, comet);
+        //scoring.setAlgorithm(comet);
 
         // This works for EG0
         testValues(scoring, "/eg0");
@@ -138,7 +138,7 @@ public class CometParameterTests {
         Map<String, CometScoredScan> scanById = new HashMap<String, CometScoredScan>();
         for (int i = 0; i < rawPeptideScans.length; i++) {
             RawPeptideScan rawPeptideScan = rawPeptideScans[i];
-            CometScoredScan scan = new CometScoredScan(rawPeptideScan);
+            CometScoredScan scan = new CometScoredScan(rawPeptideScan, comet);
             scanById.put(scan.getId(), scan);
         }
         Scorer scorer = application.getScoreRunner();

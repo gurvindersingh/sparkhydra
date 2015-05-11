@@ -215,7 +215,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
         CometScoringAlgorithm comet = (CometScoringAlgorithm) application.getScorer();
         Scorer scorer = application.getScoreRunner();
         CometTheoreticalBinnedSet ts = new CometTheoreticalBinnedSet(spec.getPrecursorCharge(), spec.getPrecursorMass(), pp, comet, scorer);
-        CometScoredScan scan = new CometScoredScan(spec);
+        CometScoredScan scan = new CometScoredScan(spec, comet);
         return doRealScoring(scan, scorer, ts, application);
     }
 
@@ -229,6 +229,9 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
      */
     @SuppressWarnings("JavaDoc")
     public static double doRealScoring(final CometScoredScan pScoring, final Scorer scorer, final ITheoreticalSpectrumSet pTs, XTandemMain application) {
+
+        if(true)
+            return Math.random();
         IPolypeptide peptide = pTs.getPeptide();
         IMeasuredSpectrum spec = pScoring.getConditionedScan();
         //====================================================
@@ -242,11 +245,11 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
         if (TestUtilities.isInterestingScoringPair(peptide, pScoring)) {
             breakHere();
             TestUtilities.setLogCalculations(application, true); // log this
-        } else {
+        } /*else {
             String log = TestUtilities.setLogCalculations(application, false); // log off
             if (log != null)
                 System.out.println(log);
-        }
+        }*/
         //====================================================
         // END DEBUGGGING
 
@@ -257,7 +260,8 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
         if (SparkUtilities.validateDesiredUse(spec, peptide, 0))
             breakHere(); // look at these cases
 
-        pScoring.setAlgorithm(comet);
+        // TODO Put it in constructor
+        //pScoring.setAlgorithm(comet);
 
         double mass = pScoring.getPrecursorMass();    // todo is this peptide or
         //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
@@ -269,8 +273,8 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
         //====================================================
         // THIS IS ALL DEBUGGGING
         //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
-        List<SpectrumBinnedScore> fastScoringData = pScoring.getFastScoringData();
-        List<SpectrumBinnedScore> fastScoringDataNL = pScoring.getNLScoringData();
+        //List<SpectrumBinnedScore> fastScoringData = pScoring.getFastScoringData();
+        //List<SpectrumBinnedScore> fastScoringDataNL = pScoring.getNLScoringData();
         //====================================================
         // END DEBUGGGING
 
@@ -294,7 +298,8 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
         JavaPairRDD<String, Tuple2<ITheoreticalSpectrumSet,? extends IScoredScan>> bySpectrumId =
                 binPairs.flatMapToPair(new CometMapBinChargeTupleToSpectrumIDTuple(comet));
 
-
+        long[] counts = new long[1];
+        bySpectrumId = SparkUtilities.persistAndCountPair("By SpectrumID: ", bySpectrumId, counts);
         //  bySpectrumId = SparkUtilities.persistAndCountPair("ScoredPairs", bySpectrumId, countRef);
 
         JavaPairRDD<String,? extends  IScoredScan> scores = bySpectrumId.aggregateByKey(

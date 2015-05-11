@@ -1457,10 +1457,10 @@ public class XTandemUtilities {
                     line = inp.readLine();
                     continue;
                 }
-//                if (line.endsWith(" 0.0")) {
-//                    line = inp.readLine();
-//                    continue;
-//                }
+                if (line.endsWith(" 0.0")) {
+                    line = inp.readLine();
+                    continue;
+                }
 
 
                 if (line.contains("=")) {

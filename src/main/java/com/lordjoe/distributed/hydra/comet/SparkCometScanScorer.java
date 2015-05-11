@@ -381,7 +381,7 @@ public class SparkCometScanScorer {
 
         @Override
         public CometScoredScan doCall(final IMeasuredSpectrum pIMeasuredSpectrum) throws Exception {
-            CometScoredScan ret = new CometScoredScan(pIMeasuredSpectrum);
+            CometScoredScan ret = new CometScoredScan(pIMeasuredSpectrum, comet);
             return ret;
         }
     }

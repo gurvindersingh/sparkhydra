@@ -48,8 +48,10 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
     private String m_Version = CometScoringAlgorithm.DEFAULT_VERSION;
     private String m_Algorithm = DEFAULT_ALGORITHM;
     private boolean normalizationDone;
+    private final Map<Integer, Float> fastScoringMap = new HashMap<Integer, Float>();
+    private final Map<Integer, Float> fastScoringMapNL = new HashMap<Integer, Float>();
 
-    public CometScoredScan(IMeasuredSpectrum pRaw) {
+    public CometScoredScan(IMeasuredSpectrum pRaw, CometScoringAlgorithm alg) {
         this();
         if (pRaw instanceof ScoringMeasuredSpectrum) {
             ScoringMeasuredSpectrum sm = (ScoringMeasuredSpectrum) pRaw;
@@ -58,9 +60,21 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
             m_Raw = pRaw;
 
         }
+        this.setAlgorithm(alg);
+        final CometScoringData scoringData = CometScoringData.getScoringData();
+        this.fastScoringMap.putAll(scoringData.getFastScoringMap());
+        this.fastScoringMapNL.putAll(scoringData.getFastScoringMapNL());
     }
 
     public CometScoredScan() {
+    }
+
+    public Map<Integer, Float> getFastScoringMap() {
+        return fastScoringMap;
+    }
+
+    public Map<Integer, Float> getFastScoringMapNL() {
+        return fastScoringMapNL;
     }
 
     public void setAlgorithm(CometScoringAlgorithm alg) {
@@ -69,11 +83,11 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
 
 
         generateBinnedPeaks(alg);
-        List<SpectrumBinnedScore> weights1 = getWeights();
+        //List<SpectrumBinnedScore> weights1 = getWeights();
         //   populateWeights(alg);
         windowedNormalize(alg);
 
-        List<SpectrumBinnedScore> weights2 = getWeights();
+        //List<SpectrumBinnedScore> weights2 = getWeights();
 
         normalizeBinnedPeaks(alg);
 
