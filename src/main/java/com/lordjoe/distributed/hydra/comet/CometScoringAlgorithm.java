@@ -359,6 +359,43 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
         return xcorr;
     }
 
+    public double doXCorrWithData(final CometTheoreticalBinnedSet sts,
+                                  final Scorer scorerData,
+                                  final IonUseCounter pCounter,
+                                  CometScoredScan scorer,
+                                  float[] fastXcorrDataMap,
+                                  float[] fastXcorrDataNL) {
+        //if(true)
+        //    return Math.random();
+           List<BinnedChargeIonIndex> binnedIndex = sts.getBinnedIndex(this,scorerData);
+        double xcorr = 0;
+
+        int maxCharge = scorer.getCharge();
+        if(maxCharge > 1 )
+            maxCharge = maxCharge - 1;
+        int scoredPeaks = 0;
+        for (BinnedChargeIonIndex peak : binnedIndex) {
+            int index = peak.index;
+            if(peak.charge > maxCharge)
+                continue;
+
+            float value = scorer.getScoredData(fastXcorrDataMap, fastXcorrDataNL,index, peak.charge);
+            if (Math.abs(value) > 0.001) {
+                xcorr += value;
+                scoredPeaks++;
+                //if (used != null)
+                //    used.add(new XCorrUsedData(peak.charge, peak.type, index, value));
+                pCounter.addCount(peak.type);
+            }
+        }
+        if (scoredPeaks > 0) {
+            scorer.addHyperscore(xcorr);
+             xcorr *= 0.005;
+             xcorr = Math.max(XCORR_CUTOFF,xcorr);
+        }
+        return xcorr;
+    }
+
     public static final int NUM_SP_IONS = 200;
 
     protected List<CometPeak> getHighestPeaks(final float[] pBinnedPeaks) {

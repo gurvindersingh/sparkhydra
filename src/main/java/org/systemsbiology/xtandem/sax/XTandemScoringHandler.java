@@ -110,12 +110,10 @@ public class XTandemScoringHandler extends AbstractXTandemElementSaxHandler<List
             if (id != null) {
                 if (m_Scans.containsKey(id)) {
                     possiblyReplaceBestScanatId(id, scan);
-                }
-                else {
+                } else {
                     m_Scans.put(id, scan);
                 }
-            }
-            else {
+            } else {
                 showBadScan(scan);
             }
         }
@@ -163,29 +161,48 @@ public class XTandemScoringHandler extends AbstractXTandemElementSaxHandler<List
      * @return
      */
     public static RawPeptideScan[] readMGFScans(File in, Set<String> ids) {
-        List<RawPeptideScan> holder = new ArrayList<RawPeptideScan>();
-        String url = "";
 
         try {
             InputStream is = new FileInputStream(in);
-            LineNumberReader inp = new LineNumberReader(new InputStreamReader(is));
-            String line = inp.readLine();
-            while (line != null) {
-                if (line.startsWith("BEGIN IONS")) {
-                    RawPeptideScan scan = XTandemUtilities.readMGFScan(inp, url);
-                    if (ids.contains(scan.getId()))
-                        holder.add(scan);
-                }
-                line = inp.readLine();
-            }
-            RawPeptideScan[] ret = new RawPeptideScan[holder.size()];
-            holder.toArray(ret);
-            return ret;
-        }
-        catch (IOException e) {
+            return readMGFScans(ids, is);
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }
+
+    }
+
+    public static RawPeptideScan[] readMGFScans(Set<String> ids, InputStream is) {
+        List<RawPeptideScan> holder = new ArrayList<RawPeptideScan>();
+        String url = "";
+        LineNumberReader inp = new LineNumberReader(new InputStreamReader(is));
+        RawPeptideScan scan = XTandemUtilities.readMGFScan(inp, url);
+        while (scan != null) {
+            //         if (line.startsWith("BEGIN IONS")) {
+            if (ids.contains(scan.getId()))
+                holder.add(scan);
+            //           }
+            scan = XTandemUtilities.readMGFScan(inp, url);
+        }
+        RawPeptideScan[] ret = new RawPeptideScan[holder.size()];
+        holder.toArray(ret);
+        return ret;
+
+    }
+
+
+    public static RawPeptideScan[] readMGFScans(InputStream is) {
+        List<RawPeptideScan> holder = new ArrayList<RawPeptideScan>();
+        String url = "";
+        LineNumberReader inp = new LineNumberReader(new InputStreamReader(is));
+        RawPeptideScan scan = XTandemUtilities.readMGFScan(inp, url);
+        while (scan != null) {
+            holder.add(scan);
+            scan = XTandemUtilities.readMGFScan(inp, url);
+        }
+        RawPeptideScan[] ret = new RawPeptideScan[holder.size()];
+        holder.toArray(ret);
+        return ret;
 
     }
 
@@ -209,7 +226,7 @@ public class XTandemScoringHandler extends AbstractXTandemElementSaxHandler<List
 
         //       if (args.length > 0)
         xTandemFile = args[0];
-         mgfFile = args[1];
+        mgfFile = args[1];
         //     else
         //           xTandemFile = FileUtilities.getLatestFileWithExtension(".t.txt").getName();
         XTandemScoringHandler handler = new XTandemScoringHandler();

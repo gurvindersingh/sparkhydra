@@ -106,7 +106,12 @@ public class MZXMLReader {
     }
 
 
-    private static RawPeptideScan handleScan(final StringBuilder pSb, final int pScanLevel) {
+    public static RawPeptideScan handleScan(final String pSb ) {
+         return handleScan(new StringBuilder(pSb),2);
+    }
+
+
+    public static RawPeptideScan handleScan(final StringBuilder pSb, final int pScanLevel) {
         String scn = pSb.toString().trim();
         if (scn.startsWith("<scan")) {
             RawPeptideScan scan = XTandemHadoopUtilities.readScan(scn,null);
@@ -120,6 +125,7 @@ public class MZXMLReader {
         pSb.setLength(0);
         return null;
     }
+
 
 
     /**

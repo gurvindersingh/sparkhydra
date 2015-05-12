@@ -170,7 +170,7 @@ public class CometParameterTests {
     }
 
 
-    protected void assertScanScore(SparkXTandemMain application, Map<String, CometScoredScan> scanById, String ppStr, String scanId, double score) {
+    public static void assertScanScore(SparkXTandemMain application, Map<String, CometScoredScan> scanById, String ppStr, String scanId, double score) {
         CometScoringAlgorithm comet = (CometScoringAlgorithm) application.getAlgorithms()[0];
         Scorer scorer = application.getScoreRunner();
         CometScoredScan scan = scanById.get("00000000" + scanId);

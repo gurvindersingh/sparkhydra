@@ -41,6 +41,7 @@ import java.util.*;
  */
 public class SparkUtilities implements Serializable {
 
+    public static final String DO_DEBUGGING_CONFIG_PROPERTY = "com.lordjoe.distributed.do_debugging_count";
     private transient static LoggerFactoryBinder FORCE_LOAD = null;
     //  private transient static ThreadLocal<JavaSparkContext> threadContext;
     private transient static JavaSparkContext threadContext;

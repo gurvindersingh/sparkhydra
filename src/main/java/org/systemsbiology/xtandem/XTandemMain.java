@@ -308,9 +308,12 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
     public void handleInputs(final InputStream is, String url) {
         Map<String, String> notes = XTandemUtilities.readNotes(is, url);
 
+        for (String key : notes.keySet()) {
+             setParameter(key, notes.get(key));
+          }
+
         if (isShowParameters()) {
             for (String key : notes.keySet()) {
-                setParameter(key, notes.get(key));
                 System.err.println(key + " = " + notes.get(key));
             }
         }
@@ -344,7 +347,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
         try {
             readDefaultParameters(notes);
         } catch (Exception e) {
-            e.printStackTrace();
+           // e.printStackTrace();
             // forgive
             System.err.println("Cannot find file " + m_DefaultParameters);
         }

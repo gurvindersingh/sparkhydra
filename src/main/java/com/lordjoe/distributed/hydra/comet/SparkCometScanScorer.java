@@ -208,7 +208,8 @@ public class SparkCometScanScorer {
 
 
         Properties sparkProperties = SparkUtilities.getSparkProperties();
-        String pathPrepend = sparkProperties.getProperty(SparkUtilities.PATH_PREPEND_PROPERTY);
+
+           String pathPrepend = sparkProperties.getProperty(SparkUtilities.PATH_PREPEND_PROPERTY);
         if (pathPrepend != null)
             XTandemHadoopUtilities.setDefaultPath(pathPrepend);
 
@@ -226,6 +227,9 @@ public class SparkCometScanScorer {
         CometScoringHandler handler = new CometScoringHandler(configStr, false);
 
         XTandemMain scoringApplication = handler.getApplication();
+
+        setDebuggingCountMade(scoringApplication.getBooleanParameter(SparkUtilities.DO_DEBUGGING_CONFIG_PROPERTY,false));
+
         String spectrumPath = scoringApplication.getSpectrumPath();
         String spectra = SparkUtilities.buildPath(spectrumPath);
         CometScoringAlgorithm comet = (CometScoringAlgorithm)scoringApplication.getAlgorithms()[0];

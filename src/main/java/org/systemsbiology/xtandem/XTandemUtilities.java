@@ -37,6 +37,8 @@ public class XTandemUtilities {
     public static XTandemUtilities[] EMPTY_ARRAY = {};
     public static Class THIS_CLASS = XTandemUtilities.class;
 
+
+
     public static final String WRITING_PEPXML_PROPERTY = "org.systemsbiology.xtandem.hadoop.WritePepXML";
     public static final String WRITING_MGF_PROPERTY = "org.systemsbiology.xtandem.hadoop.WriteMGFSpectraWithHyperscoreGreaterThan";
     public static final String WRITING_MGF_PROPERTY_2 = "org.systemsbiology.xtandem.hadoop.WriteMGFSpectraWithExpectValueLowerThan";

@@ -296,7 +296,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
         JavaPairRDD<String, Tuple2<ITheoreticalSpectrumSet,? extends IScoredScan>> bySpectrumId =
                 binPairs.flatMapToPair(new CometMapBinChargeTupleToSpectrumIDTuple(comet));
 
-        if(SparkCometScanScorer.isDebuggingCountMade())
+        if(false)      // use when you want a sample file with the largest spectrum and peptides to score against it
             bySpectrumId = TestUtilities.saveInterestingPairs(bySpectrumId);
 
 

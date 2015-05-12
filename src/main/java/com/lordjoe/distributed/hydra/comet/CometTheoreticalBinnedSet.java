@@ -14,16 +14,16 @@ import java.util.*;
  * Date: 4/3/2015
  */
 public class CometTheoreticalBinnedSet extends TheoreticalSpectrumSet {
- //   private final List<BinnedChargeIonIndex> binnedIndex = new ArrayList<BinnedChargeIonIndex>();
+     private final List<BinnedChargeIonIndex> binnedIndex;
  //   private final List<BinnedChargeIonIndex> binnedIndexNL = new ArrayList<BinnedChargeIonIndex>();
 
     public CometTheoreticalBinnedSet(final int pMaxCharge, final double mPlusH, final IPolypeptide pPeptide, CometScoringAlgorithm cmt, Scorer scorer) {
         super(pMaxCharge, mPlusH, pPeptide);
-     //   buildBinnedList(cmt, scorer);
+        binnedIndex = buildBinnedList(cmt, scorer);
     }
 
     private List<BinnedChargeIonIndex> buildBinnedList(CometScoringAlgorithm comet, Scorer scorer) {
-        final List<BinnedChargeIonIndex> binnedIndex = new ArrayList<BinnedChargeIonIndex>();
+        final List<BinnedChargeIonIndex> binnedChargeIonIndexes  = new ArrayList<BinnedChargeIonIndex>();
         int maxFragmentCharge = comet.getMaxFragmentCharge();
         for (int charge = 1; charge < maxFragmentCharge; charge++) {
             PeptideSpectrum ps = new PeptideSpectrum(this, charge, IonType.B_ION_TYPES, scorer.getSequenceUtilities());
@@ -49,16 +49,16 @@ public class CometTheoreticalBinnedSet extends TheoreticalSpectrumSet {
                         XTandemUtilities.breakHere();
                 }
                 BinnedChargeIonIndex bcs = new BinnedChargeIonIndex(index, peptideIon.getCharge(), type, binnedIndexInParent);
-                binnedIndex.add(bcs);
+                binnedChargeIonIndexes.add(bcs);
             }
         }
-        Collections.sort(binnedIndex);
-        return binnedIndex;
+        Collections.sort(binnedChargeIonIndexes);
+        return binnedChargeIonIndexes;
     }
 
     public List<BinnedChargeIonIndex> getBinnedIndex( CometScoringAlgorithm cmt, Scorer scorer) {
 
-        return    buildBinnedList(cmt, scorer);
+        return  binnedIndex; //  buildBinnedList(cmt, scorer);
 
     }
 
