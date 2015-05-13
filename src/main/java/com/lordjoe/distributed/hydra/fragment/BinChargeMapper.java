@@ -56,6 +56,17 @@ public class BinChargeMapper implements Serializable {
         return inp.flatMapToPair(new mapPolypeptidesToTheoreticalBins(application));
     }
 
+    /**
+     * return a list of all peptides in a bin
+     * @param inp
+     * @return
+     */
+    public JavaPairRDD<BinChargeKey, ArrayList<IPolypeptide>> mapFragmentsToBinList(JavaRDD<IPolypeptide> inp) {
+        JavaPairRDD<BinChargeKey, IPolypeptide> ppBins = inp.flatMapToPair(new mapPolypeptidesToBin(application));
+        return SparkUtilities.mapToKeyedList(ppBins);
+
+    }
+
     public JavaPairRDD<BinChargeKey, IPolypeptide> mapFragmentsToKeys(JavaRDD<IPolypeptide> inp) {
         return inp.flatMapToPair(new mapPolypeptidesToBins());
     }
@@ -124,6 +135,38 @@ public class BinChargeMapper implements Serializable {
             return holder;
         }
     }
+
+
+    /**
+        * peptides are only mapped once whereas spectra map to multiple  bins
+       * Note the parameter is an ArrayList to guarantee serializability
+        */
+       public static class mapPolypeptidesToBin extends AbstractLoggingPairFlatMapFunction<IPolypeptide, BinChargeKey, IPolypeptide > {
+
+           private final XTandemMain application;
+
+           public mapPolypeptidesToBin(final XTandemMain pApplication) {
+               application = pApplication;
+           }
+
+           @Override
+           public Iterable<Tuple2<BinChargeKey,IPolypeptide>> doCall(final IPolypeptide pp) throws Exception {
+               //    double matchingMass = pp.getMatchingMass();
+               double matchingMass = CometScoringAlgorithm.getCometMetchingMass(pp);
+
+               if (TestUtilities.isInterestingPeptide(pp))
+                   TestUtilities.breakHere();
+
+               Scorer scorer = application.getScoreRunner();
+
+               List<Tuple2<BinChargeKey, IPolypeptide>> holder = new ArrayList<Tuple2<BinChargeKey, IPolypeptide>>();
+               BinChargeKey key = oneKeyFromChargeMz(1, matchingMass);
+
+               holder.add(new Tuple2<BinChargeKey, IPolypeptide>(key, pp));
+               return holder;
+           }
+       }
+
 
     /**
      * peptides are only mapped once whereas spectra map to multiple  bins

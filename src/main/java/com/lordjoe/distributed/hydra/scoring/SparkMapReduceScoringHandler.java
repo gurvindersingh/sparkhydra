@@ -202,10 +202,23 @@ public class SparkMapReduceScoringHandler implements Serializable {
         return binMapper.mapFragmentsToKeys(inp);
     }
 
+    /**
+     * map a set of peptides to  ITheoreticalSpectrumSet in each bin
+     * @param inp  set of peptides
+     * @return  peptides mapped to bins
+     */
     public JavaPairRDD<BinChargeKey, ITheoreticalSpectrumSet> mapFragmentsToTheoreticalSets(JavaRDD<IPolypeptide> inp) {
         return binMapper.mapFragmentsToTheoreticalSets(inp);
     }
 
+    /**
+      * map a set of peptides to  ITheoreticalSpectrumSet in each bin
+      * @param inp  set of peptides
+      * @return  peptides mapped to bins
+      */
+     public JavaPairRDD<BinChargeKey, ArrayList<IPolypeptide>> mapFragmentsToBinList(JavaRDD<IPolypeptide> inp) {
+         return binMapper.mapFragmentsToBinList(inp);
+     }
 
     private static class MapToSpectrumIDKey extends AbstractLoggingPairFunction<Tuple2<IMeasuredSpectrum, IPolypeptide>, String, Tuple2<IMeasuredSpectrum, IPolypeptide>> {
         @Override

@@ -253,13 +253,39 @@ public class SparkUtilities implements Serializable {
      * convert a JavaPairRDD into one with the tuples so that combine by key can know the key
      *
      * @param imp
-     * @param <K>
-     * @param <V>
-     * @return
+     * @param <K>  key type
+       * @param <V>  value type
+      * @return
      */
     public static <K extends Serializable, V extends Serializable> JavaPairRDD<K, Tuple2<K, V>> mapToKeyedPairs(JavaPairRDD<K, V> imp) {
         return imp.mapToPair(new TupleToKeyPlusTuple<K, V>());
     }
+    /**
+      * convert a JavaPairRDD into pairs where the key now indexes a list of all values
+        * @param imp input
+      * @param <K>  key type
+      * @param <V>  value type
+      * @return
+      */
+     public static <K extends Serializable, V extends Serializable> JavaPairRDD<K, ArrayList<V>>   mapToKeyedList(JavaPairRDD<K, V> imp) {
+         return imp.aggregateByKey(
+                 new ArrayList<V>(),
+                 new Function2<ArrayList<V>, V, ArrayList<V>>() {
+                     @Override
+                     public ArrayList<V> call(ArrayList<V> vs, V v) throws Exception {
+                         vs.add(v);
+                         return vs;
+                     }
+                 },
+                 new Function2<ArrayList<V>, ArrayList<V>, ArrayList<V>>() {
+                     @Override
+                     public ArrayList<V> call(ArrayList<V> vs, ArrayList<V> vs2) throws Exception {
+                         vs.addAll(vs2);
+                         return vs;
+                     }
+                 }
+         );
+     }
 
 
     private static class TupleToKeyPlusTuple<K extends Serializable, V extends Serializable> extends AbstractLoggingPairFunction<Tuple2<K, V>, K, Tuple2<K, V>> {
