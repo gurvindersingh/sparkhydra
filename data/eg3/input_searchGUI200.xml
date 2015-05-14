@@ -6,4 +6,5 @@
 	<note type="input" label="protein, taxon">selectedProtein200.fasta</note>
 	<note type="input" label="spectrum, path">selectedMGF200.mgf</note>
 	<note type="input" label="output, path">selectedProtein200.out.xml</note>
+	<note type="input" label="scoring, algorithm">comet</note>
 </bioml>
