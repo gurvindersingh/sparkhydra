@@ -36,9 +36,11 @@ public class SparkAccumulators implements Serializable {
 
     public static void createInstance() {
         instance = new SparkAccumulators();
+        if(false)  { // set to true and there are accumulators for separate spectra
         for (int i = 0; i < TestUtilities.INTERESTING_SPECTRUM_STRS.length; i++) {
             String id = TestUtilities.INTERESTING_SPECTRUM_STRS[i];
             instance.createSpecialAccumulator(id);
+        }
         }
 //        for (int i = 0; i < MAX_TRACKED_THREADS; i++) {
 //            //noinspection AccessStaticViaInstance

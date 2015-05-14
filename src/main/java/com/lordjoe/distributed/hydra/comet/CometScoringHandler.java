@@ -34,7 +34,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
         super(congiguration, createDb);
     }
 
-    private static class CometCombineScoredScans extends AbstractLoggingFunction2<CometScoredScan, CometScoredScan, CometScoredScan> {
+    public static class CometCombineScoredScans extends AbstractLoggingFunction2<CometScoredScan, CometScoredScan, CometScoredScan> {
         @Override
         public CometScoredScan doCall(final CometScoredScan s1, final CometScoredScan s2) throws Exception {
             if (s1.getRaw() == null)
@@ -52,7 +52,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
         }
     }
 
-    private static class CombineCometScoringResults extends AbstractLoggingFunction2<CometScoringResult, CometScoringResult, CometScoringResult> {
+    public static class CombineCometScoringResults extends AbstractLoggingFunction2<CometScoringResult, CometScoringResult, CometScoringResult> {
         @Override
         public CometScoringResult doCall(final CometScoringResult s1, final CometScoringResult s2) throws Exception {
             if (!s1.isValid())
@@ -66,7 +66,10 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
         }
     }
 
-    private static class scoreSpectrumAndPeptideList implements FlatMapFunction<Tuple2<CometScoredScan, ArrayList<IPolypeptide>>, IScoredScan> {
+    /**
+     * NOIE This class is REALLY important - ALL Comet with peptide lists scoring happens here
+     */
+    public static class scoreSpectrumAndPeptideList extends AbstractLoggingFlatMapFunction<Tuple2<CometScoredScan, ArrayList<IPolypeptide>>, IScoredScan> {
 
         private CometScoringAlgorithm comet;
         private Scorer scorer;
@@ -74,15 +77,16 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
         public scoreSpectrumAndPeptideList(XTandemMain application) {
             comet = (CometScoringAlgorithm) application.getAlgorithms()[0];
             scorer = application.getScoreRunner();
-
         }
 
-        @Override
-        public Iterable<IScoredScan> call(Tuple2<CometScoredScan, ArrayList<IPolypeptide>> inp) throws Exception {
+         @Override
+        public Iterable<IScoredScan> doCall(Tuple2<CometScoredScan, ArrayList<IPolypeptide>> inp) throws Exception {
             List<IScoredScan> ret = new ArrayList<IScoredScan>();
             CometScoredScan scan = inp._1();
             ArrayList<IPolypeptide> peptides = inp._2();
 
+            // This section popul;ates temporary data with the spectrum
+            // a lot os free space used temporarily
             final CometScoringData scoringData = CometScoringData.getScoringData();
             // in this section we pregenerate data for a spectrum and reuse it
             scoringData.clearData();
@@ -99,30 +103,128 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
             for (Integer i : fastScoringMapNL.keySet()) {
                 fastXcorrDataNL[i] = fastScoringMapNL.get(i);
             }
+            // ===============================
 
 
             List<CometTheoreticalBinnedSet> holder = new ArrayList<CometTheoreticalBinnedSet>();
-
-
             // just populate peptide data do not count time
             for (IPolypeptide pp : peptides) {
                 CometTheoreticalBinnedSet ts = (CometTheoreticalBinnedSet) scorer.generateSpectrum(pp);
                 holder.add(ts);
             }
 
-
+            CometScoringResult result = new CometScoringResult();
+            IMeasuredSpectrum raw = scan.getRaw();
+            result.setRaw(raw);
             // use pregenerated peptide data but not epetide data
             double maxScore = 0;
             for (CometTheoreticalBinnedSet ts : holder) {
                 IonUseCounter counter = new IonUseCounter();
                 double xcorr = comet.doXCorrWithData(ts, scorer, counter, scan, fastXcorrDataMap, fastXcorrDataNL);
                 maxScore = Math.max(xcorr, maxScore);
+                if (xcorr > 0.01) {
+                    IPolypeptide peptide = ts.getPeptide();
+                    SpectralMatch spectralMatch = new SpectralMatch(peptide, raw, xcorr, xcorr, xcorr, scan, null);
+                    result.addSpectralMatch(spectralMatch);
+                }
+
             }
+            if (result.isValidMatch())
+                ret.add(result);
 
 
             return ret;
         }
     }
+
+    /**
+     * spectra are scoreds in multiple bins - this puts them back together
+     * @param uncombined
+     * @return
+     */
+    public  JavaRDD<CometScoringResult> combineScanScores(JavaRDD<? extends IScoredScan> uncombined)  {
+        // map by scan ids
+        JavaPairRDD<String, CometScoringResult> mappedScors = uncombined.mapToPair(new keyScoresByScanId());
+        JavaPairRDD<String,CometScoringResult> ret = mappedScors.aggregateByKey(
+                new CometScoringResult(),
+                new CombineCometScoringResults(),
+                new CombineCometScoringResults()
+        );
+        return ret.values();
+    }
+
+    /**
+     * NOIE This class is REALLY important - ALL Comet with peptide lists scoring happens here
+     */
+    public static class scoreSpectrumAndTheoreticalSpectrumList extends AbstractLoggingFlatMapFunction<Tuple2<CometScoredScan, ArrayList<CometTheoreticalBinnedSet>>, IScoredScan> {
+
+        private CometScoringAlgorithm comet;
+        private Scorer scorer;
+
+        public scoreSpectrumAndTheoreticalSpectrumList(XTandemMain application) {
+            comet = (CometScoringAlgorithm) application.getAlgorithms()[0];
+            scorer = application.getScoreRunner();
+        }
+
+         @Override
+        public Iterable<IScoredScan> doCall(Tuple2<CometScoredScan, ArrayList<CometTheoreticalBinnedSet>> inp) throws Exception {
+            List<IScoredScan> ret = new ArrayList<IScoredScan>();
+            CometScoredScan scan = inp._1();
+            ArrayList<CometTheoreticalBinnedSet> holder = inp._2();
+
+            // This section popul;ates temporary data with the spectrum
+            // a lot os free space used temporarily
+            final CometScoringData scoringData = CometScoringData.getScoringData();
+            // in this section we pregenerate data for a spectrum and reuse it
+            scoringData.clearData();
+
+            final Map<Integer, java.lang.Float> fastScoringMap = scan.getFastScoringMap();
+
+            float[] fastXcorrDataMap = scoringData.getTmpFastXcorrData();
+            for (Integer i : fastScoringMap.keySet()) {
+                fastXcorrDataMap[i] = fastScoringMap.get(i);
+            }
+
+            final Map<Integer, Float> fastScoringMapNL = scan.getFastScoringMapNL();   // we used to get from commented scoring data
+            float[] fastXcorrDataNL = scoringData.getTmpFastXcorrData2();
+            for (Integer i : fastScoringMapNL.keySet()) {
+                fastXcorrDataNL[i] = fastScoringMapNL.get(i);
+            }
+            // ===============================
+
+
+
+            CometScoringResult result = new CometScoringResult();
+            IMeasuredSpectrum raw = scan.getRaw();
+            result.setRaw(raw);
+            // use pregenerated peptide data but not epetide data
+            double maxScore = 0;
+            for (CometTheoreticalBinnedSet ts : holder) {
+                IonUseCounter counter = new IonUseCounter();
+                double xcorr = comet.doXCorrWithData(ts, scorer, counter, scan, fastXcorrDataMap, fastXcorrDataNL);
+                maxScore = Math.max(xcorr, maxScore);
+                if (xcorr > 0.01) {
+                    IPolypeptide peptide = ts.getPeptide();
+                    SpectralMatch spectralMatch = new SpectralMatch(peptide, raw, xcorr, xcorr, xcorr, scan, null);
+                    result.addSpectralMatch(spectralMatch);
+                }
+
+            }
+            if (result.isValidMatch())
+                ret.add(result);
+
+            return ret;
+        }
+    }
+
+    private static class  keyScoresByScanId<K extends IScoredScan> implements PairFunction<K, String, CometScoringResult> {
+        @Override
+        public Tuple2<String, CometScoringResult> call(K o) throws Exception {
+            CometScoringResult cs = (CometScoringResult) o;
+            return new Tuple2<String, CometScoringResult>(o.getId(),cs);
+        }
+    }
+
 
     /**
      * NOIE This class is REALLY important - ALL Comet scoring happens here
@@ -373,27 +475,73 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
         return scores.values();
     }
 
-    public JavaRDD<? extends IScoredScan> scoreCometBinPairList(final JavaPairRDD<BinChargeKey, Tuple2<CometScoredScan, ArrayList<IPolypeptide>>> binPairs) {
-        ElapsedTimer timer = new ElapsedTimer();
+    public JavaRDD<? extends IScoredScan> scoreCometBinPairHash(final JavaPairRDD<BinChargeKey, Tuple2<CometScoredScan,HashMap<String, IPolypeptide>>> binPairs) {
         XTandemMain application = getApplication();
         CometScoringAlgorithm comet = (CometScoringAlgorithm) application.getAlgorithms()[0];
 
         //  map to a pair dropping bins
         // this is all we need to score
-        JavaPairRDD<CometScoredScan, ArrayList<IPolypeptide>> values = binPairs.values().flatMapToPair(new PairFlatMapFunction<Tuple2<CometScoredScan, ArrayList<IPolypeptide>>, CometScoredScan, ArrayList<IPolypeptide>>() {
+        JavaPairRDD<CometScoredScan, ArrayList<IPolypeptide>> values = binPairs.values().flatMapToPair(new PairFlatMapFunction<Tuple2<CometScoredScan, HashMap<String, IPolypeptide>>, CometScoredScan, ArrayList<IPolypeptide>>() {
             @Override
-            public Iterable<Tuple2<CometScoredScan, ArrayList<IPolypeptide>>> call(Tuple2<CometScoredScan, ArrayList<IPolypeptide>> tp) throws Exception {
+            public Iterable<Tuple2<CometScoredScan, ArrayList<IPolypeptide>>> call(Tuple2<CometScoredScan,HashMap<String, IPolypeptide>> tp) throws Exception {
                 ArrayList<Tuple2<CometScoredScan, ArrayList<IPolypeptide>>> holder = new ArrayList<Tuple2<CometScoredScan, ArrayList<IPolypeptide>>>();
                 CometScoredScan spectrum = tp._1();
-                ArrayList<IPolypeptide> polypeptides = tp._2();
+                HashMap<String, IPolypeptide> polypeptides = tp._2();
+                ArrayList<IPolypeptide> peptides = new ArrayList<IPolypeptide>(polypeptides.values());
                 if (polypeptides.size() > 0)
-                    holder.add(new Tuple2<CometScoredScan, ArrayList<IPolypeptide>>(spectrum, polypeptides));
+                    holder.add(new Tuple2<CometScoredScan,ArrayList<IPolypeptide>>(spectrum, peptides));
 
                 return holder;
             }
         });
 
         JavaRDD<? extends IScoredScan> scores = values.flatMap(new scoreSpectrumAndPeptideList(application));
+        return scores;
+    }
+
+    public JavaRDD<? extends IScoredScan> scoreCometBinPairList(final JavaPairRDD<BinChargeKey, Tuple2<CometScoredScan, ArrayList<IPolypeptide>>> binPairs) {
+         XTandemMain application = getApplication();
+         CometScoringAlgorithm comet = (CometScoringAlgorithm) application.getAlgorithms()[0];
+
+         //  map to a pair dropping bins
+         // this is all we need to score
+         JavaPairRDD<CometScoredScan, ArrayList<IPolypeptide>> values = binPairs.values().flatMapToPair(new PairFlatMapFunction<Tuple2<CometScoredScan, ArrayList<IPolypeptide>>, CometScoredScan, ArrayList<IPolypeptide>>() {
+             @Override
+             public Iterable<Tuple2<CometScoredScan, ArrayList<IPolypeptide>>> call(Tuple2<CometScoredScan, ArrayList<IPolypeptide>> tp) throws Exception {
+                 ArrayList<Tuple2<CometScoredScan, ArrayList<IPolypeptide>>> holder = new ArrayList<Tuple2<CometScoredScan, ArrayList<IPolypeptide>>>();
+                 CometScoredScan spectrum = tp._1();
+                 ArrayList<IPolypeptide> polypeptides = tp._2();
+                 if (polypeptides.size() > 0)
+                     holder.add(new Tuple2<CometScoredScan, ArrayList<IPolypeptide>>(spectrum, polypeptides));
+
+                 return holder;
+             }
+         });
+
+         JavaRDD<? extends IScoredScan> scores = values.flatMap(new scoreSpectrumAndPeptideList(application));
+         return scores;
+     }
+
+    public JavaRDD<? extends IScoredScan> scoreCometBinTheoreticalPairList(final JavaPairRDD<BinChargeKey, Tuple2<CometScoredScan, ArrayList<CometTheoreticalBinnedSet>>> binPairs) {
+        XTandemMain application = getApplication();
+        CometScoringAlgorithm comet = (CometScoringAlgorithm) application.getAlgorithms()[0];
+
+        //  map to a pair dropping bins
+        // this is all we need to score
+        JavaPairRDD<CometScoredScan, ArrayList<CometTheoreticalBinnedSet>> values = binPairs.values().flatMapToPair(new PairFlatMapFunction<Tuple2<CometScoredScan, ArrayList<CometTheoreticalBinnedSet>>, CometScoredScan, ArrayList<CometTheoreticalBinnedSet>>() {
+            @Override
+            public Iterable<Tuple2<CometScoredScan, ArrayList<CometTheoreticalBinnedSet>>> call(Tuple2<CometScoredScan, ArrayList<CometTheoreticalBinnedSet>> tp) throws Exception {
+                ArrayList<Tuple2<CometScoredScan, ArrayList<CometTheoreticalBinnedSet>>> holder = new ArrayList<Tuple2<CometScoredScan, ArrayList<CometTheoreticalBinnedSet>>>();
+                CometScoredScan spectrum = tp._1();
+                ArrayList<CometTheoreticalBinnedSet> polypeptides = tp._2();
+                if (polypeptides.size() > 0)
+                    holder.add(new Tuple2<CometScoredScan, ArrayList<CometTheoreticalBinnedSet>>(spectrum, polypeptides));
+
+                return holder;
+            }
+        });
+
+        JavaRDD<? extends IScoredScan> scores = values.flatMap(new scoreSpectrumAndTheoreticalSpectrumList(application));
         return scores;
     }
 

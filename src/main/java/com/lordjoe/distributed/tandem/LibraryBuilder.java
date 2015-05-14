@@ -3,6 +3,7 @@ package com.lordjoe.distributed.tandem;
 import com.lordjoe.distributed.*;
 import com.lordjoe.distributed.database.*;
 import com.lordjoe.distributed.hydra.*;
+import com.lordjoe.distributed.hydra.comet.*;
 import com.lordjoe.distributed.hydra.peptide.*;
 import com.lordjoe.distributed.hydra.protein.*;
 import com.lordjoe.distributed.hydra.scoring.*;
@@ -122,7 +123,7 @@ public class LibraryBuilder implements Serializable {
 
 
         // distribute the work
-        proteins = SparkUtilities.guaranteePartition(proteins);
+       // proteins = SparkUtilities.guaranteePartition(proteins);
 
 
         proteins = SparkUtilities.persistAndCount("Proteins  to Score", proteins, proteinCountRef);
@@ -137,28 +138,35 @@ public class LibraryBuilder implements Serializable {
 
         JavaRDD<IPolypeptide> digested = proteins.flatMap(new DigestProteinFunction(app));
 
-        long[] answer = new long[1];
-         digested = SparkUtilities.persistAndCount("Digested Proteins", digested,answer);
+        if(SparkCometScanScorer.isDebuggingCountMade()) {
+            long[] answer = new long[1];
+            digested = SparkUtilities.persistAndCount("Digested Proteins", digested, answer);
+        }
 
-         digested = digested.distinct();
+              // the rest of the code combines identical peptides - there are not many of these and we will ignore them fot now todo handle identical peptides
+        if(true)
+            return digested;
 
-        long[] answer2 = new long[1];
-        digested = SparkUtilities.persistAndCount("Digested Proteins Distinct", digested,answer2);
+          digested = digested.distinct();
+
+        if(SparkCometScanScorer.isDebuggingCountMade()) {
+            long[] answer2 = new long[1];
+            digested = SparkUtilities.persistAndCount("Digested Proteins Distinct", digested, answer2);
+        }
         //digested = SparkUtilities.persistAndCount("Digested Proteins", digested);
 
         // digested = digested.repartition(SparkUtilities.getDefaultNumberPartitions());
         // uncomment when you want to look
         //  digested = SparkUtilities.realizeAndReturn(digested, jctx);
 
-        if(true)
-            return digested;
+
 
         // Peptide Sequence is the key
 
         JavaPairRDD<String, IPolypeptide> bySequence = digested.mapToPair(new MapPolyPeptideToSequenceKeys());
 
         // distribute the work
-        bySequence = SparkUtilities.guaranteePairedPartition(bySequence);
+        // bySequence = SparkUtilities.guaranteePairedPartition(bySequence);
 
         // uncomment when you want to look
         // bySequence = SparkUtilities.realizeAndReturn(bySequence, jctx);

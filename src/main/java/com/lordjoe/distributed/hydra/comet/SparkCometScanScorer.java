@@ -10,6 +10,9 @@ import com.lordjoe.distributed.spark.*;
 import com.lordjoe.distributed.test.*;
 import com.lordjoe.utilities.*;
 import org.apache.spark.api.java.*;
+import org.apache.spark.api.java.function.*;
+import org.apache.spark.api.java.function.Function;
+import org.apache.spark.storage.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.hadoop.*;
 import org.systemsbiology.xtandem.ionization.*;
@@ -67,18 +70,32 @@ public class SparkCometScanScorer {
 
 
     /**
-     * return all peptides associated with a key as an ArrayList (so Serializable is implemented)
-     *
-     * @param pSparkProperties
-     * @param pHandler
-     * @return
-     */
-    public static JavaPairRDD<BinChargeKey, ArrayList<IPolypeptide>> getBinChargePeptideList(final Properties pSparkProperties, final SparkMapReduceScoringHandler pHandler) {
-        JavaRDD<IPolypeptide> databasePeptides = getiPolypeptideJavaRDD(pSparkProperties, pHandler);
-        // Map peptides into bins
-        JavaPairRDD<BinChargeKey, ArrayList<IPolypeptide>> keyedPeptidesList = pHandler.mapFragmentsToBinList(databasePeptides);
-        return keyedPeptidesList;
-    }
+      * return all peptides associated with a key as an ArrayList (so Serializable is implemented)
+      *
+      * @param pSparkProperties
+      * @param pHandler
+      * @return
+      */
+     public static JavaPairRDD<BinChargeKey, HashMap<String, IPolypeptide>> getBinChargePeptideHash(final Properties pSparkProperties,final Set<Integer> usedBins, final SparkMapReduceScoringHandler pHandler) {
+         JavaRDD<IPolypeptide> databasePeptides = getiPolypeptideJavaRDD(pSparkProperties, pHandler);
+         // Map peptides into bins
+         JavaPairRDD<BinChargeKey, HashMap<String, IPolypeptide>> keyedPeptidesList = pHandler.mapFragmentsToBinHash(databasePeptides, usedBins);
+         return keyedPeptidesList;
+     }
+
+    /**
+      * return all peptides associated with a key as an ArrayList (so Serializable is implemented)
+      *
+      * @param pSparkProperties
+      * @param pHandler
+      * @return
+      */
+     public static JavaPairRDD<BinChargeKey, ArrayList<IPolypeptide>> getBinChargePeptideList(final Properties pSparkProperties,final Set<Integer> usedBins, final SparkMapReduceScoringHandler pHandler) {
+         JavaRDD<IPolypeptide> databasePeptides = getiPolypeptideJavaRDD(pSparkProperties, pHandler);
+         // Map peptides into bins
+         JavaPairRDD<BinChargeKey, ArrayList<IPolypeptide>> keyedPeptidesList = pHandler.mapFragmentsToBinList(databasePeptides,usedBins);
+         return keyedPeptidesList;
+     }
 
 
     public static JavaRDD<IPolypeptide> getiPolypeptideJavaRDD(Properties pSparkProperties, SparkMapReduceScoringHandler pHandler) {
@@ -418,11 +435,20 @@ public class SparkCometScanScorer {
 
         JavaRDD<CometScoredScan> cometSpectraToScore = spectraToScore.map(new MapToCometSpectrum(comet));
 
+        // if you want to limt do so here
+        cometSpectraToScore = countAndLimitSpectra(cometSpectraToScore);
 
-        cometSpectraToScore = countAndLimitSpectra( cometSpectraToScore);
+       // these are spectra
+        JavaPairRDD<BinChargeKey, CometScoredScan> keyedSpectra = handler.mapMeasuredSpectrumToKeys(cometSpectraToScore);
 
 
-        JavaPairRDD<BinChargeKey, ArrayList<IPolypeptide>> keyedPeptides = getBinChargePeptideList(sparkProperties, handler);
+        keyedSpectra = SparkUtilities.persist(keyedSpectra);
+
+        Set<Integer> usedBins = getUsedBins(keyedSpectra);
+
+
+
+        JavaPairRDD<BinChargeKey, HashMap<String, IPolypeptide>> keyedPeptides = getBinChargePeptideHash(sparkProperties, usedBins, handler);
         timer.showElapsed("Mapped Peptides", System.err);
 
         long[] counts = new long[1];
@@ -435,8 +461,6 @@ public class SparkCometScanScorer {
         }
         long peptidecounts = counts[0];
 
-        // these are spectra
-        JavaPairRDD<BinChargeKey, CometScoredScan> keyedSpectra = handler.mapMeasuredSpectrumToKeys(cometSpectraToScore);
 
 
         if (isDebuggingCountMade()) {
@@ -450,14 +474,25 @@ public class SparkCometScanScorer {
 //        }
 
         // find spectra-peptide pairs to score
-          JavaPairRDD<BinChargeKey, Tuple2<CometScoredScan, ArrayList<IPolypeptide>>> binPairs = keyedSpectra.join(keyedPeptides);
+          JavaPairRDD<BinChargeKey, Tuple2<CometScoredScan, HashMap<String, IPolypeptide>>> binPairs = keyedSpectra.join(keyedPeptides);
 
          if (isDebuggingCountMade())
             binPairs = SparkUtilities.persistAndCountPair("Binned Pairs", binPairs, counts);
 
-       // now produce all peptide spectrum scores where spectrum and peptide are in the same bin
-        JavaRDD<? extends IScoredScan> bestScores = handler.scoreCometBinPairList(binPairs);  //  todo fix and restore
+        binPairs = binPairs.persist(StorageLevel.MEMORY_AND_DISK_SER());   // force comuptation before score
+        binPairs.count(); // force action to happen now
 
+       // now produce all peptide spectrum scores where spectrum and peptide are in the same bin
+        JavaRDD<? extends IScoredScan> bestScores = handler.scoreCometBinPairHash(binPairs);  //  todo fix and restore
+
+        // combine scores from same scan
+        JavaRDD<? extends IScoredScan> cometBestScores =  handler.combineScanScores(bestScores);
+
+        cometBestScores = cometBestScores.persist(StorageLevel.MEMORY_AND_DISK_SER());   // force comuptation after score
+        cometBestScores.count(); // force action to happen now
+
+
+        // todo combine score results from different bins
 
         if (isDebuggingCountMade())
             bestScores = SparkUtilities.persistAndCount("Best Scores", bestScores);
@@ -477,7 +512,7 @@ public class SparkCometScanScorer {
         //   SparkConsolidator consolidator = new SparkConsolidator(writer, application);
 
 
-        int numberScores = consolidator.writeScores(bestScores);
+        int numberScores = consolidator.writeScores(cometBestScores);
         System.out.println("Total Scans Scored " + numberScores);
 
         SparkAccumulators.showAccumulators(totalTime);
@@ -489,12 +524,153 @@ public class SparkCometScanScorer {
         //TestUtilities.writeSavedKeysAndSpectra();
     }
 
+    /**
+     * get all keys we use for scoring
+     * @param keyedSpectra
+     * @return
+     */
+    private static Set<Integer> getUsedBins(JavaPairRDD<BinChargeKey, CometScoredScan> keyedSpectra) {
+        final Set<Integer> ret = new HashSet<Integer>() ;
+        JavaRDD<BinChargeKey> keys = keyedSpectra.keys();
+        List<BinChargeKey> collect = keys.collect();
+        for (BinChargeKey binChargeKey : collect) {
+               ret.add(binChargeKey.getMzInt()) ;
+        }
+
+        return ret;
+    }
+
+
+    /**
+      * score with a join of a List of peptides
+      * @param args
+      */
+     public static void scoringUsingTheoreticalLists(String[] args) {
+         long totalSpectra = 0;
+         List<PairCounter> pairs = null;
+
+         // Force PepXMLWriter to load
+         PepXMLWriter foo = null;
+           ElapsedTimer timer = new ElapsedTimer();
+         ElapsedTimer totalTime = new ElapsedTimer();
+
+         if (args.length < TANDEM_CONFIG_INDEX + 1) {
+             System.out.println("usage sparkconfig configFile");
+             return;
+         }
+
+         buildDesiredScoring(args);
+
+         SparkUtilities.readSparkProperties(args[SPARK_CONFIG_INDEX]);
+
+         CometScoringHandler handler = buildCometScoringHandler(args[TANDEM_CONFIG_INDEX]);
+
+         XTandemMain scoringApplication = handler.getApplication();
+         setDebuggingCountMade(scoringApplication.getBooleanParameter(SparkUtilities.DO_DEBUGGING_CONFIG_PROPERTY, false));
+         CometScoringAlgorithm comet = (CometScoringAlgorithm) scoringApplication.getAlgorithms()[0];
+
+
+         Properties sparkProperties = SparkUtilities.getSparkProperties();
+         String spectrumPath = scoringApplication.getSpectrumPath();
+         String spectra = SparkUtilities.buildPath(spectrumPath);
+         JavaRDD<IMeasuredSpectrum> spectraToScore = SparkScanScorer.getMeasuredSpectra(timer, sparkProperties, spectra, scoringApplication);
+
+         JavaRDD<CometScoredScan> cometSpectraToScore = spectraToScore.map(new MapToCometSpectrum(comet));
+
+
+         cometSpectraToScore = countAndLimitSpectra( cometSpectraToScore);
+
+
+         JavaPairRDD<BinChargeKey, ITheoreticalSpectrumSet> binChargePeptidesX = getBinChargePeptides(sparkProperties, handler);
+
+         // this really just does a cast
+         JavaPairRDD<BinChargeKey, CometTheoreticalBinnedSet> binChargePeptides  = SparkUtilities.castRDD(binChargePeptidesX, CometTheoreticalBinnedSet.class) ;
+
+         JavaPairRDD<BinChargeKey, ArrayList<CometTheoreticalBinnedSet>> keyedPeptides = SparkUtilities.mapToKeyedList(binChargePeptides);
+
+         timer.showElapsed("Mapped Peptides", System.err);
+
+         long[] counts = new long[1];
+         if (isDebuggingCountMade()) {
+             keyedPeptides = SparkUtilities.persistAndCountPair("Peptides as Theoretical Spectra", keyedPeptides, counts);
+         }
+
+         if (isDebuggingCountMade()) {
+             keyedPeptides = SparkUtilities.persistAndCountPair("Mapped Peptides", keyedPeptides, counts);
+         }
+         long peptidecounts = counts[0];
+
+         // these are spectra
+         JavaPairRDD<BinChargeKey, CometScoredScan> keyedSpectra = handler.mapMeasuredSpectrumToKeys(cometSpectraToScore);
+
+
+         if (isDebuggingCountMade()) {
+             keyedSpectra = SparkUtilities.persistAndCountPair("Mapped Spectra", keyedSpectra, counts);
+         }
+         long keyedSpectrumCounts = counts[0];
+
+
+ //        if (isDebuggingCountMade()) {
+ //            pairs = showBinPairSizes(keyedPeptides, keyedSpectra);
+ //        }
+
+         // find spectra-peptide pairs to score
+           JavaPairRDD<BinChargeKey, Tuple2<CometScoredScan, ArrayList<CometTheoreticalBinnedSet>>> binPairs = keyedSpectra.join(keyedPeptides);
+
+          if (isDebuggingCountMade())
+             binPairs = SparkUtilities.persistAndCountPair("Binned Pairs", binPairs, counts);
+
+         binPairs = binPairs.persist(StorageLevel.MEMORY_AND_DISK_SER());   // force comuptation before score
+         binPairs.count(); // force action to happen now
+
+        // now produce all peptide spectrum scores where spectrum and peptide are in the same bin
+         JavaRDD<? extends IScoredScan> bestScores = handler.scoreCometBinTheoreticalPairList(binPairs);  //  todo fix and restore
+
+         // combine scores from same scan
+         JavaRDD<? extends IScoredScan> cometBestScores =  handler.combineScanScores(bestScores);
+
+         cometBestScores = cometBestScores.persist(StorageLevel.MEMORY_AND_DISK_SER());   // force comuptation after score
+         cometBestScores.count(); // force action to happen now
+
+
+         // todo combine score results from different bins
+
+         if (isDebuggingCountMade())
+             bestScores = SparkUtilities.persistAndCount("Best Scores", bestScores);
+
+         timer.showElapsed("built best scores", System.err);
+         //bestScores =  bestScores.persist(StorageLevel.MEMORY_AND_DISK());
+         // System.out.println("Total Scores " + bestScores.count() + " Scores");
+
+         XTandemMain application = scoringApplication;
+
+         // code using PepXMLWriter new uses tandem writer
+         PepXMLWriter pwrtr = new PepXMLWriter(application);
+         PepXMLScoredScanWriter pWrapper = new PepXMLScoredScanWriter(pwrtr);
+         SparkConsolidator consolidator = new SparkConsolidator(pWrapper, application);
+
+         //      BiomlReporter writer = new BiomlReporter(application);
+         //   SparkConsolidator consolidator = new SparkConsolidator(writer, application);
+
+
+         int numberScores = consolidator.writeScores(cometBestScores);
+         System.out.println("Total Scans Scored " + numberScores);
+
+         SparkAccumulators.showAccumulators(totalTime);
+
+         totalTime.showElapsed("Finished Scoring");
+
+         TestUtilities.closeCaseLoggers();
+         // purely debugging  code to see whether interesting peptides scored with interesting spectra
+         //TestUtilities.writeSavedKeysAndSpectra();
+     }
+
+
     public static JavaRDD<CometScoredScan> countAndLimitSpectra(  JavaRDD<CometScoredScan> spectraToScore) {
         if (isDebuggingCountMade()) {
             long[] spectraCounts = new long[1];
             SparkUtilities.persistAndCount("Read Spectra", spectraToScore, spectraCounts);
-            long totalSpectra = spectraCounts[0];
-            long spectraCount = spectraCounts[0];
+              long spectraCount = spectraCounts[0];
             if (spectraCount > MAX_SPECTRA_TO_SCORE_IN_ONE_PASS) {
                 int percentileKept = (int) ((100L * MAX_SPECTRA_TO_SCORE_IN_ONE_PASS) / spectraCount);
                 System.err.println("Keeping " + percentileKept + "% spectra");
@@ -511,8 +687,9 @@ public class SparkCometScanScorer {
         * @param args
         */
        public static void main(String[] args) throws Exception {
-           pairedScoring(args);
-       //    scoringUsingLists(args);
+         //  pairedScoring(args);
+         scoringUsingLists(args);
+        //   scoringUsingTheoreticalLists(args);
        }
 
 }

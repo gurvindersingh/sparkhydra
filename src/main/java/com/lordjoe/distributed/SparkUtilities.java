@@ -287,6 +287,37 @@ public class SparkUtilities implements Serializable {
          );
      }
 
+    /**
+      * convert a JavaRDD into a new RDD by casting
+        * @param imp input
+      * @param <K>  final type
+      * @param <V>  initial type
+      * @return
+      */
+     public static <V extends Serializable,K extends Serializable> JavaRDD<K>   castRDD(JavaRDD< V> imp,Class<? extends K> cls) {
+         return imp.map(new Function<V, K>() {
+             @Override
+             public K call(V v) throws Exception {
+                 return (K) v;
+             }
+         });
+     }
+    /**
+        * convert a JavaPairRDD into a new JavaPairRDD by casting the value
+          * @param imp input
+        * @param <K>  final type
+        * @param <V>  initial type
+        * @return
+        */
+       public static <Q extends Serializable,V extends Serializable,K extends Serializable> JavaPairRDD<Q,K>   castRDD(JavaPairRDD<Q, V> imp,Class<? extends K> cls) {
+           return imp.mapToPair(new PairFunction<Tuple2<Q, V>, Q, K>() {
+               @Override
+               public Tuple2<Q, K> call(Tuple2<Q, V> qvTuple2) throws Exception {
+                       return new Tuple2<Q, K>(qvTuple2._1(),(K)qvTuple2._2());
+               }
+           });
+       }
+
 
     private static class TupleToKeyPlusTuple<K extends Serializable, V extends Serializable> extends AbstractLoggingPairFunction<Tuple2<K, V>, K, Tuple2<K, V>> {
         @Override

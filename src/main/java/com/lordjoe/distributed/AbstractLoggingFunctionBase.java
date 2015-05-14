@@ -14,7 +14,7 @@ import java.io.*;
  */
 public abstract class AbstractLoggingFunctionBase implements Serializable {
 
-
+   // write ever y time the functio is called this many times
     private static int callReportInterval = 50000;
 
     public static int getCallReportInterval() {
@@ -36,6 +36,7 @@ public abstract class AbstractLoggingFunctionBase implements Serializable {
     protected AbstractLoggingFunctionBase() {
         if (!isFunctionCallsLogged())
             return;
+        // make an accumulator if one does not exist - should happen in hte executor
         SparkAccumulators instance = SparkAccumulators.getInstance();
         if (instance != null)
             accumulators = instance; // might be null but serialization should set

@@ -1,15 +1,18 @@
 package com.lordjoe.distributed.hydra.fragment;
 
 import com.lordjoe.distributed.*;
+import com.lordjoe.distributed.hydra.protein.*;
 import com.lordjoe.distributed.hydra.scoring.*;
 import com.lordjoe.distributed.hydra.test.*;
 import org.apache.spark.api.java.*;
+import org.apache.spark.api.java.function.*;
 import org.systemsbiology.xtandem.*;
 import com.lordjoe.distributed.hydra.comet.*;
 import org.systemsbiology.xtandem.ionization.*;
 import org.systemsbiology.xtandem.peptide.*;
 import org.systemsbiology.xtandem.scoring.*;
 import scala.*;
+import scala.Function2;
 
 import java.io.Serializable;
 import java.util.*;
@@ -57,15 +60,73 @@ public class BinChargeMapper implements Serializable {
     }
 
     /**
+     * return a list of all peptides in a bin as ITheoreticalSpectrumSet
+     * @param inp
+     * @return
+     */
+    public JavaPairRDD<BinChargeKey, ArrayList<ITheoreticalSpectrumSet>> mapFragmentsToTheoreticalList(JavaRDD<IPolypeptide> inp) {
+        JavaPairRDD<BinChargeKey, ITheoreticalSpectrumSet> ppBins = mapFragmentsToTheoreticalSets(inp);
+        return SparkUtilities.mapToKeyedList(ppBins);
+
+    }
+
+    /**
      * return a list of all peptides in a bin
      * @param inp
      * @return
      */
-    public JavaPairRDD<BinChargeKey, ArrayList<IPolypeptide>> mapFragmentsToBinList(JavaRDD<IPolypeptide> inp) {
-        JavaPairRDD<BinChargeKey, IPolypeptide> ppBins = inp.flatMapToPair(new mapPolypeptidesToBin(application));
+    public JavaPairRDD<BinChargeKey, ArrayList<IPolypeptide>> mapFragmentsToBinList(JavaRDD<IPolypeptide> inp,final Set<Integer> usedBins) {
+        JavaPairRDD<BinChargeKey, IPolypeptide> ppBins = inp.flatMapToPair(new mapPolypeptidesToBin(application, usedBins));
         return SparkUtilities.mapToKeyedList(ppBins);
-
     }
+
+    /**
+       * return a list of all peptides in a bin
+       * @param inp
+       * @return
+       */
+      public JavaPairRDD<BinChargeKey,HashMap<String, IPolypeptide>> mapFragmentsToBinHash(JavaRDD<IPolypeptide> inp,final Set<Integer> usedBins) {
+          JavaPairRDD<BinChargeKey, IPolypeptide> ppBins = inp.flatMapToPair(new mapPolypeptidesToBin(application, usedBins));
+          return mapToKeyedHash(ppBins);
+      }
+
+
+    /**
+      * convert a JavaPairRDD into pairs where the key now indexes a list of all values
+        * @param imp input
+      * @param <K>  key type
+      * @param <V>  value type
+      * @return
+      */
+     public static <K extends Serializable> JavaPairRDD<K, HashMap<String,IPolypeptide>>   mapToKeyedHash(JavaPairRDD<K, IPolypeptide> imp) {
+         return imp.aggregateByKey(
+                 new HashMap<String, IPolypeptide>(),
+                 new org.apache.spark.api.java.function.Function2<HashMap<String, IPolypeptide>, IPolypeptide, HashMap<String, IPolypeptide>>() {
+                     @Override
+                     public HashMap<String, IPolypeptide> call(HashMap<String, IPolypeptide> vs, IPolypeptide v) throws Exception {
+                         String key = v.toString();
+                         if (!vs.containsKey(key)) {
+                             vs.put(key, v);
+                         } else {
+                            // todo merge protiens
+                             IPolypeptide old = vs.get(key);
+                             IPolypeptide newPP = PolypeptideCombiner.mergeProteins(old, v);
+                             vs.put(key, newPP);
+                         }
+                         return vs;
+                     }
+                 },
+                 new org.apache.spark.api.java.function.Function2<HashMap<String, IPolypeptide>, HashMap<String, IPolypeptide>,HashMap<String, IPolypeptide>> ()
+         {
+                     @Override
+                     public HashMap<String, IPolypeptide> call(HashMap<String, IPolypeptide> vs, HashMap<String, IPolypeptide> vs2) throws Exception {
+                         vs.putAll(vs2);
+                         return vs;
+                     }
+                 }
+         );
+     }
+
 
     public JavaPairRDD<BinChargeKey, IPolypeptide> mapFragmentsToKeys(JavaRDD<IPolypeptide> inp) {
         return inp.flatMapToPair(new mapPolypeptidesToBins());
@@ -144,9 +205,11 @@ public class BinChargeMapper implements Serializable {
        public static class mapPolypeptidesToBin extends AbstractLoggingPairFlatMapFunction<IPolypeptide, BinChargeKey, IPolypeptide > {
 
            private final XTandemMain application;
+        private final Set<Integer>  usedBins;
 
-           public mapPolypeptidesToBin(final XTandemMain pApplication) {
+           public mapPolypeptidesToBin(final XTandemMain pApplication,Set<Integer>  usedBins) {
                application = pApplication;
+               this.usedBins = usedBins;
            }
 
            @Override
@@ -162,8 +225,12 @@ public class BinChargeMapper implements Serializable {
                List<Tuple2<BinChargeKey, IPolypeptide>> holder = new ArrayList<Tuple2<BinChargeKey, IPolypeptide>>();
                BinChargeKey key = oneKeyFromChargeMz(1, matchingMass);
 
-               holder.add(new Tuple2<BinChargeKey, IPolypeptide>(key, pp));
-               return holder;
+               // if we don't use the bin don't get the peptide
+               if(usedBins.contains(key.getMzInt()))   {
+                   holder.add(new Tuple2<BinChargeKey, IPolypeptide>(key, pp));
+               }
+
+                return holder;
            }
        }
 

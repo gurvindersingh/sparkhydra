@@ -44,6 +44,10 @@ public class SparkFileSaver {
         HadoopUtilities.expunge(tempPath, SparkUtilities.getHadoopFileSystem());
 
         data.saveAsTextFile(tempPath.toString());
+
+        if(true)
+            return; // todo this is just a test
+
         Configuration conf = SparkUtilities.getHadoopConfiguration();
         FileSystem srcFS = SparkUtilities.getHadoopFileSystem();
         boolean deleteSource = true;

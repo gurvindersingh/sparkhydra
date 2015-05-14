@@ -24,7 +24,11 @@ public abstract class AbstractLoggingFlatMapFunction<T, R extends Serializable>
     @Override
     public final Iterable<R> call(final T t) throws Exception {
         reportCalls();
-        return doCall(t);
+        long startTime = System.nanoTime();
+        Iterable<R> ret =  doCall(t);
+        long estimatedTime = System.nanoTime() - startTime;
+        incrementAccumulatedTime(estimatedTime);
+         return ret;
     }
 
     /**

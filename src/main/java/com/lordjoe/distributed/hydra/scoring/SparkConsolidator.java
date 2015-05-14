@@ -1,6 +1,7 @@
 package com.lordjoe.distributed.hydra.scoring;
 
 import com.lordjoe.distributed.*;
+import com.lordjoe.distributed.hydra.comet.*;
 import org.apache.hadoop.fs.*;
 import org.apache.spark.api.java.*;
 import org.systemsbiology.xtandem.*;
@@ -62,13 +63,16 @@ public class SparkConsolidator implements Serializable {
 
         // make an RDD of the text for every Spectrum
         JavaRDD<String> textOut = scans.map(new AppendScanStringToWriter(writer,getApplication()));
-         textOut = SparkUtilities.persistAndCount("Total Scored Scans",textOut,scoreCounts);
+
+        if(SparkCometScanScorer.isDebuggingCountMade())
+           textOut = SparkUtilities.persistAndCount("Total Scored Scans",textOut,scoreCounts);
 
 
         JavaRDD<String> data = headerRDD.union(textOut).union(footerRDD).coalesce(1);
 
         String outputPath = BiomlReporter.buildDefaultFileName(getApplication());
         Path result = XTandemHadoopUtilities.getRelativePath(outputPath);
+
 
         SparkFileSaver.saveAsFile(result, data);
 

@@ -17,6 +17,8 @@ import java.util.*;
   */
 public class CometScoringResult implements IScoredScan, IAddable<IScoredScan>, IMeasuredSpectrum {
 
+    public static final int MAX_RETURNED_MATCHES = 4;
+
 
     private IMeasuredSpectrum m_Raw;
     private boolean matchesSorted;
@@ -73,6 +75,20 @@ public class CometScoringResult implements IScoredScan, IAddable<IScoredScan>, I
         } else {
             IonTypeScorer ions = new LowMemoryIonScorer(bestMatch);
             addMatch(new PeptideMatchScore(peptide, hyperScore, ions));
+        }
+
+        // keep only top   MAX_RETURNED_MATCHES matches
+        if(matches.size() > 2 * MAX_RETURNED_MATCHES) {
+            // highest scores first
+            matches.sort(new Comparator<PeptideMatchScore>() {
+                @Override
+                public int compare(PeptideMatchScore o1, PeptideMatchScore o2) {
+                    return Double.compare(o2.score, o1.score);
+                }
+            });
+            List<PeptideMatchScore> savedMatches = new ArrayList<PeptideMatchScore>(matches.subList(0, MAX_RETURNED_MATCHES));
+            matches.clear();
+            matches.addAll(savedMatches);
         }
     }
 
@@ -533,7 +549,6 @@ public class CometScoringResult implements IScoredScan, IAddable<IScoredScan>, I
         return null;
     }
 
-    public static final int MAX_RETURNED_MATCHES = 8;
 
     /**
      * get all matches
