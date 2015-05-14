@@ -2,6 +2,7 @@ package com.lordjoe.distributed.hydra.scoring;
 
 import com.lordjoe.distributed.*;
 import com.lordjoe.distributed.hydra.comet.*;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
 import org.apache.spark.api.java.*;
 import org.systemsbiology.xtandem.*;
@@ -9,6 +10,7 @@ import org.systemsbiology.xtandem.hadoop.*;
 import org.systemsbiology.xtandem.reporting.*;
 import org.systemsbiology.xtandem.scoring.*;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 
@@ -51,7 +53,7 @@ public class SparkConsolidator implements Serializable {
         header.add(sb.toString());
         sb.setLength(0);
         //header.add(out.toString());
-        JavaRDD<String> headerRDD = SparkUtilities.getCurrentContext().parallelize(header);
+        //JavaRDD<String> headerRDD = SparkUtilities.getCurrentContext().parallelize(header);
 
         List<String> footer = new ArrayList<String>();
         writer.appendFooter(sb, getApplication());
@@ -59,7 +61,7 @@ public class SparkConsolidator implements Serializable {
         sb.setLength(0);
         long[] scoreCounts = new long[1];
 
-        JavaRDD<String> footerRDD = SparkUtilities.getCurrentContext().parallelize(footer);
+        //JavaRDD<String> footerRDD = SparkUtilities.getCurrentContext().parallelize(footer);
 
         // make an RDD of the text for every Spectrum
         JavaRDD<String> textOut = scans.map(new AppendScanStringToWriter(writer,getApplication()));
@@ -68,13 +70,12 @@ public class SparkConsolidator implements Serializable {
            textOut = SparkUtilities.persistAndCount("Total Scored Scans",textOut,scoreCounts);
 
 
-        JavaRDD<String> data = headerRDD.union(textOut).union(footerRDD).coalesce(1);
+        //JavaRDD<String> data = headerRDD.union(textOut).union(footerRDD).coalesce(1);
 
         String outputPath = BiomlReporter.buildDefaultFileName(getApplication());
-        Path result = XTandemHadoopUtilities.getRelativePath(outputPath);
+        Path path = XTandemHadoopUtilities.getRelativePath(outputPath);
 
-
-        SparkFileSaver.saveAsFile(result, data);
+        SparkFileSaver.saveAsFile(path, textOut, header.toString(), footer.toString());
 
         return (int)scoreCounts[0];
     }

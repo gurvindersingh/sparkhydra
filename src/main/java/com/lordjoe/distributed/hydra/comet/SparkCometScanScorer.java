@@ -479,8 +479,8 @@ public class SparkCometScanScorer {
          if (isDebuggingCountMade())
             binPairs = SparkUtilities.persistAndCountPair("Binned Pairs", binPairs, counts);
 
-        binPairs = binPairs.persist(StorageLevel.MEMORY_AND_DISK_SER());   // force comuptation before score
-        binPairs.count(); // force action to happen now
+        //binPairs = binPairs.persist(StorageLevel.MEMORY_AND_DISK_SER());   // force comuptation before score
+        //binPairs.count(); // force action to happen now
 
        // now produce all peptide spectrum scores where spectrum and peptide are in the same bin
         JavaRDD<? extends IScoredScan> bestScores = handler.scoreCometBinPairHash(binPairs);  //  todo fix and restore
@@ -488,8 +488,8 @@ public class SparkCometScanScorer {
         // combine scores from same scan
         JavaRDD<? extends IScoredScan> cometBestScores =  handler.combineScanScores(bestScores);
 
-        cometBestScores = cometBestScores.persist(StorageLevel.MEMORY_AND_DISK_SER());   // force comuptation after score
-        cometBestScores.count(); // force action to happen now
+        //cometBestScores = cometBestScores.persist(StorageLevel.MEMORY_AND_DISK_SER());   // force comuptation after score
+        //cometBestScores.count(); // force action to happen now
 
 
         // todo combine score results from different bins

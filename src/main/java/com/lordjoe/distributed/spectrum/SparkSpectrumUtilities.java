@@ -1,6 +1,7 @@
 package com.lordjoe.distributed.spectrum;
 
 import com.lordjoe.distributed.*;
+import com.lordjoe.distributed.hydra.comet.SparkCometScanScorer;
 import com.lordjoe.distributed.input.*;
 import org.apache.spark.api.java.*;
 import org.apache.spark.api.java.function.Function;
@@ -88,7 +89,8 @@ public class SparkSpectrumUtilities {
         );
 
         long[] countRef = new long[1];
-        spectraAsStrings = SparkUtilities.persistAndCountPair("Raw spectra", spectraAsStrings, countRef);
+        if (SparkCometScanScorer.isDebuggingCountMade())
+            spectraAsStrings = SparkUtilities.persistAndCountPair("Raw spectra", spectraAsStrings, countRef);
         // debug code
         //spectraAsStrings = SparkUtilities.realizeAndReturn(spectraAsStrings);
 
@@ -103,7 +105,8 @@ public class SparkSpectrumUtilities {
                                                            }
                                                        }
             );
-            spectraAsStrings = SparkUtilities.persistAndCountPair("Filtered spectra", spectraAsStrings, countRef);
+            if (SparkCometScanScorer.isDebuggingCountMade())
+                spectraAsStrings = SparkUtilities.persistAndCountPair("Filtered spectra", spectraAsStrings, countRef);
         }
 
         // debug code
@@ -194,13 +197,18 @@ public class SparkSpectrumUtilities {
 
 
         spectraAsStrings = SparkUtilities.persist(spectraAsStrings);
-        long spectraStringCount = spectraAsStrings.count();
+        long spectraStringCount;
+        if (SparkCometScanScorer.isDebuggingCountMade())
+            spectraStringCount = spectraAsStrings.count();
 
         JavaPairRDD<String, IMeasuredSpectrum> spectra = spectraAsStrings.flatMapToPair(new MGFStringTupleToSpectrumTuple(application));
-        spectra = SparkUtilities.persist(spectra);
-        long spectraCount = spectra.count();
+        long spectraCount;
+        if (SparkCometScanScorer.isDebuggingCountMade()) {
+            spectra = SparkUtilities.persist(spectra);
+            spectraCount = spectra.count();
+        }
 
-        String countString = "Read " + spectraStringCount + " spectra parsed " + spectraCount;
+        //String countString = "Read " + spectraStringCount + " spectra parsed " + spectraCount;
      //   if (true)
      //       throw new IllegalStateException(countString); // look and stop
         return spectra;

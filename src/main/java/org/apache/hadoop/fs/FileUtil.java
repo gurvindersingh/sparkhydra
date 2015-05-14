@@ -407,8 +407,8 @@ public class FileUtil {
     } else {
       return true;
     }
-  }  
-  
+  }
+
   /** Copy local files to a FileSystem. */
   public static boolean copy(File src,
                              FileSystem dstFS, Path dst,

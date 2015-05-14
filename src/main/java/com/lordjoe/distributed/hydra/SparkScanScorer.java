@@ -37,7 +37,7 @@ import java.util.*;
  */
 public class SparkScanScorer {
 
-    public static final boolean DO_DEBUGGING_COUNT = true;
+    public static final boolean DO_DEBUGGING_COUNT = false;
     public static final boolean EXIT_BEFORE_SCORINE = false;
 //    public static final String[] InterestingPeptides = {
 //            "WYEK[79.966]AAGNEDK[79.966]",
@@ -189,7 +189,8 @@ public class SparkScanScorer {
         JavaPairRDD<String, IMeasuredSpectrum> scans = SparkSpectrumUtilities.parseSpectrumFile(pSpectra, application);
 
         long[] spectraCountRef = new long[1];
-        scans = SparkUtilities.persistAndCountPair("Scans  to Score", scans, spectraCountRef);
+        if (isDebuggingCountMade())
+            scans = SparkUtilities.persistAndCountPair("Scans  to Score", scans, spectraCountRef);
 
 
         int numberPartitions = scans.partitions().size();
@@ -199,12 +200,14 @@ public class SparkScanScorer {
 
         JavaRDD<IMeasuredSpectrum> spectraToScore = scans.values();
 
-        spectraToScore = SparkUtilities.persistAndCount("Spectra  to Score", spectraToScore, spectraCountRef);
+        if (isDebuggingCountMade())
+            spectraToScore = SparkUtilities.persistAndCount("Spectra  to Score", spectraToScore, spectraCountRef);
 
 
         spectraToScore = indexSpectra(spectraToScore);
 
-        spectraToScore = SparkUtilities.persistAndCount("Spectra  to Score", spectraToScore, spectraCountRef);
+        if (isDebuggingCountMade())
+            spectraToScore = SparkUtilities.persistAndCount("Spectra  to Score", spectraToScore, spectraCountRef);
 
         // drop bad ids
         spectraToScore = spectraToScore.filter(new Function<IMeasuredSpectrum, Boolean>() {
@@ -215,7 +218,8 @@ public class SparkScanScorer {
             }
         });
 
-        spectraToScore = SparkUtilities.persistAndCount("Spectra  to Score", spectraToScore, spectraCountRef);
+        if (isDebuggingCountMade())
+            spectraToScore = SparkUtilities.persistAndCount("Spectra  to Score", spectraToScore, spectraCountRef);
 
 
         if (isDebuggingCountMade()) {
@@ -228,7 +232,8 @@ public class SparkScanScorer {
                 int countPercentile = 1 + (int) (100 * max_spectra / spectraCount);  // try scoring about 1000
                 if (countPercentile < 100) {
                     spectraToScore = spectraToScore.filter(new PercentileFilter<IMeasuredSpectrum>(countPercentile)); // todo make a loop
-                    spectraToScore = SparkUtilities.persistAndCount("Filtered Spectra  to Score", spectraToScore, spectraCountRef);
+                    if (isDebuggingCountMade())
+                        spectraToScore = SparkUtilities.persistAndCount("Filtered Spectra  to Score", spectraToScore, spectraCountRef);
                 }
             }
         }

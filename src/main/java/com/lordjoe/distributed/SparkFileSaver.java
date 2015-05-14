@@ -3,11 +3,13 @@ package com.lordjoe.distributed;
 import org.apache.hadoop.conf.*;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.*;
+import org.apache.hadoop.io.IOUtils;
 import org.apache.spark.api.java.*;
 import org.systemsbiology.hadoop.*;
 
 import javax.annotation.Nonnull;
 import java.io.*;
+import java.util.Arrays;
 
 /**
  * com.lordjoe.distributed.SparkFileSaver
@@ -25,7 +27,7 @@ public class SparkFileSaver {
     public static void saveAsFile(@Nonnull String outFile, @Nonnull JavaRDD<String> data) {
         String pathStr = SparkUtilities.buildPath(outFile);
         Path path = new Path(pathStr);
-        saveAsFile(path, data);
+        saveAsFile(path, data, null, null);
     }
 
     /**
@@ -34,7 +36,7 @@ public class SparkFileSaver {
      * @param outPath path of the output file
      * @param data    rdd to save
      */
-    public static void saveAsFile(@Nonnull Path outPath, @Nonnull JavaRDD<String> data) {
+    public static void saveAsFile(@Nonnull Path outPath, @Nonnull JavaRDD<String> data, String header, String footer) {
 
         String tempPathStr = outPath.toString() + ".temp";
 
@@ -45,13 +47,9 @@ public class SparkFileSaver {
 
         data.saveAsTextFile(tempPath.toString());
 
-        if(true)
-            return; // todo this is just a test
-
         Configuration conf = SparkUtilities.getHadoopConfiguration();
         FileSystem srcFS = SparkUtilities.getHadoopFileSystem();
         boolean deleteSource = true;
-        String addString = null;
 
 
         try {
@@ -64,5 +62,46 @@ public class SparkFileSaver {
         }
         HadoopUtilities.expunge(tempPath, SparkUtilities.getHadoopFileSystem());
     }
+
+    /** Copy all files in a directory to one output file (merge). */
+    public static boolean copyMerge(FileSystem srcFS, Path srcDir,
+                                    FileSystem dstFS, Path dstFile,
+                                    boolean deleteSource,
+                                    Configuration conf, String header, String footer) throws IOException {
+
+        if (!srcFS.getFileStatus(srcDir).isDirectory())
+            return false;
+
+        OutputStream out = dstFS.create(dstFile);
+
+        try {
+            FileStatus contents[] = srcFS.listStatus(srcDir);
+            Arrays.sort(contents);
+            if (header != null)
+                out.write(header.getBytes("UTF-8"));
+            for (int i = 0; i < contents.length; i++) {
+                if (contents[i].isFile()) {
+                    InputStream in = srcFS.open(contents[i].getPath());
+                    try {
+                        IOUtils.copyBytes(in, out, conf, false);
+                    } finally {
+                        in.close();
+                    }
+                }
+            }
+            if (footer != null)
+                out.write(footer.getBytes("UTF-8"));
+        } finally {
+            out.close();
+        }
+
+
+        if (deleteSource) {
+            return srcFS.delete(srcDir, true);
+        } else {
+            return true;
+        }
+    }
+
 
 }
