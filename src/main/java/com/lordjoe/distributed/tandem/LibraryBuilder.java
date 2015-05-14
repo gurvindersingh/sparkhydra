@@ -126,8 +126,8 @@ public class LibraryBuilder implements Serializable {
        // proteins = SparkUtilities.guaranteePartition(proteins);
 
 
-        proteins = SparkUtilities.persistAndCount("Proteins  to Score", proteins, proteinCountRef);
-        proteinCount = proteinCountRef[0];
+        //proteins = SparkUtilities.persistAndCount("Proteins  to Score", proteins, proteinCountRef);
+        //proteinCount = proteinCountRef[0];
         //proteins = SparkUtilities.persistAndCount("Total Proteins", proteins);
 //        List<IProtein> proteinList  = proteins.collect();
 //        for (IProtein p : proteinList) {

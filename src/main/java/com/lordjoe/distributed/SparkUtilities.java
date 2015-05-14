@@ -1287,7 +1287,7 @@ public class SparkUtilities implements Serializable {
 
         boolean forceRepartition = true;
         System.err.println("Repartitioning from " + currentPartitions + " to " + numberPartitions);
-        JavaRDD<V> ret = inp.coalesce(numberPartitions, forceRepartition);
+        JavaRDD<V> ret = inp.repartition(numberPartitions);
         return ret;
     }
 
