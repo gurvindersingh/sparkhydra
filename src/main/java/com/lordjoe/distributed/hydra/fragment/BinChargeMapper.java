@@ -85,30 +85,51 @@ public class BinChargeMapper implements Serializable {
        * @param inp
        * @return
        */
-      public JavaPairRDD<BinChargeKey,HashMap<String, IPolypeptide>> mapFragmentsToBinHash(JavaRDD<IPolypeptide> inp,final Set<Integer> usedBins) {
-          JavaPairRDD<BinChargeKey, IPolypeptide> ppBins = inp.flatMapToPair(new mapPolypeptidesToBin(application, usedBins));
-          return mapToKeyedHash(ppBins);
+      public JavaPairRDD<BinChargeKey,HashMap<String, IPolypeptide>> mapFragmentsToBinHash(JavaRDD<IPolypeptide> inp,final Set<Integer> usedBins ) {
+            return mapFragmentsToBinHash(inp, usedBins,Integer.MAX_VALUE);
       }
+    /**
+         * return a list of all peptides in a bin
+         * @param inp
+         * @return
+         */
+        public JavaPairRDD<BinChargeKey,HashMap<String, IPolypeptide>> mapFragmentsToBinHash(JavaRDD<IPolypeptide> inp,final Set<Integer> usedBins,int maxSize) {
+            JavaPairRDD<BinChargeKey, IPolypeptide> ppBins = inp.flatMapToPair(new mapPolypeptidesToBin(application, usedBins));
+            return mapToKeyedHash(ppBins,maxSize);
+        }
 
+    /**
+       * convert a JavaPairRDD into pairs where the key now indexes a list of all values
+         * @param imp input
+       * @param <K>  key type
+       * @param <V>  value type
+       * @return
+       */
+      public static <K extends Serializable> JavaPairRDD<K, HashMap<String,IPolypeptide>>   mapToKeyedHash(JavaPairRDD<K, IPolypeptide> imp) {
+          return mapToKeyedHash(imp,Integer.MAX_VALUE); // generate map of any size
+      }
 
     /**
       * convert a JavaPairRDD into pairs where the key now indexes a list of all values
-        * @param imp input
-      * @param <K>  key type
+     * @param imp input
+     * @param maxSize limit on generated list size - defaults to Integer.MAX_VALUE in above implementation
+       * @param <K>  key type
       * @param <V>  value type
       * @return
       */
-     public static <K extends Serializable> JavaPairRDD<K, HashMap<String,IPolypeptide>>   mapToKeyedHash(JavaPairRDD<K, IPolypeptide> imp) {
+     public static <K extends Serializable> JavaPairRDD<K, HashMap<String,IPolypeptide>>   mapToKeyedHash(JavaPairRDD<K, IPolypeptide> imp, final int maxSize) {
          return imp.aggregateByKey(
                  new HashMap<String, IPolypeptide>(),
                  new org.apache.spark.api.java.function.Function2<HashMap<String, IPolypeptide>, IPolypeptide, HashMap<String, IPolypeptide>>() {
                      @Override
                      public HashMap<String, IPolypeptide> call(HashMap<String, IPolypeptide> vs, IPolypeptide v) throws Exception {
+                         if(vs.size() >= maxSize)
+                             return vs; // stop adding if limit reached
                          String key = v.toString();
                          if (!vs.containsKey(key)) {
                              vs.put(key, v);
                          } else {
-                            // todo merge protiens
+                             // todo merge protiens
                              IPolypeptide old = vs.get(key);
                              IPolypeptide newPP = PolypeptideCombiner.mergeProteins(old, v);
                              vs.put(key, newPP);
@@ -116,10 +137,12 @@ public class BinChargeMapper implements Serializable {
                          return vs;
                      }
                  },
-                 new org.apache.spark.api.java.function.Function2<HashMap<String, IPolypeptide>, HashMap<String, IPolypeptide>,HashMap<String, IPolypeptide>> ()
-         {
+                 new org.apache.spark.api.java.function.Function2<HashMap<String, IPolypeptide>, HashMap<String, IPolypeptide>, HashMap<String, IPolypeptide>>() {
                      @Override
                      public HashMap<String, IPolypeptide> call(HashMap<String, IPolypeptide> vs, HashMap<String, IPolypeptide> vs2) throws Exception {
+                         if(vs.size() >= maxSize)
+                                return vs; // stop adding if limit reached
+
                          vs.putAll(vs2);
                          return vs;
                      }

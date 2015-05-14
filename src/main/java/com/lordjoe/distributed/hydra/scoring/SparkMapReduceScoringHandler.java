@@ -3,6 +3,7 @@ package com.lordjoe.distributed.hydra.scoring;
 import com.lordjoe.distributed.*;
 import com.lordjoe.distributed.database.*;
 import com.lordjoe.distributed.hydra.*;
+import com.lordjoe.distributed.hydra.comet.*;
 import com.lordjoe.distributed.hydra.fragment.*;
 import com.lordjoe.distributed.hydra.test.*;
 import com.lordjoe.distributed.spark.*;
@@ -233,7 +234,7 @@ public class SparkMapReduceScoringHandler implements Serializable {
        * @return  peptides mapped to bins
        */
       public JavaPairRDD<BinChargeKey,HashMap<String, IPolypeptide>> mapFragmentsToBinHash(JavaRDD<IPolypeptide> inp,final Set<Integer> usedBins) {
-          return binMapper.mapFragmentsToBinHash(inp,usedBins);
+          return binMapper.mapFragmentsToBinHash(inp,usedBins, CometScoringAlgorithm.getMaximumPeptideListSize());
       }
 
     private static class MapToSpectrumIDKey extends AbstractLoggingPairFunction<Tuple2<IMeasuredSpectrum, IPolypeptide>, String, Tuple2<IMeasuredSpectrum, IPolypeptide>> {

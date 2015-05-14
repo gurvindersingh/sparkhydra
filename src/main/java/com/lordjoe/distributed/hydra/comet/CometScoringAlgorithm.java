@@ -18,6 +18,17 @@ import java.util.*;
  */
 public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
 
+    public static final String MAX_PEPTIDE_LIST_PROPERTY = "comet.MaxPeptideListSize";
+
+    private static int maximumPeptideListSize = Integer.MAX_VALUE;
+
+     public static int getMaximumPeptideListSize() {
+         return maximumPeptideListSize;
+     }
+
+     public static void setMaximumPeptideListSize(int maximumPeptideListSize) {
+         CometScoringAlgorithm.maximumPeptideListSize = maximumPeptideListSize;
+     }
 
     public static final double XCORR_CUTOFF = 1.0E-8;
     public static final int DEFAULT_CROSS_CORRELATION_PROCESSINGG_OFFSET = 75;
@@ -95,8 +106,11 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
         m_BinTolerance = params.getDoubleParameter("comet.fragment_bin_tol", DEFAULT_BIN_WIDTH);
         ALLOCATED_DATA_SIZE = (int)(MAX_MASS / m_BinTolerance);
 
+       setMaximumPeptideListSize(params.getIntParameter(MAX_PEPTIDE_LIST_PROPERTY, Integer.MAX_VALUE));
+
+
         m_BinStartOffset = params.getDoubleParameter("comet.fragment_bin_offset", DEFAULT_BIN_OFFSET);
-        m_OneMinusBinOffset = 1.0 - m_BinStartOffset;
+         m_OneMinusBinOffset = 1.0 - m_BinStartOffset;
 
 
         m_MassTolerance = params.getDoubleParameter("comet.mass_tolerance", DEFAULT_MASS_TOLERANCE);
