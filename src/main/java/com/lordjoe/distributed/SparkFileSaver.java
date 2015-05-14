@@ -54,7 +54,7 @@ public class SparkFileSaver {
 
         try {
             srcFS.delete(outPath,false);
-            FileUtil.copyMerge(srcFS, tempPath, srcFS, outPath, deleteSource, conf, addString);
+            copyMerge(srcFS, tempPath, srcFS, outPath, deleteSource, conf, header, footer);
         }
         catch (IOException e) {
             throw new RuntimeException(e);
