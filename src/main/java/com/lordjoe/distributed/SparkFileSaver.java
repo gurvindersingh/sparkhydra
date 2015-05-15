@@ -21,7 +21,7 @@ public class SparkFileSaver {
     /**
      * save an RDD of text to a single file
      *
-     * @param outPath path of the output file
+     * @param outFile path of the output file
      * @param data    rdd to save
      */
     public static void saveAsFile(@Nonnull String outFile, @Nonnull JavaRDD<String> data) {
@@ -54,7 +54,8 @@ public class SparkFileSaver {
 
         try {
             srcFS.delete(outPath,false);
-            copyMerge(srcFS, tempPath, srcFS, outPath, deleteSource, conf, header.toString(), footer.toString());
+            copyMerge(srcFS, tempPath, srcFS, outPath, deleteSource, conf,
+                    header.substring(1, header.length()-1), footer.substring(1, footer.length()-1));
         }
         catch (IOException e) {
             throw new RuntimeException(e);
