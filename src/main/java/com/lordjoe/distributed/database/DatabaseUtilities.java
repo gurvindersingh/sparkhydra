@@ -38,6 +38,19 @@ public class DatabaseUtilities {
         }
     }
 
+    public static void removeParaquetDatabase( String name) {
+        try {
+            JavaSparkContext sc = SparkUtilities.getCurrentContext();
+            Configuration conf = sc.hadoopConfiguration();
+            FileSystem fs = FileSystem.get(conf);
+            HDFSAccessor accessor = new HDFSAccessor(fs);
+            accessor.expunge(name);
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+
+        }
+    }
 
     public static<K  extends IDatabaseBean> void guaranteeParaquetDatabase( String name,JavaRDD<K> data,Class<? extends K> bean) {
         try {
