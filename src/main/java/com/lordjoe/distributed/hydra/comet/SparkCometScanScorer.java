@@ -525,6 +525,117 @@ public class SparkCometScanScorer {
     }
 
     /**
+     * score with a join of a List of peptides
+     * @param args
+     */
+    public static void scoringUsingCogroup(String[] args) {
+        long totalSpectra = 0;
+        List<PairCounter> pairs = null;
+
+        // Force PepXMLWriter to load
+        PepXMLWriter foo = null;
+        ElapsedTimer timer = new ElapsedTimer();
+        ElapsedTimer totalTime = new ElapsedTimer();
+
+        if (args.length < TANDEM_CONFIG_INDEX + 1) {
+            System.out.println("usage sparkconfig configFile");
+            return;
+        }
+
+        buildDesiredScoring(args);
+
+        SparkUtilities.readSparkProperties(args[SPARK_CONFIG_INDEX]);
+
+        CometScoringHandler handler = buildCometScoringHandler(args[TANDEM_CONFIG_INDEX]);
+
+        XTandemMain scoringApplication = handler.getApplication();
+        setDebuggingCountMade(scoringApplication.getBooleanParameter(SparkUtilities.DO_DEBUGGING_CONFIG_PROPERTY, false));
+        CometScoringAlgorithm comet = (CometScoringAlgorithm) scoringApplication.getAlgorithms()[0];
+
+
+        Properties sparkProperties = SparkUtilities.getSparkProperties();
+        String spectrumPath = scoringApplication.getSpectrumPath();
+        String spectra = SparkUtilities.buildPath(spectrumPath);
+        MZPartitioner partitioner = new MZPartitioner();
+        JavaRDD<IMeasuredSpectrum> spectraToScore = SparkScanScorer.getMeasuredSpectra(timer, sparkProperties, spectra, scoringApplication);
+
+        JavaRDD<CometScoredScan> cometSpectraToScore = spectraToScore.map(new MapToCometSpectrum(comet));
+
+        // if you want to limt do so here
+        cometSpectraToScore = countAndLimitSpectra(cometSpectraToScore);
+
+        // these are spectra
+        JavaPairRDD<BinChargeKey, CometScoredScan> keyedSpectra = handler.mapMeasuredSpectrumToKeys(cometSpectraToScore);
+        keyedSpectra.partitionBy(partitioner);
+
+
+        keyedSpectra = SparkUtilities.persist(keyedSpectra);
+
+        Set<Integer> usedBins = getUsedBins(keyedSpectra);
+
+
+
+        JavaPairRDD<BinChargeKey, HashMap<String, IPolypeptide>> keyedPeptides = getBinChargePeptideHash(sparkProperties, usedBins, handler);
+        keyedPeptides.partitionBy(partitioner);
+        timer.showElapsed("Mapped Peptides", System.err);
+
+        long[] counts = new long[1];
+        if (isDebuggingCountMade()) {
+            keyedPeptides = SparkUtilities.persistAndCountPair("Peptides as Theoretical Spectra", keyedPeptides, counts);
+        }
+
+        if (isDebuggingCountMade()) {
+            keyedPeptides = SparkUtilities.persistAndCountPair("Mapped Peptides", keyedPeptides, counts);
+        }
+        long peptidecounts = counts[0];
+
+
+
+        if (isDebuggingCountMade()) {
+            keyedSpectra = SparkUtilities.persistAndCountPair("Mapped Spectra", keyedSpectra, counts);
+        }
+        long keyedSpectrumCounts = counts[0];
+        // find spectra-peptide pairs to score
+        JavaPairRDD<BinChargeKey, Tuple2<Iterable<CometScoredScan>, Iterable<HashMap<String, IPolypeptide>>>> binP = keyedSpectra.cogroup(keyedPeptides);
+
+        if (isDebuggingCountMade())
+            binP = SparkUtilities.persistAndCountPair("Binned Pairs", binP, counts);
+
+        JavaRDD <? extends IScoredScan> bestScores = handler.scoreCometBinPair(binP);
+
+        // combine scores from same scan
+        JavaRDD<? extends IScoredScan> cometBestScores =  handler.combineScanScores(bestScores);
+
+        // todo combine score results from different bins
+
+        if (isDebuggingCountMade())
+            bestScores = SparkUtilities.persistAndCount("Best Scores", bestScores);
+
+        timer.showElapsed("built best scores", System.err);
+        XTandemMain application = scoringApplication;
+
+        // code using PepXMLWriter new uses tandem writer
+        PepXMLWriter pwrtr = new PepXMLWriter(application);
+        PepXMLScoredScanWriter pWrapper = new PepXMLScoredScanWriter(pwrtr);
+        SparkConsolidator consolidator = new SparkConsolidator(pWrapper, application);
+
+        //      BiomlReporter writer = new BiomlReporter(application);
+        //   SparkConsolidator consolidator = new SparkConsolidator(writer, application);
+
+
+        int numberScores = consolidator.writeScores(cometBestScores);
+        System.out.println("Total Scans Scored " + numberScores);
+
+        SparkAccumulators.showAccumulators(totalTime);
+
+        totalTime.showElapsed("Finished Scoring");
+
+        TestUtilities.closeCaseLoggers();
+        // purely debugging  code to see whether interesting peptides scored with interesting spectra
+        //TestUtilities.writeSavedKeysAndSpectra();
+    }
+
+    /**
      * get all keys we use for scoring
      * @param keyedSpectra
      * @return
@@ -688,7 +799,8 @@ public class SparkCometScanScorer {
         */
        public static void main(String[] args) throws Exception {
          //  pairedScoring(args);
-         scoringUsingLists(args);
+         //  scoringUsingLists(args);
+           scoringUsingCogroup(args);
         //   scoringUsingTheoreticalLists(args);
        }
 
