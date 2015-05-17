@@ -143,6 +143,7 @@ public class LibraryBuilder implements Serializable {
             digested = SparkUtilities.persistAndCount("Digested Proteins", digested, answer);
         }
 
+        digested = SparkUtilities.repartitionIfNeeded(digested);
               // the rest of the code combines identical peptides - there are not many of these and we will ignore them fot now todo handle identical peptides
         if(true)
             return digested;
@@ -252,6 +253,19 @@ public class LibraryBuilder implements Serializable {
         //     DatabaseUtilities.buildParaquetDatabase(dbName, beans, PeptideSchemaBean.class);
     }
 
+
+    public JavaRDD<IPolypeptide> getPolypeptide(final int max_proteins) {
+        String dbName = buildDatabaseName();
+        if(DatabaseUtilities.isParquetDatabaseExist(dbName)) {
+            return DatabaseUtilities.readParquetDatabase(dbName);
+        } else {
+            JavaRDD<IPolypeptide> peptides = buildLibrary(max_proteins);
+            JavaRDD<PeptideSchemaBean> beans = peptides.map(PeptideSchemaBean.TO_BEAN);
+            DatabaseUtilities.buildParaquetDatabase(dbName, beans, PeptideSchemaBean.class);
+            return peptides;
+        }
+
+    }
 
     protected void saveDatabaseSizes(final String pDbName, final Map<Integer, Object> pDbSizes) {
 

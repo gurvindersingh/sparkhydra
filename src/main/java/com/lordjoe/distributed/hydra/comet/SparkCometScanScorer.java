@@ -10,8 +10,6 @@ import com.lordjoe.distributed.spark.*;
 import com.lordjoe.distributed.test.*;
 import com.lordjoe.utilities.*;
 import org.apache.spark.api.java.*;
-import org.apache.spark.api.java.function.*;
-import org.apache.spark.api.java.function.Function;
 import org.apache.spark.storage.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.hadoop.*;
@@ -122,7 +120,6 @@ public class SparkCometScanScorer {
         //List<IPolypeptide> interesting2 = new ArrayList<IPolypeptide>();
         // databasePeptides = TestUtilities.findInterestingPeptides(databasePeptides, interesting2);
 
-        databasePeptides = SparkUtilities.repartitionIfNeeded(databasePeptides);
         return databasePeptides;
     }
 
@@ -562,7 +559,7 @@ public class SparkCometScanScorer {
         JavaRDD<CometScoredScan> cometSpectraToScore = spectraToScore.map(new MapToCometSpectrum(comet));
 
         // if you want to limt do so here
-        cometSpectraToScore = countAndLimitSpectra(cometSpectraToScore);
+        // cometSpectraToScore = countAndLimitSpectra(cometSpectraToScore);
 
         // these are spectra
         JavaPairRDD<BinChargeKey, CometScoredScan> keyedSpectra = handler.mapMeasuredSpectrumToKeys(cometSpectraToScore);
