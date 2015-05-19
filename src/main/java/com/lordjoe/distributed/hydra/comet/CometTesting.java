@@ -47,10 +47,14 @@ public class CometTesting {
         String id = scan.getId();
         int index = Integer.parseInt(id);
         List<UsedSpectrum> allSpectra = cometScoredSpectra.get(index);
+        // make a copy so we can remove the good spectra and leave the bad
         List<UsedSpectrum> notMatching = new ArrayList<UsedSpectrum>(allSpectra);
+        // both algorithms scored these
         List<UsedSpectrum> matching = new ArrayList<UsedSpectrum>();
 
+        // for each peptide
         for (IPolypeptide pp : scoredPeptides) {
+            // for each spectrum
             for (UsedSpectrum usedSpectrum : notMatching) {
                 BinChargeKey testKey = getPeptideKey(usedSpectrum.peptide);
 
@@ -60,6 +64,7 @@ public class CometTesting {
                 }
             }
         }
+        // now leave the ones we did not score
         notMatching.removeAll(matching);
 
         double scanMass = scan.getPrecursorMass();   // todo decide whether mass or mz is better

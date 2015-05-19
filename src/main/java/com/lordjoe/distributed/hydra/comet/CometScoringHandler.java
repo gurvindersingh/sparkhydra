@@ -209,12 +209,12 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
                     scoredPeptides.add(ts.getPeptide());
                     int testResult = CometTesting.validatePeptideScore(scan,ts.getPeptide(),xcorr);
                     if(testResult == 0) {
-                        numberGood++;
+                        numberGood++;  // got same score
                     }
                     else {
-                        if(testResult == 1)
+                        if(testResult == 1)  // score not same
                             badScore.add(ts);
-                        if(testResult == 2)
+                        if(testResult == 2)  // did not score
                             notScored.add(ts);
                     }
                     // end debugging code
