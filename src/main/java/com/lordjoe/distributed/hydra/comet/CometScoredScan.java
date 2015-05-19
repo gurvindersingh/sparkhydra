@@ -19,7 +19,10 @@ import java.util.*;
 public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMeasuredSpectrum {
     public static final int MAX_SERIALIZED_MATCHED = 8;
     public static final String TAG = "score";
-    public static final int TEST_BIN = 7653;
+
+    public static final int TEST_BIN = 7578;
+    public static final int TEST_BIN2 = 7653;
+
 
     public static final Comparator<IScoredScan> ID_COMPARISON = new Comparator<IScoredScan>() {
         @Override
@@ -61,9 +64,10 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
 
         }
         this.setAlgorithm(alg);
-        final CometScoringData scoringData = CometScoringData.getScoringData();
-        this.fastScoringMap.putAll(scoringData.getFastScoringMap());
-        this.fastScoringMapNL.putAll(scoringData.getFastScoringMapNL());
+        // we keep the data locally
+      //  final CometScoringData scoringData = CometScoringData.getScoringData();
+      //  this.fastScoringMap.putAll(scoringData.getFastScoringMap());
+      //  this.fastScoringMapNL.putAll(scoringData.getFastScoringMapNL());
     }
 
     public CometScoredScan() {
@@ -85,6 +89,7 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
         generateBinnedPeaks(alg);
         //List<SpectrumBinnedScore> weights1 = getWeights();
         //   populateWeights(alg);
+        // pdTmpRawData now holds raw data, pdTmpCorrelationData is windowed data after this function
         windowedNormalize(alg);
 
         //List<SpectrumBinnedScore> weights2 = getWeights();
@@ -107,28 +112,20 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
         }
         if (true)
             throw new UnsupportedOperationException("Never get here");
-//        ISpectrumPeak[] nonZeroPeaks = ms.getNonZeroPeaks();
-//        for (int i = 0; i < nonZeroPeaks.length; i++) {
-//            ISpectrumPeak pk = nonZeroPeaks[i];
-//            int bin = asBin(pk.getMassChargeRatio());
-//            float peak = pk.getPeak();
-//            wts[bin] = peak;
-//            m_TotalIntensity += peak;
-//            wts[bin - 1] = peak / 2;
-//            wts[bin + 1] = peak / 2;
-//        }
+
     }
 
 
     /**
      * normalize windows to a max of 50
+     * // pdTmpRawData now holds raw data, pdTmpCorrelationData is windowed data after this function
      *
      * @param peaks
      */
     public void windowedNormalize(CometScoringAlgorithm alg) {
         CometScoringData scoringData = CometScoringData.getScoringData();
         float[] peaks = scoringData.getWeights();
-        float[] pdTmpCorrelationData = scoringData.getTmpFastXcorrData();
+        float[] pdTmpCorrelationData = scoringData.getTmpFastXcorrData2();
 
         int highestPeak = 0;
         double maxPeak = 0;
@@ -179,32 +176,114 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
         }
     }
 
+    /**
+     * // Make fast xcorr spectrum.
+     *
+     * @param alg
+     * @return
+     */
+    public double normalizeBinnedPeaks(CometScoringAlgorithm alg) {
+        CometScoringData scoringData = CometScoringData.getScoringData();
+        float[] pdTmpCorrelationData = scoringData.getTmpFastXcorrData2();
+        float[] pdTmpFastXcorrData = scoringData.getTmpFastXcorrData();
+        double sum = 0;
+        int i = 0;
+        int iTmpRange = 2 * CometScoringAlgorithm.DEFAULT_CROSS_CORRELATION_PROCESSINGG_OFFSET + 1;
+        double dTmp = 1.0 / (double) (iTmpRange - 1);
+
+        for (; i < CometScoringAlgorithm.DEFAULT_CROSS_CORRELATION_PROCESSINGG_OFFSET; i++) {  //    DEFAULT_CROSS_CORRELATION_PROCESSINGG_OFFSET = 75
+            sum += pdTmpCorrelationData[i];
+        }
+        for (; i < Math.min(maxArraySize + CometScoringAlgorithm.DEFAULT_CROSS_CORRELATION_PROCESSINGG_OFFSET, pdTmpCorrelationData.length); i++) {
+            if (i < maxArraySize) {
+                sum += pdTmpCorrelationData[i];
+            }
+
+//            if (i == TEST_BIN)
+//                TestUtilities.breakHere();
+
+
+            //    int iTmpRange = 2*g_staticParams.iXcorrProcessingOffset + 1;
+
+            if (i >= iTmpRange)
+                sum -= pdTmpCorrelationData[i - iTmpRange];
+
+            int indexOffset = i - CometScoringAlgorithm.DEFAULT_CROSS_CORRELATION_PROCESSINGG_OFFSET;
+
+//            if (indexOffset == TEST_BIN)
+//                TestUtilities.breakHere();
+
+            float binnedPeak = pdTmpCorrelationData[indexOffset];
+            double newPeak = (sum - binnedPeak) * dTmp;
+            if (Math.abs(newPeak) > 0.001)
+                pdTmpFastXcorrData[indexOffset] = (float) newPeak;  // look here
+            else
+                pdTmpFastXcorrData[indexOffset] = (float) newPeak;
+
+        }
+
+        return sum;
+    }
 
     public void normalizeForNL(CometScoringAlgorithm alg) {
         int i;
         final CometScoringData scoringData = CometScoringData.getScoringData();
-        float[] pPScoringFastXcorrData = scoringData.getScoringFastXcorrData();
         float[] pPdTmpFastXcorrData = scoringData.getTmpFastXcorrData();
         float[] pdTmpCorrelationData = scoringData.getTmpFastXcorrData2();
-        float[] pPfFastXcorrDataNL = scoringData.getFastXcorrDataNL();
-        final Map<Integer, Float> fastScoringMap = scoringData.getFastScoringMap();
-        final Map<Integer, Float> fastScoringMapNL = scoringData.getFastScoringMapNL();
 
+        // todo take out - debugging works  ONLY for eg0
+        // these tests pass!!
+        //  CometTesting.validateArray(pdTmpCorrelationData, "/eg0/pdTmpCorrelationDataBeforeNL.data");
+        //  CometTesting.validateArray(pPdTmpFastXcorrData, "/eg0/pdTmpFastXcorrDataBeforeNL.data");
+        // todo take out - debugging works  ONLY for eg0
+  //      Map<Integer, SpectrumBinnedScore> desiredNL = CometTesting.getResourceMap("/eg0/pfFastXcorrDataNL.data");
+
+        // these shoiuld be set here
+        float[] pPScoringFastXcorrData = scoringData.getScoringFastXcorrData();
+        float[] pPfFastXcorrDataNL = scoringData.getFastXcorrDataNL();
+
+
+        double dTmp;
         for (i = 1; i < Math.min(maxArraySize, pPScoringFastXcorrData.length); i++) {
 
-            float pBinnedPeak = pPdTmpFastXcorrData[i];
-            if (pBinnedPeak > 0)
-                TestUtilities.breakHere();
-            float scoringPeak = pPScoringFastXcorrData[i];
-            if (scoringPeak > 0)
-                TestUtilities.breakHere();
 
-            float dTmp = pBinnedPeak - scoringPeak;
+            float pBinnedPeak = pdTmpCorrelationData[i];
+            float scoringPeak = pPdTmpFastXcorrData[i];
+            dTmp = pBinnedPeak - scoringPeak;
+
+            pPScoringFastXcorrData[i] = (float) dTmp;
+
+
+            // Add flanking peaks if used
+            if (false) //g_staticParams.ionInformation.iTheoreticalFragmentIons == 0)
+            {
+                int iTmp;
+
+                iTmp = i - 1;
+                if (iTmp < pPScoringFastXcorrData.length) {    // test allows isolation of the calculation
+                    float tcorr = pdTmpCorrelationData[iTmp];
+                    float tFast = pPdTmpFastXcorrData[iTmp];
+                    float added = (float) ((tcorr - tFast) * 0.5);
+                    pPScoringFastXcorrData[i] += added;
+                }
+
+                iTmp = i + 1;
+                if (iTmp < pPScoringFastXcorrData.length) {
+                    float tcorr = pdTmpCorrelationData[iTmp];
+                    float tFast = pPdTmpFastXcorrData[iTmp];
+                    float added = (float) ((tcorr - tFast) * 0.5);
+                    pPScoringFastXcorrData[i] += added;
+                }
+            }
+
+
+            // pdTmpCorrelationData[i] = (float)dTmp;
             //      pPdTmpFastXcorrData2X[i] = (float)dTmp;
             if (Math.abs(dTmp) > 0.001) {
-                fastScoringMap.put(i, dTmp);
-                pdTmpCorrelationData[i] = dTmp;
+                fastScoringMap.put(i, (float) dTmp);
             }
+
+
 
              /*if (g_staticParams.ionInformation.bUseNeutralLoss
                         && (g_staticParams.ionInformation.iIonVal[ION_SERIES_A]
@@ -212,16 +291,16 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
                            || g_staticParams.ionInformation.iIonVal[ION_SERIES_Y])) */
 
             if (true) {
-                int iTmp1 = i - alg.iMinus17;
-                int iTmp2 = i - alg.iMinus18;
 
-                if (i == 8504)
-                    iTmp2 = i - alg.iMinus18;
+                int g_staticParams_precalcMasses_iMinus17 = alg.iMinus17;
+                int g_staticParams_precalcMasses_iMinus18 = alg.iMinus18;
+                int iTmp1 = i - g_staticParams_precalcMasses_iMinus17;
 
                 pPfFastXcorrDataNL[i] = (float) dTmp;
+
                 if (iTmp1 >= 0) {
-                    pBinnedPeak = pPdTmpFastXcorrData[iTmp1];
-                    scoringPeak = pPScoringFastXcorrData[iTmp1];
+                    pBinnedPeak = pdTmpCorrelationData[iTmp1];
+                    scoringPeak = pPdTmpFastXcorrData[iTmp1];
                     float dp = pBinnedPeak - scoringPeak;
                     if (dp != 0) {
                         float offset = (float) (dp * 0.2);
@@ -229,17 +308,33 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
                     }
                 }
 
+                int iTmp2 = i - g_staticParams_precalcMasses_iMinus18;
                 if (iTmp2 >= 0) {
-                    pBinnedPeak = pPdTmpFastXcorrData[iTmp2];
-                    scoringPeak = pPScoringFastXcorrData[iTmp2];
+                    pBinnedPeak = pdTmpCorrelationData[iTmp2];
+                    scoringPeak = pPdTmpFastXcorrData[iTmp2];
                     float dp = pBinnedPeak - scoringPeak;
                     if (dp != 0) {
                         float offset = (float) (dp * 0.2);
-                        pPfFastXcorrDataNL[i] += offset;
+                        float oldValue = pPfFastXcorrDataNL[i];
+                        pPfFastXcorrDataNL[i] = oldValue + offset;
                     }
                 }
 
             }
+
+//            // todo take out - debugging works  ONLY for eg0
+//            if (Math.abs(pPfFastXcorrDataNL[i]) > 0.001) {
+//                SpectrumBinnedScore desired = desiredNL.get(i);
+//                if (desired == null)
+//                    throw new IllegalStateException("problem"); // todo fix
+//
+//                double del = pPfFastXcorrDataNL[i] - desired.score;
+//                if (Math.abs(del) > 0.0001)
+//                    throw new IllegalStateException("problem"); // todo fix
+//
+//            }
+//            // todo take out - END DEBUGGING
+
 
         }
 
@@ -250,42 +345,10 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
         }
     }
 
-    /**
-     * // Make fast xcorr spectrum.
-     *
-     * @param alg
-     * @return
-     */
-    public double normalizeBinnedPeaks(CometScoringAlgorithm alg) {
-        CometScoringData scoringData = CometScoringData.getScoringData();
-        float[] pBinnedPeaks = scoringData.getTmpFastXcorrData();
-        float[] scoring = scoringData.getScoringFastXcorrData();
-        double sum = 0;
-        int i = 0;
-        for (; i < CometScoringAlgorithm.DEFAULT_CROSS_CORRELATION_PROCESSINGG_OFFSET; i++) {  //    DEFAULT_CROSS_CORRELATION_PROCESSINGG_OFFSET = 75
-            sum += pBinnedPeaks[i];
-        }
-        for (; i < Math.min(maxArraySize + CometScoringAlgorithm.DEFAULT_CROSS_CORRELATION_PROCESSINGG_OFFSET, pBinnedPeaks.length); i++) {
-            if (i < maxArraySize)
-                sum += pBinnedPeaks[i];
-            if (i >= (2 * CometScoringAlgorithm.DEFAULT_CROSS_CORRELATION_PROCESSINGG_OFFSET + 1))
-                sum -= pBinnedPeaks[i - (2 * CometScoringAlgorithm.DEFAULT_CROSS_CORRELATION_PROCESSINGG_OFFSET + 1)];
-            int indexOffset = i - CometScoringAlgorithm.DEFAULT_CROSS_CORRELATION_PROCESSINGG_OFFSET;
-            float binnedPeak = pBinnedPeaks[indexOffset];
-            double newPeak = (sum - binnedPeak) * 0.02;
-            if (Math.abs(newPeak) > 0.001)
-                scoring[indexOffset] = (float) newPeak;
-            else
-                scoring[indexOffset] = (float) newPeak;
-
-        }
-
-        return sum;
-    }
 
     public List<SpectrumBinnedScore> getFastScoringData() {
-        CometScoringData scoringData = CometScoringData.getScoringData();
-        final Map<Integer, Float> fastScoringMap = scoringData.getFastScoringMap();
+//        CometScoringData scoringData = CometScoringData.getScoringData();
+//        final Map<Integer, Float> fastScoringMap = this.fastScoringMap
         List<SpectrumBinnedScore> holder = new ArrayList<SpectrumBinnedScore>();
         for (Integer key : fastScoringMap.keySet()) {
             holder.add(new SpectrumBinnedScore(key, fastScoringMap.get(key)));
@@ -348,8 +411,8 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
 
 
     public List<SpectrumBinnedScore> getNLScoringData() {
-        final CometScoringData scoringData = CometScoringData.getScoringData();
-        final Map<Integer, Float> fastScoringMapNL = scoringData.getFastScoringMapNL();
+//        final CometScoringData scoringData = CometScoringData.getScoringData();
+//        final Map<Integer, Float> fastScoringMapNL = scoringData.getFastScoringMapNL();
         List<SpectrumBinnedScore> holder = new ArrayList<SpectrumBinnedScore>();
         for (Integer key : fastScoringMapNL.keySet()) {
             holder.add(new SpectrumBinnedScore(key, fastScoringMapNL.get(key)));
@@ -382,7 +445,7 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
         setNormalizationDone(true);
     }
 
-    public float getScoredData(final Map<Integer, Float> fastScoringMap,final Map<Integer, Float> fastScoringMapNL,Integer index, int charge) {
+    public float getScoredData(final Map<Integer, Float> fastScoringMap, final Map<Integer, Float> fastScoringMapNL, Integer index, int charge) {
         if (charge == 1) {
             if (fastScoringMapNL.containsKey(index))
                 return fastScoringMapNL.get(index);
@@ -397,16 +460,17 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
         }
     }
 
-    public float getScoredData(final float[] fastScoringMap,final float[] fastScoringMapNL,int index, int charge) {
+    public float getScoredData(final float[] fastScoringMap, final float[] fastScoringMapNL, int index, int charge) {
         // TODO fix the index issue, as it should not happen
         if (index >= fastScoringMap.length)
             return 0;
         if (charge == 1) {
-                return fastScoringMapNL[index];
+            return fastScoringMapNL[index];
         } else {
-                return fastScoringMap[index];
+            return fastScoringMap[index];
         }
     }
+
     /**
      * same as Comet LoadIOns
      *
@@ -720,9 +784,9 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
      */
     @Override
     public boolean isValidMatch() {
-        if (!isValid() )
-        return false;
-        return getBestMatch() !=null;
+        if (!isValid())
+            return false;
+        return getBestMatch() != null;
     }
 
     public ISpectralMatch[] getSpectralMatches() {
@@ -835,8 +899,6 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
 //        throw new UnsupportedOperationException("Fix This"); // ToDo
         return m_ScoreStatistics;
     }
-
-
 
 
     //    @Override

@@ -5,14 +5,12 @@ import com.lordjoe.distributed.hydra.protein.*;
 import com.lordjoe.distributed.hydra.scoring.*;
 import com.lordjoe.distributed.hydra.test.*;
 import org.apache.spark.api.java.*;
-import org.apache.spark.api.java.function.*;
 import org.systemsbiology.xtandem.*;
 import com.lordjoe.distributed.hydra.comet.*;
 import org.systemsbiology.xtandem.ionization.*;
 import org.systemsbiology.xtandem.peptide.*;
 import org.systemsbiology.xtandem.scoring.*;
 import scala.*;
-import scala.Function2;
 
 import java.io.Serializable;
 import java.util.*;
@@ -155,7 +153,13 @@ public class BinChargeMapper implements Serializable {
         return inp.flatMapToPair(new mapPolypeptidesToBins());
     }
 
-    public BinChargeKey[] keysFromChargeMz(int charge, double mz) {
+    /**
+     * used to bin spectra which are sent to more than one bin
+     * @param charge
+     * @param mz
+     * @return
+     */
+    public static BinChargeKey[] keysFromChargeMz(int charge, double mz) {
         List<BinChargeKey> holder = new ArrayList<BinChargeKey>();
         double startMZ = mz - examineWidth;
         int start = BinChargeKey.mzAsInt(startMZ);
@@ -238,7 +242,7 @@ public class BinChargeMapper implements Serializable {
            @Override
            public Iterable<Tuple2<BinChargeKey,IPolypeptide>> doCall(final IPolypeptide pp) throws Exception {
                //    double matchingMass = pp.getMatchingMass();
-               double matchingMass = CometScoringAlgorithm.getCometMetchingMass(pp);
+               double matchingMass = CometScoringAlgorithm.getCometMatchingMass(pp);
 
                if (TestUtilities.isInterestingPeptide(pp))
                    TestUtilities.breakHere();
@@ -272,7 +276,7 @@ public class BinChargeMapper implements Serializable {
         @Override
         public Iterable<Tuple2<BinChargeKey, ITheoreticalSpectrumSet>> doCall(final IPolypeptide pp) throws Exception {
             //    double matchingMass = pp.getMatchingMass();
-            double matchingMass = CometScoringAlgorithm.getCometMetchingMass(pp);
+            double matchingMass = CometScoringAlgorithm.getCometMatchingMass(pp);
 
             if (TestUtilities.isInterestingPeptide(pp))
                 TestUtilities.breakHere();

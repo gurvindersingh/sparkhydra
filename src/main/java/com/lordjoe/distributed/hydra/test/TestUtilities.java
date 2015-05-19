@@ -128,7 +128,7 @@ public class TestUtilities {
             "RLEWENWEYSR",
             "LDEIDMSQELFKEK",
 //            "QEPERNECFLSHKDDSPDLPK",
-//            "NECFLSHKDDSPDLPK",
+            "NECFLSHKDDSPDLPK",
 //            "LKPDPNTLCDEFK",
 //            "RHPYFYAPELLYYANK",
 //            "YNGVFQECCQAEDK",
@@ -321,6 +321,5 @@ public class TestUtilities {
         }
          out.close();
     }
-
 
 }

@@ -868,7 +868,7 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
     public  boolean isPairScored(@Nonnull final IMeasuredSpectrum pScan,@Nonnull  final IPolypeptide peptide)
     {
         //double matchingMass = peptide.getMatchingMass();
-        double matchingMass = CometScoringAlgorithm.getCometMetchingMass(peptide) ;
+        double matchingMass = CometScoringAlgorithm.getCometMatchingMass(peptide) ;
 
          double precursorMass = pScan.getPrecursorMass();
         int precursorCharge = pScan.getPrecursorCharge();
@@ -920,8 +920,8 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
     }
 
 
-    public static double getCometMetchingMass(IPolypeptide pp) {
-        return  pp.getMatchingMass() + 2 * MutableMeasuredSpectrum.PROTON_MASS;
+    public static double getCometMatchingMass(IPolypeptide pp) {
+        return  pp.getMatchingMass() + 2 * MutableMeasuredSpectrum.PROTON_MASS;   // todo WHY DID I THINK I NEEDED to add this
     }
 
 //    /**

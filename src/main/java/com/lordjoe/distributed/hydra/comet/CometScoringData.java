@@ -30,10 +30,10 @@ public class CometScoringData {
     private final float[] m_Weightsx;
     private final float[] m_TmpFastXcorrData;
     private final float[] m_TmpFastXcorrData2;
+     private final float[] m_fFastXcorrDataNL;
     private final float[] m_ScoringFastXcorrData;
-    private final float[] m_fFastXcorrDataNL;
-     private final Map<Integer, Float> fastScoringMap = new HashMap<Integer, Float>();
-    private final Map<Integer, Float> fastScoringMapNL = new HashMap<Integer, Float>();
+//      private final Map<Integer, Float> fastScoringMap = new HashMap<Integer, Float>();
+//    private final Map<Integer, Float> fastScoringMapNL = new HashMap<Integer, Float>();
 
 //    private final CometScoringAlgorithm comet;
 
@@ -45,13 +45,13 @@ public class CometScoringData {
         m_TmpFastXcorrData2 = allocateMemory();
     }
 
-    public Map<Integer, Float> getFastScoringMap() {
-        return fastScoringMap;
-    }
-
-    public Map<Integer, Float> getFastScoringMapNL() {
-        return fastScoringMapNL;
-    }
+//    public Map<Integer, Float> getFastScoringMap() {
+//        return fastScoringMap;
+//    }
+//
+//    public Map<Integer, Float> getFastScoringMapNL() {
+//        return fastScoringMapNL;
+//    }
 
     /**
      * this method is protested to allow testing
@@ -115,8 +115,8 @@ public class CometScoringData {
         Arrays.fill(m_TmpFastXcorrData, 0);
         Arrays.fill(m_TmpFastXcorrData2, 0);
         Arrays.fill(m_ScoringFastXcorrData, 0);
-        fastScoringMap.clear();
-        fastScoringMapNL.clear();
+//        fastScoringMap.clear();
+//        fastScoringMapNL.clear();
     }
 
 

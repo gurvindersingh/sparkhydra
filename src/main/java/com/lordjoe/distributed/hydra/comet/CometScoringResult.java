@@ -80,7 +80,7 @@ public class CometScoringResult implements IScoredScan, IAddable<IScoredScan>, I
         // keep only top   MAX_RETURNED_MATCHES matches
         if(matches.size() > 2 * MAX_RETURNED_MATCHES) {
             // highest scores first
-            matches.sort(new Comparator<PeptideMatchScore>() {
+            Collections.sort(matches,new Comparator<PeptideMatchScore>() {
                 @Override
                 public int compare(PeptideMatchScore o1, PeptideMatchScore o2) {
                     return Double.compare(o2.score, o1.score);

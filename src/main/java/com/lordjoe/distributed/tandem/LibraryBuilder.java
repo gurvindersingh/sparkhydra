@@ -37,7 +37,7 @@ import java.util.*;
  */
 public class LibraryBuilder implements Serializable {
 
-    public static final boolean USE_PARQUET_DATABASE = true;
+    public static final boolean USE_PARQUET_DATABASE = false;
     private final XTandemMain application;
 
     public LibraryBuilder(SparkMapReduceScoringHandler pHandler) {

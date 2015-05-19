@@ -15,6 +15,20 @@ public class Polypeptide implements IPolypeptide, Comparable<IPolypeptide> {
     public static final Random RND = new Random();
 
     /**
+     * true if two pepetides have the same sequence with all Leucene repaced with IsoLeucene
+     * @param pp1
+     * @param pp2
+     * @return
+     */
+    public static boolean equivalentSpectrum(IPolypeptide pp1,IPolypeptide pp2)
+    {
+        String sequence = pp1.getSequence();
+        String sequence2 = pp2.getSequence();
+        String test1 = sequence.replace("L","I"); // leucene and Iso Leucene give the same mass
+        String test2 = sequence2.replace("L","I"); // leucene and Iso Leucene give the same mass
+        return test1.equals(test2);
+    }
+    /**
      * fot testing only
      *
      * @return maka a random peptide
@@ -517,7 +531,9 @@ public class Polypeptide implements IPolypeptide, Comparable<IPolypeptide> {
         if (test == this)
             return true;
 
-        if (!getSequence().equals(test.getSequence()))
+        String sequence = getSequence();
+        String testSequence = test.getSequence();
+        if (!sequence.equals(testSequence))
             return false;
         if (!getId().equals(test.getId()))
             return false;

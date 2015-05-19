@@ -67,10 +67,13 @@ public class SparkSpectrumUtilities {
 
         //     if(path.toLowerCase().endsWith(".mgf"))
         //           return parseAsTextMGF(path,ctx);     this will fail
-        if (path.toLowerCase().endsWith(".mgf"))
+        String lowerCase = path.toLowerCase();
+        if (lowerCase.endsWith(".mgf"))
             return parseAsMGF(path, ctx,application);
-        if (path.toLowerCase().endsWith(".mzxml"))
+
+        if (lowerCase.endsWith(".mzxml"))
             return parseAsMZXML(path, ctx,application);
+
         throw new UnsupportedOperationException("Cannot understand extension " + path);
     }
 
