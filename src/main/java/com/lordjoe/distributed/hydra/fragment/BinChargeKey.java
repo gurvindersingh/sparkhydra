@@ -80,6 +80,7 @@ public class BinChargeKey implements Serializable, Comparable<BinChargeKey> {
     public int hashCode() {
         int result;
         result = mzInt;
+
    //     result = 31 * result + (charge ^ (charge >>> 32));
         return result;
     }

@@ -10,8 +10,8 @@ import org.junit.*;
  */
 public class SparkWordCountTest {
 
-
-    @Test
+    // works but runs too long
+    //@Test
     public void testWordCount() {
          WordCountOperator.validateWordCount(SparkMapReduce.FACTORY);
     }

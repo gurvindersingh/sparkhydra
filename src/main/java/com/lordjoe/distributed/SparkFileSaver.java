@@ -38,6 +38,12 @@ public class SparkFileSaver {
      */
     public static void saveAsFile(@Nonnull Path outPath, @Nonnull JavaRDD<String> data, String header, String footer) {
 
+        if(header == null || header.length()  < 1)
+            header = "  ";
+        if(footer == null || footer.length()  < 1)
+            footer = "  ";
+
+
         String tempPathStr = outPath.toString() + ".temp";
 
         Path tempPath = new Path(tempPathStr);

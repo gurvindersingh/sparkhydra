@@ -7,6 +7,7 @@ import org.systemsbiology.remotecontrol.*;
 import org.systemsbiology.xtandem.*;
 
 import java.io.*;
+import java.net.UnknownHostException;
 
 /**
  * org.systemsbiology.hadoop.HDFSTests
@@ -154,6 +155,9 @@ public class HDFSTests {
         catch (Exception e) {
             Throwable cause = XTandemUtilities.getUltimateCause(e);
             if (cause instanceof EOFException) {   // hdfs not available
+                return;
+            }
+            if (cause instanceof UnknownHostException) {   // host not available
                 return;
             }
             throw new RuntimeException(e);

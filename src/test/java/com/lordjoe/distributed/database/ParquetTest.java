@@ -195,7 +195,7 @@ public class ParquetTest implements  Serializable {
 
         List<Tuple2<TestSpectrum, Integer>> values = result.collect();
         for (Tuple2<TestSpectrum, Integer> value : values) {
-            System.out.println(value._2());
+      //      System.out.println(value._2());
         }
 
     }

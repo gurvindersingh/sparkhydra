@@ -29,6 +29,7 @@ public class SparkFileSaverTest {
            lines[i] = lines[i].trim();
          }
         JavaSparkContext currentContext = SparkUtilities.getCurrentContext();
+
         JavaRDD<String> gLines = currentContext.parallelize(Arrays.asList(lines));
 
         SparkFileSaver.saveAsFile(GETTYSBURG_FILE_NAME,gLines);
