@@ -26,6 +26,7 @@
 	<note type="input" label="comet.mass_tolerance">30</note> <!-- value for High resolution -->
 	<note type="input" label="comet.max_fragment_charge">3</note> <!-- max charge in theoretical spectrum -->
 	<note type="input" label="org.systemsbiology.xtandem.HardCodeModifications">false</note> <!-- no hard coded mods -->
+	<note type="input" label="comet.MaxPeptideListSize">10000</note>
 
 
 <note>spectrum conditioning parameters</note>
