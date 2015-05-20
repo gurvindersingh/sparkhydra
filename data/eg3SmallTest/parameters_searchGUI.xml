@@ -53,7 +53,7 @@
 		<note></note>
 	<!-- <note type="input" label="residue, potential modification mass">79.966331@T,79.966331@S,57.021464@C,15.994915@M,79.966331@Y</note>
 		<note>phosphorylation of t,phosphorylation of s,carbamidomethyl c,oxidation of m,phosphorylation of y</note> -->
-	<note type="input" label="residue, potential modification mass">15.994915@M</note>
+	<note type="input" label="residue, potential modification mass">15.9949@M</note>
 		<note>phosphorylation of t,phosphorylation of s,carbamidomethyl c,oxidation of m,phosphorylation of y</note>
 	<note type="input" label="residue, potential modification motif"></note>
 		<note>The format of this parameter is similar to residue, modification mass,
