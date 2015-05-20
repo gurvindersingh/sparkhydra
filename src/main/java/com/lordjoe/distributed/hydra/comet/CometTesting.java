@@ -20,12 +20,12 @@ import java.util.*;
 public class CometTesting {
 
 
-    private static  Map<Integer, List<UsedSpectrum>> cometScoredSpectra;
+    private static Map<Integer, List<UsedSpectrum>> cometScoredSpectra;
 
-    public static void readCometScoredSpectra(String file)  {
+    public static void readCometScoredSpectra(String file) {
         File f = new File(file);
-        if(!f.exists())
-          return;
+        if (!f.exists())
+            return;
         try {
             cometScoredSpectra = UsedSpectrum.readUsedSpectra(new FileInputStream(f));
         } catch (FileNotFoundException e) {
@@ -33,16 +33,15 @@ public class CometTesting {
         }
     }
 
-    public static BinChargeKey getPeptideKey(IPolypeptide pp)
-    {
-         double matchingMass = CometScoringAlgorithm.getCometMatchingMass(pp);
+    public static BinChargeKey getPeptideKey(IPolypeptide pp) {
+        double matchingMass = CometScoringAlgorithm.getCometMatchingMass(pp);
         BinChargeKey ppKey = BinChargeMapper.oneKeyFromChargeMz(1, matchingMass);
         return ppKey;
     }
 
 
-    public static int validatePeptideList(IMeasuredSpectrum scan,List<IPolypeptide> scoredPeptides) {
-        if(cometScoredSpectra == null)
+    public static int validatePeptideList(IMeasuredSpectrum scan, List<IPolypeptide> scoredPeptides) {
+        if (cometScoredSpectra == null)
             return -1;   // not tracking
         String id = scan.getId();
         int index = Integer.parseInt(id);
@@ -58,7 +57,7 @@ public class CometTesting {
             for (UsedSpectrum usedSpectrum : notMatching) {
                 BinChargeKey testKey = getPeptideKey(usedSpectrum.peptide);
 
-                if(UsedSpectrum.equivalentPeptide(usedSpectrum.peptide,pp))  {
+                if (UsedSpectrum.equivalentPeptide(usedSpectrum.peptide, pp)) {
                     matching.add(usedSpectrum);
                     break;
                 }
@@ -71,16 +70,15 @@ public class CometTesting {
         BinChargeKey[] keys = BinChargeMapper.keysFromChargeMz(1, scanMass);
 
         for (UsedSpectrum usedSpectrum : notMatching) {
-            BinChargeKey testKey = BinChargeMapper.oneKeyFromChargeMz(1,usedSpectrum.peptideMass);
+            BinChargeKey testKey = BinChargeMapper.oneKeyFromChargeMz(1, usedSpectrum.peptideMass);
 
             System.out.println("did not score " + usedSpectrum);
         }
         return notMatching.size();
     }
 
-    public static int validatePeptideScore(IMeasuredSpectrum scan,IPolypeptide pp,double score)
-    {
-        if(cometScoredSpectra == null)
+    public static int validatePeptideScore(IMeasuredSpectrum scan, IPolypeptide pp, double score) {
+        if (cometScoredSpectra == null)
             return -1;   // not tracking
         String id = scan.getId();
         int index = Integer.parseInt(id);
@@ -88,7 +86,7 @@ public class CometTesting {
 
         double matchingMass = CometScoringAlgorithm.getCometMatchingMass(pp);
         //    double matchingMass = pp.getMatchingMass();
-         BinChargeKey ppKey = getPeptideKey(pp);
+        BinChargeKey ppKey = getPeptideKey(pp);
         //    double matchingMass = pp.getMatchingMass();
         double scanMass = scan.getPrecursorMass();   // todo decide whether mass or mz is better
         BinChargeKey[] keys = BinChargeMapper.keysFromChargeMz(1, scanMass);
@@ -96,29 +94,50 @@ public class CometTesting {
         for (UsedSpectrum usedSpectrum : usedSpectrums) {
             BinChargeKey testKey = getPeptideKey(usedSpectrum.peptide);
 
-            if(UsedSpectrum.equivalentPeptide(usedSpectrum.peptide,pp))  {
+            if (UsedSpectrum.equivalentPeptide(usedSpectrum.peptide, pp)) {
 
                 double comet_score = usedSpectrum.score;
-                if(Math.abs(comet_score - score) < 0.01)
+                if (Math.abs(comet_score - score) < 0.01)
                     return 0;  // all OK
                 // todo fix
                 return 1; // bad score
             }
         }
         return 2;   // not scored
-      //  throw new IllegalStateException("comet did not score peptide " + pp);
+        //  throw new IllegalStateException("comet did not score peptide " + pp);
 
     }
 
-    public static void validateIndex(IMeasuredSpectrum scan)
-    {
+    /**
+     * for debugging - look up from  UsedSpectra.txt what the comet score is
+     * @param scan
+     * @param pp
+     * @return
+     */
+    public static double getCometScore(IMeasuredSpectrum scan, IPolypeptide pp) {
+        if (cometScoredSpectra == null)
+            return 0;   // not tracking
+        String id = scan.getId();
+        int index = Integer.parseInt(id);
+        List<UsedSpectrum> usedSpectrums = cometScoredSpectra.get(index);
+
+        for (UsedSpectrum usedSpectrum : usedSpectrums) {
+            if (UsedSpectrum.equivalentPeptide(usedSpectrum.peptide, pp)) {
+                double comet_score = usedSpectrum.score;
+                return comet_score; // bad score
+            }
+        }
+        return 0;   // not scored
+    }
+
+    public static void validateIndex(IMeasuredSpectrum scan) {
         String id = scan.getId();
         int index = Integer.parseInt(id);
 
-        if(cometScoredSpectra == null)
+        if (cometScoredSpectra == null)
             return;
         List<UsedSpectrum> usedSpectrums = cometScoredSpectra.get(index);
-        if(usedSpectrums.isEmpty())
+        if (usedSpectrums.isEmpty())
             throw new IllegalStateException("Comet did not score Spectrum " + index);
 
     }
@@ -127,7 +146,7 @@ public class CometTesting {
         if (Math.abs(expected - value) > 0.0001) {
             StringBuilder sb = new StringBuilder();
             sb.append("Unexpected value - expected " + expected + " got " + value);
-             throw new IllegalStateException(sb.toString()); // ToDo change
+            throw new IllegalStateException(sb.toString()); // ToDo change
         }
     }
 
@@ -190,7 +209,7 @@ public class CometTesting {
         for (int i = 0; i < Math.min(cometPeaks.size(), seenPeaks.size()); i++) {
             SpectrumBinnedScore comet = cometPeaks.get(i);
             SpectrumBinnedScore seen = seenPeaks.get(i);
-             boolean equivalent = seen.equivalent(comet);
+            boolean equivalent = seen.equivalent(comet);
             if (equivalent)
                 continue;
             throw new IllegalStateException("problem"); // ToDo change
@@ -300,6 +319,7 @@ public class CometTesting {
     /**
      * validate that members of an array with values > 0.001 match a resource written by
      * comet
+     *
      * @param testData
      * @param resourceToCompare
      */
@@ -307,33 +327,36 @@ public class CometTesting {
         List<SpectrumBinnedScore> holder = new ArrayList<SpectrumBinnedScore>();
         for (int i = 0; i < testData.length; i++) {
             float v = testData[i];
-            if(Math.abs(v) > 0.001)
-                holder.add(new SpectrumBinnedScore(i,testData[i]));
+            if (Math.abs(v) > 0.001)
+                holder.add(new SpectrumBinnedScore(i, testData[i]));
         }
         List<SpectrumBinnedScore> cometPeaks = SpectrumBinnedScore.fromResource(resourceToCompare);
-          Collections.sort(cometPeaks);
+        Collections.sort(cometPeaks);
         comparePeakSets(cometPeaks, holder);
 
     }
 
     /**
-     *  return values from a resource file as a map with index as key
+     * return values from a resource file as a map with index as key
+     *
      * @param resourceToCompare
      */
-    public static Map<Integer,SpectrumBinnedScore> getResourceMap( String resourceToCompare) {
+    public static Map<Integer, SpectrumBinnedScore> getResourceMap(String resourceToCompare) {
         List<SpectrumBinnedScore> cometPeaks = SpectrumBinnedScore.fromResource(resourceToCompare);
         return asMap(cometPeaks);
     }
+
     /**
-    *  return make a list of peaks into a map
-    * @param cometPeaks
+     * return make a list of peaks into a map
+     *
+     * @param cometPeaks
      */
-    public static Map<Integer,SpectrumBinnedScore> asMap(List<SpectrumBinnedScore> cometPeaks) {
-        Map<Integer,SpectrumBinnedScore> ret = new HashMap<Integer, SpectrumBinnedScore>();
+    public static Map<Integer, SpectrumBinnedScore> asMap(List<SpectrumBinnedScore> cometPeaks) {
+        Map<Integer, SpectrumBinnedScore> ret = new HashMap<Integer, SpectrumBinnedScore>();
         for (SpectrumBinnedScore cometPeak : cometPeaks) {
-            ret.put(cometPeak.bin,cometPeak);
+            ret.put(cometPeak.bin, cometPeak);
         }
-         return ret;
+        return ret;
 
     }
 

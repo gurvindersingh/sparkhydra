@@ -14,7 +14,7 @@ import java.io.*;
 import java.util.*;
 
 /**
- * com.lordjoe.distributed.hydra.comet.Co
+ * com.lordjoe.distributed.hydra.comet.CometScoringSpeedTest
  *
  * @author Steve Lewis
  * @date 5/12/2015

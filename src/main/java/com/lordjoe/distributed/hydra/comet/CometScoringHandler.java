@@ -213,7 +213,12 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
                     }
                     else {
                         if(testResult == 1)  // score not same
-                            badScore.add(ts);
+                        {
+                            // repeat to look in detail
+                            double cometScore = CometTesting.getCometScore(scan,ts.getPeptide());
+                            xcorr = comet.doXCorrWithData(ts, scorer, counter, scan, fastXcorrDataMap, fastXcorrDataNL);
+                             badScore.add(ts);
+                        }
                         if(testResult == 2)  // did not score
                             notScored.add(ts);
                     }
