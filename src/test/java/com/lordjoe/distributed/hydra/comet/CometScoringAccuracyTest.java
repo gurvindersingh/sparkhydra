@@ -9,14 +9,13 @@ import org.systemsbiology.xtandem.XTandemMain;
 import org.systemsbiology.xtandem.ionization.IonUseCounter;
 import org.systemsbiology.xtandem.peptide.IPolypeptide;
 import org.systemsbiology.xtandem.peptide.Polypeptide;
+import org.systemsbiology.xtandem.scoring.CometHyperScoreStatistics;
+import org.systemsbiology.xtandem.scoring.HyperScoreStatistics;
 import org.systemsbiology.xtandem.scoring.Scorer;
 import org.systemsbiology.xtandem.testing.MZXMLReader;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * com.lordjoe.distributed.hydra.comet.CometScoringSpeedTest
@@ -25,6 +24,64 @@ import java.util.Map;
  * @date 5/12/2015
  */
 public class CometScoringAccuracyTest {
+
+    public static class CompareByScore implements Comparator<UsedSpectrum>    {
+
+        @Override
+        public int compare(UsedSpectrum o1, UsedSpectrum o2) {
+            int ret = Double.compare(o2.score,o1.score);
+            if(ret != 0 )
+                return ret;
+             return o1.peptide.toString().compareTo(o2.peptide.toString());
+        }
+    }
+  //  @Test
+    public void testExpectedValue()
+    {
+        final Class<CometScoringAccuracyTest> cls = CometScoringAccuracyTest.class;
+        InputStream istr = cls.getResourceAsStream("/UsedSpectraComet.txt");
+        Map<Integer, List<UsedSpectrum>> spectraMap = UsedSpectrum.readUsedSpectra(istr);
+        for (Integer id : spectraMap.keySet()) {
+            // this case has a good expected value
+            List<UsedSpectrum> allused = spectraMap.get(id);
+
+            double maxScore = 0;
+            CometHyperScoreStatistics hyperscore = new CometHyperScoreStatistics();
+            for (UsedSpectrum usedSpectrum : allused) {
+                double score = usedSpectrum.score;
+                maxScore = Math.max(maxScore,score);
+                System.out.println(score);
+                hyperscore.add(score);
+            }
+            double expectedValue = hyperscore.getExpectedValue(maxScore);
+            if(id == 8852)   {
+                Assert.assertEquals(1.407,maxScore,0.01);
+                Assert.assertEquals(5.07E-004,expectedValue,0.001);
+            }
+
+        }
+
+        // this case has a good expected value
+        List<UsedSpectrum> allused = spectraMap.get(8852);
+
+        // sort by score
+        Collections.sort(allused,new CompareByScore());
+
+
+
+        /*
+         <search_score name="xcorr" value="1.407"/>
+    <search_score name="deltacn" value="0.915"/>
+    <search_score name="deltacnstar" value="0.000"/>
+    <search_score name="spscore" value="82.6"/>
+    <search_score name="sprank" value="1"/>
+    <search_score name="expect" value="5.07E-004"/>
+
+         */
+
+
+
+    }
 
     @Test
     public void testAccuracy() {
@@ -69,7 +126,6 @@ public class CometScoringAccuracyTest {
 
             double cometScore = testCase.score;
             CometTheoreticalBinnedSet ts = (CometTheoreticalBinnedSet) scorer.generateSpectrum(pp);
-            IonUseCounter counter = new IonUseCounter();
             double xcorr = CometScoringHandler.doRealScoring(scan, scorer, ts, application);
             maxScore = Math.max(xcorr, maxScore);
 

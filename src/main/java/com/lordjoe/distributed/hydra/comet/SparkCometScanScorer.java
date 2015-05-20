@@ -570,7 +570,7 @@ public class SparkCometScanScorer {
         // debugging code set to  check data
         if(SparkUtilities.isLocal())    {
             String usedSpactra =  SparkUtilities.buildPath("UsedSpectra.txt");
-            CometTesting.readCometScoredSpectra(usedSpactra);
+        //    CometTesting.readCometScoredSpectra(usedSpactra);
         }
 
         MZPartitioner partitioner = new MZPartitioner();
