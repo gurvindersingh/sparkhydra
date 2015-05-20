@@ -36,7 +36,7 @@ public class CometParameterTests {
         CometScoringAlgorithm comet = (CometScoringAlgorithm) application.getAlgorithms()[0];
         comet.configure(application);
 
-        IMeasuredSpectrum spectrum = generateTestSpectrum();
+        IMeasuredSpectrum spectrum  = generateTestSpectrum();
         testSpectrumPeaks(spectrum);
 
         int charge = spectrum.getPrecursorCharge();
@@ -52,7 +52,7 @@ public class CometParameterTests {
          double matchingMass = CometScoringAlgorithm.getCometMatchingMass(pp);
          BinChargeKey peptideKey = BinChargeMapper.oneKeyFromChargeMz(1, matchingMass);
 
-        BinChargeKey[] spectrumKeys = BinChargeMapper.keysFromChargeMz(charge, matchingMass);
+        BinChargeKey[] spectrumKeys = BinChargeMapper.keysFromSpectrum(spectrum) ;
 
         boolean willScore = false;
         for (int i = 0; i < spectrumKeys.length; i++) {

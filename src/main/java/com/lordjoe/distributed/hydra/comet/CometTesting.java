@@ -66,8 +66,7 @@ public class CometTesting {
         // now leave the ones we did not score
         notMatching.removeAll(matching);
 
-        double scanMass = scan.getPrecursorMass();   // todo decide whether mass or mz is better
-        BinChargeKey[] keys = BinChargeMapper.keysFromChargeMz(1, scanMass);
+         BinChargeKey[] keys = BinChargeMapper.keysFromSpectrum(scan);
 
         for (UsedSpectrum usedSpectrum : notMatching) {
             BinChargeKey testKey = BinChargeMapper.oneKeyFromChargeMz(1, usedSpectrum.peptideMass);
@@ -88,8 +87,7 @@ public class CometTesting {
         //    double matchingMass = pp.getMatchingMass();
         BinChargeKey ppKey = getPeptideKey(pp);
         //    double matchingMass = pp.getMatchingMass();
-        double scanMass = scan.getPrecursorMass();   // todo decide whether mass or mz is better
-        BinChargeKey[] keys = BinChargeMapper.keysFromChargeMz(1, scanMass);
+        BinChargeKey[] keys = BinChargeMapper.keysFromSpectrum(scan);
 
         for (UsedSpectrum usedSpectrum : usedSpectrums) {
             BinChargeKey testKey = getPeptideKey(usedSpectrum.peptide);

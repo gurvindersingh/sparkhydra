@@ -223,7 +223,7 @@ public class SparkCometScanScorer {
         return new CometScoringHandler(configStr, false);
     }
 
-    private static void buildDesiredScoring(final String[] pArgs) {
+    public static void buildDesiredScoring(final String[] pArgs) {
         if (pArgs.length > TANDEM_CONFIG_INDEX + 1) {
             String fileName = pArgs[TANDEM_CONFIG_INDEX + 1];
             File file = new File(fileName);
