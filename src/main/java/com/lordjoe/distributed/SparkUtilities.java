@@ -1547,7 +1547,9 @@ public class SparkUtilities implements Serializable {
 
         }
         catch (Exception e) {
-            throw new RuntimeException(e); // should never happen
+            //throw new RuntimeException(e); // should never happen
+            macAddress = "00-90-08-ab-ed-00";
+            return macAddress;
         }
     }
 

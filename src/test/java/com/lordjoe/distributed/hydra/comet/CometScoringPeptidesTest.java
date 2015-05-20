@@ -40,8 +40,8 @@ import java.util.*;
  */
 public class CometScoringPeptidesTest {
 
-    public static void validatePolypeptideSet(Set<IPolypeptide> foiundPeptides, List<UsedSpectrum> usedSpectrums) {
-        Set<IPolypeptide> unused = new HashSet<IPolypeptide>(foiundPeptides);
+    public static void validatePolypeptideSet(Set<IPolypeptide> foundPeptides, List<UsedSpectrum> usedSpectrums) {
+        Set<IPolypeptide> unused = new HashSet<IPolypeptide>(foundPeptides);
 //        for (UsedSpectrum usedSpectrum : usedSpectrums) {
 //            unused.add(usedSpectrum.peptide);
 //        }
@@ -49,7 +49,7 @@ public class CometScoringPeptidesTest {
         for (UsedSpectrum usedSpectrum : usedSpectrums) {
             IPolypeptide peptide = usedSpectrum.peptide;
             IPolypeptide found = null;
-            for (IPolypeptide test : foiundPeptides) {
+            for (IPolypeptide test : foundPeptides) {
                 if(peptide.equivalent(test)) {
                     found = test;
                     break;
@@ -59,10 +59,21 @@ public class CometScoringPeptidesTest {
                 unfound.add(peptide);
             else
                 unused.remove(found);
+            //YITMTAQVMMKGYR
+            //YITM[15.995]TAQVM[15.995]M[15.995]KGYR
 
+            /*
+            Theoretical ones
+            VGTHTRQHTIFNSSR
+            YITM[15.995]TAQVM[15.995]M[15.995]KGYR
+            RFKLDHSVSSTNGHR
+            NMFDQIAQHLPLWK
+            LSEHCRLYFGALFK
+             */
           }
         int numberUnfound = unfound.size();
         int numberUnused = unused.size();
+        System.out.println("Not found: "+numberUnfound+" Not used: "+numberUnused);
     }
 
     public static void main(String[] args) {
@@ -116,7 +127,7 @@ public class CometScoringPeptidesTest {
         }
 
 
-        Set<IPolypeptide> foiundPeptides = new HashSet<IPolypeptide>();
+        Set<IPolypeptide> foundPeptides = new HashSet<IPolypeptide>();
 
 
         JavaPairRDD<BinChargeKey, HashMap<String, IPolypeptide>> keyedPeptides = SparkCometScanScorer.getBinChargePeptideHash(sparkProperties, usedBins, handler);
@@ -125,12 +136,14 @@ public class CometScoringPeptidesTest {
         for (Tuple2<BinChargeKey, HashMap<String, IPolypeptide>> tpl : collect) {
             Map<String, IPolypeptide> hm = tpl._2();
             for (String s : hm.keySet()) {
-                foiundPeptides.add(hm.get(s));
+                foundPeptides.add(hm.get(s));
             }
         }
 
+        System.out.println("Hydra peptides: "+foundPeptides.size()+" Comet peptides: "+usedSpectrums.size());
+
         Set<IPolypeptide> toScore = new HashSet<IPolypeptide>();
-        for (IPolypeptide pp : foiundPeptides) {
+        for (IPolypeptide pp : foundPeptides) {
             CometTheoreticalBinnedSet ts = (CometTheoreticalBinnedSet) scorer.generateSpectrum(pp);
             ITheoreticalSpectrum[] spectra = ts.getSpectra();
             for (int i = 0; i < spectra.length; i++) {
@@ -139,10 +152,14 @@ public class CometScoringPeptidesTest {
             }
         }
 
-        validatePolypeptideSet(foiundPeptides,usedSpectrums);
+        validatePolypeptideSet(foundPeptides,usedSpectrums);
 
         validatePolypeptideSet(toScore,usedSpectrums);
 
+        System.out.println("we finished the test");
+        /*for (IPolypeptide foundPeptide : foundPeptides) {
+            System.out.println(foundPeptide);
+        }*/
 
 
     }

@@ -595,8 +595,8 @@ public class SparkMapReduceScoringHandler implements Serializable {
         //clearAllParams(getApplication());
 
         LibraryBuilder libraryBuilder = new LibraryBuilder(this);
-        //return libraryBuilder.buildLibrary(maxProteins);
-        return libraryBuilder.getPolypeptide(maxProteins);
+        return libraryBuilder.buildLibrary(maxProteins);
+        //return libraryBuilder.getPolypeptide(maxProteins);
     }
 
     private static class ToScoringTuples extends AbstractLoggingPairFunction<Tuple2<BinChargeKey, Tuple2<IMeasuredSpectrum, IPolypeptide>>, String, Tuple2<IMeasuredSpectrum, IPolypeptide>> {

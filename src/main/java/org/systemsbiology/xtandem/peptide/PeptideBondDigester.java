@@ -167,7 +167,7 @@ public class PeptideBondDigester extends PeptideDigester {
     @Override
     public IPolypeptide[] digest(final IPolypeptide in, final Object... addedData) {
         IPolypeptide[] pps = digestWithoutFilter( in,  addedData) ;
-         return filterIgnoredPeptides(pps);
+        return filterIgnoredPeptides(pps);
     }
 
     public static IPolypeptide[] filterIgnoredPeptides(IPolypeptide[] in) {
