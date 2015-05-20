@@ -1,5 +1,6 @@
 package org.systemsbiology.xtandem.ionization;
 
+import com.lordjoe.distributed.hydra.test.TestUtilities;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.peptide.*;
 
@@ -11,6 +12,7 @@ import org.systemsbiology.xtandem.peptide.*;
 public class PeptideIon implements IPeptideIon, ITheoreticalPeak {
     public static final PeptideIon[] EMPTY_ARRAY = {};
 
+    public static final IPolypeptide TEST_CASE = Polypeptide.fromString("NIKPECP");
 
     private final org.systemsbiology.xtandem.ionization.IonType m_Type;
     private final IPolypeptide m_Peptide;
@@ -20,6 +22,9 @@ public class PeptideIon implements IPeptideIon, ITheoreticalPeak {
     private final int m_BinnedIndexInParent;
 
     public PeptideIon(final IPolypeptide pPetide, final org.systemsbiology.xtandem.ionization.IonType pType, int charge, double massChargeRatio, int index, int binnedIndex) {
+        if(TEST_CASE.equivalent(pPetide))
+            TestUtilities.breakHere();
+
         m_Peptide = pPetide;
         m_Type = pType;
         m_Charge = charge;

@@ -333,13 +333,13 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
 
         final Map<Integer, Float> fastScoringMap = scorer.getFastScoringMap();
 
-        float[] fastXcorrDataMap = scoringData.getTmpFastXcorrData();
+        float[] fastXcorrDataMap = scoringData.getScoringFastXcorrData();
         for (Integer i : fastScoringMap.keySet()) {
             fastXcorrDataMap[i] = fastScoringMap.get(i);
         }
 
         final Map<Integer, Float> fastScoringMapNL = scorer.getFastScoringMapNL();   // we used to get from commented scoring data
-        float[] fastXcorrDataNL = scoringData.getTmpFastXcorrData2();
+        float[] fastXcorrDataNL = scoringData.getFastXcorrDataNL();
         for (Integer i : fastScoringMapNL.keySet()) {
             fastXcorrDataNL[i] = fastScoringMapNL.get(i);
         }
@@ -357,7 +357,7 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
                 continue;
 
             float value = scorer.getScoredData(fastXcorrDataMap, fastXcorrDataNL,index, peak.charge);
-            if (Math.abs(value) > 0.001) {
+            if (Math.abs(value) > 0.0001) {
                 xcorr += value;
                 scoredPeaks++;
                 //if (used != null)
@@ -561,6 +561,22 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
             TestUtilities.breakHere();
 
         return ret;
+    }
+
+    /**
+     * invert the above so we can test
+     * @param bin
+     * @return
+     */
+    public double fromBin(int bin)
+    {
+        double ret = bin - m_OneMinusBinOffset;
+        ret *=   getBinTolerance();
+        return ret;
+    }
+
+    public static double getDefaultBinWidth() {
+        return DEFAULT_BIN_WIDTH;
     }
 
     /**

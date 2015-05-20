@@ -288,7 +288,8 @@ public class PeptideSpectrum implements ITheoreticalSpectrum {
 
                 // peptide bonds < 0 is a 0 length sequence
                 if (frags[1].getNumberPeptideBonds() >= 0) {
-                    double sequenceMass2 = m_Utilities.getSequenceMass(frags[1]);
+                    double sequenceMass2 = frags[1].getMass();
+               //     double sequenceMass2 = m_Utilities.getSequenceMass(frags[1]);
                     IonType otherType = type.getPair();
                     added = m_Utilities.getAddedMass(otherType);
                     sequenceMass2 += added;

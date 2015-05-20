@@ -121,6 +121,10 @@ public class CometScoringAccuracyTest {
         int numberInCorrect = 0;
         int numberTested = used.size();
 
+        List<CometTheoreticalBinnedSet> badlyScored = new ArrayList<CometTheoreticalBinnedSet>();
+        List<UsedSpectrum> badlyScoredExpected = new ArrayList<UsedSpectrum>();
+
+
         for (UsedSpectrum testCase : used) {
             IPolypeptide pp = testCase.peptide;
 
@@ -133,11 +137,30 @@ public class CometScoringAccuracyTest {
                 numberCorrect++;
              }
             else {
+                badlyScoredExpected.add(testCase);
+                badlyScored.add(ts);
                 numberInCorrect++;
             }
 
 
+
         }
+
+        // now look at the bad cases in detail
+        int index = 0;
+        for (UsedSpectrum usedSpectrum : badlyScoredExpected) {
+            CometTheoreticalBinnedSet tsx_old = badlyScored.get(index++);
+            double xcorr_repeat = CometScoringHandler.doRealScoring(scan, scorer, tsx_old, application);
+            double score = usedSpectrum.score;
+            if(Math.abs(xcorr_repeat - score) < 0.1)
+                continue;
+
+
+            IPolypeptide pPeptide = tsx_old.getPeptide();
+            CometTheoreticalBinnedSet tsx = (CometTheoreticalBinnedSet) scorer.generateSpectrum(pPeptide);
+           double xcorr_repeat2 = CometScoringHandler.doRealScoring(scan, scorer, tsx, application);
+        }
+
         Assert.assertEquals("Missed after " + numberCorrect + " of " + numberTested,numberTested,numberCorrect);
 
     }
