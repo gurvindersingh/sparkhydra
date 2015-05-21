@@ -14,6 +14,7 @@ import org.systemsbiology.xtandem.scoring.*;
 import scala.*;
 
 import java.lang.*;
+import java.lang.Double;
 import java.lang.Float;
 import java.util.*;
 
@@ -88,17 +89,19 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
             // in this section we pregenerate data for a spectrum and reuse it
             scoringData.clearData();
 
-            final Map<Integer, java.lang.Float> fastScoringMap = scan.getFastScoringMap();
+            final Map<Integer, java.lang.Double> fastScoringMap = scan.getFastScoringMap();
 
             float[] fastXcorrDataMap = scoringData.getTmpFastXcorrData();
             for (Integer i : fastScoringMap.keySet()) {
-                fastXcorrDataMap[i] = fastScoringMap.get(i);
+                double aDouble = fastScoringMap.get(i);
+                fastXcorrDataMap[i] = (float) aDouble;
             }
 
-            final Map<Integer, Float> fastScoringMapNL = scan.getFastScoringMapNL();   // we used to get from commented scoring data
+            final Map<Integer, java.lang.Double> fastScoringMapNL = scan.getFastScoringMapNL();   // we used to get from commented scoring data
             float[] fastXcorrDataNL = scoringData.getTmpFastXcorrData2();
             for (Integer i : fastScoringMapNL.keySet()) {
-                fastXcorrDataNL[i] = fastScoringMapNL.get(i);
+                double aDouble = fastScoringMapNL.get(i);
+                fastXcorrDataNL[i] = (float) aDouble;
             }
             // ===============================
 
@@ -172,17 +175,19 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
 
                  CometTesting.validateIndex(scan);
 
-                final Map<Integer, java.lang.Float> fastScoringMap = scan.getFastScoringMap();
+                final Map<Integer, java.lang.Double> fastScoringMap = scan.getFastScoringMap();
 
                 float[] fastXcorrDataMap = scoringData.getTmpFastXcorrData();
                 for (Integer i : fastScoringMap.keySet()) {
-                    fastXcorrDataMap[i] = fastScoringMap.get(i);
+                    double aDouble = fastScoringMap.get(i);
+                    fastXcorrDataMap[i] = (float)aDouble;
                 }
 
-                final Map<Integer, Float> fastScoringMapNL = scan.getFastScoringMapNL();   // we used to get from commented scoring data
+                final Map<Integer, Double> fastScoringMapNL = scan.getFastScoringMapNL();   // we used to get from commented scoring data
                 float[] fastXcorrDataNL = scoringData.getTmpFastXcorrData2();
                 for (Integer i : fastScoringMapNL.keySet()) {
-                    fastXcorrDataNL[i] = fastScoringMapNL.get(i);
+                    double aDouble = fastScoringMapNL.get(i);
+                    fastXcorrDataNL[i] = (float)aDouble;
                 }
                 // ===============================
 
@@ -202,6 +207,10 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
                 for (CometTheoreticalBinnedSet ts : holder) {
                     IonUseCounter counter = new IonUseCounter();
                     double xcorr = comet.doXCorrWithData(ts, scorer, counter, scan, fastXcorrDataMap, fastXcorrDataNL);
+
+                    if(xcorr > 0.5) {
+                        System.out.println("\n" +scan.getId() + " " + ts.getPeptide() + " " + xcorr);
+                    }
                     numberScored++;
                     maxScore = Math.max(xcorr, maxScore);
 
@@ -284,17 +293,19 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
             // in this section we pregenerate data for a spectrum and reuse it
             scoringData.clearData();
 
-            final Map<Integer, java.lang.Float> fastScoringMap = scan.getFastScoringMap();
+            final Map<Integer, java.lang.Double> fastScoringMap = scan.getFastScoringMap();
 
             float[] fastXcorrDataMap = scoringData.getTmpFastXcorrData();
             for (Integer i : fastScoringMap.keySet()) {
-                fastXcorrDataMap[i] = fastScoringMap.get(i);
+                double aDouble = fastScoringMap.get(i);
+                fastXcorrDataMap[i] = (float)aDouble;
             }
 
-            final Map<Integer, Float> fastScoringMapNL = scan.getFastScoringMapNL();   // we used to get from commented scoring data
+            final Map<Integer, java.lang.Double> fastScoringMapNL = scan.getFastScoringMapNL();   // we used to get from commented scoring data
             float[] fastXcorrDataNL = scoringData.getTmpFastXcorrData2();
             for (Integer i : fastScoringMapNL.keySet()) {
-                fastXcorrDataNL[i] = fastScoringMapNL.get(i);
+                double aDouble = fastScoringMapNL.get(i);
+                fastXcorrDataNL[i] = (float)aDouble;
             }
             // ===============================
 

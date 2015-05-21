@@ -491,8 +491,7 @@ public class Polypeptide implements IPolypeptide, Comparable<IPolypeptide> {
         for (int i = 0; i < m_Sequence.length() - 1; i++) {
             char c = m_Sequence.charAt(i);
             if (c == 'R' || c == 'K') {
-                // This seems fishy as m_Sequence.charAt(i) can ever be P ?
-                if ('P' != m_Sequence.charAt(i))
+                  if ('P' != m_Sequence.charAt(i + 1))
                     missedCleavages++;
             }
         }

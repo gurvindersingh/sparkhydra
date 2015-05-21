@@ -73,17 +73,19 @@ public class CometScoringSpeedTest {
         // in this section we pregenerate data for a spectrum and reuse it
         scoringData.clearData();
 
-        final Map<Integer, Float> fastScoringMap = scan.getFastScoringMap();
+        final Map<Integer, Double> fastScoringMap = scan.getFastScoringMap();
 
         float[] fastXcorrDataMap = scoringData.getTmpFastXcorrData();
         for (Integer i : fastScoringMap.keySet()) {
-            fastXcorrDataMap[i] = fastScoringMap.get(i);
+           double aDouble = fastScoringMap.get(i);
+            fastXcorrDataMap[i] = (float)aDouble;
         }
 
-        final Map<Integer, Float> fastScoringMapNL = scan.getFastScoringMapNL();   // we used to get from commented scoring data
+        final Map<Integer, Double> fastScoringMapNL = scan.getFastScoringMapNL();   // we used to get from commented scoring data
         float[] fastXcorrDataNL = scoringData.getTmpFastXcorrData2();
         for (Integer i : fastScoringMapNL.keySet()) {
-            fastXcorrDataNL[i] = fastScoringMapNL.get(i);
+            double aDouble = fastScoringMapNL.get(i);
+            fastXcorrDataNL[i] = (float)aDouble;
         }
 
 

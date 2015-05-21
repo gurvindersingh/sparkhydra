@@ -131,7 +131,10 @@ public class CometScoringAccuracyTest {
             double cometScore = testCase.score;
             CometTheoreticalBinnedSet ts = (CometTheoreticalBinnedSet) scorer.generateSpectrum(pp);
             double xcorr = CometScoringHandler.doRealScoring(scan, scorer, ts, application);
-            maxScore = Math.max(xcorr, maxScore);
+
+
+            if(maxScore < xcorr)
+                maxScore = Math.max(xcorr, maxScore);
 
             if(Math.abs(cometScore - xcorr) < 0.01)   {
                 numberCorrect++;

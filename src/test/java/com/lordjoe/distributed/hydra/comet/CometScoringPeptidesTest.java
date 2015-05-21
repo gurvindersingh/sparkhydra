@@ -22,6 +22,7 @@ import org.systemsbiology.xtandem.ionization.ITheoreticalSpectrum;
 import org.systemsbiology.xtandem.ionization.ITheoreticalSpectrumSet;
 import org.systemsbiology.xtandem.ionization.IonUseCounter;
 import org.systemsbiology.xtandem.peptide.IPolypeptide;
+import org.systemsbiology.xtandem.peptide.Polypeptide;
 import org.systemsbiology.xtandem.pepxml.PepXMLWriter;
 import org.systemsbiology.xtandem.scoring.IScoredScan;
 import org.systemsbiology.xtandem.scoring.Scorer;
@@ -125,6 +126,8 @@ public class CometScoringPeptidesTest {
             BinChargeKey key = keys[i];
             usedBins.add(key.getMzInt());
         }
+
+        IPolypeptide testPeptide = Polypeptide.fromString("YITMTAQVMMKGYR");
 
 
         Set<IPolypeptide> foundPeptides = new HashSet<IPolypeptide>();

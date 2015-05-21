@@ -44,9 +44,9 @@ public class SpectrumBinnedScore implements Comparable<SpectrumBinnedScore>,IEqu
     }
 
     public final int bin;
-    public final float score;
+    public final double score;
 
-    public SpectrumBinnedScore(final int pBin, final float pScore) {
+    public SpectrumBinnedScore(final int pBin, final double pScore) {
         bin = pBin;
         score = pScore;
     }
@@ -64,7 +64,7 @@ public class SpectrumBinnedScore implements Comparable<SpectrumBinnedScore>,IEqu
         int ret = Integer.compare(bin, o.bin);
         if (ret != 0)
             return ret;
-        ret = Float.compare(score, o.score);
+        ret = Double.compare(score, o.score);
         if (ret != 0)
             return ret;
         return 0;
@@ -78,7 +78,7 @@ public class SpectrumBinnedScore implements Comparable<SpectrumBinnedScore>,IEqu
         final SpectrumBinnedScore that = (SpectrumBinnedScore) o;
 
         if (bin != that.bin) return false;
-        return Float.compare(that.score, score) == 0;
+        return Double.compare(that.score, score) == 0;
 
     }
 

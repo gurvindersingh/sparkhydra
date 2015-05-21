@@ -51,8 +51,8 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
     private String m_Version = CometScoringAlgorithm.DEFAULT_VERSION;
     private String m_Algorithm = DEFAULT_ALGORITHM;
     private boolean normalizationDone;
-    private final Map<Integer, Float> fastScoringMap = new HashMap<Integer, Float>();
-    private final Map<Integer, Float> fastScoringMapNL = new HashMap<Integer, Float>();
+    private final Map<Integer, Double> fastScoringMap = new HashMap<Integer, Double>();
+    private final Map<Integer, Double> fastScoringMapNL = new HashMap<Integer, Double>();
 
     public CometScoredScan(IMeasuredSpectrum pRaw, CometScoringAlgorithm alg) {
         this();
@@ -73,11 +73,11 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
     public CometScoredScan() {
     }
 
-    public Map<Integer, Float> getFastScoringMap() {
+    public Map<Integer, Double> getFastScoringMap() {
         return fastScoringMap;
     }
 
-    public Map<Integer, Float> getFastScoringMapNL() {
+    public Map<Integer, Double> getFastScoringMapNL() {
         return fastScoringMapNL;
     }
 
@@ -280,7 +280,7 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
             // pdTmpCorrelationData[i] = (float)dTmp;
             //      pPdTmpFastXcorrData2X[i] = (float)dTmp;
             if (Math.abs(dTmp) > 0.001) {
-                fastScoringMap.put(i, (float) dTmp);
+                fastScoringMap.put(i, dTmp);
             }
 
 
@@ -339,7 +339,7 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
         }
 
         for (int j = 0; j < pPfFastXcorrDataNL.length; j++) {
-            float v = pPfFastXcorrDataNL[j];
+            double v = pPfFastXcorrDataNL[j];
             if (Math.abs(v) > 0.001)
                 fastScoringMapNL.put(j, v);
         }
@@ -499,18 +499,22 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
         for (ISpectrumPeak peak : peaks) {
             double intensity = peak.getPeak();
             if (intensity > 0) {
-                float massChargeRatio = (float) peak.getMassChargeRatio();
+                double massChargeRatio =   peak.getMassChargeRatio();
                 int bin = algorithm.asBin(massChargeRatio);
                 if (bin > binned.length) {
                     System.err.println("bad bin " + bin + " max is " + binned.length + " mz " + massChargeRatio);
                     continue;
                 }
-                if (bin > lastBin) { // look at when the bin changes really debigging code
-                    lastBin = algorithm.asBin(massChargeRatio);
-                }
                 double sqrtIntensity = Math.sqrt(intensity);
                 float value = (float) (sqrtIntensity);
-                if (value > binned[bin])
+                if (bin > lastBin) { // look at when the bin changes really debigging code
+                    // possible fix       - seemed like a good idea but it is not
+//                    if(bin == lastBin + 2)  {
+//                        binned[lastBin + 1] = (value + binned[lastBin])  / 2;  // if we skip a bin put in the average value
+//                    }
+                    lastBin = bin;
+                }
+                 if (value > binned[bin])
                     binned[bin] = value;
             }
         }

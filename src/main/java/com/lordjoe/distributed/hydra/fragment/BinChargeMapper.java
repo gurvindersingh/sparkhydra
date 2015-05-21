@@ -272,10 +272,13 @@ public class BinChargeMapper implements Serializable {
             List<Tuple2<BinChargeKey, IPolypeptide>> holder = new ArrayList<Tuple2<BinChargeKey, IPolypeptide>>();
             BinChargeKey key = oneKeyFromChargeMz(1, matchingMass);
 
+            if(TestUtilities.isInterestingPeptide(pp))
+                  TestUtilities.breakHere();
+
             // if we don't use the bin don't get the peptide
-            if (usedBins.contains(key.getMzInt())) {
+            if (true || usedBins.contains(key.getMzInt())) {
                 holder.add(new Tuple2<BinChargeKey, IPolypeptide>(key, pp));
-            }
+           }
 
             return holder;
         }

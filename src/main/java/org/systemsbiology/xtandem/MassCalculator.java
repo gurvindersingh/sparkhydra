@@ -75,7 +75,7 @@ public class MassCalculator implements Serializable {
 
     }
 
-
+     // monoisotipic , average
     private MassCalculator(MassType _t) {
         m_massType = _t;
         addMass("H", 1.007825035, 1.00794);

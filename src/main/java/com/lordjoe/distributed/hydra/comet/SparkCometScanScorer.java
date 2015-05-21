@@ -110,6 +110,7 @@ public class SparkCometScanScorer {
         // find all polypeptides and modified polypeptides
         JavaRDD<IPolypeptide> databasePeptides = pHandler.buildLibrary(max_proteins);
 
+
         // DEBUGGING why do we see more than one instance of interesting peptide
         //List<IPolypeptide> interesting1 = new ArrayList<IPolypeptide>();
         //databasePeptides = TestUtilities.findInterestingPeptides(databasePeptides, interesting1);
@@ -595,6 +596,17 @@ public class SparkCometScanScorer {
         keyedPeptides.partitionBy(partitioner);
         timer.showElapsed("Mapped Peptides", System.err);
 
+        keyedPeptides = SparkUtilities.persist(keyedPeptides);
+        Map<BinChargeKey, HashMap<String, IPolypeptide>> binChargeKeyHashMapMap = keyedPeptides.collectAsMap();
+        List<HashMap<String, IPolypeptide>> collect1 = keyedPeptides.values().collect();
+        for (HashMap<String, IPolypeptide> hms : collect1) {
+            for (IPolypeptide pp : hms.values()) {
+                  if(TestUtilities.isInterestingPeptide(pp))
+                      break;
+            }
+        }
+
+
         long[] counts = new long[1];
         if (isDebuggingCountMade()) {
             keyedPeptides = SparkUtilities.persistAndCountPair("Peptides as Theoretical Spectra", keyedPeptides, counts);
@@ -620,6 +632,20 @@ public class SparkCometScanScorer {
 
         // combine scores from same scan
         JavaRDD<? extends IScoredScan> cometBestScores = handler.combineScanScores(bestScores);
+        
+        cometBestScores = SparkUtilities.persist(cometBestScores);
+
+        List<? extends IScoredScan> collect = cometBestScores.collect();
+        for (IScoredScan iScoredScan : collect) {
+           CometScoringResult cs = (CometScoringResult)iScoredScan;
+            System.out.println(" ======================");
+            System.out.println(cs.getId());
+            ISpectralMatch[] spectralMatches = cs.getSpectralMatches();
+            for (int i = 0; i < spectralMatches.length; i++) {
+                ISpectralMatch sm = spectralMatches[i];
+                System.out.println(sm.getPeptide() + " " + sm.getHyperScore());
+            }
+        }
 
         // todo combine score results from different bins
 

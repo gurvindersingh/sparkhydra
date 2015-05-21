@@ -331,21 +331,27 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
         final CometScoringData scoringData = CometScoringData.getScoringData();
         scoringData.clearData();
 
-        final Map<Integer, Float> fastScoringMap = scorer.getFastScoringMap();
+        final Map<Integer, Double> fastScoringMap = scorer.getFastScoringMap();
 
         float[] fastXcorrDataMap = scoringData.getScoringFastXcorrData();
         for (Integer i : fastScoringMap.keySet()) {
-            fastXcorrDataMap[i] = fastScoringMap.get(i);
+            double aDouble = fastScoringMap.get(i);
+            fastXcorrDataMap[i] = (float)aDouble;
         }
 
-        final Map<Integer, Float> fastScoringMapNL = scorer.getFastScoringMapNL();   // we used to get from commented scoring data
+        final Map<Integer, Double> fastScoringMapNL = scorer.getFastScoringMapNL();   // we used to get from commented scoring data
         float[] fastXcorrDataNL = scoringData.getFastXcorrDataNL();
         for (Integer i : fastScoringMapNL.keySet()) {
-            fastXcorrDataNL[i] = fastScoringMapNL.get(i);
+            double aDouble = fastScoringMapNL.get(i);
+            fastXcorrDataNL[i] = (float)aDouble;
         }
 
+    //    double altAnswer =  doXCorrWithData(sts,scorerData,pCounter,scorer,fastXcorrDataMap,fastXcorrDataNL);
+
+
         List<BinnedChargeIonIndex> binnedIndex = sts.getBinnedIndex(this,scorerData);
-        double xcorr = 0;
+
+           double xcorr = 0;
 
         int maxCharge = scorer.getCharge();
         if(maxCharge > 1 )
@@ -370,6 +376,10 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
               xcorr *= 0.005;
              xcorr = Math.max(XCORR_CUTOFF,xcorr);
         }
+
+//        if(Math.abs(altAnswer - xcorr) > 0.001)
+//            throw new IllegalStateException("problem"); // todo fix
+
         return xcorr;
     }
 
@@ -557,7 +567,7 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
         if (ret != ret2)
             TestUtilities.breakHere();
 
-        if (Math.abs(ret - 77790) < 2)
+        if (Math.abs(ret - 41970) < 2)
             TestUtilities.breakHere();
 
         return ret;

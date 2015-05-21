@@ -21,8 +21,10 @@ public class PeptideIonTest {
         IPolypeptide pp = Polypeptide.fromString("NIKPECP");
         double matchingMass = pp.getMass();
         matchingMass += XTandemUtilities.getProtonMass();
-       Assert.assertEquals(839.39339591687997,matchingMass,0.001);
+        double expected = 839.39339591687997;
+        double del =  matchingMass - expected;
+       Assert.assertEquals(expected,matchingMass,0.001);
         PeptideIon ion = new PeptideIon(pp, IonType.B,1, matchingMass,0,0);
-        Assert.assertEquals(839.39339591687997,ion.getMass(),0.001);
+        Assert.assertEquals(expected,ion.getMass(),0.001);
     }
 }
