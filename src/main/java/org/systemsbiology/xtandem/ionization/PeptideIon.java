@@ -10,7 +10,6 @@ import org.systemsbiology.xtandem.peptide.*;
  * Date: Jan 10, 2011
  */
 public class PeptideIon implements IPeptideIon, ITheoreticalPeak {
-    public static final PeptideIon[] EMPTY_ARRAY = {};
 
     public static final IPolypeptide TEST_CASE = Polypeptide.fromString("NIKPECP");
 
@@ -19,19 +18,19 @@ public class PeptideIon implements IPeptideIon, ITheoreticalPeak {
     private final int m_Charge;
     private final int m_IndexInParent;
     private final double m_MassChargeRatio;
-    private final int m_BinnedIndexInParent;
 
-    public PeptideIon(final IPolypeptide pPetide, final org.systemsbiology.xtandem.ionization.IonType pType, int charge, double massChargeRatio, int index, int binnedIndex) {
-        if(TEST_CASE.equivalent(pPetide))
-            TestUtilities.breakHere();
+    public PeptideIon(final IPolypeptide pPetide, final org.systemsbiology.xtandem.ionization.IonType pType, int charge, double massChargeRatio, int index) {
+//        if(TEST_CASE.equivalent(pPetide))
+//            TestUtilities.breakHere();
+//        if(TestUtilities.isInterestingPeptide(pPetide))
+//            TestUtilities.breakHere();
 
         m_Peptide = pPetide;
         m_Type = pType;
         m_Charge = charge;
         m_MassChargeRatio = massChargeRatio;
         m_IndexInParent = index;
-        m_BinnedIndexInParent = binnedIndex;
-   //     if (index >= pPetide.getSequenceLength())
+     //     if (index >= pPetide.getSequenceLength())
      //       throw new IllegalStateException("problem"); // ToDo change      m_Peptide = pPetide;
 
     }
@@ -40,9 +39,6 @@ public class PeptideIon implements IPeptideIon, ITheoreticalPeak {
         return m_IndexInParent;
     }
 
-    public int getBinnedIndexInParent() {
-        return m_BinnedIndexInParent;
-    }
 
     /**
      * return true if the spectrum is immutable

@@ -43,6 +43,19 @@ public class BinChargeMapper implements Serializable {
         //      algorithm = application.getAlgorithms()[0];
     }
 
+    /**
+     * do the work of getting keys from a spectrum as a list
+     * used in testing since other code is used with rdds
+     * @param spec
+     * @return
+     */
+    public static Set<BinChargeKey> getSpectrumBins(IMeasuredSpectrum spec) {
+        Set<BinChargeKey> ret = new HashSet<BinChargeKey>();
+        BinChargeKey[] binChargeKeys = keysFromSpectrum(spec);
+        ret.addAll(Arrays.asList(binChargeKeys));
+        return ret;
+    }
+
     public <T extends IMeasuredSpectrum> JavaPairRDD<BinChargeKey, T> mapMeasuredSpectrumToKeys(JavaRDD<T> inp) {
         return inp.flatMapToPair(new mapMeasuredSpectraToBins());
     }
@@ -118,7 +131,7 @@ public class BinChargeMapper implements Serializable {
      * @param imp     input
      * @param maxSize limit on generated list size - defaults to Integer.MAX_VALUE in above implementation
      * @param <K>     key type
-       * @return
+     * @return
      */
     public static <K extends Serializable> JavaPairRDD<K, HashMap<String, IPolypeptide>> mapToKeyedHash(JavaPairRDD<K, IPolypeptide> imp, final int maxSize) {
         return imp.aggregateByKey(
@@ -199,6 +212,12 @@ public class BinChargeMapper implements Serializable {
     }
 
 
+    public static BinChargeKey keyFromPeptide(IPolypeptide pp) {
+        double matchingMass = CometScoringAlgorithm.getCometMatchingMass(pp);
+        BinChargeKey key = oneKeyFromChargeMz(1, matchingMass);
+        return key;
+    }
+
     /**
      * create one key from change and MZ
      *
@@ -262,23 +281,18 @@ public class BinChargeMapper implements Serializable {
         @Override
         public Iterable<Tuple2<BinChargeKey, IPolypeptide>> doCall(final IPolypeptide pp) throws Exception {
             //    double matchingMass = pp.getMatchingMass();
-            double matchingMass = CometScoringAlgorithm.getCometMatchingMass(pp);
 
             if (TestUtilities.isInterestingPeptide(pp))
                 TestUtilities.breakHere();
 
-            Scorer scorer = application.getScoreRunner();
 
             List<Tuple2<BinChargeKey, IPolypeptide>> holder = new ArrayList<Tuple2<BinChargeKey, IPolypeptide>>();
-            BinChargeKey key = oneKeyFromChargeMz(1, matchingMass);
-
-            if(TestUtilities.isInterestingPeptide(pp))
-                  TestUtilities.breakHere();
+            BinChargeKey key = keyFromPeptide(pp);
 
             // if we don't use the bin don't get the peptide
-            if (true || usedBins.contains(key.getMzInt())) {
+            if (usedBins != null && usedBins.contains(key.getMzInt())) {
                 holder.add(new Tuple2<BinChargeKey, IPolypeptide>(key, pp));
-           }
+            }
 
             return holder;
         }
@@ -326,7 +340,7 @@ public class BinChargeMapper implements Serializable {
 
             List<Tuple2<BinChargeKey, T>> holder = new ArrayList<Tuple2<BinChargeKey, T>>();
 
-              BinChargeKey[] keys = keysFromSpectrum(spec);
+            BinChargeKey[] keys = keysFromSpectrum(spec);
 
             for (int i = 0; i < keys.length; i++) {
                 BinChargeKey key = keys[i];
@@ -347,11 +361,12 @@ public class BinChargeMapper implements Serializable {
         /**
          * do work here
          *
-         * @param t@return
+         * @param
+         * @return
          */
         @Override
         public Iterable<Tuple2<BinChargeKey, Tuple2<BinChargeKey, T>>> doCall(final T spec) throws Exception {
-              List<Tuple2<BinChargeKey, Tuple2<BinChargeKey, T>>> holder = new ArrayList<Tuple2<BinChargeKey, Tuple2<BinChargeKey, T>>>();
+            List<Tuple2<BinChargeKey, Tuple2<BinChargeKey, T>>> holder = new ArrayList<Tuple2<BinChargeKey, Tuple2<BinChargeKey, T>>>();
             BinChargeKey[] keys = keysFromSpectrum(spec);
             for (int i = 0; i < keys.length; i++) {
                 BinChargeKey key = keys[i];

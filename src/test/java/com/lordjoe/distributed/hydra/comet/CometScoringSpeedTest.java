@@ -48,7 +48,6 @@ public class CometScoringSpeedTest {
 
         CometScoredScan scan = new CometScoredScan(spec, comet);
 
-        final CometScoringData scoringData = CometScoringData.getScoringData();
 
 
         double maxScore = 0;
@@ -70,23 +69,7 @@ public class CometScoringSpeedTest {
             timer.showElapsed("Map and generate ts Scored " + peptides.size() + " peptides at " + secPerPeptide + " for 50million " + (50 * timePerMillionScores / 3600) + " hours" + " max " + maxScore);
         }
 
-        // in this section we pregenerate data for a spectrum and reuse it
-        scoringData.clearData();
-
-        final Map<Integer, Double> fastScoringMap = scan.getFastScoringMap();
-
-        float[] fastXcorrDataMap = scoringData.getTmpFastXcorrData();
-        for (Integer i : fastScoringMap.keySet()) {
-           double aDouble = fastScoringMap.get(i);
-            fastXcorrDataMap[i] = (float)aDouble;
-        }
-
-        final Map<Integer, Double> fastScoringMapNL = scan.getFastScoringMapNL();   // we used to get from commented scoring data
-        float[] fastXcorrDataNL = scoringData.getTmpFastXcorrData2();
-        for (Integer i : fastScoringMapNL.keySet()) {
-            double aDouble = fastScoringMapNL.get(i);
-            fastXcorrDataNL[i] = (float)aDouble;
-        }
+        CometScoringData.populateFromScan(scan);
 
 
 
@@ -96,7 +79,7 @@ public class CometScoringSpeedTest {
             for (IPolypeptide pp : peptides) {
                 CometTheoreticalBinnedSet ts = (CometTheoreticalBinnedSet) scorer.generateSpectrum(pp);
                 IonUseCounter counter = new IonUseCounter();
-                double xcorr = comet.doXCorrWithData(ts, scorer, counter, scan, fastXcorrDataMap, fastXcorrDataNL);
+                double xcorr = comet.doXCorr(ts, scorer, counter, scan, null);
                 maxScore = Math.max(xcorr, maxScore);
             }
 
@@ -120,7 +103,7 @@ public class CometScoringSpeedTest {
 
         for (CometTheoreticalBinnedSet ts : holder) {
             IonUseCounter counter = new IonUseCounter();
-            double xcorr = comet.doXCorrWithData(ts, scorer, counter, scan, fastXcorrDataMap, fastXcorrDataNL);
+            double xcorr = comet.doXCorr(ts, scorer, counter, scan, null);
             maxScore = Math.max(xcorr, maxScore);
         }
 

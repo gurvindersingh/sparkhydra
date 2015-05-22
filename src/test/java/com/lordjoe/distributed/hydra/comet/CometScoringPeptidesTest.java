@@ -100,17 +100,9 @@ public class CometScoringPeptidesTest {
         Properties sparkProperties = SparkUtilities.getSparkProperties();
 
 
-        final Class<CometScoringPeptidesTest> cls = CometScoringPeptidesTest.class;
-        InputStream istr = cls.getResourceAsStream("/UsedSpectraComet.txt");
-        Map<Integer, List<UsedSpectrum>> spectraMap = UsedSpectrum.readUsedSpectra(istr);
+          List<UsedSpectrum> usedSpectrums = CometTestingUtilities.getSpectrumUsed(8852);
 
-        List<UsedSpectrum> usedSpectrums = spectraMap.get(8852);
-
-
-        istr = cls.getResourceAsStream("/000000008852.mzXML");
-
-        final String scanTag = FileUtilities.readInFile(istr);
-        RawPeptideScan rp = MZXMLReader.handleScan(scanTag);
+        RawPeptideScan rp = CometTestingUtilities.getScanFromMZXMLResource("000000008852.mzXML");
         CometScoredScan spec = new CometScoredScan(rp, comet);
 
         // debugging code set to  check data

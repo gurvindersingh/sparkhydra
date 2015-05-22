@@ -14,12 +14,20 @@ import java.util.*;
  * Date: 4/3/2015
  */
 public class CometTheoreticalBinnedSet extends TheoreticalSpectrumSet {
+
+  //  private static boolean isInteresting;
+
      private final List<BinnedChargeIonIndex> binnedIndex;
  //   private final List<BinnedChargeIonIndex> binnedIndexNL = new ArrayList<BinnedChargeIonIndex>();
 
     public CometTheoreticalBinnedSet(final int pMaxCharge, final double mPlusH, final IPolypeptide pPeptide, CometScoringAlgorithm cmt, Scorer scorer) {
         super(pMaxCharge, mPlusH, pPeptide);
-        binnedIndex = buildBinnedList(cmt, scorer);
+
+//        isInteresting = false;
+//        if(TestUtilities.isInterestingPeptide(pPeptide))
+//            isInteresting = true;
+
+        binnedIndex =  buildBinnedList(cmt, scorer);
     }
 
     private List<BinnedChargeIonIndex> buildBinnedList(CometScoringAlgorithm comet, Scorer scorer) {
@@ -34,10 +42,14 @@ public class CometTheoreticalBinnedSet extends TheoreticalSpectrumSet {
 
             for (int i = 0; i < spectrum.length; i++) {
                 PeptideIon peptideIon = spectrum[i];
+                  int binnedIndexInParent = peptideIon.getIndexInParent();
+                IonType type = peptideIon.getType();
+
+//                if(isInteresting && type == IonType.Y && binnedIndexInParent == 9)
+//                    TestUtilities.breakHere();
+
                 double mz = peptideIon.getMassChargeRatio();
                 int index = comet.asBin(mz);
-                int binnedIndexInParent = peptideIon.getIndexInParent();
-                IonType type = peptideIon.getType();
 
 
                 if (type == IonType.Y) {   // ollok at this case binned position should go down
@@ -52,7 +64,7 @@ public class CometTheoreticalBinnedSet extends TheoreticalSpectrumSet {
                 binnedChargeIonIndexes.add(bcs);
             }
         }
-        Collections.sort(binnedChargeIonIndexes);
+        Collections.sort(binnedChargeIonIndexes,BinnedChargeIonIndex.BY_INDEX);
         return binnedChargeIonIndexes;
     }
 

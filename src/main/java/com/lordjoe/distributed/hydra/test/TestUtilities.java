@@ -322,4 +322,15 @@ public class TestUtilities {
          out.close();
     }
 
+    public static int getNonZeroElements(float[] items)
+    {
+        int ret = 0;
+        for (int i = 0; i < items.length; i++) {
+            float item = items[i];
+            if(Math.abs(item ) > 0.0001)
+                ret++;
+        }
+        return ret;
+    }
+
 }

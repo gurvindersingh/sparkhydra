@@ -13,6 +13,23 @@ import java.util.*;
  */
 public class BinnedChargeIonIndex implements Comparable<BinnedChargeIonIndex>,Serializable {
 
+    public static final Comparator<BinnedChargeIonIndex>   BY_INDEX = new Comparator<BinnedChargeIonIndex>() {
+        @Override
+        public int compare(BinnedChargeIonIndex o1, BinnedChargeIonIndex o2) {
+            int ret = Integer.compare(o1.index, o2.index);
+            if (ret != 0)
+                return ret;
+            ret = o1.type.compareTo(o2.type);
+            if (ret != 0)
+                return ret;
+            ret = Integer.compare(o1.peptidePosition, o2.peptidePosition);
+            if (ret != 0)
+                return ret;
+            return Integer.compare(o1.charge, o2.charge);
+        }
+    };
+
+
     public static final Comparator<BinnedChargeIonIndex>  BY_BIN  = new Comparator<BinnedChargeIonIndex>() {
         @Override
         public int compare(final BinnedChargeIonIndex o1, final BinnedChargeIonIndex o2) {

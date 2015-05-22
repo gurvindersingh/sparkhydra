@@ -85,24 +85,8 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
 
             // This section popul;ates temporary data with the spectrum
             // a lot os free space used temporarily
-            final CometScoringData scoringData = CometScoringData.getScoringData();
-            // in this section we pregenerate data for a spectrum and reuse it
-            scoringData.clearData();
+              CometScoringData.populateFromScan(scan);
 
-            final Map<Integer, java.lang.Double> fastScoringMap = scan.getFastScoringMap();
-
-            float[] fastXcorrDataMap = scoringData.getTmpFastXcorrData();
-            for (Integer i : fastScoringMap.keySet()) {
-                double aDouble = fastScoringMap.get(i);
-                fastXcorrDataMap[i] = (float) aDouble;
-            }
-
-            final Map<Integer, java.lang.Double> fastScoringMapNL = scan.getFastScoringMapNL();   // we used to get from commented scoring data
-            float[] fastXcorrDataNL = scoringData.getTmpFastXcorrData2();
-            for (Integer i : fastScoringMapNL.keySet()) {
-                double aDouble = fastScoringMapNL.get(i);
-                fastXcorrDataNL[i] = (float) aDouble;
-            }
             // ===============================
 
 
@@ -120,7 +104,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
             double maxScore = 0;
             for (CometTheoreticalBinnedSet ts : holder) {
                 IonUseCounter counter = new IonUseCounter();
-                double xcorr = comet.doXCorrWithData(ts, scorer, counter, scan, fastXcorrDataMap, fastXcorrDataNL);
+                double xcorr = comet.doXCorr(ts, scorer, counter, scan, null);
                 maxScore = Math.max(xcorr, maxScore);
                 if (xcorr > 0.01) {
                     IPolypeptide peptide = ts.getPeptide();
@@ -166,30 +150,13 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
                     }
                 }
             }
+            if(holder.isEmpty())
+                return ret; // nothing to score
+
             // This section popul;ates temporary data with the spectrum
             // a lot os free space used temporarily
             for (CometScoredScan scan : scans) {
-                final CometScoringData scoringData = CometScoringData.getScoringData();
-                // in this section we pregenerate data for a spectrum and reuse it
-                scoringData.clearData();
-
-                 CometTesting.validateIndex(scan);
-
-                final Map<Integer, java.lang.Double> fastScoringMap = scan.getFastScoringMap();
-
-                float[] fastXcorrDataMap = scoringData.getTmpFastXcorrData();
-                for (Integer i : fastScoringMap.keySet()) {
-                    double aDouble = fastScoringMap.get(i);
-                    fastXcorrDataMap[i] = (float)aDouble;
-                }
-
-                final Map<Integer, Double> fastScoringMapNL = scan.getFastScoringMapNL();   // we used to get from commented scoring data
-                float[] fastXcorrDataNL = scoringData.getTmpFastXcorrData2();
-                for (Integer i : fastScoringMapNL.keySet()) {
-                    double aDouble = fastScoringMapNL.get(i);
-                    fastXcorrDataNL[i] = (float)aDouble;
-                }
-                // ===============================
+                         // ===============================
 
                 CometScoringResult result = new CometScoringResult();
                 IMeasuredSpectrum raw = scan.getRaw();
@@ -202,11 +169,17 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
                 List<CometTheoreticalBinnedSet> notScored = new ArrayList<CometTheoreticalBinnedSet>();
                 List<IPolypeptide> scoredPeptides = new ArrayList<IPolypeptide>();
 
+                CometScoringData.populateFromScan(scan);
+
                 // use pregenerated peptide data but not epetide data
                 double maxScore = 0;
                 for (CometTheoreticalBinnedSet ts : holder) {
+
+                    if(TestUtilities.isInterestingPeptide(ts.getPeptide()))
+                        TestUtilities.breakHere();
+
                     IonUseCounter counter = new IonUseCounter();
-                    double xcorr = comet.doXCorrWithData(ts, scorer, counter, scan, fastXcorrDataMap, fastXcorrDataNL);
+                    double xcorr = comet.doXCorr(ts, scorer, counter, scan, null);
 
                     if(xcorr > 0.5) {
                         System.out.println("\n" +scan.getId() + " " + ts.getPeptide() + " " + xcorr);
@@ -225,7 +198,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
                         {
                             // repeat to look in detail
                             double cometScore = CometTesting.getCometScore(scan,ts.getPeptide());
-                            xcorr = comet.doXCorrWithData(ts, scorer, counter, scan, fastXcorrDataMap, fastXcorrDataNL);
+                            xcorr = comet.doXCorr(ts, scorer, counter, scan, null);
                              badScore.add(ts);
                         }
                         if(testResult == 2)  // did not score
@@ -287,28 +260,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
             CometScoredScan scan = inp._1();
             ArrayList<CometTheoreticalBinnedSet> holder = inp._2();
 
-            // This section popul;ates temporary data with the spectrum
-            // a lot os free space used temporarily
-            final CometScoringData scoringData = CometScoringData.getScoringData();
-            // in this section we pregenerate data for a spectrum and reuse it
-            scoringData.clearData();
-
-            final Map<Integer, java.lang.Double> fastScoringMap = scan.getFastScoringMap();
-
-            float[] fastXcorrDataMap = scoringData.getTmpFastXcorrData();
-            for (Integer i : fastScoringMap.keySet()) {
-                double aDouble = fastScoringMap.get(i);
-                fastXcorrDataMap[i] = (float)aDouble;
-            }
-
-            final Map<Integer, java.lang.Double> fastScoringMapNL = scan.getFastScoringMapNL();   // we used to get from commented scoring data
-            float[] fastXcorrDataNL = scoringData.getTmpFastXcorrData2();
-            for (Integer i : fastScoringMapNL.keySet()) {
-                double aDouble = fastScoringMapNL.get(i);
-                fastXcorrDataNL[i] = (float)aDouble;
-            }
-            // ===============================
-
+             CometScoringData.populateFromScan(scan);
 
 
             CometScoringResult result = new CometScoringResult();
@@ -318,7 +270,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
             double maxScore = 0;
             for (CometTheoreticalBinnedSet ts : holder) {
                 IonUseCounter counter = new IonUseCounter();
-                double xcorr = comet.doXCorrWithData(ts, scorer, counter, scan, fastXcorrDataMap, fastXcorrDataNL);
+                double xcorr = comet.doXCorr(ts, scorer, counter, scan,null);
                 maxScore = Math.max(xcorr, maxScore);
                 if (xcorr > 0.01) {
                     IPolypeptide peptide = ts.getPeptide();
@@ -520,14 +472,14 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
         if (TestUtilities.isInterestingPeptide(peptide)) {
             TestUtilities.breakHere();
         }
-        if (TestUtilities.isInterestingScoringPair(peptide, pScoring)) {
-            TestUtilities.breakHere();
-            TestUtilities.setLogCalculations(application, true); // log this
-        } else {
-            String log = TestUtilities.setLogCalculations(application, false); // log off
-            if (log != null)
-                System.out.println(log);
-        }
+//        if (TestUtilities.isInterestingScoringPair(peptide, pScoring)) {
+//            TestUtilities.breakHere();
+//            TestUtilities.setLogCalculations(application, true); // log this
+//        } else {
+//            String log = TestUtilities.setLogCalculations(application, false); // log off
+//            if (log != null)
+//                System.out.println(log);
+//        }
         //====================================================
         // END DEBUGGGING
 

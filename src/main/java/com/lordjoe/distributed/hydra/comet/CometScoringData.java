@@ -12,7 +12,50 @@ public class CometScoringData {
 
     private static transient ThreadLocal<CometScoringData> gPreallocatedData;
 
-    public static CometScoringData getScoringData() {
+    public static void populateFromScan(CometScoredScan scan)
+    {
+        final CometScoringData scoringData = CometScoringData.getScoringData();
+        // in this section we pregenerate data for a spectrum and reuse it
+        scoringData.clearData();
+
+        CometTesting.validateIndex(scan);
+
+        final Map<Integer, java.lang.Double> fastScoringMap = scan.getFastScoringMap();
+
+        float[] fastXcorrDataMap = scoringData.getScoringFastXcorrData();
+        for (Integer i : fastScoringMap.keySet()) {
+            double aDouble = fastScoringMap.get(i);
+            fastXcorrDataMap[i] = (float)aDouble;
+        }
+
+        final Map<Integer, Double> fastScoringMapNL = scan.getFastScoringMapNL();   // we used to get from commented scoring data
+        float[] fastXcorrDataNL = scoringData.getFastXcorrDataNL();
+        for (Integer i : fastScoringMapNL.keySet()) {
+            double aDouble = fastScoringMapNL.get(i);
+            fastXcorrDataNL[i] = (float)aDouble;
+        }
+        scoringData.currentScan = scan;
+    }
+
+    public static float[] getFastDataForScan(CometScoredScan scan)
+    {
+        CometScoringData dta = getScoringData() ;
+        if(dta.currentScan != scan)
+            throw new IllegalStateException("bad scan");
+        return dta.getScoringFastXcorrData();
+    }
+
+    public static float[] getFastDataNLForScan(CometScoredScan scan)
+    {
+        CometScoringData dta = getScoringData() ;
+        if(dta.currentScan != scan)
+            throw new IllegalStateException("bad scan");
+        return dta.getFastXcorrDataNL();
+    }
+
+
+
+    private static CometScoringData getScoringData() {
         synchronized (CometScoringData.class) {
             if (gPreallocatedData == null) {
                 gPreallocatedData = new ThreadLocal<CometScoringData>();
@@ -27,42 +70,23 @@ public class CometScoringData {
     }
 
     // big arrays only allocated once
-    private final float[] m_Weightsx;
-    private final float[] m_TmpFastXcorrData;
-    private final float[] m_TmpFastXcorrData2;
-     private final float[] m_fFastXcorrDataNL;
+    private CometScoredScan currentScan;
+    private final float[] m_fFastXcorrDataNL;
     private final float[] m_ScoringFastXcorrData;
 //      private final Map<Integer, Float> fastScoringMap = new HashMap<Integer, Float>();
 //    private final Map<Integer, Float> fastScoringMapNL = new HashMap<Integer, Float>();
 
 //    private final CometScoringAlgorithm comet;
 
-    public CometScoringData() {
-        m_Weightsx = allocateMemory();
-        m_TmpFastXcorrData = allocateMemory();
+    private CometScoringData() {
         m_ScoringFastXcorrData = allocateMemory();
         m_fFastXcorrDataNL = allocateMemory();
-        m_TmpFastXcorrData2 = allocateMemory();
+        currentScan = null;
     }
 
-//    public Map<Integer, Float> getFastScoringMap() {
-//        return fastScoringMap;
-//    }
-//
-//    public Map<Integer, Float> getFastScoringMapNL() {
-//        return fastScoringMapNL;
-//    }
 
-    /**
-     * this method is protested to allow testing
-     *
-     * @return
-     */
-    protected float[] getWeights() {
-        return m_Weightsx;
-    }
 
-    protected float[] allocateMemory() {
+    private float[] allocateMemory() {
         final float[] ret;
         int n = CometScoringAlgorithm.ALLOCATED_DATA_SIZE;
         ret = new float[n];
@@ -75,7 +99,7 @@ public class CometScoringData {
      *
      * @return
      */
-    protected float[] getFastXcorrDataNL() {
+    private float[] getFastXcorrDataNL() {
         return m_fFastXcorrDataNL;
     }
 
@@ -84,39 +108,18 @@ public class CometScoringData {
      *
      * @return
      */
-    protected float[] getScoringFastXcorrData() {
+    private float[] getScoringFastXcorrData() {
         return m_ScoringFastXcorrData;
     }
 
-    /**
-     * this method is protested to allow testing
-     *
-     * @return
-     */
-    protected float[] getTmpFastXcorrData() {
-        return m_TmpFastXcorrData;
-    }
-
-    /**
-     * this method is protested to allow testing
-     *
-     * @return
-     */
-    protected float[] getTmpFastXcorrData2() {
-        return m_TmpFastXcorrData2;
-    }
 
     /**
      * no threating issues
      */
-    protected void clearData() {
-        Arrays.fill(m_Weightsx, 0);
-        Arrays.fill(m_fFastXcorrDataNL, 0);
-        Arrays.fill(m_TmpFastXcorrData, 0);
-        Arrays.fill(m_TmpFastXcorrData2, 0);
+    private void clearData() {
+         Arrays.fill(m_fFastXcorrDataNL, 0);
         Arrays.fill(m_ScoringFastXcorrData, 0);
-//        fastScoringMap.clear();
-//        fastScoringMapNL.clear();
+        currentScan = null;
     }
 
 

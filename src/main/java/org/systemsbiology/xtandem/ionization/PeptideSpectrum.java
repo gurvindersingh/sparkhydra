@@ -254,11 +254,9 @@ public class PeptideSpectrum implements ITheoreticalSpectrum {
         String sequence = pp.getSequence();
         int peptideLength = pp.getSequenceLength();
 
-        if (pp.isModified())
-            XTandemUtilities.breakHere();
-        // one debug case
-//        if("VPETTRINYVGEPTGWVSGK".equals(sequence))
-//            XTandemUtilities.breakHere();
+//        boolean isInteresting = false;
+//        if (TestUtilities.isInterestingPeptide(pp))
+//            isInteresting = true;
 
         List<PeptideIon> holder = new ArrayList<PeptideIon>();
         int lastItem = sequence.length() - 1;
@@ -270,7 +268,8 @@ public class PeptideSpectrum implements ITheoreticalSpectrum {
                 if(charge > 1)
                     TestUtilities.breakHere();
 
-                double sequenceMass = frags[0].getMass();
+                IPolypeptide frag0 = frags[0];
+                double sequenceMass = frag0.getMass();
                  //          double sequenceMass = m_Utilities.getSequenceMass(frags[0]);
                 double added = m_Utilities.getAddedMass(type);
                 sequenceMass += added;
@@ -283,12 +282,17 @@ public class PeptideSpectrum implements ITheoreticalSpectrum {
                 }
 
                 double mz = sequenceMass / charge;
-                PeptideIon ion = new PeptideIon(frags[0], type, charge, mz, parentIndex,parentIndex);
+
+//                if(isInteresting)
+//                    System.out.println(frag0 + "\t" +type + "\t" +mz + "\t" +parentIndex  );
+
+                PeptideIon ion = new PeptideIon(frag0, type, charge, mz, parentIndex);
                 holder.add(ion);
 
                 // peptide bonds < 0 is a 0 length sequence
-                if (frags[1].getNumberPeptideBonds() >= 0) {
-                    double sequenceMass2 = frags[1].getMass();
+                IPolypeptide frag1 = frags[1];
+                if (frag1.getNumberPeptideBonds() >= 0) {
+                    double sequenceMass2 = frag1.getMass();
                //     double sequenceMass2 = m_Utilities.getSequenceMass(frags[1]);
                     IonType otherType = type.getPair();
                     added = m_Utilities.getAddedMass(otherType);
@@ -301,7 +305,10 @@ public class PeptideSpectrum implements ITheoreticalSpectrum {
                         parentIndex = peptideLength -  i;
                     }
 
-                    PeptideIon peptideIon = new PeptideIon(frags[1], otherType, charge, sequenceMass2 / charge, parentIndex,parentIndex);
+//                    if(isInteresting)
+//                        System.out.println(frag1 + "\t" +type + "\t" +sequenceMass2 + "\t" +parentIndex  );
+
+                    PeptideIon peptideIon = new PeptideIon(frag1, otherType, charge, sequenceMass2 / charge, parentIndex);
                     holder.add(peptideIon);
                 }
             }

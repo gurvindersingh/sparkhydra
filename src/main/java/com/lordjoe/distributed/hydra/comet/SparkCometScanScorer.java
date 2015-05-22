@@ -588,7 +588,6 @@ public class SparkCometScanScorer {
 
 
         keyedSpectra = SparkUtilities.persist(keyedSpectra);
-
         Set<Integer> usedBins = getUsedBins(keyedSpectra);
 
 

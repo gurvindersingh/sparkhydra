@@ -1,8 +1,10 @@
 package com.lordjoe.distributed.hydra.comet;
 
+import com.lordjoe.distributed.SparkUtilities;
 import com.lordjoe.distributed.hydra.fragment.BinChargeKey;
 import com.lordjoe.distributed.hydra.fragment.BinChargeMapper;
 import com.lordjoe.distributed.spark.GeneratingPseudoList;
+import org.apache.spark.api.java.JavaPairRDD;
 import org.systemsbiology.xtandem.IMeasuredSpectrum;
 import org.systemsbiology.xtandem.peptide.IPolypeptide;
 
@@ -219,12 +221,12 @@ public class CometTesting {
     }
 
     private static float[] getWeights(final CometScoringAlgorithm alg, CometScoredScan scan) {
-        CometScoringData scoringData = CometScoringData.getScoringData();
+        CometScoringDataForScanBuild scoringData = CometScoringDataForScanBuild.getScoringData();
         return scoringData.getWeights();
     }
 
     private static float[] getTmpFastXcorrData(final CometScoringAlgorithm alg, CometScoredScan scan) {
-        CometScoringData scoringData = CometScoringData.getScoringData();
+        CometScoringDataForScanBuild scoringData = CometScoringDataForScanBuild.getScoringData();
         return scoringData.getWeights();
     }
 
@@ -358,4 +360,28 @@ public class CometTesting {
 
     }
 
+
+    /**
+     * return all peptides in UsedBins - used in testing
+     * @param usedBins  - bins to select peptides
+     * @param handler  handler to get bins
+     * @return
+     */
+    public static List<IPolypeptide> getScoredPeptides(Set<Integer> usedBins, CometScoringHandler handler) {
+        Properties sparkProperties = SparkUtilities.getSparkProperties();
+        JavaPairRDD<BinChargeKey, HashMap<String, IPolypeptide>> keyedPeptides = SparkCometScanScorer.getBinChargePeptideHash(sparkProperties, usedBins, handler);
+
+        List<IPolypeptide> holder = new ArrayList<IPolypeptide>();
+
+        keyedPeptides = SparkUtilities.persist(keyedPeptides);
+        Map<BinChargeKey, HashMap<String, IPolypeptide>> binChargeKeyHashMapMap = keyedPeptides.collectAsMap();
+        List<HashMap<String, IPolypeptide>> collect1 = keyedPeptides.values().collect();
+        for (HashMap<String, IPolypeptide> hms : collect1) {
+            for (IPolypeptide pp : hms.values()) {
+                holder.add(pp);
+            }
+        }
+        return holder;
+
+    }
 }

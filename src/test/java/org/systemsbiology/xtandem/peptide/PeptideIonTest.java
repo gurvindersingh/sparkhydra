@@ -24,7 +24,7 @@ public class PeptideIonTest {
         double expected = 839.39339591687997;
         double del =  matchingMass - expected;
        Assert.assertEquals(expected,matchingMass,0.001);
-        PeptideIon ion = new PeptideIon(pp, IonType.B,1, matchingMass,0,0);
+        PeptideIon ion = new PeptideIon(pp, IonType.B,1, matchingMass,0);
         Assert.assertEquals(expected,ion.getMass(),0.001);
     }
 }
