@@ -314,7 +314,7 @@ public class CometTestData {
 
     public static final String TEST_PROTEIN = "NECFLSHKDDSPDLPK";
 
-      public static final String USED_PARAMETERS =
+      public static final String USED_PARAMETERSX =
               "<?xml version=\"1.0\"?>\n" +
                       "<?xml-stylesheet type=\"text/xsl\" href=\"tandem-input-style.xsl\"?>\n" +
                       "<bioml>\n" +
@@ -392,7 +392,7 @@ public class CometTestData {
                       "\t\t</note>\n" +
                       "\t<note type=\"input\" label=\"protein, cleavage semi\">no</note>\n" +
                       "\t<note type=\"input\" label=\"protein, modified residue mass file\"></note>\n" +
-                      "\t<note type=\"input\" label=\"protein, cleavage C-terminal mass change\">19.01784116688</note>\n" +
+                      "\t<note type=\"input\" label=\"protein, cleavage C-terminal mass change\">17.00273</note>\n" +
                       "\t<note type=\"input\" label=\"protein, cleavage N-terminal mass change\">1.007276466</note>\n" +
                       "\t<note type=\"input\" label=\"protein, quick acetyl\">yes</note>\n" +
                       "\t<note type=\"input\" label=\"protein, quick pyrolidone\">yes</note>\n" +
@@ -585,7 +585,7 @@ public class CometTestData {
                         "\t\t</note>\n" +
                         "\t<note type=\"input\" label=\"protein, cleavage semi\">no</note>\n" +
                         "\t<note type=\"input\" label=\"protein, modified residue mass file\"></note>\n" +
-                        "\t<note type=\"input\" label=\"protein, cleavage C-terminal mass change\">19.017841166880000</note>\n" +
+                        "\t<note type=\"input\" label=\"protein, cleavage C-terminal mass change\">19.0178</note>\n" + // 17.0027
                         "\t<note type=\"input\" label=\"protein, cleavage N-terminal mass change\">1.007276466</note>\n" +
                         "\t<note type=\"input\" label=\"protein, quick acetyl\">yes</note>\n" +
                         "\t<note type=\"input\" label=\"protein, quick pyrolidone\">yes</note>\n" +

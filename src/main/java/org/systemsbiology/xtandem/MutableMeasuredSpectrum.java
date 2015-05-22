@@ -14,7 +14,8 @@ import java.util.*;
 public class MutableMeasuredSpectrum implements IMeasuredSpectrum {
     public static MutableMeasuredSpectrum[] EMPTY_ARRAY = {};
     public static Class THIS_CLASS = MutableMeasuredSpectrum.class;
-    public static final double PROTON_MASS = MassCalculator.getDefaultCalculator().calcMass("H");
+    public static final double PROTON_MASS = 1.00727647; // MassCalculator.getDefaultCalculator().calcMass("H");
+    public static final double HYDROGEN_MASS =   MassCalculator.getDefaultCalculator().calcMass("H");
 
 
     private int m_PrecursorCharge;

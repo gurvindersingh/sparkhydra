@@ -607,7 +607,7 @@ public class XTandemUtilities {
 
     private static double gProtonMass = 1.00727646688; // 1.007276;
     private static double gCleaveNMass = gProtonMass;
-    private static double gCleaveCMass = 17.002735;
+    private static double gCleaveCMass = 19.0178; //17.002735;
 
     public static final boolean SHOW_MASS_CALCULATION = false;
 

@@ -87,15 +87,19 @@ public class CometScoringAccuracyTest {
     public void testAccuracy() {
 
 
-      //   FileUtilities.writeFile("BadParametersX,xml",CometTestData.USED_PARAMETERS);
+        CometTesting.validateOneKey(); // We are hunting for when this stops working
+
+        //   FileUtilities.writeFile("BadParametersX,xml",CometTestData.USED_PARAMETERS);
     //    FileUtilities.writeFile("GoodParameters,xml",CometTestData.COMET_XML);
 
          XTandemMain.setShowParameters(false);  // I do not want to see parameters
 
-        InputStream is = new StringBufferInputStream(CometTestData.USED_PARAMETERS); //COMET_XML); // old was COMET_XML);
+        InputStream is = new StringBufferInputStream(CometTestData.COMET_XML); //USED_PARAMETERS); // old was COMET_XML);
         XTandemMain application = new XTandemMain(is, "TANDEM_XML");
         CometScoringAlgorithm comet = (CometScoringAlgorithm) application.getAlgorithms()[0];
         comet.configure(application);
+
+        CometTesting.validateOneKey(); // We are hunting for when this stops working
 
         final Class<CometScoringAccuracyTest> cls = CometScoringAccuracyTest.class;
         InputStream istr = cls.getResourceAsStream("/000000008852.mzXML");

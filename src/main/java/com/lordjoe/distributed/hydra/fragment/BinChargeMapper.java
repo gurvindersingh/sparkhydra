@@ -178,7 +178,7 @@ public class BinChargeMapper implements Serializable {
      * @param mz
      * @return
      */
-    private static BinChargeKey[] keysFromChargeMzX(int charge, double mz) {
+    private static BinChargeKey[] keysFromChargeMzXX(int charge, double mz) {
         List<BinChargeKey> holder = new ArrayList<BinChargeKey>();
         double startMZ = mz - examineWidth;
         int start = BinChargeKey.mzAsInt(startMZ);
@@ -207,14 +207,14 @@ public class BinChargeMapper implements Serializable {
         int charge = 1; // all peptides use 1 now
         // code using MZ
         double matchingMass = spec.getPrecursorMass();   // todo decide whether mass or mz is better
-        BinChargeKey[] keys = BinChargeMapper.keysFromChargeMzX(charge, matchingMass);
+        BinChargeKey[] keys = BinChargeMapper.keysFromChargeMzXX(charge, matchingMass);
         return keys;
     }
 
 
     public static BinChargeKey keyFromPeptide(IPolypeptide pp) {
-        double matchingMass = CometScoringAlgorithm.getCometMatchingMass(pp);
-        BinChargeKey key = oneKeyFromChargeMz(1, matchingMass);
+          double matchingMass = CometScoringAlgorithm.getCometMatchingMass(pp);
+        BinChargeKey  key = oneKeyFromChargeMz(1, matchingMass);
         return key;
     }
 
@@ -225,7 +225,7 @@ public class BinChargeMapper implements Serializable {
      * @param mz
      * @return
      */
-    static public BinChargeKey oneKeyFromChargeMz(int charge, double mz) {
+    public static  BinChargeKey oneKeyFromChargeMz(int charge, double mz) {
 //        List<BinChargeKey> holder = new ArrayList<BinChargeKey>();
 //        double v = (mz) / binSize;
 //        double mzStart = ((int) ( 0.5 +  v)   * binSize);
@@ -281,13 +281,14 @@ public class BinChargeMapper implements Serializable {
         @Override
         public Iterable<Tuple2<BinChargeKey, IPolypeptide>> doCall(final IPolypeptide pp) throws Exception {
             //    double matchingMass = pp.getMatchingMass();
-
-            if (TestUtilities.isInterestingPeptide(pp))
-                TestUtilities.breakHere();
-
-
             List<Tuple2<BinChargeKey, IPolypeptide>> holder = new ArrayList<Tuple2<BinChargeKey, IPolypeptide>>();
+
             BinChargeKey key = keyFromPeptide(pp);
+
+            if (TestUtilities.isInterestingPeptide(pp)) {
+                CometTesting.validateOneKey(); // We are hunting for when this stops working
+           }
+
 
             // if we don't use the bin don't get the peptide
             if (usedBins != null && usedBins.contains(key.getMzInt())) {

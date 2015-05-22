@@ -184,6 +184,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
                     if(xcorr > 0.5) {
                         System.out.println("\n" +scan.getId() + " " + ts.getPeptide() + " " + xcorr);
                     }
+
                     numberScored++;
                     maxScore = Math.max(xcorr, maxScore);
 

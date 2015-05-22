@@ -1,5 +1,6 @@
 package org.systemsbiology.xtandem;
 
+import com.lordjoe.distributed.hydra.comet.CometTesting;
 import org.systemsbiology.hadoop.*;
 import org.systemsbiology.xtandem.ionization.*;
 import org.systemsbiology.xtandem.peptide.*;
@@ -92,9 +93,22 @@ public class SequenceUtilities  implements Serializable {
             m_pfX18Score[i] = 1.0F;
 
         }
+
+        CometTesting.validateOneKey(); // We are hunting for when this stops working
+
         m_dCleaveCdefault = m_calc.calcMass("OH");
+
+        m_dCleaveCdefault += m_calc.calcMass("H");
+        m_dCleaveCdefault += XTandemUtilities.getProtonMass();
+
         m_dCleaveNdefault = XTandemUtilities.getProtonMass(); // m_calc.calcMass("H");
+
+        CometTesting.validateOneKey(); // We are hunting for when this stops working
+
         XTandemUtilities.setCleaveCMass(m_dCleaveCdefault);
+
+        CometTesting.validateOneKey(); // We are hunting for when this stops working
+
         XTandemUtilities.setCleaveNMass(m_dCleaveNdefault);
 
         initializeMasses();
@@ -114,11 +128,17 @@ public class SequenceUtilities  implements Serializable {
         if (strValue != null && strValue.length() > 0) {
             modify_maybe(strValue);
         }
+
+        CometTesting.validateOneKey(); // We are hunting for when this stops working
+
         strValue = params.getParameter("residue, potential modification motif");
         if (strValue != null && strValue.length() > 0) {
             throw new UnsupportedOperationException("Fix This"); // ToDo
             //modify_motif(strValue);
         }
+
+        CometTesting.validateOneKey(); // We are hunting for when this stops working
+
         Float fValue = params.getFloatParameter("protein, N-terminal residue modification mass");
         if (fValue != null) {
             modify_n(fValue);
@@ -127,14 +147,29 @@ public class SequenceUtilities  implements Serializable {
         if (fValue != null) {
             modify_c(fValue);
         }
+
+        CometTesting.validateOneKey(); // We are hunting for when this stops working
+
         Double dValue = params.getDoubleParameter("protein, cleavage N-terminal mass change", XTandemUtilities.getProtonMass());
         if (dValue != null) {
             XTandemUtilities.setCleaveNMass(dValue);
           }
-        fValue = params.getFloatParameter("protein, cleavage C-terminal mass change",17.002735F);
+
+        if(Math.abs(dValue - 1.00727) > 0.0001)
+            throw new IllegalStateException("protein, cleavage N-terminal mass change must be 1.00727" );
+
+        CometTesting.validateOneKey(); // We are hunting for when this stops working
+
+        fValue = params.getFloatParameter("protein, cleavage C-terminal mass change",19.0178F); //17.002735F);
         if (fValue != null) {
             XTandemUtilities.setCleaveCMass(fValue);
         }
+
+        if(Math.abs(fValue - 19.0178) > 0.001)       // 17.00273
+           throw new IllegalStateException("protein, cleavage C-terminal mass change must be 17.00273" );
+
+
+        CometTesting.validateOneKey(); // We are hunting for when this stops working
 
         /**
          * adjust the scoring of certain opns

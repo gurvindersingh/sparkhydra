@@ -50,7 +50,7 @@ public class CometParameterTests {
         Assert.assertTrue(comet.isWithinLimits(precursorMass, ppMass, charge));
 
          double matchingMass = CometScoringAlgorithm.getCometMatchingMass(pp);
-         BinChargeKey peptideKey = BinChargeMapper.oneKeyFromChargeMz(1, matchingMass);
+         BinChargeKey peptideKey = BinChargeMapper.keyFromPeptide(pp);
 
         BinChargeKey[] spectrumKeys = BinChargeMapper.keysFromSpectrum(spectrum) ;
 
@@ -343,7 +343,7 @@ public class CometParameterTests {
         // now test specific parameters
         Assert.assertEquals("database_name", "Homo_sapiens_non-redundant.GRCh37.68.pep.all_FPKM_SNV-cRAP_targetdecoy.fasta", hdr.getParameter("database_name"));
         Assert.assertEquals("activation_method", "ALL", hdr.getParameter("activation_method"));
-        Assert.assertEquals("variable_mod1", "15.994915 M 0 3", hdr.getParameter("variable_mod1"));
+        Assert.assertEquals("variable_mod1", "15.9949 M 0 3", hdr.getParameter("variable_mod1"));
 
         Assert.assertEquals("peptide_mass_tolerance", 20, (int) hdr.getIntParameter("peptide_mass_tolerance"));
         Assert.assertEquals("num_threads", 8, (int) hdr.getIntParameter("num_threads"));

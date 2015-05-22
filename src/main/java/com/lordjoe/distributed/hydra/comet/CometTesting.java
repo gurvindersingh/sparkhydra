@@ -7,6 +7,7 @@ import com.lordjoe.distributed.spark.GeneratingPseudoList;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.systemsbiology.xtandem.IMeasuredSpectrum;
 import org.systemsbiology.xtandem.peptide.IPolypeptide;
+import org.systemsbiology.xtandem.peptide.Polypeptide;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,11 +36,6 @@ public class CometTesting {
         }
     }
 
-    public static BinChargeKey getPeptideKey(IPolypeptide pp) {
-        double matchingMass = CometScoringAlgorithm.getCometMatchingMass(pp);
-        BinChargeKey ppKey = BinChargeMapper.oneKeyFromChargeMz(1, matchingMass);
-        return ppKey;
-    }
 
 
     public static int validatePeptideList(IMeasuredSpectrum scan, List<IPolypeptide> scoredPeptides) {
@@ -57,7 +53,7 @@ public class CometTesting {
         for (IPolypeptide pp : scoredPeptides) {
             // for each spectrum
             for (UsedSpectrum usedSpectrum : notMatching) {
-                BinChargeKey testKey = getPeptideKey(usedSpectrum.peptide);
+                BinChargeKey testKey = BinChargeMapper.keyFromPeptide(usedSpectrum.peptide);
 
                 if (UsedSpectrum.equivalentPeptide(usedSpectrum.peptide, pp)) {
                     matching.add(usedSpectrum);
@@ -71,7 +67,7 @@ public class CometTesting {
          BinChargeKey[] keys = BinChargeMapper.keysFromSpectrum(scan);
 
         for (UsedSpectrum usedSpectrum : notMatching) {
-            BinChargeKey testKey = BinChargeMapper.oneKeyFromChargeMz(1, usedSpectrum.peptideMass);
+            BinChargeKey testKey = BinChargeMapper.keyFromPeptide(usedSpectrum.peptide);
 
             System.out.println("did not score " + usedSpectrum);
         }
@@ -87,12 +83,12 @@ public class CometTesting {
 
         double matchingMass = CometScoringAlgorithm.getCometMatchingMass(pp);
         //    double matchingMass = pp.getMatchingMass();
-        BinChargeKey ppKey = getPeptideKey(pp);
+        BinChargeKey ppKey = BinChargeMapper.keyFromPeptide(pp);
         //    double matchingMass = pp.getMatchingMass();
         BinChargeKey[] keys = BinChargeMapper.keysFromSpectrum(scan);
 
         for (UsedSpectrum usedSpectrum : usedSpectrums) {
-            BinChargeKey testKey = getPeptideKey(usedSpectrum.peptide);
+            BinChargeKey testKey = BinChargeMapper.keyFromPeptide(usedSpectrum.peptide);
 
             if (UsedSpectrum.equivalentPeptide(usedSpectrum.peptide, pp)) {
 
@@ -382,6 +378,97 @@ public class CometTesting {
             }
         }
         return holder;
+
+    }
+
+    public static final String INTERESTING_PRPTIDE_BINS =
+            "7402\t1\t0.0\n" +
+                    "8756\t1\t36.19836\n" +
+                    "12255\t1\t-0.063766636\n" +
+                    "14458\t1\t29.104095\n" +
+                    "20112\t1\t49.1384\n" +
+                    "20256\t1\t0.0\n" +
+                    "25309\t1\t0.0\n" +
+                    "25767\t1\t49.362976\n" +
+                    "31421\t1\t24.631594\n" +
+                    "31761\t1\t0.0\n" +
+                    "35772\t1\t48.181545\n" +
+                    "37512\t1\t0.0\n" +
+                    "41427\t1\t47.460247\n" +
+                    "45665\t1\t0.0\n" +
+                    "49580\t1\t47.501205\n" +
+                    "51320\t1\t0.0\n" +
+                    "55331\t1\t47.59024\n" +
+                    "55671\t1\t0.0\n" +
+                    "61325\t1\t0.0\n" +
+                    "61783\t1\t42.191357\n" +
+                    "66836\t1\t-3.2778213\n" +
+                    "66980\t1\t-0.95721966\n" +
+                    "72634\t1\t0.0\n" +
+                    "74837\t1\t-2.9858162\n" +
+                    "78336\t1\t0.0\n" +
+                    "79690\t1\t0.0\n" +
+                    "86141\t1\t0.0\n" +
+                    "7402\t1\t0.0\n" +
+                    "8756\t1\t36.19836\n" +
+                    "12255\t1\t-0.063766636\n" +
+                    "14458\t1\t29.104095\n" +
+                    "20112\t1\t49.1384\n" +
+                    "20256\t1\t0.0\n" +
+                    "25309\t1\t0.0\n" +
+                    "25767\t1\t49.362976\n" +
+                    "31421\t1\t24.631594\n" +
+                    "31761\t1\t0.0\n" +
+                    "35772\t1\t48.181545\n" +
+                    "37512\t1\t0.0\n" +
+                    "41427\t1\t47.460247\n" +
+                    "45665\t1\t0.0\n" +
+                    "49580\t1\t47.501205\n" +
+                    "51320\t1\t0.0\n" +
+                    "55331\t1\t47.59024\n" +
+                    "55671\t1\t0.0\n" +
+                    "61325\t1\t0.0\n" +
+                    "61783\t1\t42.191357\n" +
+                    "66836\t1\t-3.2778213\n" +
+                    "66980\t1\t-0.95721966\n" +
+                    "72634\t1\t0.0\n" +
+                    "74837\t1\t-2.9858162\n" +
+                    "78336\t1\t0.0\n" +
+                    "79690\t1\t0.0\n" +
+                    "86141\t1\t0.0";
+
+    public static List<Integer>  INTERESTING_INDICES =  buildList();
+
+    private static  List<Integer> buildList()
+    {
+        List<Integer> holder = new ArrayList<Integer>();
+        String[] split = INTERESTING_PRPTIDE_BINS.split("\n");
+        for (String s : split) {
+            String[] split1 = s.split("\t");
+            int index = 0;
+            holder.add(new Integer(split1[0])) ;
+        }
+        return holder;
+    }
+
+
+
+    public static void validateOneKey() {
+        IPolypeptide pp = Polypeptide.fromString("M[15.995]PCTEDYLSLILNR");
+        BinChargeKey interestingKey = BinChargeMapper.keyFromPeptide(pp);
+        if(interestingKey.getMzInt() != 34817)
+           return; // throw new IllegalStateException("fix key generation");
+    }
+
+
+    public static void validateOneIndexSet(List<BinnedChargeIonIndex> binnedIndex) {
+        if(binnedIndex.size() != INTERESTING_INDICES.size())
+            throw new IllegalStateException("problem"); // todo fix
+        for (BinnedChargeIonIndex bc : binnedIndex) {
+            if(!INTERESTING_INDICES.contains(bc.index))
+                System.out.println("bad index " + bc.index );  //throw new IllegalStateException("problem"); // todo fix
+
+        }
 
     }
 }

@@ -131,7 +131,11 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
         for (String key : predefined.stringPropertyNames()) {
             setPredefinedParameter(key, predefined.getProperty(key));
         }
+
+
         handleInputs(is, url);
+
+
         //     if (gInstance != null)
         //        throw new IllegalStateException("Only one XTandemMain allowed");
     }
@@ -354,15 +358,22 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
 
         XTandemUtilities.validateParameters(this);
 
+
         m_ScoringMods = new ScoringModifications(this);
+
 
         m_MassType = this.getEnumParameter("spectrum, fragment mass type", MassType.class, MassType.monoisotopic);
         MassCalculator.setDefaultMassType(m_MassType);
+
+        CometTesting.validateOneKey(); // We are hunting for when this stops working
 
         m_SequenceUtilitiesByMasssType[0] = new SequenceUtilities(MassType.monoisotopic, this);
         m_SequenceUtilitiesByMasssType[0].config(this);
         m_SequenceUtilitiesByMasssType[1] = new SequenceUtilities(MassType.average, this);
         m_SequenceUtilitiesByMasssType[1].config(this);
+
+        CometTesting.validateOneKey(); // We are hunting for when this stops working
+
 
         // maybe limit the number of scans to save memory
         XTandemUtilities.setMaxHandledScans(getIntParameter("org.systemsbiology.xtandem.MaxScoredScans", Integer.MAX_VALUE));

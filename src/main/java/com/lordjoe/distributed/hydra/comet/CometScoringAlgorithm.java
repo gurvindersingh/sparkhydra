@@ -101,12 +101,13 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
     @Override
     public void configure(final IParameterHolder params) {
         super.configure(params);
+        CometTesting.validateOneKey(); // We are hunting for when this stops working
         final String units = params.getParameter("spectrum, parent monoisotopic mass error units",
                 "Daltons");
         m_BinTolerance = params.getDoubleParameter("comet.fragment_bin_tol", DEFAULT_BIN_WIDTH);
         ALLOCATED_DATA_SIZE = (int)(MAX_MASS / m_BinTolerance);
 
-       setMaximumPeptideListSize(params.getIntParameter(MAX_PEPTIDE_LIST_PROPERTY, Integer.MAX_VALUE));
+        setMaximumPeptideListSize(params.getIntParameter(MAX_PEPTIDE_LIST_PROPERTY, Integer.MAX_VALUE));
 
 
         m_BinStartOffset = params.getDoubleParameter("comet.fragment_bin_offset", DEFAULT_BIN_OFFSET);
@@ -133,6 +134,7 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
         double nh3 = MassCalculator.getDefaultCalculator().calcMass("NH3");
         iMinus18 = asBin(nh3);
 
+        CometTesting.validateOneKey(); // We are hunting for when this stops working
 
         Double testValue = params.getDoubleParameter("protein, cleavage N-terminal mass change", 0);
         if(Math.abs(testValue - 1.007276466) > 0.0001)
@@ -351,17 +353,17 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
         if(maxCharge > 1 )
             maxCharge = maxCharge - 1;
         int scoredPeaks = 0;
+
+        if(interesting) {
+            CometTesting.validateOneIndexSet(binnedIndex);
+        }
+
         for (BinnedChargeIonIndex peak : binnedIndex) {
             int index = peak.index;
             if(peak.charge > maxCharge)
                 continue;
 
             float value = scorer.getScoredData(fastXcorrDataMap, fastXcorrDataNL,index, peak.charge);
-            if(interesting) {
-                if(index == 25767)
-                    TestUtilities.breakHere();
-                System.out.println(peak.index + "\t" +  peak.charge + "\t" + value);
-            }
 
             if (Math.abs(value) > 0.0001) {
                 xcorr += value;
@@ -861,13 +863,17 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
      */
     public ITheoreticalSpectrumSet generateSpectrum(Scorer scorer, final IPolypeptide pPeptide) {
         if (pPeptide.isModified())
-            XTandemUtilities.breakHere();
+            TestUtilities.breakHere();
+        if (TestUtilities.isInterestingPeptide(pPeptide))
+            TestUtilities.breakHere();
 
         final SequenceUtilities su = scorer.getSequenceUtilities();
         double massPlusH = pPeptide.getMass() + XTandemUtilities.getProtonMass() + XTandemUtilities.getCleaveCMass() + XTandemUtilities.getCleaveNMass();
-        ITheoreticalSpectrumSet set = new CometTheoreticalBinnedSet(scorer.MAX_CHARGE, massPlusH,
+        CometTheoreticalBinnedSet set = new CometTheoreticalBinnedSet(scorer.MAX_CHARGE, massPlusH,
                 pPeptide, this, scorer);
 
+        if (TestUtilities.isInterestingPeptide(pPeptide))
+            CometTesting.validateOneIndexSet(set.getBinnedIndex(this,scorer));
         return set;
     }
 
@@ -951,7 +957,11 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
 
 
     public static double getCometMatchingMass(IPolypeptide pp) {
-        return  pp.getMatchingMass() + 2 * MutableMeasuredSpectrum.PROTON_MASS;   // todo WHY DID I THINK I NEEDED to add this
+        double matchingMass = pp.getMatchingMass();
+       if(true)
+           return matchingMass;
+        return  matchingMass + 2 * MutableMeasuredSpectrum.HYDROGEN_MASS;
+           //    MutableMeasuredSpectrum.PROTON_MASS;   // todo WHY DID I THINK I NEEDED to add this
     }
 
 //    /**
