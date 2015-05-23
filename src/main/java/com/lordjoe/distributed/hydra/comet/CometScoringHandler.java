@@ -173,9 +173,9 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
                 int numberGood = 0;
                 int numberScored = 0;
                 // debugging why do we disagree
-//                List<CometTheoreticalBinnedSet> badScore = new ArrayList<CometTheoreticalBinnedSet>();
-//                List<CometTheoreticalBinnedSet> notScored = new ArrayList<CometTheoreticalBinnedSet>();
-//                List<IPolypeptide> scoredPeptides = new ArrayList<IPolypeptide>();
+                List<CometTheoreticalBinnedSet> badScore = new ArrayList<CometTheoreticalBinnedSet>();
+                List<CometTheoreticalBinnedSet> notScored = new ArrayList<CometTheoreticalBinnedSet>();
+                List<IPolypeptide> scoredPeptides = new ArrayList<IPolypeptide>();
 
                 CometScoringData.populateFromScan(scan);
 
@@ -183,36 +183,36 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
                 double maxScore = 0;
                 for (CometTheoreticalBinnedSet ts : holder) {
 
-                //    if(TestUtilities.isInterestingPeptide(ts.getPeptide()))
-                //        TestUtilities.breakHere();
+                    if(TestUtilities.isInterestingPeptide(ts.getPeptide()))
+                        TestUtilities.breakHere();
 
                     IonUseCounter counter = new IonUseCounter();
                     double xcorr = comet.doXCorr(ts, scorer, counter, scan, null);
 
-                    //if(xcorr > 0.5) {
-                    //    System.out.println("\n" +scan.getId() + " " + ts.getPeptide() + " " + xcorr);
-                    //}
+                    if(xcorr > 0.5) {
+                        System.out.println("\n" +scan.getId() + " " + ts.getPeptide() + " " + xcorr);
+                    }
 
                     numberScored++;
                     maxScore = Math.max(xcorr, maxScore);
 
                     // Start debugging code
-//                    scoredPeptides.add(ts.getPeptide());
-//                    int testResult = CometTesting.validatePeptideScore(scan,ts.getPeptide(),xcorr);
-//                    if(testResult == 0) {
-//                        numberGood++;  // got same score
-//                    }
-//                    else {
-//                        if(testResult == 1)  // score not same
-//                        {
-//                            // repeat to look in detail
-//                            double cometScore = CometTesting.getCometScore(scan,ts.getPeptide());
-//                            xcorr = comet.doXCorr(ts, scorer, counter, scan, null);
-//                             badScore.add(ts);
-//                        }
-//                        if(testResult == 2)  // did not score
-//                            notScored.add(ts);
-//                    }
+                    scoredPeptides.add(ts.getPeptide());
+                    int testResult = CometTesting.validatePeptideScore(scan,ts.getPeptide(),xcorr);
+                    if(testResult == 0) {
+                        numberGood++;  // got same score
+                    }
+                    else {
+                        if(testResult == 1)  // score not same
+                        {
+                            // repeat to look in detail
+                            double cometScore = CometTesting.getCometScore(scan,ts.getPeptide());
+                            xcorr = comet.doXCorr(ts, scorer, counter, scan, null);
+                             badScore.add(ts);
+                        }
+                        if(testResult == 2)  // did not score
+                            notScored.add(ts);
+                    }
 //                    // end debugging code
 
                     if (xcorr > 0.01) {
@@ -223,7 +223,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
 
                 }
 
-                //int testResult = CometTesting.validatePeptideList(scan,scoredPeptides);
+                int testResult = CometTesting.validatePeptideList(scan,scoredPeptides);
 
                 if (result.isValidMatch())
                     ret.add(result);
