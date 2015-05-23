@@ -458,8 +458,10 @@ public class SparkCometScanScorer {
         JavaPairRDD<BinChargeKey, HashMap<String, IPolypeptide>> keyedPeptides = getBinChargePeptideHash(sparkProperties, usedBins, handler);
         timer.showElapsed("Mapped Peptides", System.err);
 
-        keyedPeptides = SparkUtilities.persist(keyedPeptides);
-        List<Tuple2<BinChargeKey, HashMap<String, IPolypeptide>>> collect1 = keyedPeptides.collect();
+        if(false) {
+            keyedPeptides = SparkUtilities.persist(keyedPeptides);
+            List<Tuple2<BinChargeKey, HashMap<String, IPolypeptide>>> collect1 = keyedPeptides.collect();
+        }
 
         long[] counts = new long[1];
         if (isDebuggingCountMade()) {
@@ -595,13 +597,16 @@ public class SparkCometScanScorer {
         keyedPeptides.partitionBy(partitioner);
         timer.showElapsed("Mapped Peptides", System.err);
 
-        keyedPeptides = SparkUtilities.persist(keyedPeptides);
-        Map<BinChargeKey, HashMap<String, IPolypeptide>> binChargeKeyHashMapMap = keyedPeptides.collectAsMap();
-        List<HashMap<String, IPolypeptide>> collect1 = keyedPeptides.values().collect();
-        for (HashMap<String, IPolypeptide> hms : collect1) {
-            for (IPolypeptide pp : hms.values()) {
-                  if(TestUtilities.isInterestingPeptide(pp))
-                      break;
+        // debugging only
+        if(false) {
+            keyedPeptides = SparkUtilities.persist(keyedPeptides);
+            Map<BinChargeKey, HashMap<String, IPolypeptide>> binChargeKeyHashMapMap = keyedPeptides.collectAsMap();
+            List<HashMap<String, IPolypeptide>> collect1 = keyedPeptides.values().collect();
+            for (HashMap<String, IPolypeptide> hms : collect1) {
+                for (IPolypeptide pp : hms.values()) {
+                    if (TestUtilities.isInterestingPeptide(pp))
+                        break;
+                }
             }
         }
 
@@ -631,18 +636,20 @@ public class SparkCometScanScorer {
 
         // combine scores from same scan
         JavaRDD<? extends IScoredScan> cometBestScores = handler.combineScanScores(bestScores);
-        
-        cometBestScores = SparkUtilities.persist(cometBestScores);
 
-        List<? extends IScoredScan> collect = cometBestScores.collect();
-        for (IScoredScan iScoredScan : collect) {
-           CometScoringResult cs = (CometScoringResult)iScoredScan;
-            System.out.println(" ======================");
-            System.out.println(cs.getId());
-            ISpectralMatch[] spectralMatches = cs.getSpectralMatches();
-            for (int i = 0; i < spectralMatches.length; i++) {
-                ISpectralMatch sm = spectralMatches[i];
-                System.out.println(sm.getPeptide() + " " + sm.getHyperScore());
+        if(false) {
+            cometBestScores = SparkUtilities.persist(cometBestScores);
+
+            List<? extends IScoredScan> collect = cometBestScores.collect();
+            for (IScoredScan iScoredScan : collect) {
+                CometScoringResult cs = (CometScoringResult) iScoredScan;
+                System.out.println(" ======================");
+                System.out.println(cs.getId());
+                ISpectralMatch[] spectralMatches = cs.getSpectralMatches();
+                for (int i = 0; i < spectralMatches.length; i++) {
+                    ISpectralMatch sm = spectralMatches[i];
+                    System.out.println(sm.getPeptide() + " " + sm.getHyperScore());
+                }
             }
         }
 

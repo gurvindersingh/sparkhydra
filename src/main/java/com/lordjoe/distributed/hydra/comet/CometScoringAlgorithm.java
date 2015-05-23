@@ -872,8 +872,9 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
         CometTheoreticalBinnedSet set = new CometTheoreticalBinnedSet(scorer.MAX_CHARGE, massPlusH,
                 pPeptide, this, scorer);
 
-        if (TestUtilities.isInterestingPeptide(pPeptide))
+        if (TestUtilities.isInterestingPeptide(pPeptide)) {
             CometTesting.validateOneIndexSet(set.getBinnedIndex(this,scorer));
+        }
         return set;
     }
 

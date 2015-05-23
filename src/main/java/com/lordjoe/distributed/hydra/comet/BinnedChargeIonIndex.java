@@ -1,5 +1,6 @@
 package com.lordjoe.distributed.hydra.comet;
 
+import com.lordjoe.distributed.hydra.test.TestUtilities;
 import org.systemsbiology.xtandem.ionization.*;
 
 import java.io.*;
@@ -47,6 +48,9 @@ public class BinnedChargeIonIndex implements Comparable<BinnedChargeIonIndex>,Se
 
     public BinnedChargeIonIndex(final int pIndex, final int pCharge, final IonType pType, final int pPeptidePosition) {
         index = pIndex;
+        if(index == 12680)
+            TestUtilities.breakHere();
+
         charge = pCharge;
         type = pType;
         if(pPeptidePosition < 0)

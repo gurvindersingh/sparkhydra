@@ -1,5 +1,6 @@
 package com.lordjoe.distributed.hydra.comet;
 
+import com.lordjoe.distributed.hydra.test.TestUtilities;
 import com.lordjoe.utilities.ElapsedTimer;
 import com.lordjoe.utilities.FileUtilities;
 import org.junit.Assert;
@@ -137,8 +138,12 @@ public class CometScoringAccuracyTest {
         double xcorr1 = CometScoringHandler.doRealScoring(scan, scorer, ts1, application);
         Assert.assertEquals(2.070,xcorr1,0.002);
 
+        IPolypeptide interestimgCase = Polypeptide.fromString("NIKPECPTLACGQPR");
+
         for (UsedSpectrum testCase : used) {
             IPolypeptide pp = testCase.peptide;
+            if(pp.equivalent(interestimgCase))
+                TestUtilities.breakHere();
 
             double cometScore = testCase.score;
             CometTheoreticalBinnedSet ts = (CometTheoreticalBinnedSet) scorer.generateSpectrum(pp);

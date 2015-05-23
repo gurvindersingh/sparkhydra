@@ -381,6 +381,34 @@ public class CometTesting {
 
     }
 
+    public static final String COMET_BINS =
+            "M[15]PCTEDYLSLILNR      7402    0       0       0       0\n" +
+                    "M[15]PCTEDYLSLILNR      12255   -0.06376663595  0       1       0\n" +
+                    "M[15]PCTEDYLSLILNR      20256   -1.373716049e-016       -0.06376663595  2       0\n" +
+                    "M[15]PCTEDYLSLILNR      25309   -2.98427945e-016        -0.06376663595  3       0\n" +
+                    "M[15]PCTEDYLSLILNR      31761   -2.557954003e-016       -0.06376663595  4       0\n" +
+                    "M[15]PCTEDYLSLILNR      37512   4.973799304e-017        -0.06376663595  5       0\n" +
+                    "M[15]PCTEDYLSLILNR      45665   1.492139725e-016        -0.06376663595  6       0\n" +
+                    "M[15]PCTEDYLSLILNR      51320   -1.326346525e-016       -0.06376663595  7       0\n" +
+                    "M[15]PCTEDYLSLILNR      55671   -2.98427945e-016        -0.06376663595  8       0\n" +
+                    "M[15]PCTEDYLSLILNR      61325   -3.647452779e-016       -0.06376663595  9       0\n" +
+                    "M[15]PCTEDYLSLILNR      66980   -0.9572196603   -0.06376663595  10      0\n" +
+                    "M[15]PCTEDYLSLILNR      72634   -1.458981111e-015       -1.020986296    11      0\n" +
+                    "M[15]PCTEDYLSLILNR      78336   -1.923202283e-015       -1.020986296    12      0\n" +
+                    "M[15]PCTEDYLSLILNR      8756    36.19836044     -1.020986296    0       1\n" +
+                    "M[15]PCTEDYLSLILNR      14458   29.10409546     35.17737415     1       1\n" +
+                    "M[15]PCTEDYLSLILNR      20112   49.13840103     64.28146961     2       1\n" +
+                    "M[15]PCTEDYLSLILNR      25767   49.36297607     113.4198706     3       1\n" +
+                    "M[15]PCTEDYLSLILNR      31421   24.6315918      162.7828467     4       1\n" +
+                    "M[15]PCTEDYLSLILNR      35772   48.18154526     187.4144385     5       1\n" +
+                    "M[15]PCTEDYLSLILNR      41427   47.46024704     235.5959838     6       1\n" +
+                    "M[15]PCTEDYLSLILNR      49580   47.50120544     283.0562308     7       1\n" +
+                    "M[15]PCTEDYLSLILNR      55331   47.59024048     330.5574363     8       1\n" +
+                    "M[15]PCTEDYLSLILNR      61783   42.19135666     378.1476767     9       1\n" +
+                    "M[15]PCTEDYLSLILNR      66836   -3.277821064    420.3390334     10      1\n" +
+                    "M[15]PCTEDYLSLILNR      74837   -2.98581624     417.0612123     11      1\n" +
+                    "M[15]PCTEDYLSLILNR      79690   -1.923202283e-015       414.0753961     12      1";
+
     public static final String INTERESTING_PRPTIDE_BINS =
             "7402\t1\t0.0\n" +
                     "8756\t1\t36.19836\n" +
@@ -462,13 +490,30 @@ public class CometTesting {
 
 
     public static void validateOneIndexSet(List<BinnedChargeIonIndex> binnedIndex) {
+        if(true)
+        return;
         if(binnedIndex.size() != INTERESTING_INDICES.size())
             throw new IllegalStateException("problem"); // todo fix
+        List<Integer>  myIndices = new ArrayList<Integer>();
+        List<Integer>  theirIndices = new ArrayList<Integer>();
         for (BinnedChargeIonIndex bc : binnedIndex) {
-            if(!INTERESTING_INDICES.contains(bc.index))
+            myIndices.add( bc.index);
+             if(!INTERESTING_INDICES.contains(bc.index))
                 System.out.println("bad index " + bc.index );  //throw new IllegalStateException("problem"); // todo fix
+         }
+        Collections.sort(myIndices);
 
+        for (Integer theirIndex : INTERESTING_INDICES) {
+            theirIndices.add(theirIndex) ;
+            if(!myIndices.contains(theirIndex))
+                System.out.println("not seen " + theirIndex);  //throw new IllegalStateException("problem"); // todo fix
+        }
+        Collections.sort(theirIndices);
+        int index = 0;
+        for (Integer theirIndex : theirIndices) {
+            System.out.println(theirIndex + " -> " + myIndices.get(index++)); // binnedIndex.get(index++).index);
         }
 
+        System.out.println("done");
     }
 }

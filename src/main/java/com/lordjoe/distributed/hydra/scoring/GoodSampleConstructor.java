@@ -58,6 +58,8 @@ public class GoodSampleConstructor {
         }
     }
 
+
+
     public static void writeSelectedSpectra(final String mgfFileName, final String pOutMgfName, final Set<String> pSpectralIds) throws IOException {
         PrintWriter mgfOut = new PrintWriter(new FileWriter(pOutMgfName));
         InputStream is = new FileInputStream(mgfFileName);
@@ -255,8 +257,55 @@ public class GoodSampleConstructor {
         }
     }
 
+    public static List<String>   readPeptidesFromPepXML(String file)
+    {
+        List<String> holder = new ArrayList<String>();
+
+         try {
+            LineNumberReader rdr = new LineNumberReader(new FileReader(file)) ;
+            String line = rdr.readLine();
+            while(line != null)  {
+                int index = line.indexOf("\" peptide=\"");
+                if(index > 0)   {
+                   index +=  "\" peptide=\"".length();
+                    int index2 = line.indexOf("\"",index) ;
+                    String sequence = line.substring(index,index2);
+                    holder.add( sequence);
+                }
+
+                line = rdr.readLine();
+            }
+        } catch (IOException e) {
+            throw new UnsupportedOperationException(e);
+        }
+        return holder;
+    }
+
+    public static void getProteins(String[] args)  {
+        try {
+            int index = 0;
+            String fastaFileName = args[index++];
+            String outProteinName = args[index++];
+
+            Set<IProtein> proteins = new HashSet<IProtein>();
+            Set<String> peptides = new HashSet<String>();
+
+
+            for (; index < args.length; index++) {
+                List<String> pps =  readPeptidesFromPepXML(args[index]);
+                peptides.addAll(pps);
+
+            }
+            peptidesToProteins(fastaFileName, peptides, proteins);
+            writeProteins(outProteinName, proteins);
+        } catch (IOException e) {
+            throw new UnsupportedOperationException(e);
+        }
+    }
+
     public static void main(String[] args) throws Exception {
-         samplePepXML(args);
+        getProteins(  args);
+ //        samplePepXML(args);
   //      sampleTandemOutput(args);
      }
 

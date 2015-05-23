@@ -80,12 +80,13 @@ public class CometScoringResult implements IScoredScan, IAddable<IScoredScan>, I
         // keep only top   MAX_RETURNED_MATCHES matches
         if(matches.size() > 2 * MAX_RETURNED_MATCHES) {
             // highest scores first
-            Collections.sort(matches,new Comparator<PeptideMatchScore>() {
-                @Override
-                public int compare(PeptideMatchScore o1, PeptideMatchScore o2) {
-                    return Double.compare(o2.score, o1.score);
-                }
-            });
+            Collections.sort(matches);
+            //,new Comparator<PeptideMatchScore>() {
+//                @Override
+//                public int compare(PeptideMatchScore o1, PeptideMatchScore o2) {
+//                    return Double.compare(o2.score, o1.score);
+//                }
+//            });
             List<PeptideMatchScore> savedMatches = new ArrayList<PeptideMatchScore>(matches.subList(0, MAX_RETURNED_MATCHES));
             matches.clear();
             matches.addAll(savedMatches);
@@ -534,6 +535,7 @@ public class CometScoringResult implements IScoredScan, IAddable<IScoredScan>, I
     @Override
     public HyperScoreStatistics getHyperScores() {
         HyperScoreStatistics ret = new HyperScoreStatistics();
+        guaranteeMatchesSorted();
         for (PeptideMatchScore match : matches) {
             ret.add(match.score);
         }
