@@ -1,22 +1,30 @@
 package com.lordjoe.distributed.hydra.comet;
 
-import com.lordjoe.distributed.*;
-import com.lordjoe.distributed.hydra.fragment.*;
-import com.lordjoe.distributed.hydra.scoring.*;
-import com.lordjoe.distributed.hydra.test.*;
-import com.lordjoe.utilities.*;
-import org.apache.spark.api.java.*;
-import org.apache.spark.api.java.function.*;
-import org.systemsbiology.xtandem.*;
-import org.systemsbiology.xtandem.ionization.*;
-import org.systemsbiology.xtandem.peptide.*;
-import org.systemsbiology.xtandem.scoring.*;
-import scala.*;
+import com.lordjoe.distributed.AbstractLoggingFlatMapFunction;
+import com.lordjoe.distributed.AbstractLoggingFunction2;
+import com.lordjoe.distributed.AbstractLoggingPairFlatMapFunction;
+import com.lordjoe.distributed.SparkUtilities;
+import com.lordjoe.distributed.hydra.fragment.BinChargeKey;
+import com.lordjoe.distributed.hydra.scoring.SparkMapReduceScoringHandler;
+import com.lordjoe.distributed.hydra.test.TestUtilities;
+import com.lordjoe.utilities.ElapsedTimer;
+import org.apache.spark.api.java.JavaPairRDD;
+import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.function.PairFlatMapFunction;
+import org.apache.spark.api.java.function.PairFunction;
+import org.systemsbiology.xtandem.IMeasuredSpectrum;
+import org.systemsbiology.xtandem.XTandemMain;
+import org.systemsbiology.xtandem.ionization.ITheoreticalSpectrumSet;
+import org.systemsbiology.xtandem.ionization.IonUseCounter;
+import org.systemsbiology.xtandem.peptide.IPolypeptide;
+import org.systemsbiology.xtandem.scoring.IScoredScan;
+import org.systemsbiology.xtandem.scoring.Scorer;
+import org.systemsbiology.xtandem.scoring.SpectralMatch;
+import scala.Tuple2;
 
-import java.lang.*;
-import java.lang.Double;
-import java.lang.Float;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * com.lordjoe.distributed.hydra.comet.CometScoringHandler
@@ -165,9 +173,9 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
                 int numberGood = 0;
                 int numberScored = 0;
                 // debugging why do we disagree
-                List<CometTheoreticalBinnedSet> badScore = new ArrayList<CometTheoreticalBinnedSet>();
-                List<CometTheoreticalBinnedSet> notScored = new ArrayList<CometTheoreticalBinnedSet>();
-                List<IPolypeptide> scoredPeptides = new ArrayList<IPolypeptide>();
+//                List<CometTheoreticalBinnedSet> badScore = new ArrayList<CometTheoreticalBinnedSet>();
+//                List<CometTheoreticalBinnedSet> notScored = new ArrayList<CometTheoreticalBinnedSet>();
+//                List<IPolypeptide> scoredPeptides = new ArrayList<IPolypeptide>();
 
                 CometScoringData.populateFromScan(scan);
 
@@ -175,37 +183,37 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
                 double maxScore = 0;
                 for (CometTheoreticalBinnedSet ts : holder) {
 
-                    if(TestUtilities.isInterestingPeptide(ts.getPeptide()))
-                        TestUtilities.breakHere();
+                //    if(TestUtilities.isInterestingPeptide(ts.getPeptide()))
+                //        TestUtilities.breakHere();
 
                     IonUseCounter counter = new IonUseCounter();
                     double xcorr = comet.doXCorr(ts, scorer, counter, scan, null);
 
-                    if(xcorr > 0.5) {
-                        System.out.println("\n" +scan.getId() + " " + ts.getPeptide() + " " + xcorr);
-                    }
+                    //if(xcorr > 0.5) {
+                    //    System.out.println("\n" +scan.getId() + " " + ts.getPeptide() + " " + xcorr);
+                    //}
 
                     numberScored++;
                     maxScore = Math.max(xcorr, maxScore);
 
                     // Start debugging code
-                    scoredPeptides.add(ts.getPeptide());
-                    int testResult = CometTesting.validatePeptideScore(scan,ts.getPeptide(),xcorr);
-                    if(testResult == 0) {
-                        numberGood++;  // got same score
-                    }
-                    else {
-                        if(testResult == 1)  // score not same
-                        {
-                            // repeat to look in detail
-                            double cometScore = CometTesting.getCometScore(scan,ts.getPeptide());
-                            xcorr = comet.doXCorr(ts, scorer, counter, scan, null);
-                             badScore.add(ts);
-                        }
-                        if(testResult == 2)  // did not score
-                            notScored.add(ts);
-                    }
-                    // end debugging code
+//                    scoredPeptides.add(ts.getPeptide());
+//                    int testResult = CometTesting.validatePeptideScore(scan,ts.getPeptide(),xcorr);
+//                    if(testResult == 0) {
+//                        numberGood++;  // got same score
+//                    }
+//                    else {
+//                        if(testResult == 1)  // score not same
+//                        {
+//                            // repeat to look in detail
+//                            double cometScore = CometTesting.getCometScore(scan,ts.getPeptide());
+//                            xcorr = comet.doXCorr(ts, scorer, counter, scan, null);
+//                             badScore.add(ts);
+//                        }
+//                        if(testResult == 2)  // did not score
+//                            notScored.add(ts);
+//                    }
+//                    // end debugging code
 
                     if (xcorr > 0.01) {
                         IPolypeptide peptide = ts.getPeptide();
@@ -215,7 +223,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
 
                 }
 
-                int testResult = CometTesting.validatePeptideList(scan,scoredPeptides);
+                //int testResult = CometTesting.validatePeptideList(scan,scoredPeptides);
 
                 if (result.isValidMatch())
                     ret.add(result);

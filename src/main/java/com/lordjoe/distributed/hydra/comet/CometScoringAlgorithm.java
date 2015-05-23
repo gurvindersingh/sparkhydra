@@ -334,7 +334,6 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
         //if(true)
         //    return Math.random();
         CometTheoreticalBinnedSet sts = pTs;
-         CometScoringData.populateFromScan(scorer);
         float[] fastXcorrDataMap =  CometScoringData.getFastDataForScan(scorer);
         float[] fastXcorrDataNL =  CometScoringData.getFastDataNLForScan(scorer);
 
