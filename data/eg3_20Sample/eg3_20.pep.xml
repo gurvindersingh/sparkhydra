@@ -1,0 +1,561 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <msms_pipeline_analysis date="2015-05-23T18:04:26" xmlns="http://regis-web.systemsbiology.net/pepXML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://sashimi.sourceforge.net/schema_revision/pepXML/pepXML_v117.xsd" summary_xml="C:\sparkhydra\data\eg3_20Sample\eg3_20.pep.xml">
+ <msms_run_summary base_name="C:\sparkhydra\data\eg3_20Sample\eg3_20" msManufacturer="unknown" msModel="unknown" raw_data_type="raw" raw_data=".mzXML">
+ <sample_enzyme name="Trypsin">
+  <specificity cut="KR" no_cut="P" sense="C"/>
+ </sample_enzyme>
+ <search_summary base_name="C:\sparkhydra\data\eg3_20Sample\eg3_20" search_engine="Comet" search_engine_version="2015.01 rev. 2" precursor_mass_type="monoisotopic" fragment_mass_type="monoisotopic" search_id="1">
+  <search_database local_path="select_20.fasta" type="AA"/>
+  <enzymatic_search_constraint enzyme="Trypsin" max_num_internal_cleavages="2" min_number_termini="2"/>
+  <aminoacid_modification aminoacid="M" massdiff="15.994900" mass="147.035385" variable="Y" symbol="*"/>
+  <aminoacid_modification aminoacid="T" massdiff="79.966331" mass="181.014010" variable="Y" symbol="#"/>
+  <aminoacid_modification aminoacid="Y" massdiff="79.966331" mass="243.029660" variable="Y" symbol="@"/>
+  <aminoacid_modification aminoacid="S" massdiff="79.966331" mass="166.998359" variable="Y" symbol="^"/>
+  <aminoacid_modification aminoacid="C" massdiff="57.021464" mass="160.030649" variable="N"/>
+  <parameter name="# comet_version " value="2015.01"/>
+  <parameter name="activation_method" value="ALL"/>
+  <parameter name="add_A_alanine" value="0.000000"/>
+  <parameter name="add_B_user_amino_acid" value="0.000000"/>
+  <parameter name="add_C_cysteine" value="57.021464"/>
+  <parameter name="add_Cterm_peptide" value="0.000000"/>
+  <parameter name="add_Cterm_protein" value="0.000000"/>
+  <parameter name="add_D_aspartic_acid" value="0.000000"/>
+  <parameter name="add_E_glutamic_acid" value="0.000000"/>
+  <parameter name="add_F_phenylalanine" value="0.000000"/>
+  <parameter name="add_G_glycine" value="0.000000"/>
+  <parameter name="add_H_histidine" value="0.000000"/>
+  <parameter name="add_I_isoleucine" value="0.000000"/>
+  <parameter name="add_J_user_amino_acid" value="0.000000"/>
+  <parameter name="add_K_lysine" value="0.000000"/>
+  <parameter name="add_L_leucine" value="0.000000"/>
+  <parameter name="add_M_methionine" value="0.000000"/>
+  <parameter name="add_N_asparagine" value="0.000000"/>
+  <parameter name="add_Nterm_peptide" value="0.000000"/>
+  <parameter name="add_Nterm_protein" value="0.000000"/>
+  <parameter name="add_O_ornithine" value="0.000000"/>
+  <parameter name="add_P_proline" value="0.000000"/>
+  <parameter name="add_Q_glutamine" value="0.000000"/>
+  <parameter name="add_R_arginine" value="0.000000"/>
+  <parameter name="add_S_serine" value="0.000000"/>
+  <parameter name="add_T_threonine" value="0.000000"/>
+  <parameter name="add_U_user_amino_acid" value="0.000000"/>
+  <parameter name="add_V_valine" value="0.000000"/>
+  <parameter name="add_W_tryptophan" value="0.000000"/>
+  <parameter name="add_X_user_amino_acid" value="0.000000"/>
+  <parameter name="add_Y_tyrosine" value="0.000000"/>
+  <parameter name="add_Z_user_amino_acid" value="0.000000"/>
+  <parameter name="allowed_missed_cleavage" value="2"/>
+  <parameter name="clear_mz_range" value="0.000000 0.000000"/>
+  <parameter name="clip_nterm_methionine" value="0"/>
+  <parameter name="database_name" value="select_20.fasta"/>
+  <parameter name="decoy_prefix" value="DECOY_"/>
+  <parameter name="decoy_search" value="0"/>
+  <parameter name="digest_mass_range" value="600.000000 5000.000000"/>
+  <parameter name="fragment_bin_offset" value="0.400000"/>
+  <parameter name="fragment_bin_tol" value="1.000500"/>
+  <parameter name="isotope_error" value="0"/>
+  <parameter name="mass_type_fragment" value="1"/>
+  <parameter name="mass_type_parent" value="1"/>
+  <parameter name="max_fragment_charge" value="3"/>
+  <parameter name="max_precursor_charge" value="6"/>
+  <parameter name="max_variable_mods_in_peptide" value="5"/>
+  <parameter name="minimum_intensity" value="0"/>
+  <parameter name="minimum_peaks" value="10"/>
+  <parameter name="ms_level" value="2"/>
+  <parameter name="nucleotide_reading_frame" value="0"/>
+  <parameter name="num_enzyme_termini" value="2"/>
+  <parameter name="num_output_lines" value="2"/>
+  <parameter name="num_results" value="100"/>
+  <parameter name="num_threads" value="0"/>
+  <parameter name="output_outfiles" value="0"/>
+  <parameter name="output_pepxmlfile" value="1"/>
+  <parameter name="output_percolatorfile" value="0"/>
+  <parameter name="output_sqtfile" value="0"/>
+  <parameter name="output_sqtstream" value="0"/>
+  <parameter name="output_suffix" value=""/>
+  <parameter name="output_txtfile" value="0"/>
+  <parameter name="override_charge" value="0"/>
+  <parameter name="peptide_mass_tolerance" value="30.000000"/>
+  <parameter name="peptide_mass_units" value="2"/>
+  <parameter name="precursor_charge" value="0 0"/>
+  <parameter name="print_expect_score" value="1"/>
+  <parameter name="remove_precursor_peak" value="0"/>
+  <parameter name="remove_precursor_tolerance" value="1.500000"/>
+  <parameter name="require_variable_mod" value="0"/>
+  <parameter name="sample_enzyme_number" value="1"/>
+  <parameter name="scan_range" value="0 0"/>
+  <parameter name="search_enzyme_number" value="1"/>
+  <parameter name="show_fragment_ions" value="0"/>
+  <parameter name="skip_researching" value="1"/>
+  <parameter name="spectrum_batch_size" value="0"/>
+  <parameter name="theoretical_fragment_ions" value="1"/>
+  <parameter name="use_A_ions" value="0"/>
+  <parameter name="use_B_ions" value="1"/>
+  <parameter name="use_C_ions" value="0"/>
+  <parameter name="use_NL_ions" value="1"/>
+  <parameter name="use_X_ions" value="0"/>
+  <parameter name="use_Y_ions" value="1"/>
+  <parameter name="use_Z_ions" value="0"/>
+  <parameter name="use_sparse_matrix" value="0"/>
+  <parameter name="variable_mod01" value="15.994900 M 0 3 -1 0 0"/>
+  <parameter name="variable_mod02" value="79.966331 T 0 3 -1 0 0"/>
+  <parameter name="variable_mod03" value="79.966331 Y 0 3 -1 0 0"/>
+  <parameter name="variable_mod04" value="79.966331 S 0 3 -1 0 0"/>
+  <parameter name="variable_mod05" value="0.000000 X 0 3 -1 0 0"/>
+  <parameter name="variable_mod06" value="0.000000 X 0 3 -1 0 0"/>
+  <parameter name="variable_mod07" value="0.000000 X 0 3 -1 0 0"/>
+  <parameter name="variable_mod08" value="0.000000 X 0 3 -1 0 0"/>
+  <parameter name="variable_mod09" value="0.000000 X 0 3 -1 0 0"/>
+ </search_summary>
+ <spectrum_query spectrum="eg3_20.00001.00001.2" start_scan="1" end_scan="1" precursor_neutral_mass="1190.305447" assumed_charge="2" index="1" retention_time_sec="2.2">
+  <search_result>
+   <search_hit hit_rank="1" peptide="QTSGTSNTR" peptide_prev_aa="K" peptide_next_aa="G" protein="tr|F1N2H2|F1N2H2_BOVIN" num_tot_proteins="1" num_matched_ions="2" tot_num_ions="16" calc_neutral_pep_mass="1190.340730" massdiff="-0.035283" num_tol_term="2" num_missed_cleavages="0" num_matched_peptides="14">
+    <modification_info modified_peptide="QTSGT[181]S[167]NT[181]R">
+     <mod_aminoacid_mass position="5" mass="181.014010"/>
+     <mod_aminoacid_mass position="6" mass="166.998359"/>
+     <mod_aminoacid_mass position="8" mass="181.014010"/>
+    </modification_info>
+    <search_score name="xcorr" value="0.258"/>
+    <search_score name="deltacn" value="0.309"/>
+    <search_score name="deltacnstar" value="0.000"/>
+    <search_score name="spscore" value="14.2"/>
+    <search_score name="sprank" value="1"/>
+    <search_score name="expect" value="1.08E+002"/>
+   </search_hit>
+   <search_hit hit_rank="2" peptide="SSAEDSLSR" peptide_prev_aa="K" peptide_next_aa="F" protein="tr|E1BDU5|E1BDU5_BOVIN" num_tot_proteins="1" num_matched_ions="1" tot_num_ions="16" calc_neutral_pep_mass="1190.329497" massdiff="-0.024049" num_tol_term="2" num_missed_cleavages="0" num_matched_peptides="14">
+    <modification_info modified_peptide="SS[167]AEDS[167]LS[167]R">
+     <mod_aminoacid_mass position="2" mass="166.998359"/>
+     <mod_aminoacid_mass position="6" mass="166.998359"/>
+     <mod_aminoacid_mass position="8" mass="166.998359"/>
+    </modification_info>
+    <search_score name="xcorr" value="0.178"/>
+    <search_score name="deltacn" value="1.000"/>
+    <search_score name="deltacnstar" value="0.000"/>
+    <search_score name="spscore" value="2.8"/>
+    <search_score name="sprank" value="3"/>
+    <search_score name="expect" value="2.90E+002"/>
+   </search_hit>
+  </search_result>
+ </spectrum_query>
+ <spectrum_query spectrum="eg3_20.00002.00002.2" start_scan="2" end_scan="2" precursor_neutral_mass="1070.325447" assumed_charge="2" index="2" retention_time_sec="3.5">
+  <search_result>
+   <search_hit hit_rank="1" peptide="SADAMSSDK" peptide_prev_aa="K" peptide_next_aa="L" protein="tr|F1MTR3_REVERSED|F1MTR3_BOVIN" num_tot_proteins="1" num_matched_ions="2" tot_num_ions="16" calc_neutral_pep_mass="1070.302873" massdiff="0.022574" num_tol_term="2" num_missed_cleavages="0" num_matched_peptides="6">
+    <modification_info modified_peptide="SADAMS[167]S[167]DK">
+     <mod_aminoacid_mass position="6" mass="166.998359"/>
+     <mod_aminoacid_mass position="7" mass="166.998359"/>
+    </modification_info>
+    <search_score name="xcorr" value="0.409"/>
+    <search_score name="deltacn" value="0.430"/>
+    <search_score name="deltacnstar" value="0.000"/>
+    <search_score name="spscore" value="6.5"/>
+    <search_score name="sprank" value="4"/>
+    <search_score name="expect" value="1.25E+001"/>
+   </search_hit>
+   <search_hit hit_rank="2" peptide="EQSTQYR" peptide_prev_aa="R" peptide_next_aa="L" protein="tr|F1N3S5_REVERSED|F1N3S5_BOVIN" num_tot_proteins="1" num_matched_ions="3" tot_num_ions="12" calc_neutral_pep_mass="1070.347121" massdiff="-0.021674" num_tol_term="2" num_missed_cleavages="0" num_matched_peptides="6">
+    <modification_info modified_peptide="EQST[181]QY[243]R">
+     <mod_aminoacid_mass position="4" mass="181.014010"/>
+     <mod_aminoacid_mass position="6" mass="243.029660"/>
+    </modification_info>
+    <search_score name="xcorr" value="0.233"/>
+    <search_score name="deltacn" value="0.140"/>
+    <search_score name="deltacnstar" value="0.000"/>
+    <search_score name="spscore" value="25.9"/>
+    <search_score name="sprank" value="1"/>
+    <search_score name="expect" value="1.12E+002"/>
+   </search_hit>
+  </search_result>
+ </spectrum_query>
+ <spectrum_query spectrum="eg3_20.00003.00003.2" start_scan="3" end_scan="3" precursor_neutral_mass="1064.365447" assumed_charge="2" index="3" retention_time_sec="3.7">
+  <search_result>
+   <search_hit hit_rank="1" peptide="SGIYPTGGSM" peptide_prev_aa="K" peptide_next_aa="-" protein="tr|F1MSA5_REVERSED|F1MSA5_BOVIN" num_tot_proteins="1" num_matched_ions="8" tot_num_ions="18" calc_neutral_pep_mass="1064.388563" massdiff="-0.023116" num_tol_term="2" num_missed_cleavages="0" num_matched_peptides="14">
+    <modification_info modified_peptide="S[167]GIYPTGGSM[147]">
+     <mod_aminoacid_mass position="1" mass="166.998359"/>
+     <mod_aminoacid_mass position="10" mass="147.035385"/>
+    </modification_info>
+    <search_score name="xcorr" value="0.575"/>
+    <search_score name="deltacn" value="0.188"/>
+    <search_score name="deltacnstar" value="0.000"/>
+    <search_score name="spscore" value="205.4"/>
+    <search_score name="sprank" value="1"/>
+    <search_score name="expect" value="2.23E+000"/>
+   </search_hit>
+   <search_hit hit_rank="2" peptide="ALSPTSSSR" peptide_prev_aa="R" peptide_next_aa="Y" protein="tr|F1MP30|F1MP30_BOVIN" num_tot_proteins="1" num_matched_ions="2" tot_num_ions="16" calc_neutral_pep_mass="1064.394072" massdiff="-0.028625" num_tol_term="2" num_missed_cleavages="0" num_matched_peptides="14">
+    <modification_info modified_peptide="ALSPTSS[167]S[167]R">
+     <mod_aminoacid_mass position="7" mass="166.998359"/>
+     <mod_aminoacid_mass position="8" mass="166.998359"/>
+    </modification_info>
+    <search_score name="xcorr" value="0.467"/>
+    <search_score name="deltacn" value="1.000"/>
+    <search_score name="deltacnstar" value="0.000"/>
+    <search_score name="spscore" value="10.8"/>
+    <search_score name="sprank" value="7"/>
+    <search_score name="expect" value="8.27E+000"/>
+   </search_hit>
+  </search_result>
+ </spectrum_query>
+ <spectrum_query spectrum="eg3_20.00004.00004.2" start_scan="4" end_scan="4" precursor_neutral_mass="880.585447" assumed_charge="2" index="4" retention_time_sec="5.4">
+  <search_result>
+   <search_hit hit_rank="1" peptide="HIKSRLK" peptide_prev_aa="K" peptide_next_aa="Q" protein="tr|E1BDL9_REVERSED|E1BDL9_BOVIN" num_tot_proteins="1" num_matched_ions="2" tot_num_ions="12" calc_neutral_pep_mass="880.560670" massdiff="0.024777" num_tol_term="2" num_missed_cleavages="2" num_matched_peptides="3">
+    <search_score name="xcorr" value="0.184"/>
+    <search_score name="deltacn" value="0.057"/>
+    <search_score name="deltacnstar" value="0.000"/>
+    <search_score name="spscore" value="9.4"/>
+    <search_score name="sprank" value="1"/>
+    <search_score name="expect" value="1.80E+002"/>
+   </search_hit>
+   <search_hit hit_rank="2" peptide="VVPLVARK" peptide_prev_aa="K" peptide_next_aa="E" protein="tr|G3MZC0_REVERSED|G3MZC0_BOVIN" num_tot_proteins="2" num_matched_ions="2" tot_num_ions="14" calc_neutral_pep_mass="880.585822" massdiff="-0.000375" num_tol_term="2" num_missed_cleavages="1" num_matched_peptides="3">
+    <search_score name="xcorr" value="0.173"/>
+    <search_score name="deltacn" value="1.000"/>
+    <search_score name="deltacnstar" value="0.000"/>
+    <search_score name="spscore" value="7.0"/>
+    <search_score name="sprank" value="2"/>
+    <search_score name="expect" value="2.08E+002"/>
+   </search_hit>
+  </search_result>
+ </spectrum_query>
+ <spectrum_query spectrum="eg3_20.00005.00005.2" start_scan="5" end_scan="5" precursor_neutral_mass="916.325447" assumed_charge="2" index="5" retention_time_sec="7.1">
+  <search_result>
+   <search_hit hit_rank="1" peptide="FPSNCGR" peptide_prev_aa="R" peptide_next_aa="D" protein="tr|F1MJ90|F1MJ90_BOVIN" num_tot_proteins="1" num_matched_ions="3" tot_num_ions="12" calc_neutral_pep_mass="916.326253" massdiff="-0.000806" num_tol_term="2" num_missed_cleavages="0" num_matched_peptides="2">
+    <modification_info modified_peptide="FPS[167]NCGR">
+     <mod_aminoacid_mass position="3" mass="166.998359"/>
+     <mod_aminoacid_mass position="5" mass="160.030649"/>
+    </modification_info>
+    <search_score name="xcorr" value="0.549"/>
+    <search_score name="deltacn" value="0.971"/>
+    <search_score name="deltacnstar" value="0.000"/>
+    <search_score name="spscore" value="27.7"/>
+    <search_score name="sprank" value="1"/>
+    <search_score name="expect" value="1.05E+001"/>
+   </search_hit>
+   <search_hit hit_rank="2" peptide="HSTEVGK" peptide_prev_aa="K" peptide_next_aa="N" protein="tr|G3MZC0_REVERSED|G3MZC0_BOVIN" num_tot_proteins="1" num_matched_ions="2" tot_num_ions="12" calc_neutral_pep_mass="916.309279" massdiff="0.016168" num_tol_term="2" num_missed_cleavages="0" num_matched_peptides="2">
+    <modification_info modified_peptide="HS[167]T[181]EVGK">
+     <mod_aminoacid_mass position="2" mass="166.998359"/>
+     <mod_aminoacid_mass position="3" mass="181.014010"/>
+    </modification_info>
+    <search_score name="xcorr" value="0.016"/>
+    <search_score name="deltacn" value="1.000"/>
+    <search_score name="deltacnstar" value="0.000"/>
+    <search_score name="spscore" value="21.6"/>
+    <search_score name="sprank" value="2"/>
+    <search_score name="expect" value="9.99E+002"/>
+   </search_hit>
+  </search_result>
+ </spectrum_query>
+ <spectrum_query spectrum="eg3_20.00006.00006.2" start_scan="6" end_scan="6" precursor_neutral_mass="907.725447" assumed_charge="2" index="6" retention_time_sec="30.2">
+  <search_result>
+  </search_result>
+ </spectrum_query>
+ <spectrum_query spectrum="eg3_20.00007.00007.3" start_scan="7" end_scan="7" precursor_neutral_mass="1596.548171" assumed_charge="3" index="7" retention_time_sec="51.3">
+  <search_result>
+   <search_hit hit_rank="1" peptide="IAMSGSSSAIYVR" peptide_prev_aa="K" peptide_next_aa="I" protein="sp|Q58DU7_REVERSED|SH3L1_BOVIN" num_tot_proteins="1" num_matched_ions="6" tot_num_ions="48" calc_neutral_pep_mass="1596.569729" massdiff="-0.021558" num_tol_term="2" num_missed_cleavages="0" num_matched_peptides="11">
+    <modification_info modified_peptide="IAM[147]SGSS[167]S[167]AIY[243]VR">
+     <mod_aminoacid_mass position="3" mass="147.035385"/>
+     <mod_aminoacid_mass position="7" mass="166.998359"/>
+     <mod_aminoacid_mass position="8" mass="166.998359"/>
+     <mod_aminoacid_mass position="11" mass="243.029660"/>
+    </modification_info>
+    <search_score name="xcorr" value="0.813"/>
+    <search_score name="deltacn" value="1.000"/>
+    <search_score name="deltacnstar" value="0.000"/>
+    <search_score name="spscore" value="34.7"/>
+    <search_score name="sprank" value="1"/>
+    <search_score name="expect" value="3.01E+000"/>
+   </search_hit>
+   <search_hit hit_rank="2" peptide="IAMSGSSSAIYVR" peptide_prev_aa="K" peptide_next_aa="I" protein="sp|Q58DU7_REVERSED|SH3L1_BOVIN" num_tot_proteins="1" num_matched_ions="6" tot_num_ions="48" calc_neutral_pep_mass="1596.569729" massdiff="-0.021558" num_tol_term="2" num_missed_cleavages="0" num_matched_peptides="11">
+    <modification_info modified_peptide="IAM[147]SGS[167]SS[167]AIY[243]VR">
+     <mod_aminoacid_mass position="3" mass="147.035385"/>
+     <mod_aminoacid_mass position="6" mass="166.998359"/>
+     <mod_aminoacid_mass position="8" mass="166.998359"/>
+     <mod_aminoacid_mass position="11" mass="243.029660"/>
+    </modification_info>
+    <search_score name="xcorr" value="0.810"/>
+    <search_score name="deltacn" value="1.000"/>
+    <search_score name="deltacnstar" value="0.000"/>
+    <search_score name="spscore" value="34.7"/>
+    <search_score name="sprank" value="1"/>
+    <search_score name="expect" value="3.06E+000"/>
+   </search_hit>
+  </search_result>
+ </spectrum_query>
+ <spectrum_query spectrum="eg3_20.00008.00008.4" start_scan="8" end_scan="8" precursor_neutral_mass="1785.370894" assumed_charge="4" index="8" retention_time_sec="65.6">
+  <search_result>
+  </search_result>
+ </spectrum_query>
+ <spectrum_query spectrum="eg3_20.00009.00009.2" start_scan="9" end_scan="9" precursor_neutral_mass="1121.625447" assumed_charge="2" index="9" retention_time_sec="67.7">
+  <search_result>
+   <search_hit hit_rank="1" peptide="QLSGTTSTSLK" peptide_prev_aa="R" peptide_next_aa="A" protein="tr|G3N2G3|G3N2G3_BOVIN" num_tot_proteins="1" num_matched_ions="2" tot_num_ions="20" calc_neutral_pep_mass="1121.592818" massdiff="0.032629" num_tol_term="2" num_missed_cleavages="0" num_matched_peptides="5">
+    <search_score name="xcorr" value="0.414"/>
+    <search_score name="deltacn" value="0.080"/>
+    <search_score name="deltacnstar" value="0.000"/>
+    <search_score name="spscore" value="9.5"/>
+    <search_score name="sprank" value="2"/>
+    <search_score name="expect" value="6.62E+000"/>
+   </search_hit>
+   <search_hit hit_rank="2" peptide="QLSRGDRYK" peptide_prev_aa="R" peptide_next_aa="C" protein="tr|A6QP97|A6QP97_BOVIN" num_tot_proteins="1" num_matched_ions="2" tot_num_ions="16" calc_neutral_pep_mass="1121.594155" massdiff="0.031292" num_tol_term="2" num_missed_cleavages="2" num_matched_peptides="5">
+    <search_score name="xcorr" value="0.381"/>
+    <search_score name="deltacn" value="0.460"/>
+    <search_score name="deltacnstar" value="0.000"/>
+    <search_score name="spscore" value="11.8"/>
+    <search_score name="sprank" value="1"/>
+    <search_score name="expect" value="1.04E+001"/>
+   </search_hit>
+  </search_result>
+ </spectrum_query>
+ <spectrum_query spectrum="eg3_20.00010.00010.2" start_scan="10" end_scan="10" precursor_neutral_mass="1561.525447" assumed_charge="2" index="10" retention_time_sec="68.7">
+  <search_result>
+   <search_hit hit_rank="1" peptide="RNCLVSSFPSR" peptide_prev_aa="R" peptide_next_aa="E" protein="tr|G3X777|G3X777_BOVIN" num_tot_proteins="1" num_matched_ions="2" tot_num_ions="20" calc_neutral_pep_mass="1561.555097" massdiff="-0.029650" num_tol_term="2" num_missed_cleavages="1" num_matched_peptides="2">
+    <modification_info modified_peptide="RNCLVS[167]S[167]FPS[167]R">
+     <mod_aminoacid_mass position="3" mass="160.030649"/>
+     <mod_aminoacid_mass position="6" mass="166.998359"/>
+     <mod_aminoacid_mass position="7" mass="166.998359"/>
+     <mod_aminoacid_mass position="10" mass="166.998359"/>
+    </modification_info>
+    <search_score name="xcorr" value="0.506"/>
+    <search_score name="deltacn" value="0.087"/>
+    <search_score name="deltacnstar" value="0.000"/>
+    <search_score name="spscore" value="6.4"/>
+    <search_score name="sprank" value="2"/>
+    <search_score name="expect" value="1.33E+001"/>
+   </search_hit>
+   <search_hit hit_rank="2" peptide="QDIYEPQSSQK" peptide_prev_aa="K" peptide_next_aa="V" protein="tr|F1N7K0|F1N7K0_BOVIN" num_tot_proteins="1" num_matched_ions="2" tot_num_ions="20" calc_neutral_pep_mass="1561.514003" massdiff="0.011444" num_tol_term="2" num_missed_cleavages="0" num_matched_peptides="2">
+    <modification_info modified_peptide="QDIY[243]EPQS[167]S[167]QK">
+     <mod_aminoacid_mass position="4" mass="243.029660"/>
+     <mod_aminoacid_mass position="8" mass="166.998359"/>
+     <mod_aminoacid_mass position="9" mass="166.998359"/>
+    </modification_info>
+    <search_score name="xcorr" value="0.462"/>
+    <search_score name="deltacn" value="1.000"/>
+    <search_score name="deltacnstar" value="0.000"/>
+    <search_score name="spscore" value="19.2"/>
+    <search_score name="sprank" value="1"/>
+    <search_score name="expect" value="2.06E+001"/>
+   </search_hit>
+  </search_result>
+ </spectrum_query>
+ <spectrum_query spectrum="eg3_20.00011.00011.2" start_scan="11" end_scan="11" precursor_neutral_mass="1507.485447" assumed_charge="2" index="11" retention_time_sec="68.8">
+  <search_result>
+   <search_hit hit_rank="1" peptide="YIPTICTCLK" peptide_prev_aa="K" peptide_next_aa="D" protein="tr|F1MPS0|F1MPS0_BOVIN" num_tot_proteins="1" num_matched_ions="2" tot_num_ions="18" calc_neutral_pep_mass="1507.529459" massdiff="-0.044012" num_tol_term="2" num_missed_cleavages="0" num_matched_peptides="2">
+    <modification_info modified_peptide="Y[243]IPT[181]ICT[181]CLK">
+     <mod_aminoacid_mass position="1" mass="243.029660"/>
+     <mod_aminoacid_mass position="4" mass="181.014010"/>
+     <mod_aminoacid_mass position="6" mass="160.030649"/>
+     <mod_aminoacid_mass position="7" mass="181.014010"/>
+     <mod_aminoacid_mass position="8" mass="160.030649"/>
+    </modification_info>
+    <search_score name="xcorr" value="0.362"/>
+    <search_score name="deltacn" value="0.122"/>
+    <search_score name="deltacnstar" value="0.000"/>
+    <search_score name="spscore" value="8.1"/>
+    <search_score name="sprank" value="2"/>
+    <search_score name="expect" value="2.00E+001"/>
+   </search_hit>
+   <search_hit hit_rank="2" peptide="QSRSTAGSVPAK" peptide_prev_aa="R" peptide_next_aa="I" protein="tr|F1MRL4_REVERSED|F1MRL4_BOVIN" num_tot_proteins="1" num_matched_ions="3" tot_num_ions="22" calc_neutral_pep_mass="1507.491173" massdiff="-0.005726" num_tol_term="2" num_missed_cleavages="1" num_matched_peptides="2">
+    <modification_info modified_peptide="QS[167]RS[167]T[181]AGS[167]VPAK">
+     <mod_aminoacid_mass position="2" mass="166.998359"/>
+     <mod_aminoacid_mass position="4" mass="166.998359"/>
+     <mod_aminoacid_mass position="5" mass="181.014010"/>
+     <mod_aminoacid_mass position="8" mass="166.998359"/>
+    </modification_info>
+    <search_score name="xcorr" value="0.317"/>
+    <search_score name="deltacn" value="1.000"/>
+    <search_score name="deltacnstar" value="0.000"/>
+    <search_score name="spscore" value="21.5"/>
+    <search_score name="sprank" value="1"/>
+    <search_score name="expect" value="3.69E+001"/>
+   </search_hit>
+  </search_result>
+ </spectrum_query>
+ <spectrum_query spectrum="eg3_20.00012.00012.2" start_scan="12" end_scan="12" precursor_neutral_mass="1473.565447" assumed_charge="2" index="12" retention_time_sec="68.9">
+  <search_result>
+   <search_hit hit_rank="1" peptide="MFLSSAGSGHGDTK" peptide_prev_aa="K" peptide_next_aa="A" protein="tr|E1BM80|E1BM80_BOVIN" num_tot_proteins="1" num_matched_ions="7" tot_num_ions="26" calc_neutral_pep_mass="1473.595945" massdiff="-0.030498" num_tol_term="2" num_missed_cleavages="0" num_matched_peptides="14">
+    <modification_info modified_peptide="MFLS[167]SAGSGHGDTK">
+     <mod_aminoacid_mass position="4" mass="166.998359"/>
+    </modification_info>
+    <search_score name="xcorr" value="0.577"/>
+    <search_score name="deltacn" value="1.000"/>
+    <search_score name="deltacnstar" value="0.000"/>
+    <search_score name="spscore" value="97.0"/>
+    <search_score name="sprank" value="1"/>
+    <search_score name="expect" value="4.31E+000"/>
+   </search_hit>
+   <search_hit hit_rank="2" peptide="MFLSSAGSGHGDTK" peptide_prev_aa="K" peptide_next_aa="A" protein="tr|E1BM80|E1BM80_BOVIN" num_tot_proteins="1" num_matched_ions="7" tot_num_ions="26" calc_neutral_pep_mass="1473.595945" massdiff="-0.030498" num_tol_term="2" num_missed_cleavages="0" num_matched_peptides="14">
+    <modification_info modified_peptide="MFLSS[167]AGSGHGDTK">
+     <mod_aminoacid_mass position="5" mass="166.998359"/>
+    </modification_info>
+    <search_score name="xcorr" value="0.576"/>
+    <search_score name="deltacn" value="1.000"/>
+    <search_score name="deltacnstar" value="0.000"/>
+    <search_score name="spscore" value="97.0"/>
+    <search_score name="sprank" value="1"/>
+    <search_score name="expect" value="4.35E+000"/>
+   </search_hit>
+  </search_result>
+ </spectrum_query>
+ <spectrum_query spectrum="eg3_20.00013.00013.2" start_scan="13" end_scan="13" precursor_neutral_mass="972.705447" assumed_charge="2" index="13" retention_time_sec="69.0">
+  <search_result>
+  </search_result>
+ </spectrum_query>
+ <spectrum_query spectrum="eg3_20.00014.00014.2" start_scan="14" end_scan="14" precursor_neutral_mass="1643.525447" assumed_charge="2" index="14" retention_time_sec="69.1">
+  <search_result>
+   <search_hit hit_rank="1" peptide="SSSNPLSMFYKK" peptide_prev_aa="R" peptide_next_aa="F" protein="tr|F1MEU3|F1MEU3_BOVIN" num_tot_proteins="1" num_matched_ions="4" tot_num_ions="22" calc_neutral_pep_mass="1643.574480" massdiff="-0.049033" num_tol_term="2" num_missed_cleavages="1" num_matched_peptides="13">
+    <modification_info modified_peptide="S[167]S[167]SNPLS[167]M[147]FYKK">
+     <mod_aminoacid_mass position="1" mass="166.998359"/>
+     <mod_aminoacid_mass position="2" mass="166.998359"/>
+     <mod_aminoacid_mass position="7" mass="166.998359"/>
+     <mod_aminoacid_mass position="8" mass="147.035385"/>
+    </modification_info>
+    <search_score name="xcorr" value="0.465"/>
+    <search_score name="deltacn" value="0.511"/>
+    <search_score name="deltacnstar" value="0.003"/>
+    <search_score name="spscore" value="53.6"/>
+    <search_score name="sprank" value="1"/>
+    <search_score name="expect" value="2.67E+001"/>
+   </search_hit>
+   <search_hit hit_rank="2" peptide="SSSNPLSMFYKK" peptide_prev_aa="R" peptide_next_aa="F" protein="tr|F1MEU3|F1MEU3_BOVIN" num_tot_proteins="1" num_matched_ions="3" tot_num_ions="22" calc_neutral_pep_mass="1643.574480" massdiff="-0.049033" num_tol_term="2" num_missed_cleavages="1" num_matched_peptides="13">
+    <modification_info modified_peptide="S[167]S[167]S[167]NPLSM[147]FYKK">
+     <mod_aminoacid_mass position="1" mass="166.998359"/>
+     <mod_aminoacid_mass position="2" mass="166.998359"/>
+     <mod_aminoacid_mass position="3" mass="166.998359"/>
+     <mod_aminoacid_mass position="8" mass="147.035385"/>
+    </modification_info>
+    <search_score name="xcorr" value="0.463"/>
+    <search_score name="deltacn" value="0.509"/>
+    <search_score name="deltacnstar" value="0.000"/>
+    <search_score name="spscore" value="24.8"/>
+    <search_score name="sprank" value="3"/>
+    <search_score name="expect" value="2.70E+001"/>
+   </search_hit>
+  </search_result>
+ </spectrum_query>
+ <spectrum_query spectrum="eg3_20.00015.00015.2" start_scan="15" end_scan="15" precursor_neutral_mass="1719.445447" assumed_charge="2" index="15" retention_time_sec="69.2">
+  <search_result>
+   <search_hit hit_rank="1" peptide="CSQSETCTYHK" peptide_prev_aa="K" peptide_next_aa="N" protein="sp|Q04752_REVERSED|STF1_BOVIN" num_tot_proteins="1" num_matched_ions="2" tot_num_ions="20" calc_neutral_pep_mass="1719.414974" massdiff="0.030473" num_tol_term="2" num_missed_cleavages="0" num_matched_peptides="5">
+    <modification_info modified_peptide="CS[167]QS[167]ETCT[181]Y[243]HK">
+     <mod_aminoacid_mass position="1" mass="160.030649"/>
+     <mod_aminoacid_mass position="2" mass="166.998359"/>
+     <mod_aminoacid_mass position="4" mass="166.998359"/>
+     <mod_aminoacid_mass position="7" mass="160.030649"/>
+     <mod_aminoacid_mass position="8" mass="181.014010"/>
+     <mod_aminoacid_mass position="9" mass="243.029660"/>
+    </modification_info>
+    <search_score name="xcorr" value="0.238"/>
+    <search_score name="deltacn" value="1.000"/>
+    <search_score name="deltacnstar" value="0.000"/>
+    <search_score name="spscore" value="8.7"/>
+    <search_score name="sprank" value="1"/>
+    <search_score name="expect" value="1.33E+002"/>
+   </search_hit>
+   <search_hit hit_rank="2" peptide="CSQSETCTYHK" peptide_prev_aa="K" peptide_next_aa="N" protein="sp|Q04752_REVERSED|STF1_BOVIN" num_tot_proteins="1" num_matched_ions="2" tot_num_ions="20" calc_neutral_pep_mass="1719.414974" massdiff="0.030473" num_tol_term="2" num_missed_cleavages="0" num_matched_peptides="5">
+    <modification_info modified_peptide="CS[167]QS[167]ET[181]CTY[243]HK">
+     <mod_aminoacid_mass position="1" mass="160.030649"/>
+     <mod_aminoacid_mass position="2" mass="166.998359"/>
+     <mod_aminoacid_mass position="4" mass="166.998359"/>
+     <mod_aminoacid_mass position="6" mass="181.014010"/>
+     <mod_aminoacid_mass position="7" mass="160.030649"/>
+     <mod_aminoacid_mass position="9" mass="243.029660"/>
+    </modification_info>
+    <search_score name="xcorr" value="0.236"/>
+    <search_score name="deltacn" value="1.000"/>
+    <search_score name="deltacnstar" value="0.000"/>
+    <search_score name="spscore" value="8.7"/>
+    <search_score name="sprank" value="1"/>
+    <search_score name="expect" value="1.37E+002"/>
+   </search_hit>
+  </search_result>
+ </spectrum_query>
+ <spectrum_query spectrum="eg3_20.00016.00016.2" start_scan="16" end_scan="16" precursor_neutral_mass="1142.665447" assumed_charge="2" index="16" retention_time_sec="69.3">
+  <search_result>
+   <search_hit hit_rank="1" peptide="TVRAKQPSEK" peptide_prev_aa="-" peptide_next_aa="Q" protein="tr|G3N2Z0_REVERSED|G3N2Z0_BOVIN" num_tot_proteins="1" num_matched_ions="3" tot_num_ions="18" calc_neutral_pep_mass="1142.640771" massdiff="0.024676" num_tol_term="2" num_missed_cleavages="2" num_matched_peptides="2">
+    <search_score name="xcorr" value="0.548"/>
+    <search_score name="deltacn" value="0.068"/>
+    <search_score name="deltacnstar" value="0.000"/>
+    <search_score name="spscore" value="26.0"/>
+    <search_score name="sprank" value="2"/>
+    <search_score name="expect" value="1.20E+001"/>
+   </search_hit>
+   <search_hit hit_rank="2" peptide="RGNTVLKDLK" peptide_prev_aa="K" peptide_next_aa="L" protein="tr|F1N1J5|F1N1J5_BOVIN" num_tot_proteins="1" num_matched_ions="4" tot_num_ions="18" calc_neutral_pep_mass="1142.677157" massdiff="-0.011710" num_tol_term="2" num_missed_cleavages="2" num_matched_peptides="2">
+    <search_score name="xcorr" value="0.510"/>
+    <search_score name="deltacn" value="1.000"/>
+    <search_score name="deltacnstar" value="0.000"/>
+    <search_score name="spscore" value="31.0"/>
+    <search_score name="sprank" value="1"/>
+    <search_score name="expect" value="1.74E+001"/>
+   </search_hit>
+  </search_result>
+ </spectrum_query>
+ <spectrum_query spectrum="eg3_20.00017.00017.2" start_scan="17" end_scan="17" precursor_neutral_mass="978.725447" assumed_charge="2" index="17" retention_time_sec="69.7">
+  <search_result>
+  </search_result>
+ </spectrum_query>
+ <spectrum_query spectrum="eg3_20.00018.00018.2" start_scan="18" end_scan="18" precursor_neutral_mass="1359.625447" assumed_charge="2" index="18" retention_time_sec="69.8">
+  <search_result>
+   <search_hit hit_rank="1" peptide="ISLKASGFYSK" peptide_prev_aa="K" peptide_next_aa="Q" protein="tr|G5E5D5|G5E5D5_BOVIN" num_tot_proteins="1" num_matched_ions="4" tot_num_ions="20" calc_neutral_pep_mass="1359.587686" massdiff="0.037761" num_tol_term="2" num_missed_cleavages="1" num_matched_peptides="7">
+    <modification_info modified_peptide="ISLKASGFY[243]S[167]K">
+     <mod_aminoacid_mass position="9" mass="243.029660"/>
+     <mod_aminoacid_mass position="10" mass="166.998359"/>
+    </modification_info>
+    <search_score name="xcorr" value="0.587"/>
+    <search_score name="deltacn" value="0.047"/>
+    <search_score name="deltacnstar" value="0.000"/>
+    <search_score name="spscore" value="35.5"/>
+    <search_score name="sprank" value="1"/>
+    <search_score name="expect" value="2.64E+000"/>
+   </search_hit>
+   <search_hit hit_rank="2" peptide="IEFLNEASVMK" peptide_prev_aa="R" peptide_next_aa="E" protein="tr|G1K218|G1K218_BOVIN" num_tot_proteins="1" num_matched_ions="3" tot_num_ions="20" calc_neutral_pep_mass="1359.614555" massdiff="0.010892" num_tol_term="2" num_missed_cleavages="0" num_matched_peptides="7">
+    <modification_info modified_peptide="IEFLNEAS[167]VMK">
+     <mod_aminoacid_mass position="8" mass="166.998359"/>
+    </modification_info>
+    <search_score name="xcorr" value="0.559"/>
+    <search_score name="deltacn" value="0.396"/>
+    <search_score name="deltacnstar" value="0.000"/>
+    <search_score name="spscore" value="29.2"/>
+    <search_score name="sprank" value="2"/>
+    <search_score name="expect" value="3.67E+000"/>
+   </search_hit>
+  </search_result>
+ </spectrum_query>
+ <spectrum_query spectrum="eg3_20.00019.00019.2" start_scan="19" end_scan="19" precursor_neutral_mass="1057.685447" assumed_charge="2" index="19" retention_time_sec="69.9">
+  <search_result>
+   <search_hit hit_rank="1" peptide="SLRLTLLSR" peptide_prev_aa="K" peptide_next_aa="S" protein="tr|F1MZV0_REVERSED|F1MZV0_BOVIN" num_tot_proteins="1" num_matched_ions="1" tot_num_ions="16" calc_neutral_pep_mass="1057.660778" massdiff="0.024669" num_tol_term="2" num_missed_cleavages="1" num_matched_peptides="2">
+    <search_score name="xcorr" value="0.264"/>
+    <search_score name="deltacn" value="0.206"/>
+    <search_score name="deltacnstar" value="0.000"/>
+    <search_score name="spscore" value="3.4"/>
+    <search_score name="sprank" value="1"/>
+    <search_score name="expect" value="1.15E+002"/>
+   </search_hit>
+   <search_hit hit_rank="2" peptide="LKQVIAKMK" peptide_prev_aa="R" peptide_next_aa="D" protein="tr|F1MMD5_REVERSED|F1MMD5_BOVIN" num_tot_proteins="1" num_matched_ions="1" tot_num_ions="16" calc_neutral_pep_mass="1057.668172" massdiff="0.017275" num_tol_term="2" num_missed_cleavages="2" num_matched_peptides="2">
+    <search_score name="xcorr" value="0.209"/>
+    <search_score name="deltacn" value="1.000"/>
+    <search_score name="deltacnstar" value="0.000"/>
+    <search_score name="spscore" value="3.3"/>
+    <search_score name="sprank" value="2"/>
+    <search_score name="expect" value="2.09E+002"/>
+   </search_hit>
+  </search_result>
+ </spectrum_query>
+ <spectrum_query spectrum="eg3_20.00020.00020.2" start_scan="20" end_scan="20" precursor_neutral_mass="1227.645447" assumed_charge="2" index="20" retention_time_sec="70.0">
+  <search_result>
+   <search_hit hit_rank="1" peptide="MFFFLRSHK" peptide_prev_aa="K" peptide_next_aa="H" protein="sp|P56449_REVERSED|OXYR_BOVIN" num_tot_proteins="1" num_matched_ions="2" tot_num_ions="16" calc_neutral_pep_mass="1227.622270" massdiff="0.023177" num_tol_term="2" num_missed_cleavages="1" num_matched_peptides="3">
+    <modification_info modified_peptide="M[147]FFFLRSHK">
+     <mod_aminoacid_mass position="1" mass="147.035385"/>
+    </modification_info>
+    <search_score name="xcorr" value="0.551"/>
+    <search_score name="deltacn" value="0.043"/>
+    <search_score name="deltacnstar" value="0.000"/>
+    <search_score name="spscore" value="23.0"/>
+    <search_score name="sprank" value="2"/>
+    <search_score name="expect" value="7.14E+000"/>
+   </search_hit>
+   <search_hit hit_rank="2" peptide="KSILEPTPTSR" peptide_prev_aa="K" peptide_next_aa="R" protein="tr|E1BJV6_REVERSED|E1BJV6_BOVIN" num_tot_proteins="1" num_matched_ions="2" tot_num_ions="20" calc_neutral_pep_mass="1227.682302" massdiff="-0.036855" num_tol_term="2" num_missed_cleavages="1" num_matched_peptides="3">
+    <search_score name="xcorr" value="0.527"/>
+    <search_score name="deltacn" value="0.795"/>
+    <search_score name="deltacnstar" value="0.000"/>
+    <search_score name="spscore" value="17.5"/>
+    <search_score name="sprank" value="3"/>
+    <search_score name="expect" value="9.14E+000"/>
+   </search_hit>
+  </search_result>
+ </spectrum_query>
+ </msms_run_summary>
+</msms_pipeline_analysis>
