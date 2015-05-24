@@ -39,12 +39,10 @@ public class OldObsoleteCometScoringDone {
     public static void advancedScoringDoneTest(String[] args) {
         XTandemMain.setShowParameters(false);  // I do not want to see parameters
 
-
-        InputStream is = new StringBufferInputStream(CometTestData.COMET_XML);
-        XTandemMain application = new XTandemMain(is, "TANDEM_XML");
-        CometScoringAlgorithm comet = (CometScoringAlgorithm) application.getAlgorithms()[0];
-        comet.configure(application);
+        XTandemMain application = CometTestingUtilities.getDefaultApplication();
+        CometScoringAlgorithm comet = CometTestingUtilities.getComet(application);
         Scorer scorer = application.getScoreRunner();
+
         SparkUtilities.readSparkProperties(args[SparkCometScanScorer.SPARK_CONFIG_INDEX]);
 
         CometScoringHandler handler = SparkCometScanScorer.buildCometScoringHandler(args[SparkCometScanScorer.TANDEM_CONFIG_INDEX]);
@@ -141,14 +139,11 @@ public class OldObsoleteCometScoringDone {
 
     public static void withFullScoring(String[] args) {
         CometTesting.validateOneKey(); // We are hunting for when this stops working
-        XTandemMain.setShowParameters(false);  // I do not want to see parameters
 
-
-        InputStream is = new StringBufferInputStream(CometTestData.COMET_XML);
-        XTandemMain application = new XTandemMain(is, "TANDEM_XML");
-        CometScoringAlgorithm comet = (CometScoringAlgorithm) application.getAlgorithms()[0];
-        comet.configure(application);
+        XTandemMain application = CometTestingUtilities.getDefaultApplication();
+        CometScoringAlgorithm comet = CometTestingUtilities.getComet(application);
         Scorer scorer = application.getScoreRunner();
+
         SparkUtilities.readSparkProperties(args[SparkCometScanScorer.SPARK_CONFIG_INDEX]);
 
         CometScoringHandler handler = SparkCometScanScorer.buildCometScoringHandler(args[SparkCometScanScorer.TANDEM_CONFIG_INDEX]);
@@ -265,14 +260,8 @@ public class OldObsoleteCometScoringDone {
         XTandemMain.setShowParameters(false);  // I do not want to see parameters
 
 
-        InputStream is = new StringBufferInputStream(CometTestData.COMET_XML);
-        XTandemMain application = new XTandemMain(is, "TANDEM_XML");
-
-        CometTestingUtilities.doBinTest(used, rp);
-        CometTesting.validateOneKey(); // We are hunting for when this stops working
-
-        CometScoringAlgorithm comet = (CometScoringAlgorithm) application.getAlgorithms()[0];
-        comet.configure(application);
+        XTandemMain application = CometTestingUtilities.getDefaultApplication();
+        CometScoringAlgorithm comet = CometTestingUtilities.getComet(application);
 
         CometTesting.validateOneKey();
 

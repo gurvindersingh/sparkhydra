@@ -38,6 +38,11 @@ public class CometTestingUtilities {
                     PeptideModification.fromString("79.966331@S", PeptideModificationRestriction.Global, false),
                     PeptideModification.fromString("79.966331@Y", PeptideModificationRestriction.Global, false),
             };
+    public static final PeptideModification[] MS_ONLY =
+            {
+                    PeptideModification.fromString("15.9949@M", PeptideModificationRestriction.Global, false),
+                      PeptideModification.fromString("79.966331@S", PeptideModificationRestriction.Global, false),
+             };
 
 
     public static XTandemMain getDefaultApplication()
@@ -62,9 +67,14 @@ public class CometTestingUtilities {
     }
 
     public static Map<Integer, List<UsedSpectrum>> readUsedSpectraFromResource() {
+        return readUsedSpectraFromResource("/UsedSpectraComet.txt");
+    }
+
+
+    public static Map<Integer, List<UsedSpectrum>> readUsedSpectraFromResource(String resource) {
         Class cls = CometTestingUtilities.class;
         InputStream istr;
-        istr = cls.getResourceAsStream("/UsedSpectraComet.txt");
+        istr = cls.getResourceAsStream(resource);
         return UsedSpectrum.readUsedSpectra(istr);
     }
 

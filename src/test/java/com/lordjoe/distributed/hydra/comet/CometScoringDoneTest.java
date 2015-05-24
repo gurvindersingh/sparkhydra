@@ -13,10 +13,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.systemsbiology.xtandem.RawPeptideScan;
 import org.systemsbiology.xtandem.XTandemMain;
-import org.systemsbiology.xtandem.peptide.IPeptideDigester;
-import org.systemsbiology.xtandem.peptide.IPolypeptide;
-import org.systemsbiology.xtandem.peptide.PeptideBondDigester;
-import org.systemsbiology.xtandem.peptide.Polypeptide;
+import org.systemsbiology.xtandem.peptide.*;
 import org.systemsbiology.xtandem.scoring.IScoredScan;
 import org.systemsbiology.xtandem.scoring.ISpectralMatch;
 import org.systemsbiology.xtandem.scoring.Scorer;
@@ -61,7 +58,7 @@ public class CometScoringDoneTest {
                     break;
                 }
             }
-            if(!seen)
+            if (!seen)
                 holder.add(cometSee.peptide); // this is a problem
         }
 
@@ -93,38 +90,73 @@ public class CometScoringDoneTest {
         return holder;
     }
 
+
+    @Test
+    public void testeg3_20ScoringDone() throws Exception {
+
+        XTandemMain application = CometTestingUtilities.getDefaultApplication();
+        CometScoringAlgorithm comet = CometTestingUtilities.getComet(application);
+        Scorer scorer = application.getScoreRunner();
+
+        List<RawPeptideScan> scans = CometTestingUtilities.getAllScanFromMZXMLResource("/eg3_20/eg3_20.mzXML");
+        Map<Integer, RawPeptideScan> mapped = new HashMap<Integer, RawPeptideScan>();
+        for (RawPeptideScan scan : scans) {
+            String id = scan.getId();
+            mapped.put(new Integer(id), scan);
+        }
+        Map<Integer, List<UsedSpectrum>> cometUses = CometTestingUtilities.readUsedSpectraFromResource("/eg3_20/UsedSpectra_20.txt");
+
+        IPeptideDigester digester = PeptideBondDigester.getDefaultDigester();
+        digester.setNumberMissedCleavages(2);
+        List<IPolypeptide> originalPeptides = ProteinParser.getPeptidesFromResource("/eg3_20/select_20.fasta", digester,
+                CometTestingUtilities.MS_ONLY);
+
+        for (Integer id : cometUses.keySet()) {
+            RawPeptideScan rp = mapped.get(id);
+            List<UsedSpectrum> usedSpectrums = cometUses.get(id);
+            validatePeptidesScored(usedSpectrums, rp, comet, scorer,originalPeptides);
+        }
+
+    }
+
+
     @Test
     public void testScoringDone() throws Exception {
-         // there are issues with this one
-        IPolypeptide badTest = Polypeptide.fromString("YITM[15.995]TAQVM[15.995]M[15.995]KGYR") ;
+        // there are issues with this one
+        IPolypeptide badTest = Polypeptide.fromString("YITM[15.995]TAQVM[15.995]M[15.995]KGYR");
 
         // read what comet scored
         List<UsedSpectrum> used = CometTestingUtilities.getSpectrumUsed(8852);
         Assert.assertEquals(311, used.size());
 
-        XTandemMain.setShowParameters(false);  // I do not want to see parameters
-        InputStream is = new StringBufferInputStream(CometTestData.COMET_XML);
-        XTandemMain application = new XTandemMain(is, "TANDEM_XML");
-        CometScoringAlgorithm comet = (CometScoringAlgorithm) application.getAlgorithms()[0];
-        comet.configure(application);
-
+        XTandemMain application = CometTestingUtilities.getDefaultApplication();
+        CometScoringAlgorithm comet = CometTestingUtilities.getComet(application);
         Scorer scorer = application.getScoreRunner();
 
         RawPeptideScan rp = CometTestingUtilities.getScanFromMZXMLResource("/000000008852.mzXML");
+
+        IPeptideDigester digester = PeptideBondDigester.getDefaultDigester();
+        digester.setNumberMissedCleavages(2);
+        List<IPolypeptide> originalPeptides = ProteinParser.getPeptidesFromResource("/SmallSampleProteins.fasta", digester,
+                CometTestingUtilities.M_ONLY);
+
+        validatePeptidesScored(used, rp, comet, scorer, originalPeptides);
+
+        //   Assert.assertEquals(0,weScoreNotComet.size());
+
+    }
+
+    public static void validatePeptidesScored(List<UsedSpectrum> used, RawPeptideScan rp,
+                                              CometScoringAlgorithm comet, Scorer scorer,
+                                              List<IPolypeptide> originalPeptides) {
         CometScoredScan spec = new CometScoredScan(rp, comet);
 
         Set<BinChargeKey> usedBins = BinChargeMapper.getSpectrumBins(rp);
 
 
-        IPeptideDigester digester = PeptideBondDigester.getDefaultDigester();
-        digester.setNumberMissedCleavages(2);
 
-        List<IPolypeptide> originalPeptides = ProteinParser.getPeptidesFromResource("/SmallSampleProteins.fasta", digester,
-                CometTestingUtilities.M_ONLY);
-        Assert.assertTrue(originalPeptides.contains(badTest));
 
         List<IPolypeptide> processed = CometUtilities.getPeptidesInKeyBins(originalPeptides, usedBins);
-        Assert.assertTrue(processed.contains(badTest));
 
         List<IPolypeptide> notComet = new ArrayList<IPolypeptide>();
         List<IPolypeptide> matchesComet = new ArrayList<IPolypeptide>();
@@ -140,8 +172,8 @@ public class CometScoringDoneTest {
         }
 
         // we score everything they do
-        List<IPolypeptide> cometScoresNotUs = notProcessedInComet( processed,used);
-        Assert.assertEquals(0,cometScoresNotUs.size());
+        List<IPolypeptide> cometScoresNotUs = notProcessedInComet(processed, used);
+        Assert.assertEquals(0, cometScoresNotUs.size());
 
 
         // first cut - how many peptides tit comet not score
@@ -153,9 +185,6 @@ public class CometScoringDoneTest {
                     weScoreNotComet.add(pp); // comet did not score this
             }
         }
-
-     //   Assert.assertEquals(0,weScoreNotComet.size());
-
     }
 
 }

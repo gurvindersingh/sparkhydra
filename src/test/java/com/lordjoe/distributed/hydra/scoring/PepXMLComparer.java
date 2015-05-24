@@ -11,12 +11,11 @@ import java.util.*;
  */
 public class PepXMLComparer {
 
-    public static ProteinPepxmlParser readOnePepXML(String file)
-    {
+    public static ProteinPepxmlParser readOnePepXML(String file) {
         boolean onlyUniquePeptides = false;
-            ProteinPepxmlParser fdrParser = new ProteinPepxmlParser(file);
-          fdrParser.readFileAndGenerate(onlyUniquePeptides);
-         return fdrParser;
+        ProteinPepxmlParser fdrParser = new ProteinPepxmlParser(file);
+        fdrParser.readFileAndGenerate(onlyUniquePeptides);
+        return fdrParser;
     }
 
 
@@ -27,18 +26,32 @@ public class PepXMLComparer {
             holder.add(readOnePepXML(arg));
         }
 
-        if(holder.size() <= 1)
+        if (holder.size() <= 1)
             return;
 
         ProteinPepxmlParser p1 = holder.get(0);
         ProteinPepxmlParser p2 = holder.get(1);
-        Map<String, ProteinPepxmlParser.SpectrumHit> spectrumHits = p1.getSpectrumHits();
-        Map<String, ProteinPepxmlParser.SpectrumHit> spectrumHits2 = p2.getSpectrumHits();
-        for (String s : spectrumHits2.keySet()) {
-            ProteinPepxmlParser.SpectrumHit spectrumHit = spectrumHits.get(s);
-            ProteinPepxmlParser.SpectrumHit spectrumHit2 = spectrumHits2.get(s);
-            System.out.println(spectrumHit + "\n" + spectrumHit2 + "\n\n");
-         }
+        Map<String, List<ProteinPepxmlParser.SpectrumHit>> spectrumHits1 = p1.getSpectrumHits();
+        Map<String, List<ProteinPepxmlParser.SpectrumHit>> spectrumHits2 = p2.getSpectrumHits();
+        List<String> keys = new ArrayList<String>(spectrumHits1.keySet());
+        Collections.sort(keys);
+        for (String s : keys) {
+            List<ProteinPepxmlParser.SpectrumHit> spectrumHits = spectrumHits1.get(s);
+            if (spectrumHits != null)
+                for (ProteinPepxmlParser.SpectrumHit spectrumHit : spectrumHits) {
+                    System.out.println(spectrumHit);
+
+                }
+            System.out.println();
+            spectrumHits = spectrumHits2.get(s);
+            if (spectrumHits != null)
+                for (ProteinPepxmlParser.SpectrumHit spectrumHit : spectrumHits) {
+                    System.out.println(spectrumHit );
+
+                }
+            System.out.println();
+            System.out.println();
+        }
 
     }
 

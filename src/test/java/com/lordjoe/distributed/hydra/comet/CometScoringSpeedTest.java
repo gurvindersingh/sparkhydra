@@ -23,10 +23,8 @@ public class CometScoringSpeedTest {
         XTandemMain.setShowParameters(false);  // I do not want to see parameters
 
 
-        InputStream is = new StringBufferInputStream(CometTestData.COMET_XML);
-        XTandemMain application = new XTandemMain(is, "TANDEM_XML");
-        CometScoringAlgorithm comet = (CometScoringAlgorithm) application.getAlgorithms()[0];
-        comet.configure(application);
+        XTandemMain application = CometTestingUtilities.getDefaultApplication();
+        CometScoringAlgorithm comet = CometTestingUtilities.getComet(application);
 
         final Class<CometScoringSpeedTest> cls = CometScoringSpeedTest.class;
         InputStream istr = cls.getResourceAsStream("/000000006774.mzXML");

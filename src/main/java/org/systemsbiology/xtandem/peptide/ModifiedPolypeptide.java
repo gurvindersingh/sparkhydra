@@ -239,13 +239,8 @@ public class ModifiedPolypeptide extends Polypeptide implements IModifiedPeptide
         PeptideModification[] potantialModArray = PeptideModification.selectPotentialModifications(allmods);
         // sort out what we can use
         potantialModArray = findApplicableMods(peptide, potantialModArray);
-        applyPotentialModifications(peptide, potantialModArray, holder, sequence);
 
-//        Collection<PeptideModification> potentialMods = new HashSet<PeptideModification>(Arrays.asList(potantialModArray));
-//        if (!potentialMods.isEmpty() )
-//            potentialMods = findApplicableMods(peptide,potentialMods);
-//            applyPotentialModifications(peptide, potentialMods, holder, sequence);
-//
+        applyPotentialModifications(peptide, potantialModArray, holder, sequence);
 
         IModifiedPeptide[] ret = new IModifiedPeptide[holder.size()];
         holder.toArray(ret);
@@ -259,7 +254,7 @@ public class ModifiedPolypeptide extends Polypeptide implements IModifiedPeptide
         Set<IPolypeptide> newMods = new HashSet<IPolypeptide>();
         Set<IPolypeptide> currentMods = new HashSet<IPolypeptide>();
         currentMods.add(peptide);
-        for (int modNum = 0; modNum < getMaxPeptideModifications(); modNum++) {
+        for (int modNum = 0; modNum <= getMaxPeptideModifications(); modNum++) {
             for (int i = 0; i < potantialModArray.length; i++) {
                 PeptideModification potentialMod = potantialModArray[i];
                 totalAppliedModifications++;

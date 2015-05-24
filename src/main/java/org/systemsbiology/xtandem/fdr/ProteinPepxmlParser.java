@@ -60,6 +60,7 @@ public class ProteinPepxmlParser {
             return "SpectrumHit{" +
                     "id='" + id + '\'' +
                     ", peptide='" + peptide + '\'' +
+                    ", rank='" + hit_Rank + '\'' +
                     ", hypderscore=" + hypderscore +
                     '}';
         }
@@ -97,7 +98,7 @@ public class ProteinPepxmlParser {
     private final File m_File;
     private final Map<String, Set<IdentifiedPSM>> proteinToHits = new HashMap<String, Set<IdentifiedPSM>>();
     private final Map<String, Set<IdentifiedPSM>> uniqueProteinToHits = new HashMap<String, Set<IdentifiedPSM>>();
-    private final Map<String, SpectrumHit> spectrumHits = new HashMap<String, SpectrumHit>();
+    private final Map<String, List<SpectrumHit>> spectrumHits = new HashMap<String, List<SpectrumHit>>();
 
     private String scan_id;
 
@@ -118,8 +119,18 @@ public class ProteinPepxmlParser {
     }
 
 
-    public Map<String, SpectrumHit> getSpectrumHits() {
-        return new HashMap<String, SpectrumHit>(spectrumHits);
+    public Map<String,  List<SpectrumHit>> getSpectrumHits() {
+         return new HashMap<String, List<SpectrumHit>>(spectrumHits);
+    }
+
+    public List<SpectrumHit> getAllHits()
+    {
+        List<SpectrumHit> holder = new ArrayList<SpectrumHit>();
+        for (String s : spectrumHits.keySet()) {
+            holder.addAll(spectrumHits.get(s));
+        }
+
+        return holder;
     }
 
     /**
@@ -158,17 +169,16 @@ public class ProteinPepxmlParser {
 
                 //noinspection StatementWithEmptyBody,StatementWithEmptyBody
                 if (line.contains("<search_result")) {
-                    String[] searchHitLines = readSearchHitLines(line, rdr);
+                    String[] reaultLines = readSearchResultLines(line, rdr);
                     //              System.out.println(line);
-                    boolean processed = handleSearchHit(searchHitLines, lastRetentionTime, onlyUniquePeptides, filters);
-                    if (processed) {
-                        for (int i = 0; i < searchHitLines.length; i++) {
-                            @SuppressWarnings("UnusedDeclaration")
-                            String searchHitLine = searchHitLines[i];
-                        }
-                        numberProcessed++;
-                    } else
-                        numberUnProcessed++;
+                    List<String[]> hits = readSearchHits(reaultLines);
+                    int ranks = 1;
+                    for (String[] searchHitLines : hits) {
+                        boolean processed = handleSearchHit(searchHitLines, lastRetentionTime, onlyUniquePeptides, filters);
+                        if(ranks++ > 1)
+                            break;
+                    }
+
                 }
                 line = rdr.readLine();
 
@@ -179,10 +189,31 @@ public class ProteinPepxmlParser {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+     }
 
+    protected List<String[]> readSearchHits(String[] lines)
+    {
+        List<String[]> holder = new ArrayList<String[]>();
+        List<String> accum = new ArrayList<String>();
+        boolean accumulating = false;
+        for (int i = 0; i < lines.length; i++) {
+            String line = lines[i];
+            if(line.contains("<search_hit"))  {
+                 accumulating = true;
+              }
+            if(accumulating)
+                accum.add(line);
+            if(line.contains("</search_hit"))  {
+                holder.add(accum.toArray(new String[accum.size()]));
+                accum.clear();
+                accumulating = false;
+            }
+
+        }
+         return holder;
     }
 
-    protected String[] readSearchHitLines(String line, LineNumberReader rdr, @SuppressWarnings("UnusedParameters") ISpectrumDataFilter... filters) {
+    protected String[] readSearchResultLines(String line, LineNumberReader rdr, @SuppressWarnings("UnusedParameters") ISpectrumDataFilter... filters) {
         List<String> holder = new ArrayList<String>();
 
         try {
@@ -262,6 +293,9 @@ public class ProteinPepxmlParser {
                     processSpectrum = false; // only process unique hits
             }
 
+            if (line.contains("<search_score name=\"hyperscore\" value=\"")) {
+                hyperScoreValue = parseValue(line);
+            }
             if (line.contains("<search_score name=\"xcorr\" value=\"")) {
                 hyperScoreValue = parseValue(line);
             }
@@ -292,7 +326,12 @@ public class ProteinPepxmlParser {
 
         IPolypeptide peptide1 = peptide.getPeptide();
         SpectrumHit hit = new SpectrumHit(id, hyperScoreValue,rank, peptide1);
-        spectrumHits.put(id, hit);
+        List<SpectrumHit> addTo = spectrumHits.get(id) ;
+        if(addTo == null)  {
+            addTo = new ArrayList<SpectrumHit>();
+            spectrumHits.put(id, addTo);
+        }
+        addTo.add(hit);
 
         if (processSpectrum) {
             @SuppressWarnings("ConstantConditions")
@@ -325,7 +364,7 @@ public class ProteinPepxmlParser {
             charNumber++;
             PositionModification current = null;
             for (PositionModification modification : modifications) {
-                if (modification.position == charNumber) {
+                  if (modification.position == charNumber) {
                     current = modification;
                     break;
                 }
@@ -336,7 +375,7 @@ public class ProteinPepxmlParser {
             }
         }
 
-        return processPeptide(sequence.toString(), unmodified.getRetentionTime(), id);
+        return processModifiedPeptidePSM(sequence.toString(), unmodified.getRetentionTime(), id);
     }
 
     public static IdentifiedPSM processPeptide(final String line, double retentionTime, String id) {
@@ -344,6 +383,13 @@ public class ProteinPepxmlParser {
         if (peptide == null)
             throw new IllegalArgumentException("bad line " + line);
         Polypeptide polypeptide = Polypeptide.fromString(peptide);
+        polypeptide.setRetentionTime(retentionTime);
+        return new IdentifiedPSM(id, polypeptide);
+    }
+
+
+    public static IdentifiedPSM processModifiedPeptidePSM(final String peptide, double retentionTime, String id) {
+           Polypeptide polypeptide = Polypeptide.fromString(peptide);
         polypeptide.setRetentionTime(retentionTime);
         return new IdentifiedPSM(id, polypeptide);
     }

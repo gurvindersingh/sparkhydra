@@ -86,14 +86,13 @@ public class CometBinningTest {
         List<UsedSpectrum> spectrumUsed = CometTestingUtilities.getSpectrumUsed(8852);
         RawPeptideScan spec = CometTestingUtilities.getScanFromMZXMLResource("/000000008852.mzXML");
         CometTestingUtilities.doBinTest(spectrumUsed, spec);
-         InputStream is = new StringBufferInputStream(CometTestData.COMET_XML);
 
 
         XTandemMain.setShowParameters(false);  // I do not want to see parameters
-        XTandemMain application = new XTandemMain(is, "TANDEM_XML");
-        CometTestingUtilities.doBinTest(spectrumUsed, spec);
+        XTandemMain application = CometTestingUtilities.getDefaultApplication();
+        CometScoringAlgorithm comet = CometTestingUtilities.getComet(application);
+          CometTestingUtilities.doBinTest(spectrumUsed, spec);
 
-        CometScoringAlgorithm comet = (CometScoringAlgorithm) application.getAlgorithms()[0];
 
         CometTestingUtilities.doBinTest(spectrumUsed, spec);
 

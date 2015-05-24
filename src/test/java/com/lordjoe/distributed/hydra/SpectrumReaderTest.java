@@ -1,7 +1,9 @@
 package com.lordjoe.distributed.hydra;
 
 import com.lordjoe.distributed.SparkUtilities;
+import com.lordjoe.distributed.hydra.comet.CometScoringAlgorithm;
 import com.lordjoe.distributed.hydra.comet.CometTestData;
+import com.lordjoe.distributed.hydra.comet.CometTestingUtilities;
 import com.lordjoe.distributed.spectrum.SparkSpectrumUtilities;
 import junit.framework.Assert;
 import org.apache.spark.api.java.JavaPairRDD;
@@ -11,6 +13,7 @@ import org.systemsbiology.xtandem.IMeasuredSpectrum;
 import org.systemsbiology.xtandem.ISpectrumPeak;
 import org.systemsbiology.xtandem.RawPeptideScan;
 import org.systemsbiology.xtandem.XTandemMain;
+import org.systemsbiology.xtandem.scoring.Scorer;
 
 import java.io.InputStream;
 import java.io.StringBufferInputStream;
@@ -31,16 +34,7 @@ public class SpectrumReaderTest {
     }
 
     public static void main(String[] args) {
-//        InputStream mgfIS = SpectrumReaderTest.class.getResourceAsStream("/000000006774.mgf");
-//        Assert.assertNotNull(mgfIS);
-//
-//        InputStream mgfMZXML = SpectrumReaderTest.class.getResourceAsStream("/000000006774.mzXML");
-//        Assert.assertNotNull(mgfMZXML);
-
-        JavaSparkContext currentContext = SparkUtilities.getCurrentContext();
-//
-        InputStream is = new StringBufferInputStream(CometTestData.COMET_XML);
-        XTandemMain application = new XTandemMain(is, "TANDEM_XML");
+        XTandemMain application = CometTestingUtilities.getDefaultApplication();
 
         String baseDir = "data/test_data/";
         String spectra;

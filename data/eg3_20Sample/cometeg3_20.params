@@ -35,9 +35,9 @@ allowed_missed_cleavage = 2            # maximum value is 5; for enzyme search
 #     e.g. 79.966331 STY 0 3 -1 0 0
 #
 variable_mod01 = 15.9949 M 0 3 -1 0 0
-variable_mod02 = 79.966331 T 0 3 -1 0 0
-variable_mod03 = 79.966331 Y 0 3 -1 0 0
-variable_mod04 = 79.966331 S 0 3 -1 0 0
+variable_mod02 = 79.966331 S 0 3 -1 0 0
+variable_mod03 = 0.0 X 0 3 -1 0 0
+variable_mod04 = 0.0 X 0 3 -1 0 0
 variable_mod05 = 0.0 X 0 3 -1 0 0
 variable_mod06 = 0.0 X 0 3 -1 0 0
 variable_mod07 = 0.0 X 0 3 -1 0 0

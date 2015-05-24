@@ -18,12 +18,6 @@ import java.util.*;
  */
 public class GoodSampleConstructor {
 
-    public static List<ProteinPepxmlParser.SpectrumHit> readOnePepXML(ProteinPepxmlParser pp) {
-        Collection<ProteinPepxmlParser.SpectrumHit> values = pp.getSpectrumHits().values();
-        List<ProteinPepxmlParser.SpectrumHit> sortedHits = new ArrayList<ProteinPepxmlParser.SpectrumHit>(values);
-        Collections.sort(sortedHits, new SpectrumHitHyperscoreComparator());
-        return sortedHits;
-    }
 
 
     public static ProteinPepxmlParser readOnePepXML(String file) {
@@ -149,7 +143,9 @@ public class GoodSampleConstructor {
 
         ProteinPepxmlParser pp = readOnePepXML(inFileName);
 
-        List<ProteinPepxmlParser.SpectrumHit> sortedHits = readOnePepXML(pp);
+
+
+        List<ProteinPepxmlParser.SpectrumHit> sortedHits = pp.getAllHits();
 
         sortedHits = sortedHits.subList(0, Math.min(sortedHits.size(), keepBest));
 
