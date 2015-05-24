@@ -1,20 +1,21 @@
-package org.systemsbiology.xtandem.peptide;
+package com.lordjoe.distributed.hydra.comet;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.systemsbiology.xtandem.XTandemUtilities;
 import org.systemsbiology.xtandem.ionization.IonType;
 import org.systemsbiology.xtandem.ionization.PeptideIon;
+import org.systemsbiology.xtandem.peptide.IPolypeptide;
+import org.systemsbiology.xtandem.peptide.Polypeptide;
 
 /**
- * org.systemsbiology.xtandem.peptide.PeptideIonTest
+ * com.lordjoe.distributed.hydra.comet.PeptideIonTest
  *
  * @author Steve Lewis
  * @date 5/20/2015
  */
 public class PeptideIonTest {
-    public static PeptideIonTest[] EMPTY_ARRAY = {};
-    public static Class THIS_CLASS = PeptideIonTest.class;
+
 
     @Test
     public void testIndex() throws Exception {

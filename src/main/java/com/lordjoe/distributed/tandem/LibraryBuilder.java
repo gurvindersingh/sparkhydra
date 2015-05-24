@@ -3,7 +3,7 @@ package com.lordjoe.distributed.tandem;
 import com.lordjoe.distributed.*;
 import com.lordjoe.distributed.database.*;
 import com.lordjoe.distributed.hydra.*;
-import com.lordjoe.distributed.hydra.comet.*;
+import com.lordjoe.distributed.hydra.comet_spark.SparkCometScanScorer;
 import com.lordjoe.distributed.hydra.peptide.*;
 import com.lordjoe.distributed.hydra.protein.*;
 import com.lordjoe.distributed.hydra.scoring.*;

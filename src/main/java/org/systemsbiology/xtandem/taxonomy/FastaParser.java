@@ -49,7 +49,7 @@ public class FastaParser implements IFastaHandler{
                 }
                 // don finish last protein if any
                 if(annotation != null && sb.length() > 0) {
-                     handleProtein(annotation,sb.toString());
+                     handleProtein(annotation,sb.toString(),url);
                    numberProtein = showProteinProgress(numberProtein);
                     sb.setLength(0);
                  }

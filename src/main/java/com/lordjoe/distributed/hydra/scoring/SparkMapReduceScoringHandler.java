@@ -37,7 +37,7 @@ public class SparkMapReduceScoringHandler implements Serializable {
 
     private final JXTandemStatistics m_Statistics = new JXTandemStatistics();
     private Map<Integer, Integer> sizes;
-    private final BinChargeMapper binMapper;
+    private final SparkBinChargeMapper binMapper;
     private SequenceUtilities sequenceUtilities;
     private transient Scorer scorer;
     private transient ITandemScoringAlgorithm algorithm;
@@ -46,12 +46,24 @@ public class SparkMapReduceScoringHandler implements Serializable {
     private Map<IPolypeptide, ITheoreticalSpectrumSet> currentTheoreticalSpectra = new HashMap<IPolypeptide, ITheoreticalSpectrumSet>();
     private PeptideDatabase peptideDatabase;
 
-
+    /**
+     * constructor from file
+     * @param congiguration
+     * @param createDb
+     */
     public SparkMapReduceScoringHandler(String congiguration, boolean createDb) {
+        this(HydraSparkUtilities.readFrom(congiguration), congiguration,createDb);
+    }
 
+    /**
+     * constructor suitable for resource read
+     * @param is
+     * @param congiguration
+     * @param createDb
+     */
+    public SparkMapReduceScoringHandler(InputStream is, String congiguration, boolean createDb) {
         SparkUtilities.setAppName("SparkMapReduceScoringHandler");
 
-        InputStream is = HydraSparkUtilities.readFrom(congiguration);
 
         application = new SparkXTandemMain(is, congiguration);
         sequenceUtilities = new SequenceUtilities(application);
@@ -69,7 +81,7 @@ public class SparkMapReduceScoringHandler implements Serializable {
         ITaxonomy taxonomy = application.getTaxonomy();
         System.err.println(taxonomy.getOrganism());
 
-        binMapper = new BinChargeMapper(this);
+        binMapper = new SparkBinChargeMapper(this);
 
     }
 

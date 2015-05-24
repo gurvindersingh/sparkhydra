@@ -569,6 +569,7 @@ public class CometTestData {
                         "\t\tis NOT followed by a P, then either an S or a T, NOT followed by a P.\n" +
                         "\t\tPositive and negative values are allowed.\n" +
                         "\t\t</note>\n" +
+                        "\t<note type=\"input\" label=\"org.systemsbiology.jxtandem.ModifiedPolypeptide.MaxPeptideModification\">3</note>\n" +
                         "\n" +
                         "<note>protein parameters</note>\n" +
                         "\t<note type=\"input\" label=\"protein, taxon\">all</note>\n" +

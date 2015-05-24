@@ -1,17 +1,14 @@
 package com.lordjoe.distributed.hydra.comet;
 
 import com.lordjoe.distributed.hydra.test.TestUtilities;
-import com.lordjoe.utilities.ElapsedTimer;
 import com.lordjoe.utilities.FileUtilities;
 import org.junit.Assert;
 import org.junit.Test;
 import org.systemsbiology.xtandem.RawPeptideScan;
 import org.systemsbiology.xtandem.XTandemMain;
-import org.systemsbiology.xtandem.ionization.IonUseCounter;
 import org.systemsbiology.xtandem.peptide.IPolypeptide;
 import org.systemsbiology.xtandem.peptide.Polypeptide;
 import org.systemsbiology.xtandem.scoring.CometHyperScoreStatistics;
-import org.systemsbiology.xtandem.scoring.HyperScoreStatistics;
 import org.systemsbiology.xtandem.scoring.Scorer;
 import org.systemsbiology.xtandem.testing.MZXMLReader;
 
@@ -125,6 +122,7 @@ public class CometScoringAccuracyTest {
 
         CometScoredScan scan = new CometScoredScan(spec, comet);
 
+
         double maxScore = 0;
         int numberCorrect = 0;
         int numberInCorrect = 0;
@@ -134,8 +132,11 @@ public class CometScoringAccuracyTest {
         List<UsedSpectrum> badlyScoredExpected = new ArrayList<UsedSpectrum>();
 
         IPolypeptide intersting = Polypeptide.fromString("M[15.995]PCTEDYLSLILNR");
+
         CometTheoreticalBinnedSet ts1 = (CometTheoreticalBinnedSet) scorer.generateSpectrum(intersting);
-        double xcorr1 = CometScoringHandler.doRealScoring(scan, scorer, ts1, application);
+
+        CometScoringData.populateFromScan(scan);
+        double xcorr1 = CometScoringAlgorithm.doRealScoring(scan, scorer, ts1, application);
         Assert.assertEquals(2.070,xcorr1,0.002);
 
         IPolypeptide interestimgCase = Polypeptide.fromString("NIKPECPTLACGQPR");
@@ -147,7 +148,7 @@ public class CometScoringAccuracyTest {
 
             double cometScore = testCase.score;
             CometTheoreticalBinnedSet ts = (CometTheoreticalBinnedSet) scorer.generateSpectrum(pp);
-            double xcorr = CometScoringHandler.doRealScoring(scan, scorer, ts, application);
+            double xcorr = CometScoringAlgorithm.doRealScoring(scan, scorer, ts, application);
 
 
             if(maxScore < xcorr)
@@ -170,7 +171,7 @@ public class CometScoringAccuracyTest {
         int index = 0;
         for (UsedSpectrum usedSpectrum : badlyScoredExpected) {
             CometTheoreticalBinnedSet tsx_old = badlyScored.get(index++);
-            double xcorr_repeat = CometScoringHandler.doRealScoring(scan, scorer, tsx_old, application);
+            double xcorr_repeat = CometScoringAlgorithm.doRealScoring(scan, scorer, tsx_old, application);
             double score = usedSpectrum.score;
             if(Math.abs(xcorr_repeat - score) < 0.1)
                 continue;
@@ -178,7 +179,7 @@ public class CometScoringAccuracyTest {
 
             IPolypeptide pPeptide = tsx_old.getPeptide();
             CometTheoreticalBinnedSet tsx = (CometTheoreticalBinnedSet) scorer.generateSpectrum(pPeptide);
-           double xcorr_repeat2 = CometScoringHandler.doRealScoring(scan, scorer, tsx, application);
+           double xcorr_repeat2 = CometScoringAlgorithm.doRealScoring(scan, scorer, tsx, application);
         }
 
         Assert.assertTrue(numberCorrect + 1 >= numberTested);

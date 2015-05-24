@@ -1,7 +1,9 @@
-package com.lordjoe.distributed.hydra.comet;
+package com.lordjoe.distributed.hydra.comet_spark;
 
 import com.lordjoe.distributed.*;
 import com.lordjoe.distributed.hydra.*;
+import com.lordjoe.distributed.hydra.comet.*;
+import com.lordjoe.distributed.hydra.comet_spark.CometScoringHandler;
 import com.lordjoe.distributed.hydra.fragment.*;
 import com.lordjoe.distributed.hydra.scoring.*;
 import com.lordjoe.distributed.hydra.test.*;
@@ -25,7 +27,7 @@ import java.lang.Long;
 import java.util.*;
 
 /**
- * com.lordjoe.distributed.hydra.comet.SparkCometScanScorer
+ * com.lordjoe.distributed.hydra.comet_spark.SparkCometScanScorer
  * a Copy of  SparkScanScorer specialized for Comet analysis
  * User: Steve
  * Date: 10/7/2014

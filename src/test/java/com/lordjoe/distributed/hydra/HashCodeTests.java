@@ -1,5 +1,6 @@
 package com.lordjoe.distributed.hydra;
 
+import com.lordjoe.distributed.hydra.comet.BinChargeMapper;
 import com.lordjoe.distributed.hydra.comet.CometScoringAlgorithm;
 import com.lordjoe.distributed.hydra.fragment.*;
 import org.junit.*;

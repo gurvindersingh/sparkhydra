@@ -1,36 +1,19 @@
 package com.lordjoe.distributed.hydra.comet;
 
-import com.lordjoe.distributed.MZPartitioner;
 import com.lordjoe.distributed.SparkUtilities;
-import com.lordjoe.distributed.hydra.SparkScanScorer;
+import com.lordjoe.distributed.hydra.comet_spark.CometScoringHandler;
+import com.lordjoe.distributed.hydra.comet_spark.SparkCometScanScorer;
 import com.lordjoe.distributed.hydra.fragment.BinChargeKey;
-import com.lordjoe.distributed.hydra.fragment.BinChargeMapper;
-import com.lordjoe.distributed.hydra.scoring.PepXMLScoredScanWriter;
-import com.lordjoe.distributed.hydra.scoring.SparkConsolidator;
-import com.lordjoe.distributed.hydra.test.TestUtilities;
-import com.lordjoe.distributed.spark.SparkAccumulators;
 import com.lordjoe.utilities.ElapsedTimer;
-import com.lordjoe.utilities.FileUtilities;
 import org.apache.spark.api.java.JavaPairRDD;
-import org.apache.spark.api.java.JavaRDD;
-import org.junit.Assert;
-import org.junit.Test;
-import org.systemsbiology.xtandem.IMeasuredSpectrum;
 import org.systemsbiology.xtandem.RawPeptideScan;
 import org.systemsbiology.xtandem.XTandemMain;
 import org.systemsbiology.xtandem.ionization.ITheoreticalSpectrum;
-import org.systemsbiology.xtandem.ionization.ITheoreticalSpectrumSet;
-import org.systemsbiology.xtandem.ionization.IonUseCounter;
 import org.systemsbiology.xtandem.peptide.IPolypeptide;
 import org.systemsbiology.xtandem.peptide.Polypeptide;
-import org.systemsbiology.xtandem.pepxml.PepXMLWriter;
-import org.systemsbiology.xtandem.scoring.IScoredScan;
 import org.systemsbiology.xtandem.scoring.Scorer;
-import org.systemsbiology.xtandem.testing.MZXMLReader;
 import scala.Tuple2;
 
-import java.io.InputStream;
-import java.io.StringBufferInputStream;
 import java.util.*;
 
 /**
@@ -102,7 +85,7 @@ public class CometScoringPeptidesTest {
 
           List<UsedSpectrum> usedSpectrums = CometTestingUtilities.getSpectrumUsed(8852);
 
-        RawPeptideScan rp = CometTestingUtilities.getScanFromMZXMLResource("000000008852.mzXML");
+        RawPeptideScan rp = CometTestingUtilities.getScanFromMZXMLResource("/000000008852.mzXML");
         CometScoredScan spec = new CometScoredScan(rp, comet);
 
         // debugging code set to  check data

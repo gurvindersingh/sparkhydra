@@ -1,7 +1,7 @@
 package com.lordjoe.distributed.spectrum;
 
 import com.lordjoe.distributed.*;
-import com.lordjoe.distributed.hydra.comet.SparkCometScanScorer;
+import com.lordjoe.distributed.hydra.comet_spark.SparkCometScanScorer;
 import com.lordjoe.distributed.input.*;
 import org.apache.spark.api.java.*;
 import org.apache.spark.api.java.function.Function;

@@ -14,7 +14,7 @@ import java.util.*;
 public class ModifiedPolypeptide extends Polypeptide implements IModifiedPeptide {
 
     public static final String MAX_MODIFICASTIONS_PARAMETER_NAME = "org.systemsbiology.jxtandem.ModifiedPolypeptide.MaxPeptideModifications";
-    public static final int DEFAULT_MAX_MODIFICATIONS = 2;
+    public static final int DEFAULT_MAX_MODIFICATIONS = 3;
     private static int gMaxPeptideModifications = DEFAULT_MAX_MODIFICATIONS;
 
     public static final Random RND = new Random();

@@ -1,8 +1,7 @@
 package com.lordjoe.distributed.hydra.scoring;
 
 import com.lordjoe.distributed.*;
-import com.lordjoe.distributed.hydra.comet.*;
-import org.apache.hadoop.conf.Configuration;
+import com.lordjoe.distributed.hydra.comet_spark.SparkCometScanScorer;
 import org.apache.hadoop.fs.*;
 import org.apache.spark.api.java.*;
 import org.systemsbiology.xtandem.*;
@@ -10,7 +9,6 @@ import org.systemsbiology.xtandem.hadoop.*;
 import org.systemsbiology.xtandem.reporting.*;
 import org.systemsbiology.xtandem.scoring.*;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 

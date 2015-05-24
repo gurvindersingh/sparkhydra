@@ -1,8 +1,8 @@
-package com.lordjoe.distributed.hydra.comet;
+package com.lordjoe.distributed.hydra.comet_spark;
 
 import com.lordjoe.distributed.hydra.*;
+import com.lordjoe.distributed.hydra.comet.*;
 import com.lordjoe.distributed.hydra.fragment.BinChargeKey;
-import com.lordjoe.distributed.hydra.fragment.BinChargeMapper;
 import org.junit.*;
 import org.systemsbiology.hadoop.*;
 import org.systemsbiology.xtandem.*;
@@ -16,7 +16,7 @@ import java.io.*;
 import java.util.*;
 
 /**
- * com.lordjoe.distributed.hydra.comet.CometParameterTests
+ * com.lordjoe.distributed.hydra.comet_spark.CometParameterTests
  * User: steven
  * Date: 4/2/13
  */
@@ -194,7 +194,7 @@ public class CometParameterTests {
         assertScanScore(application, scanById, "M[15.995]PCTEDYLSLILNR", "8852", 1.858);
 
 
-        double xcorr = CometScoringHandler.doRealScoring(scan, pp, application);
+        double xcorr = CometScoringAlgorithm.doRealScoring(scan, pp, application);
 
         Assert.assertEquals(1.2996, xcorr, 0001);
     }
@@ -215,7 +215,7 @@ public class CometParameterTests {
         int charge = scan.getCharge();
         Assert.assertTrue(comet.isWithinLimits(precursorMass, ppMass, charge));
 
-         double xcorr = CometScoringHandler.doRealScoring(scan,scorer, ts, application);
+         double xcorr = CometScoringAlgorithm.doRealScoring(scan, scorer, ts, application);
 
         Assert.assertEquals(score, xcorr, 0001);
 

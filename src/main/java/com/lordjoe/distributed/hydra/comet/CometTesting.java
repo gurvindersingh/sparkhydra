@@ -1,9 +1,9 @@
 package com.lordjoe.distributed.hydra.comet;
 
 import com.lordjoe.distributed.SparkUtilities;
+import com.lordjoe.distributed.hydra.comet_spark.CometScoringHandler;
+import com.lordjoe.distributed.hydra.comet_spark.SparkCometScanScorer;
 import com.lordjoe.distributed.hydra.fragment.BinChargeKey;
-import com.lordjoe.distributed.hydra.fragment.BinChargeMapper;
-import com.lordjoe.distributed.spark.GeneratingPseudoList;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.systemsbiology.xtandem.IMeasuredSpectrum;
 import org.systemsbiology.xtandem.peptide.IPolypeptide;

@@ -94,6 +94,89 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
     }
 
     /**
+     * for testing - these are usually wrapped before serialization
+     *
+     * @param spec
+     * @param pp
+     * @param application
+     * @return
+     */
+    @SuppressWarnings("JavaDoc")
+    public static double doRealScoring(IMeasuredSpectrum spec, IPolypeptide pp, XTandemMain application) {
+        CometScoringAlgorithm comet = (CometScoringAlgorithm) application.getScorer();
+        Scorer scorer = application.getScoreRunner();
+        CometTheoreticalBinnedSet ts = new CometTheoreticalBinnedSet(spec.getPrecursorCharge(), spec.getPrecursorMass(), pp, comet, scorer);
+        CometScoredScan scan = new CometScoredScan(spec, comet);
+        return doRealScoring(scan, scorer, ts, application);
+    }
+
+    /**
+     * IMPORTANT the real word is done here
+     *
+     * @param pScoring
+     * @param pTs
+     * @param application
+     * @return
+     */
+    @SuppressWarnings("JavaDoc")
+    public static double doRealScoring(final CometScoredScan pScoring, final Scorer scorer, final ITheoreticalSpectrumSet pTs, XTandemMain application) {
+
+        IPolypeptide peptide = pTs.getPeptide();
+        IMeasuredSpectrum spec = pScoring.getConditionedScan();
+        //====================================================
+        // THIS IS ALL DEBUGGGING
+        if (TestUtilities.isInterestingSpectrum(pScoring)) {
+            TestUtilities.breakHere();
+        }
+        if (TestUtilities.isInterestingPeptide(peptide)) {
+            TestUtilities.breakHere();
+        }
+//        if (TestUtilities.isInterestingScoringPair(peptide, pScoring)) {
+//            TestUtilities.breakHere();
+//            TestUtilities.setLogCalculations(application, true); // log this
+//        } else {
+//            String log = TestUtilities.setLogCalculations(application, false); // log off
+//            if (log != null)
+//                System.out.println(log);
+//        }
+        //====================================================
+        // END DEBUGGGING
+
+        CometScoringAlgorithm comet = (CometScoringAlgorithm) application.getScorer();
+        IonUseCounter counter = new IonUseCounter();
+        List<XCorrUsedData> used = new ArrayList<XCorrUsedData>();
+
+        //if (SparkUtilities.validateDesiredUse(spec, peptide, 0))
+        //    breakHere(); // look at these cases
+
+        // TODO Put it in constructor
+        //pScoring.setAlgorithm(comet);
+
+        //double mass = pScoring.getPrecursorMass();    // todo is this peptide or
+        //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
+        //int MaxArraySize = comet.asBin(mass) + 100; // ((int) ((mass + 100) / getBinTolerance()); //  pScoring->_spectrumInfoInternal.iArraySize
+
+//        comet.normalizeBinnedPeaks(MaxArraySize);
+//        comet.normalizeForNL(MaxArraySize);
+
+        //====================================================
+        // THIS IS ALL DEBUGGGING
+        //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
+        //List<SpectrumBinnedScore> fastScoringData = pScoring.getFastScoringData();
+        //List<SpectrumBinnedScore> fastScoringDataNL = pScoring.getNLScoringData();
+        //====================================================
+        // END DEBUGGGING
+
+        double xcorr = comet.doXCorr((CometTheoreticalBinnedSet) pTs, scorer, counter, pScoring, used);
+
+        //  SparkUtilities.validateDesiredUse(spec,peptide,xcorr) ;
+
+        // pScoring.clearScoringData();
+
+        return xcorr;
+    }
+
+    /**
      * use the parameters to configure local properties
      *
      * @param !null params

@@ -46,11 +46,11 @@ public class GoodSampleConstructor {
     }
 
     public static void peptidesToProteins(final String pFastaFileName, final Set<String> pPeptides, final Set<IProtein> pProteins) throws FileNotFoundException {
+        FileInputStream is = new FileInputStream(pFastaFileName);
 
         SeekingFastaHandler handler = new SeekingFastaHandler(pPeptides, pProteins);
         FastaParser fp = new FastaParser();
         fp.addHandler(handler);
-        FileInputStream is = new FileInputStream(pFastaFileName);
         fp.parseFastaFile(is, pFastaFileName);
         handler.showHandled();
         if (pPeptides.size() > 0) {

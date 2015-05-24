@@ -2,10 +2,16 @@ package com.lordjoe.distributed.hydra.comet;
 
 //import org.proteios.io.*;
 
+import com.lordjoe.distributed.hydra.fragment.BinChargeKey;
 import org.systemsbiology.xtandem.*;
+import org.systemsbiology.xtandem.peptide.IPolypeptide;
 import org.systemsbiology.xtandem.testing.*;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * com.lordjoe.distributed.hydra.comet.CometUtilities
@@ -62,6 +68,23 @@ public class CometUtilities implements Serializable {
 
     }
 
+    public static List<IPolypeptide> getPeptidesInBins(List<IPolypeptide> peptides,Set<Integer> bins)
+    {
+        List<IPolypeptide> holder = new ArrayList<IPolypeptide>();
+        for (IPolypeptide peptide : peptides) {
+            BinChargeKey binChargeKey = BinChargeMapper.keyFromPeptide(peptide);
+            if(bins.contains(binChargeKey.getMzInt()))
+                holder.add(peptide);
+        }
+        return holder;
+    }
+
+    public static List<IPolypeptide> getPeptidesInKeyBins(List<IPolypeptide> peptides,Set<BinChargeKey> bins)
+    {
+         return getPeptidesInBins(peptides,getSpectrumBinsIntegers(bins));
+    }
+
+
     public static void main(String[] args) {
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
@@ -72,4 +95,11 @@ public class CometUtilities implements Serializable {
     }
 
 
+    public static Set<Integer> getSpectrumBinsIntegers(Set<BinChargeKey> used) {
+        Set<Integer> ret = new HashSet<Integer>();
+        for (BinChargeKey binChargeKey : used) {
+            ret.add(binChargeKey.getMzInt());
+        }
+        return ret;
+    }
 }

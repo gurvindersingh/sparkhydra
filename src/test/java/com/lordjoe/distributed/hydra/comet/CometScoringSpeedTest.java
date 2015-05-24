@@ -1,12 +1,9 @@
 package com.lordjoe.distributed.hydra.comet;
 
-import com.lordjoe.distributed.hydra.*;
 import com.lordjoe.utilities.*;
-import org.junit.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.ionization.*;
 import org.systemsbiology.xtandem.peptide.*;
-import org.systemsbiology.xtandem.sax.*;
 import org.systemsbiology.xtandem.scoring.*;
 import org.systemsbiology.xtandem.testing.*;
 
@@ -48,6 +45,7 @@ public class CometScoringSpeedTest {
 
         CometScoredScan scan = new CometScoredScan(spec, comet);
 
+        CometScoringData.populateFromScan(scan);
 
 
         double maxScore = 0;
@@ -60,7 +58,7 @@ public class CometScoringSpeedTest {
             for (IPolypeptide pp : peptides) {
                 CometTheoreticalBinnedSet ts = (CometTheoreticalBinnedSet) scorer.generateSpectrum(pp);
                 IonUseCounter counter = new IonUseCounter();
-                double xcorr = CometScoringHandler.doRealScoring(scan, scorer, ts, application);
+                double xcorr = CometScoringAlgorithm.doRealScoring(scan, scorer, ts, application);
                 maxScore = Math.max(xcorr, maxScore);
             }
             totalTime = timer.getElapsedMillisec();
