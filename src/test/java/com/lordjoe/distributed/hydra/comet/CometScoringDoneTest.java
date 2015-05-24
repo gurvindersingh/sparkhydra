@@ -98,12 +98,8 @@ public class CometScoringDoneTest {
         CometScoringAlgorithm comet = CometTestingUtilities.getComet(application);
         Scorer scorer = application.getScoreRunner();
 
-        List<RawPeptideScan> scans = CometTestingUtilities.getAllScanFromMZXMLResource("/eg3_20/eg3_20.mzXML");
-        Map<Integer, RawPeptideScan> mapped = new HashMap<Integer, RawPeptideScan>();
-        for (RawPeptideScan scan : scans) {
-            String id = scan.getId();
-            mapped.put(new Integer(id), scan);
-        }
+        Map<Integer, RawPeptideScan> mapped = CometTestingUtilities.getScanMapFromResource("/eg3_20/eg3_20.mzXML");
+
         Map<Integer, List<UsedSpectrum>> cometUses = CometTestingUtilities.readUsedSpectraFromResource("/eg3_20/UsedSpectra_20.txt");
 
         IPeptideDigester digester = PeptideBondDigester.getDefaultDigester();

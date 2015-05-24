@@ -41,12 +41,20 @@ public class CometTestingUtilities {
     public static final PeptideModification[] MS_ONLY =
             {
                     PeptideModification.fromString("15.9949@M", PeptideModificationRestriction.Global, false),
-                      PeptideModification.fromString("79.966331@S", PeptideModificationRestriction.Global, false),
-             };
+                    PeptideModification.fromString("79.966331@S", PeptideModificationRestriction.Global, false),
+            };
 
+    public static Map<Integer, RawPeptideScan> getScanMapFromResource(String resource) {
+        List<RawPeptideScan> scans = CometTestingUtilities.getAllScanFromMZXMLResource(resource); //"/eg3_20/eg3_20.mzXML");
+        Map<Integer, RawPeptideScan> mapped = new HashMap<Integer, RawPeptideScan>();
+        for (RawPeptideScan scan : scans) {
+            String id = scan.getId();
+            mapped.put(new Integer(id), scan);
+        }
+        return mapped;
+    }
 
-    public static XTandemMain getDefaultApplication()
-    {
+    public static XTandemMain getDefaultApplication() {
 
         //   FileUtilities.writeFile("BadParametersX,xml",CometTestData.USED_PARAMETERS);
         //    FileUtilities.writeFile("GoodParameters,xml",CometTestData.COMET_XML);
@@ -61,9 +69,8 @@ public class CometTestingUtilities {
         return application;
     }
 
-    public static  CometScoringAlgorithm getComet( XTandemMain application)
-    {
-          return (CometScoringAlgorithm) application.getAlgorithms()[0];
+    public static CometScoringAlgorithm getComet(XTandemMain application) {
+        return (CometScoringAlgorithm) application.getAlgorithms()[0];
     }
 
     public static Map<Integer, List<UsedSpectrum>> readUsedSpectraFromResource() {
@@ -169,22 +176,20 @@ public class CometTestingUtilities {
         }
     }
 
-    public static Map<IPolypeptide, List<BinnedChargeIonIndex>> readCometBinsFromResource(String res)
-    {
+    public static Map<IPolypeptide, List<BinnedChargeIonIndex>> readCometBinsFromResource(String res) {
         Class cls = CometTestingUtilities.class;
         InputStream istr = cls.getResourceAsStream(res);
-        return   readCometBins(istr);
+        return readCometBins(istr);
     }
 
 
-    public static Map<IPolypeptide, List<BinnedChargeIonIndex>> readCometBins(InputStream is)
-    {
+    public static Map<IPolypeptide, List<BinnedChargeIonIndex>> readCometBins(InputStream is) {
         try {
             Map<IPolypeptide, List<BinnedChargeIonIndex>> ret = new HashMap<IPolypeptide, List<BinnedChargeIonIndex>>();
-            LineNumberReader rdr = new LineNumberReader(new InputStreamReader(is)) ;
+            LineNumberReader rdr = new LineNumberReader(new InputStreamReader(is));
             String line = rdr.readLine();
-            while(line != null)  {
-                addCometBin(ret,line);
+            while (line != null) {
+                addCometBin(ret, line);
                 line = rdr.readLine();
             }
             rdr.close();
@@ -196,19 +201,19 @@ public class CometTestingUtilities {
 
     private static void addCometBin(Map<IPolypeptide, List<BinnedChargeIonIndex>> ret, String line) {
         // copied of the console ^&)(&^(*&^(*%*&^
-        while(line.contains("  "))
-            line = line.replace("  "," ");
-        line = line.replace(" ","\t");
+        while (line.contains("  "))
+            line = line.replace("  ", " ");
+        line = line.replace(" ", "\t");
 
         String[] split = line.split("\t");
-        if(split.length != 6)
+        if (split.length != 6)
             return;
         int index = 0;
         IPolypeptide pp = Polypeptide.fromString(split[index++]);
-        List<BinnedChargeIonIndex> list = ret.get(pp) ;
-        if(list == null)    {
+        List<BinnedChargeIonIndex> list = ret.get(pp);
+        if (list == null) {
             list = new ArrayList<BinnedChargeIonIndex>();
-            ret.put(pp,list);
+            ret.put(pp, list);
         }
         int bin = Integer.parseInt(split[index++]);
         int pos = Integer.parseInt(split[index++]);
