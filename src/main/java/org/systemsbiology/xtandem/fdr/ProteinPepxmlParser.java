@@ -283,6 +283,13 @@ public class ProteinPepxmlParser {
             }
         }
 
+
+        while(id.startsWith("0"))
+            id = id.substring(1);
+
+        if(hyperScoreValue ==  null)
+            hyperScoreValue = new Double(0);
+
         IPolypeptide peptide1 = peptide.getPeptide();
         SpectrumHit hit = new SpectrumHit(id, hyperScoreValue,rank, peptide1);
         spectrumHits.put(id, hit);

@@ -202,6 +202,8 @@ public class HydraKryoSerializer implements KryoRegistrator, Serializable {
         doRegistration(kryo, "org.systemsbiology.xtandem.pepxml.PepXMLWriter");
 
         // Comet classes
+        doRegistration(kryo, "com.lordjoe.distributed.hydra.comet_spark.SparkCometScanScorer");
+        doRegistration(kryo, "com.lordjoe.distributed.hydra.comet_spark.CometScoringHandler");
         doRegistration(kryo, "com.lordjoe.distributed.hydra.comet.CometScoredScan");
         doRegistration(kryo, "com.lordjoe.distributed.hydra.comet.BinnedChargeIonIndex");
         doRegistration(kryo, "com.lordjoe.distributed.hydra.comet.SpectrinBinnedScore");

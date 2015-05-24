@@ -6,16 +6,16 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.systemsbiology.xtandem.IMeasuredSpectrum;
 import org.systemsbiology.xtandem.RawPeptideScan;
+import org.systemsbiology.xtandem.XTandemMain;
+import org.systemsbiology.xtandem.ionization.IonType;
 import org.systemsbiology.xtandem.peptide.IPolypeptide;
 import org.systemsbiology.xtandem.peptide.PeptideModification;
 import org.systemsbiology.xtandem.peptide.PeptideModificationRestriction;
+import org.systemsbiology.xtandem.peptide.Polypeptide;
 import org.systemsbiology.xtandem.testing.MZXMLReader;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 
 /**
  * com.lordjoe.distributed.hydra.comet.CometTestingUtilities
@@ -38,6 +38,28 @@ public class CometTestingUtilities {
                     PeptideModification.fromString("79.966331@S", PeptideModificationRestriction.Global, false),
                     PeptideModification.fromString("79.966331@Y", PeptideModificationRestriction.Global, false),
             };
+
+
+    public static XTandemMain getDefaultApplication()
+    {
+
+        //   FileUtilities.writeFile("BadParametersX,xml",CometTestData.USED_PARAMETERS);
+        //    FileUtilities.writeFile("GoodParameters,xml",CometTestData.COMET_XML);
+
+        XTandemMain.setShowParameters(false);  // I do not want to see parameters
+
+        InputStream is = new StringBufferInputStream(CometTestData.COMET_XML); //USED_PARAMETERS); // old was COMET_XML);
+        XTandemMain application = new XTandemMain(is, "TANDEM_XML");
+        CometScoringAlgorithm comet = (CometScoringAlgorithm) application.getAlgorithms()[0];
+        comet.configure(application);
+
+        return application;
+    }
+
+    public static  CometScoringAlgorithm getComet( XTandemMain application)
+    {
+          return (CometScoringAlgorithm) application.getAlgorithms()[0];
+    }
 
     public static Map<Integer, List<UsedSpectrum>> readUsedSpectraFromResource() {
         Class cls = CometTestingUtilities.class;
@@ -135,6 +157,56 @@ public class CometTestingUtilities {
             BinChargeKey pepKey = BinChargeMapper.keyFromPeptide(usedSpectrum.peptide);
             Assert.assertTrue(spectrumBins.contains(pepKey));
         }
+    }
+
+    public static Map<IPolypeptide, List<BinnedChargeIonIndex>> readCometBinsFromResource(String res)
+    {
+        Class cls = CometTestingUtilities.class;
+        InputStream istr = cls.getResourceAsStream(res);
+        return   readCometBins(istr);
+    }
+
+
+    public static Map<IPolypeptide, List<BinnedChargeIonIndex>> readCometBins(InputStream is)
+    {
+        try {
+            Map<IPolypeptide, List<BinnedChargeIonIndex>> ret = new HashMap<IPolypeptide, List<BinnedChargeIonIndex>>();
+            LineNumberReader rdr = new LineNumberReader(new InputStreamReader(is)) ;
+            String line = rdr.readLine();
+            while(line != null)  {
+                addCometBin(ret,line);
+                line = rdr.readLine();
+            }
+            rdr.close();
+            return ret;
+        } catch (IOException e) {
+            throw new UnsupportedOperationException(e);
+        }
+    }
+
+    private static void addCometBin(Map<IPolypeptide, List<BinnedChargeIonIndex>> ret, String line) {
+        // copied of the console ^&)(&^(*&^(*%*&^
+        while(line.contains("  "))
+            line = line.replace("  "," ");
+        line = line.replace(" ","\t");
+
+        String[] split = line.split("\t");
+        if(split.length != 6)
+            return;
+        int index = 0;
+        IPolypeptide pp = Polypeptide.fromString(split[index++]);
+        List<BinnedChargeIonIndex> list = ret.get(pp) ;
+        if(list == null)    {
+            list = new ArrayList<BinnedChargeIonIndex>();
+            ret.put(pp,list);
+        }
+        int bin = Integer.parseInt(split[index++]);
+        int pos = Integer.parseInt(split[index++]);
+        int charge = Integer.parseInt(split[index++]);
+        IonType type = IonType.valueOf(split[index++]);
+        BinnedChargeIonIndex bx = new BinnedChargeIonIndex(bin, charge, type, pos);
+        list.add(bx);
+
     }
 
 }

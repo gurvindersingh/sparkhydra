@@ -2,13 +2,17 @@ package com.lordjoe.distributed.hydra.comet;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.systemsbiology.xtandem.ITandemScoringAlgorithm;
 import org.systemsbiology.xtandem.RawPeptideScan;
 import org.systemsbiology.xtandem.XTandemMain;
 import org.systemsbiology.xtandem.peptide.IPolypeptide;
+import org.systemsbiology.xtandem.scoring.Scorer;
 
 import java.io.InputStream;
 import java.io.StringBufferInputStream;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * com.lordjoe.distributed.hydra.comet.CometBinningTest
@@ -19,6 +23,41 @@ import java.util.List;
 public class CometBinningTest {
 
     public static final double REQUIRED_PRECISION = 0.001;
+
+
+    @Test
+    public void testIonBinning() throws Exception {
+        XTandemMain application = CometTestingUtilities.getDefaultApplication();
+        CometScoringAlgorithm comet = CometTestingUtilities.getComet(application);
+        Scorer scorer = application.getScoreRunner();
+
+        Map<IPolypeptide, List<BinnedChargeIonIndex>> cBons = CometTestingUtilities.readCometBinsFromResource("/CometAssignedBins.txt");
+        for (IPolypeptide pp : cBons.keySet()) {
+            validateBins(pp,cBons.get(pp),comet,scorer);
+        }
+    }
+
+    private void validateBins(IPolypeptide pp, List<BinnedChargeIonIndex> bins,CometScoringAlgorithm comet, Scorer scorer) {
+
+        double matchingMass = pp.getMatchingMass();
+        CometTheoreticalBinnedSet ts = new CometTheoreticalBinnedSet(1,matchingMass, pp, comet, scorer);
+       List<BinnedChargeIonIndex> hydraFinds = ts.getBinnedIndex(comet, null);
+
+        Collections.sort(hydraFinds,BinnedChargeIonIndex.BY_INDEX);
+        Collections.sort(bins,BinnedChargeIonIndex.BY_INDEX);
+
+
+        Assert.assertEquals(bins.size(), hydraFinds.size());
+        int index = 0;
+        for (BinnedChargeIonIndex bin : bins) {
+            BinnedChargeIonIndex bin2 = hydraFinds.get(index++);
+            if(bin.index != bin2.index)
+                Assert.assertEquals(bin.index, bin2.index);
+        }
+
+
+    }
+
 
     @Test
     public void testMasses() throws Exception {

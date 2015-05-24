@@ -260,7 +260,7 @@ public class PeptideSpectrum implements ITheoreticalSpectrum {
 
         List<PeptideIon> holder = new ArrayList<PeptideIon>();
         int lastItem = sequence.length() - 1;
-        for (int i = 0; i < lastItem + 1; i++) {
+        for (int i = 0; i < lastItem; i++) {
             IPolypeptide[] frags = pp.cleave(i);
             for (IonType type : getIonTypes()) {
                 int charge = getCharge();
