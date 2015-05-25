@@ -17,7 +17,6 @@ import java.util.*;
  * Date: 12/5/11
  */
 public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMeasuredSpectrum {
-    public static final int MAX_SERIALIZED_MATCHED = 8;
     public static final String TAG = "score";
 
     public static final int TEST_BIN = 7578;
@@ -1263,7 +1262,7 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
         final ISpectralMatch[] matches = getSpectralMatches();
         Arrays.sort(matches);
 
-        for (int i = 0; i < Math.min(matches.length, MAX_SERIALIZED_MATCHED); i++) {
+        for (int i = 0; i < Math.min(matches.length, CometScoringResult.MAX_RETURNED_MATCHES); i++) {
             ISpectralMatch match = matches[i];
             match.serializeAsString(adder);
         }
