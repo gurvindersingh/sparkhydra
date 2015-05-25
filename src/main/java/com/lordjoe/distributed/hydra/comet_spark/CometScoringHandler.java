@@ -194,9 +194,9 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
                     IonUseCounter counter = new IonUseCounter();
                     double xcorr = comet.doXCorr(ts, scorer, counter, scan, null);
 
-                    if(xcorr > 0.5) {
-                        System.out.println("\n" +scan.getId() + " " + ts.getPeptide() + " " + xcorr);
-                    }
+//                    if(xcorr > 0.5) {
+//                        System.out.println("\n" +scan.getId() + " " + ts.getPeptide() + " " + xcorr);
+//                    }
 
                     numberScored++;
                     maxScore = Math.max(xcorr, maxScore);

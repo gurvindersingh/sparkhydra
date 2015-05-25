@@ -429,7 +429,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
     }
 
     public void addAlgorithm(ITandemScoringAlgorithm added) {
-        added.configure(this);
+      //  added.configure(this);         // todo it seems we want to configure later
         if (m_Algorithms.size() > 0) {
             ITandemScoringAlgorithm[] existing = getAlgorithms();
             for (int i = 0; i < existing.length; i++) {

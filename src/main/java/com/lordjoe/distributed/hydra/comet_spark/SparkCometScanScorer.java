@@ -570,8 +570,6 @@ public class SparkCometScanScorer {
         XTandemMain scoringApplication = handler.getApplication();
         setDebuggingCountMade(scoringApplication.getBooleanParameter(SparkUtilities.DO_DEBUGGING_CONFIG_PROPERTY, false));
         CometScoringAlgorithm comet = (CometScoringAlgorithm) scoringApplication.getAlgorithms()[0];
-        comet.configure(scoringApplication);
-
 
         Properties sparkProperties = SparkUtilities.getSparkProperties();
         String spectrumPath = scoringApplication.getSpectrumPath();

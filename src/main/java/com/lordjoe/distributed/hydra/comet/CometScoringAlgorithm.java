@@ -183,6 +183,9 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
      */
     @Override
     public void configure(final IParameterHolder params) {
+        if(isConfigured())
+            throw new IllegalStateException("Comet should only configured once" );
+
         super.configure(params);
         CometTesting.validateOneKey(); // We are hunting for when this stops working
         final String units = params.getParameter("spectrum, parent monoisotopic mass error units",
@@ -223,7 +226,9 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
         if(Math.abs(testValue - 1.007276466) > 0.0001)
             throw new IllegalStateException("comet needs " + 1.007276466 + " not " + testValue);
 
+        setConfigured(true);
         CometTesting.testCometConfiguration(this);
+
 
     }
 
@@ -304,6 +309,9 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
     @Override
     public int scoreScan(final Scorer scorer, final IonUseCounter pCounter, final ITheoreticalSpectrumSet[] pSpectrums, final IScoredScan conditionedScan) {
         CometScoredScan pConditionedScan = (CometScoredScan) conditionedScan;
+
+        if(!isConfigured())
+            throw new IllegalStateException("Comet not configured") ;
 
         final double massTolerance = getBinTolerance();
         if (massTolerance >= 0.10) //g_staticParams.tolerances.dFragmentBinSize >= 0.10)

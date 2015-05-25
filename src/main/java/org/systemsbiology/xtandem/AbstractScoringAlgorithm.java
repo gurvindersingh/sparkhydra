@@ -84,6 +84,7 @@ public abstract class AbstractScoringAlgorithm implements ITandemScoringAlgorith
     //   protected boolean m_RefineSpectrumSynthesis;
     // in c code is m_ferr
     protected float m_SpectrumMassError;
+    private boolean configured;
 
     /**
      * return a unique algorithm name
@@ -98,6 +99,14 @@ public abstract class AbstractScoringAlgorithm implements ITandemScoringAlgorith
     @Override
     public MassType getMassType() {
         return m_MassType;
+    }
+
+    public boolean isConfigured() {
+        return configured;
+    }
+
+    public void setConfigured(boolean configured) {
+        this.configured = configured;
     }
 
     /**
