@@ -81,8 +81,8 @@ public class SparkConsolidator implements Serializable {
 
     public static  <T extends IScoredScan> JavaRDD<T> sortByIndex(JavaRDD<T> bestScores)
       {
-          JavaPairRDD<Integer, T> byIndex = bestScores.mapToPair(new ToIndexTuple());
-           JavaPairRDD<Integer, T> sortedByIndex = byIndex.sortByKey();
+          JavaPairRDD<String, T> byIndex = bestScores.mapToPair(new ToIndexTuple());
+          JavaPairRDD<String, T> sortedByIndex = byIndex.sortByKey();
 
           return sortedByIndex.values();
      //     return byIndex.values();
