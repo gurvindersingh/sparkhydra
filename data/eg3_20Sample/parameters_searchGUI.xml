@@ -7,26 +7,24 @@
 		list path.</note>
 	<note type="input" label="list path, taxonomy information">taxonomy_searchGUI.xml</note>
 
-<note>spectrum parameters</note>
-	<note type="input" label="spectrum, fragment monoisotopic mass error">0.5</note>
-	<note type="input" label="spectrum, parent monoisotopic mass error plus">20.0</note>
-	<note type="input" label="spectrum, parent monoisotopic mass error minus">20.0</note>
-	<note type="input" label="spectrum, parent monoisotopic mass isotope error">yes</note>
-	<note type="input" label="spectrum, fragment monoisotopic mass error units">ppm</note>
-	<note>The value for this parameter may be 'Daltons' or 'ppm': all other values are ignored</note>
-	<note type="input" label="spectrum, parent monoisotopic mass error units">ppm</note>
-		<note>The value for this parameter may be 'Daltons' or 'ppm': all other values are ignored</note>
-	<note type="input" label="spectrum, fragment mass type">monoisotopic</note>
-		<note>values are monoisotopic|average </note>
-		
 		
 <note>comet parameters</note>
 	<note type="input" label="comet.fragment_bin_tol">0.02</note> <!-- value for High resolution -->
 	<note type="input" label="comet.fragment_bin_offset">0.4</note> <!-- value for High resolution -->
 	<note type="input" label="comet.mass_tolerance">30</note> <!-- value for High resolution -->
 	<note type="input" label="comet.max_fragment_charge">3</note> <!-- max charge in theoretical spectrum -->
-	<note type="input" label="org.systemsbiology.xtandem.HardCodeModifications">false</note> <!-- no hard coded mods -->
-	<note type="input" label="comet.MaxPeptideListSize">100000</note>
+<note>spectrum parameters</note>
+	<note type="input" label="spectrum, fragment monoisotopic mass error">0.5</note>
+	<note type="input" label="spectrum, parent monoisotopic mass error plus">20.0</note>
+	<note type="input" label="spectrum, parent monoisotopic mass error minus">20.0</note>
+	<note type="input" label="spectrum, parent monoisotopic mass isotope error">yes</note>
+	<note type="input" label="spectrum, fragment monoisotopic mass error units">Daltons</note>
+	<note>The value for this parameter may be 'Daltons' or 'ppm': all other values are ignored</note>
+	<note type="input" label="spectrum, parent monoisotopic mass error units">ppm</note>
+		<note>The value for this parameter may be 'Daltons' or 'ppm': all other values are ignored</note>
+	<note type="input" label="spectrum, fragment mass type">monoisotopic</note>
+		<note>values are monoisotopic|average </note>
+		
 
 
 <note>spectrum conditioning parameters</note>
@@ -64,6 +62,7 @@
 		is NOT followed by a P, then either an S or a T, NOT followed by a P.
 		Positive and negative values are allowed.
 		</note>
+	<note type="input" label="org.systemsbiology.jxtandem.ModifiedPolypeptide.MaxPeptideModification">3</note>
 
 <note>protein parameters</note>
 	<note type="input" label="protein, taxon">all</note>
@@ -80,7 +79,7 @@
 		</note>
 	<note type="input" label="protein, cleavage semi">no</note>
 	<note type="input" label="protein, modified residue mass file"></note>
-	<note type="input" label="protein, cleavage C-terminal mass change">19.01784116688</note>
+	<note type="input" label="protein, cleavage C-terminal mass change">19.0178</note>
 	<note type="input" label="protein, cleavage N-terminal mass change">1.007276466</note>
 	<note type="input" label="protein, quick acetyl">yes</note>
 	<note type="input" label="protein, quick pyrolidone">yes</note>
