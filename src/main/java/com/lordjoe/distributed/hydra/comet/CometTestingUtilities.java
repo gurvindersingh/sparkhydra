@@ -2,9 +2,7 @@ package com.lordjoe.distributed.hydra.comet;
 
 import com.lordjoe.distributed.hydra.fragment.BinChargeKey;
 import com.lordjoe.utilities.FileUtilities;
-import org.junit.Assert;
-import org.junit.Test;
-import org.systemsbiology.xtandem.IMeasuredSpectrum;
+ import org.systemsbiology.xtandem.IMeasuredSpectrum;
 import org.systemsbiology.xtandem.RawPeptideScan;
 import org.systemsbiology.xtandem.XTandemMain;
 import org.systemsbiology.xtandem.ionization.IonType;
@@ -149,30 +147,31 @@ public class CometTestingUtilities {
     }
 
 
-    @Test
-    public void testMxXMLParsing() throws Exception {
-        List<RawPeptideScan> scans = getAllScanFromMZXMLResource("/eg3_20.mzXML");
-        Assert.assertEquals(20, scans.size());
-
-        RawPeptideScan scan = scans.get(0);
-        String id = scan.getId();
-        Assert.assertEquals("000000000001", id);
-        Assert.assertEquals(1, Integer.parseInt(id));
-        Assert.assertEquals(225, scan.getPeaksCount());
-        String retentionTime = scan.getRetentionTime();
-        retentionTime = retentionTime.replace("PT", ""); // drop PT
-        retentionTime = retentionTime.replace("S", ""); // drop S
-        Assert.assertEquals(2.17135, Double.parseDouble(retentionTime), 0.001);
-
-
-    }
+//    @Test
+//    public void testMxXMLParsing() throws Exception {
+//        List<RawPeptideScan> scans = getAllScanFromMZXMLResource("/eg3_20.mzXML");
+//        Assert.assertEquals(20, scans.size());
+//
+//        RawPeptideScan scan = scans.get(0);
+//        String id = scan.getId();
+//        Assert.assertEquals("000000000001", id);
+//        Assert.assertEquals(1, Integer.parseInt(id));
+//        Assert.assertEquals(225, scan.getPeaksCount());
+//        String retentionTime = scan.getRetentionTime();
+//        retentionTime = retentionTime.replace("PT", ""); // drop PT
+//        retentionTime = retentionTime.replace("S", ""); // drop S
+//        Assert.assertEquals(2.17135, Double.parseDouble(retentionTime), 0.001);
+//
+//
+//    }
 
     public static void doBinTest(List<UsedSpectrum> spectrumUsed, IMeasuredSpectrum spec) {
         Set<BinChargeKey> spectrumBins = BinChargeMapper.getSpectrumBins(spec);
 
         for (UsedSpectrum usedSpectrum : spectrumUsed) {
             BinChargeKey pepKey = BinChargeMapper.keyFromPeptide(usedSpectrum.peptide);
-            Assert.assertTrue(spectrumBins.contains(pepKey));
+
+         //   Assert.assertTrue(spectrumBins.contains(pepKey));
         }
     }
 

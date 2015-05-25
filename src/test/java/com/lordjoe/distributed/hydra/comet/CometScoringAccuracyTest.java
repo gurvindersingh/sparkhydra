@@ -3,7 +3,6 @@ package com.lordjoe.distributed.hydra.comet;
 import com.lordjoe.distributed.hydra.fragment.BinChargeKey;
 import com.lordjoe.distributed.hydra.test.TestUtilities;
 import com.lordjoe.distributed.protein.ProteinParser;
-import com.lordjoe.utilities.FileUtilities;
 import org.junit.Assert;
 import org.junit.Test;
 import org.systemsbiology.xtandem.RawPeptideScan;
@@ -14,9 +13,7 @@ import org.systemsbiology.xtandem.peptide.PeptideBondDigester;
 import org.systemsbiology.xtandem.peptide.Polypeptide;
 import org.systemsbiology.xtandem.scoring.CometHyperScoreStatistics;
 import org.systemsbiology.xtandem.scoring.Scorer;
-import org.systemsbiology.xtandem.testing.MZXMLReader;
 
-import java.io.*;
 import java.util.*;
 
 /**

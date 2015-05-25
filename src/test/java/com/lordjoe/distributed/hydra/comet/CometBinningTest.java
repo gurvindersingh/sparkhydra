@@ -2,14 +2,11 @@ package com.lordjoe.distributed.hydra.comet;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.systemsbiology.xtandem.ITandemScoringAlgorithm;
 import org.systemsbiology.xtandem.RawPeptideScan;
 import org.systemsbiology.xtandem.XTandemMain;
 import org.systemsbiology.xtandem.peptide.IPolypeptide;
 import org.systemsbiology.xtandem.scoring.Scorer;
 
-import java.io.InputStream;
-import java.io.StringBufferInputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;

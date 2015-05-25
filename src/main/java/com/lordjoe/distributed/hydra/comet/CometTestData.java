@@ -1,6 +1,5 @@
 package com.lordjoe.distributed.hydra.comet;
 
-import org.junit.*;
 
 import java.util.*;
 
@@ -2038,18 +2037,8 @@ public class CometTestData {
         return holder;
     }
 
-    public static void testUsedXCorrData(final List<XCorrUsedData> pUsed) {
-        List<XCorrUsedData> compare = CometTestData.buildXCorrUsedData();
-        //     Assert.assertEquals(compare.size(), pUsed.size());
-        for (int i = 0; i < compare.size(); i++) {
-            XCorrUsedData expexted = compare.get(i);
-            XCorrUsedData seen = pUsed.get(i);
-            if (!expexted.equivalent(seen))
-                Assert.assertTrue(expexted.equivalent(seen));
 
-        }
 
-    }
 
 
 }

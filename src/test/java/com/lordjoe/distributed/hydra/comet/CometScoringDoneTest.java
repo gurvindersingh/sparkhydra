@@ -1,26 +1,15 @@
 package com.lordjoe.distributed.hydra.comet;
 
-import com.lordjoe.distributed.SparkUtilities;
-import com.lordjoe.distributed.hydra.comet_spark.CometScoringHandler;
-import com.lordjoe.distributed.hydra.comet_spark.SparkCometScanScorer;
 import com.lordjoe.distributed.hydra.fragment.BinChargeKey;
-import com.lordjoe.distributed.hydra.test.TestUtilities;
 import com.lordjoe.distributed.protein.ProteinParser;
-import org.apache.spark.api.java.JavaPairRDD;
-import org.apache.spark.api.java.JavaRDD;
-import org.apache.spark.api.java.JavaSparkContext;
 import org.junit.Assert;
 import org.junit.Test;
 import org.systemsbiology.xtandem.RawPeptideScan;
 import org.systemsbiology.xtandem.XTandemMain;
 import org.systemsbiology.xtandem.peptide.*;
-import org.systemsbiology.xtandem.scoring.IScoredScan;
-import org.systemsbiology.xtandem.scoring.ISpectralMatch;
 import org.systemsbiology.xtandem.scoring.Scorer;
 import scala.Tuple2;
 
-import java.io.InputStream;
-import java.io.StringBufferInputStream;
 import java.util.*;
 
 /**

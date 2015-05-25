@@ -3,7 +3,6 @@ package com.lordjoe.distributed.hydra.comet_spark;
 import com.lordjoe.distributed.*;
 import com.lordjoe.distributed.hydra.*;
 import com.lordjoe.distributed.hydra.comet.*;
-import com.lordjoe.distributed.hydra.comet_spark.CometScoringHandler;
 import com.lordjoe.distributed.hydra.fragment.*;
 import com.lordjoe.distributed.hydra.scoring.*;
 import com.lordjoe.distributed.hydra.test.*;
@@ -543,6 +542,26 @@ public class SparkCometScanScorer {
      * @param args
      */
     public static void scoringUsingCogroup(String[] args) {
+
+        InputStream is = new StringBufferInputStream(CometTestData.COMET_XML); //USED_PARAMETERS); // old was COMET_XML);
+        XTandemMain applicationx = new XTandemMain(is, "TANDEM_XML");
+        CometScoringAlgorithm cometx = (CometScoringAlgorithm) applicationx.getAlgorithms()[0];
+        cometx.configure(applicationx);
+        Scorer scorerx = applicationx.getScoreRunner();
+
+        Map<Integer, RawPeptideScan> mapped = CometTestingUtilities.getScanMapFromResource("/eg3_20/eg3_20.mzXML");
+
+        RawPeptideScan scan2 = mapped.get(2);
+        CometScoredScan specx = new CometScoredScan(scan2, cometx);
+
+        IPolypeptide cometBestx = Polypeptide.fromString("SADAMS[79.966331]S[79.966331]DK");
+        CometScoringData.populateFromScan(specx);
+
+        CometTheoreticalBinnedSet cometTsx = (CometTheoreticalBinnedSet) scorerx.generateSpectrum(cometBestx);
+
+        double cometBestScorex = CometScoringAlgorithm.doRealScoring(specx, scorerx, cometTsx, applicationx);
+
+
         long totalSpectra = 0;
         List<PairCounter> pairs = null;
 
@@ -580,6 +599,28 @@ public class SparkCometScanScorer {
 
         MZPartitioner partitioner = new MZPartitioner();
         JavaRDD<IMeasuredSpectrum> spectraToScore = SparkScanScorer.getMeasuredSpectra(timer, sparkProperties, spectra, scoringApplication);
+
+        spectraToScore = SparkUtilities.persist(spectraToScore) ;
+
+        Scorer scorer = scoringApplication.getScoreRunner();
+        IMeasuredSpectrum rp = null;
+        for (IMeasuredSpectrum spx : spectraToScore.collect()) {
+             if(Integer.parseInt(spx.getId()) == 2)   {
+                 rp = spx;
+                 break;
+             }
+
+        }
+        CometScoredScan spec = new CometScoredScan(rp, comet);
+
+          IPolypeptide cometBest = Polypeptide.fromString("SADAMS[79.966331]S[79.966331]DK");
+          CometScoringData.populateFromScan(spec);
+
+        CometTheoreticalBinnedSet cometTs = (CometTheoreticalBinnedSet) scorer.generateSpectrum(cometBest);
+
+        double cometBestScore = CometScoringAlgorithm.doRealScoring(spec, scorer, cometTs, scoringApplication);
+     //   Assert.assertEquals(0.152,cometBestScore,0.01);
+
 
         JavaRDD<CometScoredScan> cometSpectraToScore = spectraToScore.map(new MapToCometSpectrum(comet));
 

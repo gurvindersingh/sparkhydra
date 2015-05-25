@@ -112,7 +112,7 @@ public class CometParameterTests {
         Assert.assertEquals(3.394, xcorr, 0.002);
 
         if(used.size() > 0)
-        CometTestData.testUsedXCorrData(used);
+         testUsedXCorrData(used);
 
         if (true)
             return;
@@ -120,6 +120,18 @@ public class CometParameterTests {
 
         if (scoring == null)
             Assert.assertNotNull(scoring); // good place to look around and see why
+    }
+
+    public static void testUsedXCorrData(final List<XCorrUsedData> pUsed) {
+        List<XCorrUsedData> compare = CometTestData.buildXCorrUsedData();
+        //     Assert.assertEquals(compare.size(), pUsed.size());
+        for (int i = 0; i < compare.size(); i++) {
+            XCorrUsedData expexted = compare.get(i);
+            XCorrUsedData seen = pUsed.get(i);
+            if (!expexted.equivalent(seen))
+                Assert.assertTrue(expexted.equivalent(seen));
+
+        }
     }
 
     public static void testValues(final CometScoredScan pScoring, String header) {
