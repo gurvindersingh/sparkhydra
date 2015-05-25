@@ -37,10 +37,25 @@ public class CometBinningTest {
         }
     }
 
-    private void validateBins(IPolypeptide pp, List<BinnedChargeIonIndex> bins,CometScoringAlgorithm comet, Scorer scorer) {
+    @Test
+    public void testEG3_20IonBinning() throws Exception {
+        XTandemMain application = CometTestingUtilities.getDefaultApplication();
+        CometScoringAlgorithm comet = CometTestingUtilities.getComet(application);
+        Scorer scorer = application.getScoreRunner();
 
+        Map<IPolypeptide, List<BinnedChargeIonIndex>> cBons = CometTestingUtilities.readCometBinsFromResource("/eg3_20/Scoring_EG20.txt");
+        for (IPolypeptide pp : cBons.keySet()) {
+            validateBins(pp,cBons.get(pp),comet,scorer);
+        }
+    }
+
+    private void validateBins(IPolypeptide pp, List<BinnedChargeIonIndex> bins,CometScoringAlgorithm comet, Scorer scorer) {
+        int testCharge = 1;
+        for (BinnedChargeIonIndex bin : bins) {
+            testCharge = Math.max(bin.charge,testCharge);
+        }
         double matchingMass = pp.getMatchingMass();
-        CometTheoreticalBinnedSet ts = new CometTheoreticalBinnedSet(1,matchingMass, pp, comet, scorer);
+        CometTheoreticalBinnedSet ts = new CometTheoreticalBinnedSet(testCharge,matchingMass, pp, comet, scorer);
        List<BinnedChargeIonIndex> hydraFinds = ts.getBinnedIndex(comet, null);
 
         Collections.sort(hydraFinds,BinnedChargeIonIndex.BY_INDEX);

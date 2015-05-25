@@ -51,7 +51,7 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
     public static final double DEFAULT_MASS_TOLERANCE = 1; // tood fix 0.025;
     public static final int DEFAULT_MINIMUM_PEAK_NUMBER = 5; // do not score smaller spectra
     public static final int PEAK_BIN_SIZE = 100;   // the maxium peak is this
-    public static final int DEFAULT_MAX_FRAGMENT_CHARGE = 3;
+    public static final int DEFAULT_MAX_FRAGMENT_CHARGE = 3;   // was 3
     public static final int PEAK_BIN_NUMBER = 3;
     public static final int PEAK_NORMALIZATION_BINS = 5;
     public static final int MINIMUM_SCORED_IONS = 10;
