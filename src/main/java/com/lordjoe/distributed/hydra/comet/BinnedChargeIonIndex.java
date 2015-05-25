@@ -1,5 +1,6 @@
 package com.lordjoe.distributed.hydra.comet;
 
+import com.lordjoe.distributed.hydra.test.TestUtilities;
 import org.systemsbiology.xtandem.ionization.IonType;
 
 import java.io.Serializable;
