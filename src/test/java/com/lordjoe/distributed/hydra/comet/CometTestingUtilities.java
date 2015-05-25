@@ -208,7 +208,7 @@ public class CometTestingUtilities {
             line = line.replace("\t\t", "\t");
 
         String[] split = line.split("\t");
-        if (split.length < 6)
+        if (split.length < 5)
             return;
         int index = 0;
         IPolypeptide pp = Polypeptide.fromString(split[index++]);
@@ -222,10 +222,11 @@ public class CometTestingUtilities {
         int charge = Integer.parseInt(split[index++]);
         IonType type = IonType.valueOf(split[index++]);
         double mass = 0;
-        if(split.length > 6)
+        if(split.length > 5)
             mass = Double.parseDouble(split[index++]);
         BinnedChargeIonIndex bx = new TestBinChargeIonIndex(bin, charge, type, pos,mass);
-        list.add(bx);
+        if(!list.contains(bx))
+            list.add(bx);
 
     }
 

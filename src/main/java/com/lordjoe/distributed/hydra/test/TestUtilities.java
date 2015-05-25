@@ -125,6 +125,7 @@ public class TestUtilities {
     public static final String[] INTERESTING_PEPTIDES_STRS = {
             //   "FCYVTEEGDWITKPLPFKK",
             "MPCTEDYLSLILNR",
+            "S[79.966]GIYPTGGSM[15.995]",
  //           "RLEWENWEYSR",
   //          "LDEIDMSQELFKEK",
 //            "QEPERNECFLSHKDDSPDLPK",

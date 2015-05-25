@@ -114,21 +114,27 @@ public class CometScoringAccuracyTest {
 
         Set<BinChargeKey> spectrumBins = BinChargeMapper.getSpectrumBins(scan2);
 
-        IPolypeptide cometBest = Polypeptide.fromString("SADAMS[79.966]S[79.966]DK");
+        IPolypeptide cometBest = Polypeptide.fromString("SADAMS[79.966331]S[79.966331]DK");
         BinChargeKey ppk = BinChargeMapper.keyFromPeptide(cometBest);
         Assert.assertTrue(spectrumBins.contains(ppk));
+
 
         CometScoringData.populateFromScan(spec);
 
         CometTheoreticalBinnedSet cometTs = (CometTheoreticalBinnedSet) scorer.generateSpectrum(cometBest);
 
         double cometBestScore = CometScoringAlgorithm.doRealScoring(spec, scorer, cometTs, application);
-        Assert.assertEquals(0.409,cometBestScore,0.01);
+        Assert.assertEquals(0.152,cometBestScore,0.01);
 
         double bestScore = 0;
         IPolypeptide bestPeptide = null;
         List<IPolypeptide> inBins = CometUtilities.getPeptidesInKeyBins(originalPeptides, spectrumBins);
         for (IPolypeptide inBin : inBins) {
+            if(cometBest.equals(inBin))  {
+                 cometTs = (CometTheoreticalBinnedSet) scorer.generateSpectrum(inBin);
+                cometBestScore = CometScoringAlgorithm.doRealScoring(spec, scorer, cometTs, application);
+                Assert.assertEquals(0.152,cometBestScore,0.01);
+            }
             CometTheoreticalBinnedSet ts1 = (CometTheoreticalBinnedSet) scorer.generateSpectrum(inBin);
 
             double xcorr1 = CometScoringAlgorithm.doRealScoring(spec, scorer, ts1, application);

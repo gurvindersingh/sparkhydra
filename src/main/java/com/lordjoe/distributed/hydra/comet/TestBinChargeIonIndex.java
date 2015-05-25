@@ -12,8 +12,19 @@ public class TestBinChargeIonIndex extends BinnedChargeIonIndex {
 
     public final double mass;
     public TestBinChargeIonIndex(int pIndex, int pCharge, IonType pType, int pPeptidePosition,double pmass) {
-
         super(pIndex, pCharge, pType, pPeptidePosition);
         mass = pmass;
     }
+
+    @Override
+    public String toString() {
+        return "BinnedChargeIonIndex{" +
+                "index=" + index +
+                ", charge=" + charge +
+                ", type=" + type +
+                ", peptidePosition=" + peptidePosition +
+                ", mass=" + mass +
+                '}';
+    }
+
 }

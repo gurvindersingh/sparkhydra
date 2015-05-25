@@ -442,6 +442,8 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
 
         for (BinnedChargeIonIndex peak : binnedIndex) {
             int index = peak.index;
+            if(Math.abs(index - 17257) < 1)
+                TestUtilities.breakHere();
             if(peak.charge > maxCharge)
                 continue;
 

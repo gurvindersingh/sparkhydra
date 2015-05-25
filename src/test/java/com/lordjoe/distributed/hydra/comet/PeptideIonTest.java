@@ -17,7 +17,7 @@ import org.systemsbiology.xtandem.peptide.Polypeptide;
 public class PeptideIonTest {
 
 
-    @Test
+    //@Test
     public void testIndex() throws Exception {
         IPolypeptide pp = Polypeptide.fromString("NIKPECP");
         double matchingMass = pp.getMass();

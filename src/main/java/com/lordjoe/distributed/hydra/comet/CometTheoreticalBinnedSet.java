@@ -62,7 +62,11 @@ public class CometTheoreticalBinnedSet extends TheoreticalSpectrumSet {
                     if (binnedIndexInParent == 10)
                         XTandemUtilities.breakHere();
                 }
-                BinnedChargeIonIndex bcs = new BinnedChargeIonIndex(index, peptideIon.getCharge(), type, binnedIndexInParent);
+                double mass =  mz; // * peptideIon.getCharge();
+                // todo take out
+                // keep mass for debugging
+                TestBinChargeIonIndex bcs = new TestBinChargeIonIndex(index, peptideIon.getCharge(), type, binnedIndexInParent,mass);
+       //         BinnedChargeIonIndex bcs = new BinnedChargeIonIndex(index, peptideIon.getCharge(), type, binnedIndexInParent);
                 binnedChargeIonIndexes.add(bcs);
             }
         }
