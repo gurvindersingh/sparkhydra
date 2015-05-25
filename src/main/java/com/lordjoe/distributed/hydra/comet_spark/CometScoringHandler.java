@@ -39,6 +39,10 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
     public CometScoringHandler(final String congiguration, final boolean createDb) {
 
         super(congiguration, createDb);
+
+        XTandemMain application = getApplication();
+        CometScoringAlgorithm comet = (CometScoringAlgorithm) application.getAlgorithms()[0];
+        comet.configure(application);
     }
 
     public static class CometCombineScoredScans extends AbstractLoggingFunction2<CometScoredScan, CometScoredScan, CometScoredScan> {

@@ -542,24 +542,10 @@ public class SparkCometScanScorer {
      * @param args
      */
     public static void scoringUsingCogroup(String[] args) {
-
-        InputStream is = new StringBufferInputStream(CometTestData.COMET_XML); //USED_PARAMETERS); // old was COMET_XML);
-        XTandemMain applicationx = new XTandemMain(is, "TANDEM_XML");
-        CometScoringAlgorithm cometx = (CometScoringAlgorithm) applicationx.getAlgorithms()[0];
-        cometx.configure(applicationx);
-        Scorer scorerx = applicationx.getScoreRunner();
-
-        Map<Integer, RawPeptideScan> mapped = CometTestingUtilities.getScanMapFromResource("/eg3_20/eg3_20.mzXML");
-
-        RawPeptideScan scan2 = mapped.get(2);
-        CometScoredScan specx = new CometScoredScan(scan2, cometx);
-
-        IPolypeptide cometBestx = Polypeptide.fromString("SADAMS[79.966331]S[79.966331]DK");
-        CometScoringData.populateFromScan(specx);
-
-        CometTheoreticalBinnedSet cometTsx = (CometTheoreticalBinnedSet) scorerx.generateSpectrum(cometBestx);
-
-        double cometBestScorex = CometScoringAlgorithm.doRealScoring(specx, scorerx, cometTsx, applicationx);
+//        Map<Integer, RawPeptideScan> mapped = CometTestingUtilities.getScanMapFromResource("/eg3_20/eg3_20.mzXML");
+//        RawPeptideScan scan2 = mapped.get(2);
+//
+//
 
 
         long totalSpectra = 0;
@@ -584,6 +570,7 @@ public class SparkCometScanScorer {
         XTandemMain scoringApplication = handler.getApplication();
         setDebuggingCountMade(scoringApplication.getBooleanParameter(SparkUtilities.DO_DEBUGGING_CONFIG_PROPERTY, false));
         CometScoringAlgorithm comet = (CometScoringAlgorithm) scoringApplication.getAlgorithms()[0];
+        comet.configure(scoringApplication);
 
 
         Properties sparkProperties = SparkUtilities.getSparkProperties();
@@ -591,35 +578,29 @@ public class SparkCometScanScorer {
         String spectra = SparkUtilities.buildPath(spectrumPath);
 
 
-        // debugging code set to  check data
-        if(SparkUtilities.isLocal())    {
-            String usedSpactra =  SparkUtilities.buildPath("UsedSpectra.txt");
-        //    CometTesting.readCometScoredSpectra(usedSpactra);
-        }
+//        // debugging code set to  check data
+//        if(SparkUtilities.isLocal())    {
+//            String usedSpactra =  SparkUtilities.buildPath("UsedSpectra.txt");
+//        //    CometTesting.readCometScoredSpectra(usedSpactra);
+//        }
+//
+//        Scorer scorer = scoringApplication.getScoreRunner();
+//        CometScoredScan spec = new CometScoredScan(scan2, comet);
+//
+//        IPolypeptide cometBest = Polypeptide.fromString("SADAMS[79.966331]S[79.966331]DK");
+//        CometScoringData.populateFromScan(spec);
+//
+//        CometTheoreticalBinnedSet cometTs = (CometTheoreticalBinnedSet) scorer.generateSpectrum(cometBest);
+//
+//        double cometBestScore = CometScoringAlgorithm.doRealScoring(spec, scorer, cometTs, scoringApplication);
+//        if(Math.abs(cometBestScore - 0.152) >0.01)
+//            throw new IllegalStateException("bad score " + cometBestScore) ;
+//        //   Assert.assertEquals(0.152,cometBestScore,0.01);
+//
 
         MZPartitioner partitioner = new MZPartitioner();
         JavaRDD<IMeasuredSpectrum> spectraToScore = SparkScanScorer.getMeasuredSpectra(timer, sparkProperties, spectra, scoringApplication);
 
-        spectraToScore = SparkUtilities.persist(spectraToScore) ;
-
-        Scorer scorer = scoringApplication.getScoreRunner();
-        IMeasuredSpectrum rp = null;
-        for (IMeasuredSpectrum spx : spectraToScore.collect()) {
-             if(Integer.parseInt(spx.getId()) == 2)   {
-                 rp = spx;
-                 break;
-             }
-
-        }
-        CometScoredScan spec = new CometScoredScan(rp, comet);
-
-          IPolypeptide cometBest = Polypeptide.fromString("SADAMS[79.966331]S[79.966331]DK");
-          CometScoringData.populateFromScan(spec);
-
-        CometTheoreticalBinnedSet cometTs = (CometTheoreticalBinnedSet) scorer.generateSpectrum(cometBest);
-
-        double cometBestScore = CometScoringAlgorithm.doRealScoring(spec, scorer, cometTs, scoringApplication);
-     //   Assert.assertEquals(0.152,cometBestScore,0.01);
 
 
         JavaRDD<CometScoredScan> cometSpectraToScore = spectraToScore.map(new MapToCometSpectrum(comet));
