@@ -1,10 +1,9 @@
 package com.lordjoe.distributed.hydra.comet;
 
-import com.lordjoe.distributed.hydra.test.TestUtilities;
-import org.systemsbiology.xtandem.ionization.*;
+import org.systemsbiology.xtandem.ionization.IonType;
 
-import java.io.*;
-import java.util.*;
+import java.io.Serializable;
+import java.util.Comparator;
 
 /**
  * com.lordjoe.distributed.hydra.comet.BinnedChargeIonIndex

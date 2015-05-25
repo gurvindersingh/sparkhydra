@@ -1,12 +1,13 @@
 package com.lordjoe.distributed.hydra.comet;
 
-import com.lordjoe.distributed.hydra.test.*;
-import org.systemsbiology.xtandem.*;
+import org.systemsbiology.xtandem.XTandemUtilities;
 import org.systemsbiology.xtandem.ionization.*;
-import org.systemsbiology.xtandem.peptide.*;
-import org.systemsbiology.xtandem.scoring.*;
+import org.systemsbiology.xtandem.peptide.IPolypeptide;
+import org.systemsbiology.xtandem.scoring.Scorer;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * com.lordjoe.distributed.hydra.comet.CometTheoreticalBinnedSet

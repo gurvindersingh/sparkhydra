@@ -18,7 +18,7 @@ public class CometScoringData {
         // in this section we pregenerate data for a spectrum and reuse it
         scoringData.clearData();
 
-        CometTesting.validateIndex(scan);
+        //CometTesting.validateIndex(scan);
 
         final Map<Integer, java.lang.Double> fastScoringMap = scan.getFastScoringMap();
 

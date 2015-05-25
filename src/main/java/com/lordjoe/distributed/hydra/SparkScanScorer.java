@@ -187,16 +187,11 @@ public class SparkScanScorer {
 
         // read spectra
         JavaPairRDD<String, IMeasuredSpectrum> scans = SparkSpectrumUtilities.parseSpectrumFile(pSpectra, application);
+        scans = SparkUtilities.repartitionIfNeeded(scans);
 
         long[] spectraCountRef = new long[1];
         if (isDebuggingCountMade())
             scans = SparkUtilities.persistAndCountPair("Scans  to Score", scans, spectraCountRef);
-
-
-        int numberPartitions = scans.partitions().size();
-        System.err.println("Scans Partitions " + numberPartitions);
-        if (numberPartitions == 1)
-            scans = SparkUtilities.coalesce(scans);
 
         JavaRDD<IMeasuredSpectrum> spectraToScore = scans.values();
 

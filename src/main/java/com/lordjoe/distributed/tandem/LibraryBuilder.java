@@ -75,6 +75,7 @@ public class LibraryBuilder implements Serializable {
         // this is a list of proteins the key is the annotation line
         // the value is the sequence
         JavaPairRDD<String, String> parsed = SparkSpectrumUtilities.parseFastaFile(fasta, ctx);
+        parsed = SparkUtilities.repartitionIfNeeded(parsed);
 
         // if not commented out this line forces proteins to be realized
         //  parsed = SparkUtilities.realizeAndReturn(parsed, ctx);
@@ -143,7 +144,6 @@ public class LibraryBuilder implements Serializable {
             digested = SparkUtilities.persistAndCount("Digested Proteins", digested, answer);
         }
 
-        digested = SparkUtilities.repartitionIfNeeded(digested);
               // the rest of the code combines identical peptides - there are not many of these and we will ignore them fot now todo handle identical peptides
         if(true)
             return digested;
