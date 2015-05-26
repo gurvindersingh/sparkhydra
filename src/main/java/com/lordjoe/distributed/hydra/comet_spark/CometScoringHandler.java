@@ -161,7 +161,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
 
         private CometScoringAlgorithm comet;
         private Scorer scorer;
-        private final Accumulator<Long> numberScoredAccumlator =  SparkAccumulators.getInstance().getAccumulator(TOTAL_SCORRED_ACCUMULATOR_NAME);
+        private final Accumulator<Long> numberScoredAccumlator =  SparkAccumulators.createAccumulator(TOTAL_SCORRED_ACCUMULATOR_NAME);
 
 
         public ScoreSpectrumAndPeptideWithCogroup(XTandemMain application) {

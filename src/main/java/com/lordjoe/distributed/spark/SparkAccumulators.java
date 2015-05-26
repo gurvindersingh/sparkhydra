@@ -133,14 +133,15 @@ public class SparkAccumulators implements Serializable {
      *
      * @param acc
      */
-    public static void createAccumulator(String acc) {
+    public static Accumulator<Long> createAccumulator(String acc) {
         SparkAccumulators me = getInstance();
         if (me.accumulators.get(acc) != null)
-            return; // already done - should an exception be thrown
+            return me.accumulators.get(acc); // already done - should an exception be thrown
         JavaSparkContext currentContext = SparkUtilities.getCurrentContext();
         Accumulator<Long> accumulator = currentContext.accumulator(0L, acc, LongAccumulableParam.INSTANCE);
 
         me.accumulators.put(acc, accumulator);
+        return me.accumulators.get(acc); // already done - should an exception be thrown
     }
 
 
