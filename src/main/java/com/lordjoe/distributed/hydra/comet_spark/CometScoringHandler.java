@@ -8,6 +8,7 @@ import com.lordjoe.distributed.hydra.comet.*;
 import com.lordjoe.distributed.hydra.fragment.BinChargeKey;
 import com.lordjoe.distributed.hydra.scoring.SparkMapReduceScoringHandler;
 import com.lordjoe.distributed.hydra.test.TestUtilities;
+import com.lordjoe.distributed.spark.SparkAccumulators;
 import com.lordjoe.utilities.ElapsedTimer;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
@@ -35,6 +36,7 @@ import java.util.List;
  */
 public class CometScoringHandler extends SparkMapReduceScoringHandler {
 
+    public static final String TOTAL_SCORRED_ACCUMULATOR_NAME = "TotalPeptidesScored";
     public static final double MINIMUM_ACCEPTABLE_SCORE = 0.01;
 
     public CometScoringHandler(final String congiguration, final boolean createDb) {
@@ -152,6 +154,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
 
     /**
      * NOIE This class is REALLY important - ALL Comet with peptide lists scoring happens here
+     * WE CURRENTLY USE THIS CLASS
      */
     public static class ScoreSpectrumAndPeptideWithCogroup extends AbstractLoggingFlatMapFunction<Tuple2<BinChargeKey, Tuple2<Iterable<CometScoredScan>, Iterable<HashMap<String, IPolypeptide>>>>, IScoredScan> {
 
@@ -184,6 +187,8 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
             if(holder.isEmpty())
                 return ret; // nothing to score
 
+            int numberScored = 0;
+
             // This section popul;ates temporary data with the spectrum
             // a lot os free space used temporarily
             for (CometScoredScan scan : scans) {
@@ -191,20 +196,19 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
                 IMeasuredSpectrum raw = scan.getRaw();
                 result.setRaw(raw);
 
-                int numberGood = 0;
-                int numberScored = 0;
-                // debugging why do we disagree
-                List<CometTheoreticalBinnedSet> badScore = new ArrayList<CometTheoreticalBinnedSet>();
-                List<CometTheoreticalBinnedSet> notScored = new ArrayList<CometTheoreticalBinnedSet>();
-                List<IPolypeptide> scoredPeptides = new ArrayList<IPolypeptide>();
+//                int numberGood = 0;
+//                 // debugging why do we disagree
+//                List<CometTheoreticalBinnedSet> badScore = new ArrayList<CometTheoreticalBinnedSet>();
+//                List<CometTheoreticalBinnedSet> notScored = new ArrayList<CometTheoreticalBinnedSet>();
+//                List<IPolypeptide> scoredPeptides = new ArrayList<IPolypeptide>();
 
                 CometScoringData.populateFromScan(scan);
 
-                // use pregenerated peptide data but not epetide data
+                // use pregenerated peptide data but not peptide data
                 double maxScore = 0;
                 for (CometTheoreticalBinnedSet ts : holder) {
 
-                    if(scorer.isTheoreticalSpectrumScored(scan,ts))
+                    if(!scorer.isTheoreticalSpectrumScored(scan,ts))
                         continue;
 
                     if(TestUtilities.isInterestingPeptide(ts.getPeptide()))
@@ -215,24 +219,24 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
                     numberScored++;
                     maxScore = Math.max(xcorr, maxScore);
 
-                    // Start debugging code
-                    scoredPeptides.add(ts.getPeptide());
-                    int testResult = CometTesting.validatePeptideScore(scan,ts.getPeptide(),xcorr);
-                    if(testResult == 0) {
-                        numberGood++;  // got same score
-                    }
-                    else {
-                        if(testResult == 1)  // score not same
-                        {
-                            // repeat to look in detail
-                            double cometScore = CometTesting.getCometScore(scan,ts.getPeptide());
-                            xcorr = comet.doXCorr(ts, scorer, counter, scan, null);
-                             badScore.add(ts);
-                        }
-                        if(testResult == 2)  // did not score
-                            notScored.add(ts);
-                    }
-//                    // end debugging code
+//                    // Start debugging code
+//                    scoredPeptides.add(ts.getPeptide());
+//                    int testResult = CometTesting.validatePeptideScore(scan,ts.getPeptide(),xcorr);
+//                    if(testResult == 0) {
+//                        numberGood++;  // got same score
+//                    }
+//                    else {
+//                        if(testResult == 1)  // score not same
+//                        {
+//                            // repeat to look in detail
+//                            double cometScore = CometTesting.getCometScore(scan,ts.getPeptide());
+//                            xcorr = comet.doXCorr(ts, scorer, counter, scan, null);
+//                             badScore.add(ts);
+//                        }
+//                        if(testResult == 2)  // did not score
+//                            notScored.add(ts);
+//                    }
+////                    // end debugging code
 
                     if (xcorr > MINIMUM_ACCEPTABLE_SCORE) {
                         IPolypeptide peptide = ts.getPeptide();
@@ -242,12 +246,17 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
 
                 }
 
-                int testResult = CometTesting.validatePeptideList(scan,scoredPeptides);
+    //            int testResult = CometTesting.validatePeptideList(scan,scoredPeptides);
+
+
 
                 if (result.isValidMatch())
                     ret.add(result);
             }
 
+            if(numberScored > 0)   {
+                SparkAccumulators.getInstance().incrementAccumulator(TOTAL_SCORRED_ACCUMULATOR_NAME,numberScored);
+            }
 
             return ret;
         }
@@ -259,6 +268,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
      * @return
      */
     public  JavaRDD<CometScoringResult> combineScanScores(JavaRDD<? extends IScoredScan> uncombined)  {
+        SparkAccumulators.createAccumulator(TOTAL_SCORRED_ACCUMULATOR_NAME);
         // map by scan ids
         JavaPairRDD<String, CometScoringResult> mappedScors = uncombined.mapToPair(new keyScoresByScanId());
         JavaPairRDD<String,CometScoringResult> ret = mappedScors.aggregateByKey(
