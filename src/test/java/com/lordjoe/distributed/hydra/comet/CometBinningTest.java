@@ -122,9 +122,7 @@ public class CometBinningTest {
 
         CometTestingUtilities.doBinTest(spectrumUsed, spec);
 
-        comet.configure(application);
-
-        CometScoredScan scan = new CometScoredScan(spec, comet);
+           CometScoredScan scan = new CometScoredScan(spec, comet);
 
         CometTestingUtilities.doBinTest(spectrumUsed, spec);
         CometTestingUtilities.doBinTest(spectrumUsed, scan);

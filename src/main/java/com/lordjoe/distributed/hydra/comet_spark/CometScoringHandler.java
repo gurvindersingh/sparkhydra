@@ -147,6 +147,15 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
             scorer = application.getScoreRunner();
         }
 
+        protected boolean isScanScoredByAnySpectrum(CometTheoreticalBinnedSet ts,Iterable<CometScoredScan> scans)
+        {
+            for (CometScoredScan scan : scans) {
+                if(scorer.isTheoreticalSpectrumScored(scan,ts))
+                    return true;
+            }
+            return false; // no one wants to score
+        }
+
         @Override
         public Iterable<IScoredScan> doCall(Tuple2<BinChargeKey, Tuple2<Iterable<CometScoredScan>, Iterable<HashMap<String, IPolypeptide>>>> inp) throws Exception {
             List<IScoredScan> ret = new ArrayList<IScoredScan>();
@@ -159,7 +168,8 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
                 if (peptides.size() > 0) {
                     for (IPolypeptide peptide : peptides) {
                         CometTheoreticalBinnedSet ts = (CometTheoreticalBinnedSet) scorer.generateSpectrum(peptide);
-                        holder.add(ts);
+                        if(isScanScoredByAnySpectrum(ts,scans))
+                            holder.add(ts);
                     }
                 }
             }
@@ -187,6 +197,9 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
                 // use pregenerated peptide data but not epetide data
                 double maxScore = 0;
                 for (CometTheoreticalBinnedSet ts : holder) {
+
+                    if(scorer.isTheoreticalSpectrumScored(scan,ts))
+                        continue;
 
                     if(TestUtilities.isInterestingPeptide(ts.getPeptide()))
                         TestUtilities.breakHere();

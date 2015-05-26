@@ -20,7 +20,7 @@ public class SparkXTandemMain extends XTandemMain {
         String algorithm = getParameter("scoring, algorithm");
         if (algorithm != null) {
             if (algorithm.equalsIgnoreCase(CometScoringAlgorithm.ALGORITHM_NAME)) {
-                addAlgorithm(CometScoringAlgorithm.DEFAULT_ALGORITHM);
+                addAlgorithm(new CometScoringAlgorithm());
             }
             if (algorithm.equalsIgnoreCase(TandemKScoringAlgorithm.ALGORITHM_NAME)) {
                 addAlgorithm(TandemKScoringAlgorithm.DEFAULT_ALGORITHM);

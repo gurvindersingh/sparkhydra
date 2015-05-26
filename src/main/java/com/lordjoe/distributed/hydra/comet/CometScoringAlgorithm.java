@@ -35,8 +35,11 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
 
     public static final int NUMBER_ION_TYPES = 2; // B and I
 
-    public static final ITandemScoringAlgorithm DEFAULT_ALGORITHM = new CometScoringAlgorithm();
-    public static final ITandemScoringAlgorithm[] DEFAULT_ALGORITHMS = {DEFAULT_ALGORITHM};
+    public static  ITandemScoringAlgorithm[] getDefaultAlgorithms()
+    {
+        ITandemScoringAlgorithm[] ret = { new CometScoringAlgorithm() };
+        return ret;
+    }
     public static final String DEFAULT_VERSION = "1.0";
 
     public static final int MAX_MASS = 5000;
@@ -317,11 +320,6 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
         if (massTolerance >= 0.10) //g_staticParams.tolerances.dFragmentBinSize >= 0.10)
             throw new UnsupportedOperationException("We cannot yet handle low resolution searches");
 
-
-//        float[] pdTmpFastXcorrData = getTmpFastXcorrData();
-//        float[] pScoringFastXcorrData = getScoringFastXcorrData();
-//        float[] pfFastXcorrDataNL = getFastXcorrDataNL(); // pfFastXcorrData with NH3, H2O contributions
-
         IPolypeptide pp = pSpectrums[0].getPeptide();
         SpectrumCondition sc = scorer.getSpectrumCondition();
 
@@ -559,73 +557,6 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
 
 
 
-          /*
-              // Make fast xcorr spectrum.
-      double dSum=0.0;
-
-      dSum=0.0;
-      for (i=0; i<g_staticParams.iXcorrProcessingOffset; i++)
-         dSum += pdTmpCorrelationData[i];
-      for (i=g_staticParams.iXcorrProcessingOffset; i < pScoring->_spectrumInfoInternal.iArraySize + g_staticParams.iXcorrProcessingOffset; i++)
-      {
-         if (i<pScoring->_spectrumInfoInternal.iArraySize)
-            dSum += pdTmpCorrelationData[i];
-         if (i>=(2*g_staticParams.iXcorrProcessingOffset + 1))
-            dSum -= pdTmpCorrelationData[i-(2*g_staticParams.iXcorrProcessingOffset + 1)];
-         pdTmpFastXcorrData[i-g_staticParams.iXcorrProcessingOffset] = (dSum - pdTmpCorrelationData[i-g_staticParams.iXcorrProcessingOffset])* 0.02;
-      }
-
-         */
-
-
-
-          /*
-           for (i=1; i<pScoring->_spectrumInfoInternal.iArraySize; i++)
-   {
-      double dTmp = pdTmpCorrelationData[i] - pdTmpFastXcorrData[i];
-
-      pScoring->pfFastXcorrData[i] = (float)dTmp;
-
-      // Add flanking peaks if used
-      if (g_staticParams.ionInformation.iTheoreticalFragmentIons == 0)
-      {
-         int iTmp;
-
-         iTmp = i-1;
-         pScoring->pfFastXcorrData[i] += (float) ((pdTmpCorrelationData[iTmp] - pdTmpFastXcorrData[iTmp])*0.5);
-
-         iTmp = i+1;
-         if (iTmp < pScoring->_spectrumInfoInternal.iArraySize)
-            pScoring->pfFastXcorrData[i] += (float) ((pdTmpCorrelationData[iTmp] - pdTmpFastXcorrData[iTmp])*0.5);
-      }
-
-      // If A, B or Y ions and their neutral loss selected, roll in -17/-18 contributions to pfFastXcorrDataNL
-      if (g_staticParams.ionInformation.bUseNeutralLoss
-            && (g_staticParams.ionInformation.iIonVal[ION_SERIES_A]
-               || g_staticParams.ionInformation.iIonVal[ION_SERIES_B]
-               || g_staticParams.ionInformation.iIonVal[ION_SERIES_Y]))
-      {
-         int iTmp;
-
-         pScoring->pfFastXcorrDataNL[i] = pScoring->pfFastXcorrData[i];
-
-         iTmp = i-g_staticParams.precalcMasses.iMinus17;
-         if (iTmp>= 0)
-         {
-            pScoring->pfFastXcorrDataNL[i] += (float)((pdTmpCorrelationData[iTmp] - pdTmpFastXcorrData[iTmp]) * 0.2);
-         }
-
-         iTmp = i-g_staticParams.precalcMasses.iMinus18;
-         if (iTmp>= 0)
-         {
-            pScoring->pfFastXcorrDataNL[i] += (float)((pdTmpCorrelationData[iTmp] - pdTmpFastXcorrData[iTmp]) * 0.2);
-         }
-
-      }
-   }
-
-         */
-
 
     @Override
     public void setMinusLimit(double pMinusLimit) {
@@ -642,12 +573,6 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
         return getName();
     }
 
-//    protected void setMeasuredSpectrum(IMeasuredSpectrum ms) {
-//        if (ms == m_Spectrum)
-//            return;
-//        m_Spectrum = ms;
-//        populateWeights(ms);
-//    }
 
 
     /**

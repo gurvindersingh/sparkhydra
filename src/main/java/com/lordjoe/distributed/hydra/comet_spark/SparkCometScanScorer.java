@@ -600,21 +600,21 @@ public class SparkCometScanScorer {
         JavaRDD<IMeasuredSpectrum> spectraToScore = SparkScanScorer.getMeasuredSpectra(timer, sparkProperties, spectra, scoringApplication);
 
 
-
+        // convert spectra into an object with scoring information
         JavaRDD<CometScoredScan> cometSpectraToScore = spectraToScore.map(new MapToCometSpectrum(comet));
 
         // if you want to limt do so here
         // cometSpectraToScore = countAndLimitSpectra(cometSpectraToScore);
 
-        // these are spectra
+        // Assign bins to spectra
         JavaPairRDD<BinChargeKey, CometScoredScan> keyedSpectra = handler.mapMeasuredSpectrumToKeys(cometSpectraToScore);
         keyedSpectra.partitionBy(partitioner);
 
-
+       // fine all bins we are scoring - this allows us to filter peptides
         keyedSpectra = SparkUtilities.persist(keyedSpectra);
         Set<Integer> usedBins = getUsedBins(keyedSpectra);
 
-
+        // read proteins - digest add modifications
         JavaPairRDD<BinChargeKey, HashMap<String, IPolypeptide>> keyedPeptides = getBinChargePeptideHash(sparkProperties, usedBins, handler);
         keyedPeptides.partitionBy(partitioner);
         timer.showElapsed("Mapped Peptides", System.err);

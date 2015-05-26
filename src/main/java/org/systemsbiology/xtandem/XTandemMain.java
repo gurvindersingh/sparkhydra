@@ -454,10 +454,9 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
 
     @Override
     public ITandemScoringAlgorithm[] getAlgorithms() {
-        if (m_Algorithms.size() == 0) {
-            //     return TandemKScoringAlgorithm.DEFAULT_ALGORITHMS;
-            return CometScoringAlgorithm.DEFAULT_ALGORITHMS;
-        }
+        if (m_Algorithms.isEmpty()) {
+            m_Algorithms.add(new CometScoringAlgorithm());
+         }
         return m_Algorithms.toArray(ITandemScoringAlgorithm.EMPTY_ARRAY);
     }
 

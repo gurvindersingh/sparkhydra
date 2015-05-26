@@ -138,8 +138,17 @@ public class CometScoringDoneTest {
 
         Set<BinChargeKey> usedBins = BinChargeMapper.getSpectrumBins(rp);
 
-
-
+        // since comet scored these we better
+        int numberWeWouldNotScore = 0;
+        for (UsedSpectrum usedSpectrum : used) {
+            CometTheoreticalBinnedSet ts = (CometTheoreticalBinnedSet) scorer.generateSpectrum(usedSpectrum.peptide);
+            boolean theoreticalSpectrumScored = scorer.isTheoreticalSpectrumScored(spec, ts);
+            if(!theoreticalSpectrumScored) {
+                theoreticalSpectrumScored = scorer.isTheoreticalSpectrumScored(spec, ts); // repeat
+                numberWeWouldNotScore++;
+            }
+        }
+        Assert.assertEquals(0,numberWeWouldNotScore);
 
         List<IPolypeptide> processed = CometUtilities.getPeptidesInKeyBins(originalPeptides, usedBins);
 
@@ -170,6 +179,7 @@ public class CometScoringDoneTest {
                     weScoreNotComet.add(pp); // comet did not score this
             }
         }
+        Assert.assertEquals(0,weScoreNotComet.size());
     }
 
 }

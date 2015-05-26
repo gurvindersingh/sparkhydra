@@ -93,14 +93,14 @@ public class CometScoringAccuracyTest {
 
         CometTesting.validateOneKey(); // We are hunting for when this stops working
         // todo add more
-         Map<Integer, List<UsedSpectrum>> cometUses = CometTestingUtilities.readUsedSpectraFromResource("/eg3_20/UsedSpectra_20.txt");
+        Map<Integer, List<UsedSpectrum>> cometUses = CometTestingUtilities.readUsedSpectraFromResource("/eg3_20/UsedSpectra_20.txt");
 
         List<UsedSpectrum> forScan2 = cometUses.get(2);
-        
-        
+
+
         IPeptideDigester digester = PeptideBondDigester.getDefaultDigester();
         digester.setNumberMissedCleavages(2);
-        
+
         List<IPolypeptide> originalPeptides = ProteinParser.getPeptidesFromResource("/eg3_20/select_20.fasta", digester,
                 CometTestingUtilities.MS_ONLY);
 
@@ -121,34 +121,30 @@ public class CometScoringAccuracyTest {
         CometTheoreticalBinnedSet cometTs = (CometTheoreticalBinnedSet) scorer.generateSpectrum(cometBest);
 
         double cometBestScore = CometScoringAlgorithm.doRealScoring(spec, scorer, cometTs, application);
-        Assert.assertEquals(0.152,cometBestScore,0.01);
+        Assert.assertEquals(0.152, cometBestScore, 0.01);
 
         double bestScore = 0;
         IPolypeptide bestPeptide = null;
         List<IPolypeptide> inBins = CometUtilities.getPeptidesInKeyBins(originalPeptides, spectrumBins);
         for (IPolypeptide inBin : inBins) {
-            if(cometBest.equals(inBin))  {
-                 cometTs = (CometTheoreticalBinnedSet) scorer.generateSpectrum(inBin);
+            if (cometBest.equals(inBin)) {
+                cometTs = (CometTheoreticalBinnedSet) scorer.generateSpectrum(inBin);
                 cometBestScore = CometScoringAlgorithm.doRealScoring(spec, scorer, cometTs, application);
-                Assert.assertEquals(0.152,cometBestScore,0.01);
+                Assert.assertEquals(0.152, cometBestScore, 0.01);
             }
             CometTheoreticalBinnedSet ts1 = (CometTheoreticalBinnedSet) scorer.generateSpectrum(inBin);
 
             double xcorr1 = CometScoringAlgorithm.doRealScoring(spec, scorer, ts1, application);
-             if(xcorr1 > bestScore)    {
-                 bestScore = xcorr1;
-                 bestPeptide = inBin;
-             }
+            if (xcorr1 > bestScore) {
+                bestScore = xcorr1;
+                bestPeptide = inBin;
+            }
         }
         Assert.assertTrue(bestPeptide.equivalent(cometBest));
     }
 
-        @Test
+    @Test
     public void testAccuracy() {
-
-          
-
-        CometTesting.validateOneKey(); // We are hunting for when this stops working
 
         XTandemMain application = CometTestingUtilities.getDefaultApplication();
         CometScoringAlgorithm comet = CometTestingUtilities.getComet(application);
