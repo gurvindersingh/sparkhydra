@@ -35,6 +35,7 @@ import java.util.List;
  */
 public class CometScoringHandler extends SparkMapReduceScoringHandler {
 
+    public static final double MINIMUM_ACCEPTABLE_SCORE = 0.01;
 
     public CometScoringHandler(final String congiguration, final boolean createDb) {
 
@@ -96,21 +97,26 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
             CometScoredScan scan = inp._1();
             ArrayList<IPolypeptide> peptides = inp._2();
 
-            // This section popul;ates temporary data with the spectrum
+            // This section populates temporary data with the spectrum
             // a lot os free space used temporarily
               CometScoringData.populateFromScan(scan);
 
             // ===============================
 
 
-            List<CometTheoreticalBinnedSet> holder = new ArrayList<CometTheoreticalBinnedSet>();
-            // just populate peptide data do not count time
-            for (IPolypeptide pp : peptides) {
-                CometTheoreticalBinnedSet ts = (CometTheoreticalBinnedSet) scorer.generateSpectrum(pp);
-                holder.add(ts);
-            }
 
-            CometScoringResult result = new CometScoringResult();
+             List<CometTheoreticalBinnedSet> holder = new ArrayList<CometTheoreticalBinnedSet>();
+             for (IPolypeptide peptide : peptides) {
+                    CometTheoreticalBinnedSet ts = (CometTheoreticalBinnedSet) scorer.generateSpectrum(peptide);
+                         if(scorer.isTheoreticalSpectrumScored(scan,ts))  {
+                             holder.add(ts);
+                     }
+                 }
+             if(holder.isEmpty())
+                 return ret; // nothing to score
+
+
+             CometScoringResult result = new CometScoringResult();
             IMeasuredSpectrum raw = scan.getRaw();
             result.setRaw(raw);
             // use pregenerated peptide data but not epetide data
@@ -119,7 +125,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
                 IonUseCounter counter = new IonUseCounter();
                 double xcorr = comet.doXCorr(ts, scorer, counter, scan, null);
                 maxScore = Math.max(xcorr, maxScore);
-                if (xcorr > 0.01) {
+                if (xcorr > MINIMUM_ACCEPTABLE_SCORE) {
                     IPolypeptide peptide = ts.getPeptide();
                     SpectralMatch spectralMatch = new SpectralMatch(peptide, raw, xcorr, xcorr, xcorr, scan, null);
                     result.addSpectralMatch(spectralMatch);
@@ -134,6 +140,16 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
         }
     }
 
+    protected static boolean isScanScoredByAnySpectrum(CometTheoreticalBinnedSet ts,Iterable<CometScoredScan> scans,Scorer scorer)
+    {
+        for (CometScoredScan scan : scans) {
+            if(scorer.isTheoreticalSpectrumScored(scan,ts))
+                return true;
+        }
+        return false; // no one wants to score
+    }
+
+
     /**
      * NOIE This class is REALLY important - ALL Comet with peptide lists scoring happens here
      */
@@ -147,14 +163,6 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
             scorer = application.getScoreRunner();
         }
 
-        protected boolean isScanScoredByAnySpectrum(CometTheoreticalBinnedSet ts,Iterable<CometScoredScan> scans)
-        {
-            for (CometScoredScan scan : scans) {
-                if(scorer.isTheoreticalSpectrumScored(scan,ts))
-                    return true;
-            }
-            return false; // no one wants to score
-        }
 
         @Override
         public Iterable<IScoredScan> doCall(Tuple2<BinChargeKey, Tuple2<Iterable<CometScoredScan>, Iterable<HashMap<String, IPolypeptide>>>> inp) throws Exception {
@@ -168,7 +176,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
                 if (peptides.size() > 0) {
                     for (IPolypeptide peptide : peptides) {
                         CometTheoreticalBinnedSet ts = (CometTheoreticalBinnedSet) scorer.generateSpectrum(peptide);
-                        if(isScanScoredByAnySpectrum(ts,scans))
+                        if(isScanScoredByAnySpectrum(ts,scans,scorer))
                             holder.add(ts);
                     }
                 }
@@ -179,8 +187,6 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
             // This section popul;ates temporary data with the spectrum
             // a lot os free space used temporarily
             for (CometScoredScan scan : scans) {
-                         // ===============================
-
                 CometScoringResult result = new CometScoringResult();
                 IMeasuredSpectrum raw = scan.getRaw();
                 result.setRaw(raw);
@@ -206,11 +212,6 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
 
                     IonUseCounter counter = new IonUseCounter();
                     double xcorr = comet.doXCorr(ts, scorer, counter, scan, null);
-
-//                    if(xcorr > 0.5) {
-//                        System.out.println("\n" +scan.getId() + " " + ts.getPeptide() + " " + xcorr);
-//                    }
-
                     numberScored++;
                     maxScore = Math.max(xcorr, maxScore);
 
@@ -233,7 +234,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
                     }
 //                    // end debugging code
 
-                    if (xcorr > 0.01) {
+                    if (xcorr > MINIMUM_ACCEPTABLE_SCORE) {
                         IPolypeptide peptide = ts.getPeptide();
                         SpectralMatch spectralMatch = new SpectralMatch(peptide, raw, xcorr, xcorr, xcorr, scan, null);
                         result.addSpectralMatch(spectralMatch);
@@ -299,7 +300,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
                 IonUseCounter counter = new IonUseCounter();
                 double xcorr = comet.doXCorr(ts, scorer, counter, scan,null);
                 maxScore = Math.max(xcorr, maxScore);
-                if (xcorr > 0.01) {
+                if (xcorr > MINIMUM_ACCEPTABLE_SCORE) {
                     IPolypeptide peptide = ts.getPeptide();
                     SpectralMatch spectralMatch = new SpectralMatch(peptide, raw, xcorr, xcorr, xcorr, scan, null);
                     result.addSpectralMatch(spectralMatch);
