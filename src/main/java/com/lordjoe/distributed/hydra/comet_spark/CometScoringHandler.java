@@ -10,6 +10,7 @@ import com.lordjoe.distributed.hydra.scoring.SparkMapReduceScoringHandler;
 import com.lordjoe.distributed.hydra.test.TestUtilities;
 import com.lordjoe.distributed.spark.SparkAccumulators;
 import com.lordjoe.utilities.ElapsedTimer;
+import org.apache.spark.Accumulator;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.function.PairFlatMapFunction;
@@ -160,6 +161,8 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
 
         private CometScoringAlgorithm comet;
         private Scorer scorer;
+        private final Accumulator<Long> numberScoredAccumlator =  SparkAccumulators.getInstance().getAccumulator(TOTAL_SCORRED_ACCUMULATOR_NAME);
+
 
         public ScoreSpectrumAndPeptideWithCogroup(XTandemMain application) {
             comet = (CometScoringAlgorithm) application.getAlgorithms()[0];
@@ -187,7 +190,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
             if(holder.isEmpty())
                 return ret; // nothing to score
 
-            int numberScored = 0;
+            long numberScored = 0;
 
             // This section popul;ates temporary data with the spectrum
             // a lot os free space used temporarily
@@ -255,8 +258,8 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
             }
 
             if(numberScored > 0)   {
-                SparkAccumulators.getInstance().incrementAccumulator(TOTAL_SCORRED_ACCUMULATOR_NAME,numberScored);
-            }
+                numberScoredAccumlator.add(numberScored);
+             }
 
             return ret;
         }
