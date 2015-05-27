@@ -54,6 +54,8 @@ public class PepXMLComparer {
                 if(pp1.equivalent(pp2))
                     samePeptide++;
                 else {
+                    if(!pp1.isModified() && !pp2.isModified())
+                        System.out.println(pp1 + "\t" + pp2);
                     double score1 = hit1.hypderscore;
                     double score2 = hit2.hypderscore;
                     if(score1 > score2)

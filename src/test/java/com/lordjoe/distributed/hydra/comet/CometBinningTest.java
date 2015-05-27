@@ -28,10 +28,11 @@ public class CometBinningTest {
         XTandemMain application = CometTestingUtilities.getDefaultApplication();
         CometScoringAlgorithm comet = CometTestingUtilities.getComet(application);
         Scorer scorer = application.getScoreRunner();
+        MassDifferenceAccumulator mds = new MassDifferenceAccumulator();
 
         Map<IPolypeptide, List<BinnedChargeIonIndex>> cBons = CometTestingUtilities.readCometBinsFromResource("/CometAssignedBins.txt");
         for (IPolypeptide pp : cBons.keySet()) {
-            validateBins(pp,cBons.get(pp),comet,scorer);
+            validateBins(pp,cBons.get(pp),comet,scorer,mds);
         }
     }
 
@@ -40,23 +41,25 @@ public class CometBinningTest {
         XTandemMain application = CometTestingUtilities.getDefaultApplication();
         CometScoringAlgorithm comet = CometTestingUtilities.getComet(application);
         Scorer scorer = application.getScoreRunner();
-
+        MassDifferenceAccumulator mds = new MassDifferenceAccumulator();
         int totalBins = 0;
         int totalBadBins = 0;
-        Map<IPolypeptide, List<BinnedChargeIonIndex>> cBons = CometTestingUtilities.readCometBinsFromResource("/eg3_20/Scoring_EG20.txt");
+         Map<IPolypeptide, List<BinnedChargeIonIndex>> cBons = CometTestingUtilities.readCometBinsFromResource("/eg3_20/Scoring_EG20.txt");
         for (IPolypeptide pp : cBons.keySet()) {
             List<BinnedChargeIonIndex> bins = cBons.get(pp);
             totalBins += bins.size();
-            totalBadBins += validateBins(pp, bins,comet,scorer);
+            totalBadBins += validateBins(pp, bins,comet,scorer,mds);
         }
+              Assert.assertTrue(totalBadBins < totalBins / 100);
+
     }
 
 
     private static int numberTested;
-    private static int numberFailed;
     private static int numberRun;
 
-    private int validateBins(IPolypeptide pp, List<BinnedChargeIonIndex> bins,CometScoringAlgorithm comet, Scorer scorer) {
+    private int validateBins(IPolypeptide pp, List<BinnedChargeIonIndex> bins,CometScoringAlgorithm comet, Scorer scorer, MassDifferenceAccumulator mds ) {
+        int numberFailed = 0;
         int testCharge = 1;
         for (BinnedChargeIonIndex bin : bins) {
             testCharge = Math.max(bin.charge,testCharge);
@@ -76,6 +79,7 @@ public class CometBinningTest {
         for (BinnedChargeIonIndex bin : bins) {
             numberTested++;
             BinnedChargeIonIndex bin2 = hydraFinds.get(index++);
+           int mdBin = mds.accumulateDifference(((TestBinChargeIonIndex)bin).mass,((TestBinChargeIonIndex)bin2).mass,bin2.type);
             if(bin.index != bin2.index) {
                 ts = new CometTheoreticalBinnedSet(testCharge,matchingMass, pp, comet, scorer);
                 if(Math.abs(bin.index - bin2.index) > 1)

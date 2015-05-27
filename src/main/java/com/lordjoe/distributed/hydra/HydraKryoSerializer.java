@@ -90,8 +90,8 @@ public class HydraKryoSerializer implements KryoRegistrator, Serializable {
 //        doRegistration(kryo,"XXX");
 //        doRegistration(kryo,"XXX");
 //        doRegistration(kryo,"XXX");
-//        doRegistration(kryo,"XXX");
-//        doRegistration(kryo,"XXX");
+        doRegistration(kryo,"java.util.HashMap");
+        doRegistration(kryo,"java.util.ArrayList");
         doRegistration(kryo, "org.apache.spark.util.collection.CompactBuffer");
         doRegistration(kryo, "scala.collection.mutable.WrappedArray$ofRef");
         doRegistration(kryo, "org.systemsbiology.xtandem.scoring.VariableStatistics");

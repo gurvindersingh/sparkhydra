@@ -40,9 +40,9 @@ public class CometRetreivingPeptidesTest {
         List<IPolypeptide> peptides2 = ProteinParser.getPeptidesFromResource("/SmallSampleProteins.fasta", digester);
         Assert.assertEquals(77017, peptides2.size());
 
-        List<IPolypeptide> proteins2 = ProteinParser.getPeptidesFromResource("/select_20.fasta", digester,
+        List<IPolypeptide> peptides3 = ProteinParser.getPeptidesFromResource("/select_20.fasta", digester,
                 CometTestingUtilities.MSTV_ONLY);
-        Assert.assertEquals(382953, proteins2.size());
+        Assert.assertEquals(381730, peptides3.size());
 
 
     }
