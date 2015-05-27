@@ -249,6 +249,20 @@ public class SparkMapReduceScoringHandler implements Serializable {
           return binMapper.mapFragmentsToBinHash(inp,usedBins, CometScoringAlgorithm.getMaximumPeptideListSize());
       }
 
+    /**
+     * map a set of peptides to  ITheoreticalSpectrumSet in each bin
+     * @param inp  set of peptides
+     * @return  peptides mapped to bins
+     */
+    public JavaPairRDD<BinChargeKey, IPolypeptide> mapFragmentsToBin(JavaRDD<IPolypeptide> inp,final Set<Integer> usedBins) {
+        return binMapper.mapFragmentsToBin(inp, usedBins);
+    }
+
+    public JavaPairRDD<BinChargeKey, CometTheoreticalBinnedSet> mapTheoreticalsToBin(JavaRDD<IPolypeptide> inp,final Set<Integer> usedBins) {
+        JavaPairRDD<BinChargeKey, CometTheoreticalBinnedSet> tpBins = inp.flatMapToPair(new SparkBinChargeMapper.mapTheoreticalpeptidesToBin(application, usedBins));
+        return tpBins;
+    }
+
     private static class MapToSpectrumIDKey extends AbstractLoggingPairFunction<Tuple2<IMeasuredSpectrum, IPolypeptide>, String, Tuple2<IMeasuredSpectrum, IPolypeptide>> {
         @Override
         public Tuple2<String, Tuple2<org.systemsbiology.xtandem.IMeasuredSpectrum, IPolypeptide>> doCall(final Tuple2<org.systemsbiology.xtandem.IMeasuredSpectrum, org.systemsbiology.xtandem.peptide.IPolypeptide> t) throws Exception {

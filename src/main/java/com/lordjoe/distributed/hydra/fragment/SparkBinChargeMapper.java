@@ -97,6 +97,17 @@ public class SparkBinChargeMapper implements Serializable {
     }
 
     /**
+     * return a list of all peptides in a bin
+     *
+     * @param inp
+     * @return
+     */
+    public JavaPairRDD<BinChargeKey, IPolypeptide> mapFragmentsToBin(JavaRDD<IPolypeptide> inp, final Set<Integer> usedBins) {
+        JavaPairRDD<BinChargeKey, IPolypeptide> ppBins = inp.flatMapToPair(new mapPolypeptidesToBin(application, usedBins));
+        return ppBins;
+    }
+
+    /**
      * convert a JavaPairRDD into pairs where the key now indexes a list of all values
      *
      * @param imp input
@@ -216,6 +227,41 @@ public class SparkBinChargeMapper implements Serializable {
         }
     }
 
+    /**
+     * peptides are only mapped once whereas spectra map to multiple  bins
+     * Note the parameter is an ArrayList to guarantee serializability
+     */
+    public static class mapTheoreticalpeptidesToBin extends AbstractLoggingPairFlatMapFunction<IPolypeptide, BinChargeKey, CometTheoreticalBinnedSet> {
+
+        private final XTandemMain application;
+        private final Set<Integer> usedBins;
+
+        public mapTheoreticalpeptidesToBin(final XTandemMain pApplication, Set<Integer> usedBins) {
+            application = pApplication;
+            this.usedBins = usedBins;
+        }
+
+        @Override
+        public Iterable<Tuple2<BinChargeKey, CometTheoreticalBinnedSet>> doCall(final IPolypeptide pp) throws Exception {
+            //    double matchingMass = pp.getMatchingMass();
+            List<Tuple2<BinChargeKey, CometTheoreticalBinnedSet>> holder = new ArrayList<Tuple2<BinChargeKey, CometTheoreticalBinnedSet>>();
+
+            BinChargeKey key = BinChargeMapper.keyFromPeptide(pp);
+
+            CometTheoreticalBinnedSet ts = (CometTheoreticalBinnedSet) application.getScoreRunner().generateSpectrum(pp);
+            if (TestUtilities.isInterestingPeptide(pp)) {
+                CometTesting.validateOneKey(); // We are hunting for when this stops working
+            }
+
+
+            // if we don't use the bin don't get the peptide
+            if (usedBins != null && usedBins.contains(key.getMzInt())) {
+                holder.add(new Tuple2<BinChargeKey, CometTheoreticalBinnedSet>(key, ts));
+            }
+
+            return holder;
+        }
+    }
 
     /**
      * peptides are only mapped once whereas spectra map to multiple  bins
