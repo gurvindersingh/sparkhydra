@@ -112,7 +112,6 @@ public class SparkCometScanScorer {
         JavaRDD<IPolypeptide> databasePeptides = pHandler.buildLibrary(max_proteins);
 
 
-
         // DEBUGGING why do we see more than one instance of interesting peptide
         //List<IPolypeptide> interesting1 = new ArrayList<IPolypeptide>();
         //databasePeptides = TestUtilities.findInterestingPeptides(databasePeptides, interesting1);

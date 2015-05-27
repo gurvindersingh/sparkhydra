@@ -152,10 +152,20 @@ public class CometScoringAccuracyTest {
         CometTesting.validateOneKey(); // We are hunting for when this stops working
 
 
+        RawPeptideScan rp2 = CometTestingUtilities.getScanFromMZXMLResource("/000000001852.mzXML");
+        CometScoredScan spec2 = new CometScoredScan(rp2, comet);
+
+        IPolypeptide intersting2 = Polypeptide.fromString("HIASAYTNYSNEQFR");
+        Scorer scorer = application.getScoreRunner();
+        CometTheoreticalBinnedSet ts1 = (CometTheoreticalBinnedSet) scorer.generateSpectrum(intersting2);
+
+        CometScoringData.populateFromScan(spec2);
+        double xcorr2 = CometScoringAlgorithm.doRealScoring(spec2, scorer, ts1, application);
+        Assert.assertEquals(0.472,xcorr2,0.01);
+
         RawPeptideScan rp = CometTestingUtilities.getScanFromMZXMLResource("/000000008852.mzXML");
         CometScoredScan spec = new CometScoredScan(rp, comet);
 
-        Scorer scorer = application.getScoreRunner();
 
         //st
         List<UsedSpectrum> allused = CometTestingUtilities.getSpectrumUsed(8852);
@@ -182,10 +192,10 @@ public class CometScoringAccuracyTest {
 
         IPolypeptide intersting = Polypeptide.fromString("M[15.995]PCTEDYLSLILNR");
 
-        CometTheoreticalBinnedSet ts1 = (CometTheoreticalBinnedSet) scorer.generateSpectrum(intersting);
+        CometTheoreticalBinnedSet ts2 = (CometTheoreticalBinnedSet) scorer.generateSpectrum(intersting);
 
         CometScoringData.populateFromScan(scan);
-        double xcorr1 = CometScoringAlgorithm.doRealScoring(scan, scorer, ts1, application);
+        double xcorr1 = CometScoringAlgorithm.doRealScoring(scan, scorer, ts2, application);
 //        Assert.assertEquals(2.070, xcorr1, 0.002);  // old scoring
 
         IPolypeptide interestimgCase = Polypeptide.fromString("NIKPECPTLACGQPR");

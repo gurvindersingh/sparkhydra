@@ -35,6 +35,7 @@ public class CometTheoreticalBinnedSet extends TheoreticalSpectrumSet {
     private List<BinnedChargeIonIndex> buildBinnedList(CometScoringAlgorithm comet,int maxCharge, Scorer scorer) {
         final List<BinnedChargeIonIndex> binnedChargeIonIndexes  = new ArrayList<BinnedChargeIonIndex>();
         int maxFragmentCharge = Math.min(maxCharge,comet.getMaxFragmentCharge());
+
         for (int charge = 1; charge <= maxFragmentCharge; charge++) {      // was < max charge
             PeptideSpectrum ps = new PeptideSpectrum(this, charge, IonType.B_ION_TYPES, scorer.getSequenceUtilities());
             PeptideIon[] spectrum = ps.getSpectrum();
@@ -65,8 +66,8 @@ public class CometTheoreticalBinnedSet extends TheoreticalSpectrumSet {
                 double mass =  mz; // * peptideIon.getCharge();
                 // todo take out
                 // keep mass for debugging
-                TestBinChargeIonIndex bcs = new TestBinChargeIonIndex(index, peptideIon.getCharge(), type, binnedIndexInParent,mass);
-       //         BinnedChargeIonIndex bcs = new BinnedChargeIonIndex(index, peptideIon.getCharge(), type, binnedIndexInParent);
+      //          TestBinChargeIonIndex bcs = new TestBinChargeIonIndex(index, peptideIon.getCharge(), type, binnedIndexInParent,mass);
+                BinnedChargeIonIndex bcs = new BinnedChargeIonIndex(index, peptideIon.getCharge(), type, binnedIndexInParent);
                 binnedChargeIonIndexes.add(bcs);
             }
         }

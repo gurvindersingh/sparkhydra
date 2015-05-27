@@ -30,7 +30,8 @@ public class CometBinningTest {
         Scorer scorer = application.getScoreRunner();
         MassDifferenceAccumulator mds = new MassDifferenceAccumulator();
 
-        Map<IPolypeptide, List<BinnedChargeIonIndex>> cBons = CometTestingUtilities.readCometBinsFromResource("/CometAssignedBins.txt");
+        // this version will make test bins
+         Map<IPolypeptide, List<BinnedChargeIonIndex>> cBons = CometTestingUtilities.readCometBinsFromResource("/CometAssignedBins.txt");
         for (IPolypeptide pp : cBons.keySet()) {
             validateBins(pp,cBons.get(pp),comet,scorer,mds);
         }
@@ -44,6 +45,7 @@ public class CometBinningTest {
         MassDifferenceAccumulator mds = new MassDifferenceAccumulator();
         int totalBins = 0;
         int totalBadBins = 0;
+        // this version will make test bins
          Map<IPolypeptide, List<BinnedChargeIonIndex>> cBons = CometTestingUtilities.readCometBinsFromResource("/eg3_20/Scoring_EG20.txt");
         for (IPolypeptide pp : cBons.keySet()) {
             List<BinnedChargeIonIndex> bins = cBons.get(pp);
