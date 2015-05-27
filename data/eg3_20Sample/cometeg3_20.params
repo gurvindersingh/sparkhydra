@@ -53,7 +53,7 @@ require_variable_mod = 0
 # high res ms/ms:    0.02 tolerance, 0.0 offset (mono masses), theoretical_fragment_ions = 0
 #
 fragment_bin_tol = 0.02                # binning to use on fragment ions
-fragment_bin_offset = 0.4              # offset position to start the binning (0.0 to 1.0)
+fragment_bin_offset = 0.0              # offset position to start the binning (0.0 to 1.0)
 theoretical_fragment_ions = 1          # 0=use flanking peaks, 1=M peak only
 use_A_ions = 0
 use_B_ions = 1

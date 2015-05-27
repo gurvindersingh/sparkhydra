@@ -22,7 +22,7 @@
 		
 <note>comet parameters</note>
 	<note type="input" label="comet.fragment_bin_tol">0.02</note> <!-- value for High resolution -->
-	<note type="input" label="comet.fragment_bin_offset">0.4</note> <!-- value for High resolution -->
+	<note type="input" label="comet.fragment_bin_offset">0.0</note> <!-- value for High resolution -->
 	<note type="input" label="comet.mass_tolerance">30</note> <!-- value for High resolution -->
 	<note type="input" label="comet.max_fragment_charge">3</note> <!-- max charge in theoretical spectrum -->
 	<note type="input" label="org.systemsbiology.xtandem.HardCodeModifications">false</note> <!-- no hard coded mods -->

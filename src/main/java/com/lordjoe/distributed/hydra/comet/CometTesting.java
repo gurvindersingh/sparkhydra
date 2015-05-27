@@ -300,7 +300,7 @@ public class CometTesting {
     }
 
     public static void testCometConfiguration(final CometScoringAlgorithm pComet) {
-        assertEquals(0.6, pComet.getOneMinusBinOffset());
+        assertEquals(1.0, pComet.getOneMinusBinOffset());
         double binTolerance = pComet.getBinTolerance();
         assertEquals(0.02, binTolerance);
         assertEquals(30.0, pComet.getMassTolerance());
@@ -309,7 +309,7 @@ public class CometTesting {
         //     pComet.clearData();
 
         assertEquals(901, pComet.iMinus17);
-        assertEquals(851, pComet.iMinus18);
+        assertEquals(852, pComet.iMinus18);
     }
 
     /**

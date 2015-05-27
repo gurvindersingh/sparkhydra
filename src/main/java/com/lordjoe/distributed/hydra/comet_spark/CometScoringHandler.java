@@ -211,7 +211,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
                 double maxScore = 0;
                 for (CometTheoreticalBinnedSet ts : holder) {
 
-                    if(!scorer.isTheoreticalSpectrumScored(scan,ts))
+                       if(!scorer.isTheoreticalSpectrumScored(scan,ts))
                         continue;
 
                     if(TestUtilities.isInterestingPeptide(ts.getPeptide()))

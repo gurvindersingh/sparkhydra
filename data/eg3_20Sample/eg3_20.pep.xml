@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
- <msms_pipeline_analysis date="2015-05-25T13:59:47" xmlns="http://regis-web.systemsbiology.net/pepXML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://sashimi.sourceforge.net/schema_revision/pepXML/pepXML_v117.xsd" summary_xml="C:\sparkhydra\data\eg3_20Sample\eg3_20.pep.xml">
+ <msms_pipeline_analysis date="2015-05-27T07:53:04" xmlns="http://regis-web.systemsbiology.net/pepXML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://sashimi.sourceforge.net/schema_revision/pepXML/pepXML_v117.xsd" summary_xml="C:\sparkhydra\data\eg3_20Sample\eg3_20.pep.xml">
  <msms_run_summary base_name="C:\sparkhydra\data\eg3_20Sample\eg3_20" msManufacturer="unknown" msModel="unknown" raw_data_type="raw" raw_data=".mzXML">
  <sample_enzyme name="Trypsin">
   <specificity cut="KR" no_cut="P" sense="C"/>
@@ -49,7 +49,7 @@
   <parameter name="decoy_prefix" value="DECOY_"/>
   <parameter name="decoy_search" value="0"/>
   <parameter name="digest_mass_range" value="600.000000 5000.000000"/>
-  <parameter name="fragment_bin_offset" value="0.400000"/>
+  <parameter name="fragment_bin_offset" value="0.000000"/>
   <parameter name="fragment_bin_tol" value="0.020000"/>
   <parameter name="isotope_error" value="0"/>
   <parameter name="mass_type_fragment" value="1"/>
@@ -116,40 +116,40 @@
      <mod_aminoacid_mass position="6" mass="166.998359"/>
      <mod_aminoacid_mass position="7" mass="166.998359"/>
     </modification_info>
-    <search_score name="xcorr" value="0.152"/>
+    <search_score name="xcorr" value="0.245"/>
     <search_score name="deltacn" value="1.000"/>
     <search_score name="deltacnstar" value="0.000"/>
-    <search_score name="spscore" value="0.6"/>
+    <search_score name="spscore" value="0.9"/>
     <search_score name="sprank" value="1"/>
-    <search_score name="expect" value="7.76E+001"/>
+    <search_score name="expect" value="2.56E+001"/>
    </search_hit>
   </search_result>
  </spectrum_query>
  <spectrum_query spectrum="eg3_20.00003.00003.2" start_scan="3" end_scan="3" precursor_neutral_mass="1064.365447" assumed_charge="2" index="3" retention_time_sec="3.7">
   <search_result>
-   <search_hit hit_rank="1" peptide="SGIYPTGGSM" peptide_prev_aa="K" peptide_next_aa="-" protein="tr|F1MSA5_REVERSED|F1MSA5_BOVIN" num_tot_proteins="1" num_matched_ions="1" tot_num_ions="18" calc_neutral_pep_mass="1064.388563" massdiff="-0.023116" num_tol_term="2" num_missed_cleavages="0" num_matched_peptides="8">
+   <search_hit hit_rank="1" peptide="SGIYPTGGSM" peptide_prev_aa="K" peptide_next_aa="-" protein="tr|F1MSA5_REVERSED|F1MSA5_BOVIN" num_tot_proteins="1" num_matched_ions="2" tot_num_ions="18" calc_neutral_pep_mass="1064.388563" massdiff="-0.023116" num_tol_term="2" num_missed_cleavages="0" num_matched_peptides="8">
     <modification_info modified_peptide="S[167]GIYPTGGSM[147]">
      <mod_aminoacid_mass position="1" mass="166.998359"/>
      <mod_aminoacid_mass position="10" mass="147.035385"/>
     </modification_info>
-    <search_score name="xcorr" value="0.260"/>
+    <search_score name="xcorr" value="0.400"/>
     <search_score name="deltacn" value="1.000"/>
-    <search_score name="deltacnstar" value="0.076"/>
-    <search_score name="spscore" value="2.1"/>
+    <search_score name="deltacnstar" value="0.403"/>
+    <search_score name="spscore" value="12.0"/>
     <search_score name="sprank" value="1"/>
-    <search_score name="expect" value="4.01E+000"/>
+    <search_score name="expect" value="7.30E-001"/>
    </search_hit>
    <search_hit hit_rank="2" peptide="SGIYPTGGSM" peptide_prev_aa="K" peptide_next_aa="-" protein="tr|F1MSA5_REVERSED|F1MSA5_BOVIN" num_tot_proteins="1" num_matched_ions="1" tot_num_ions="18" calc_neutral_pep_mass="1064.388563" massdiff="-0.023116" num_tol_term="2" num_missed_cleavages="0" num_matched_peptides="8">
     <modification_info modified_peptide="SGIYPTGGS[167]M[147]">
      <mod_aminoacid_mass position="9" mass="166.998359"/>
      <mod_aminoacid_mass position="10" mass="147.035385"/>
     </modification_info>
-    <search_score name="xcorr" value="0.240"/>
+    <search_score name="xcorr" value="0.239"/>
     <search_score name="deltacn" value="1.000"/>
     <search_score name="deltacnstar" value="0.000"/>
     <search_score name="spscore" value="2.1"/>
-    <search_score name="sprank" value="1"/>
-    <search_score name="expect" value="6.39E+000"/>
+    <search_score name="sprank" value="2"/>
+    <search_score name="expect" value="1.68E+001"/>
    </search_hit>
   </search_result>
  </spectrum_query>
@@ -219,17 +219,6 @@
  </spectrum_query>
  <spectrum_query spectrum="eg3_20.00020.00020.2" start_scan="20" end_scan="20" precursor_neutral_mass="1227.645447" assumed_charge="2" index="20" retention_time_sec="70.0">
   <search_result>
-   <search_hit hit_rank="1" peptide="MFFFLRSHK" peptide_prev_aa="K" peptide_next_aa="H" protein="sp|P56449_REVERSED|OXYR_BOVIN" num_tot_proteins="1" num_matched_ions="0" tot_num_ions="16" calc_neutral_pep_mass="1227.622270" massdiff="0.023177" num_tol_term="2" num_missed_cleavages="1" num_matched_peptides="2">
-    <modification_info modified_peptide="M[147]FFFLRSHK">
-     <mod_aminoacid_mass position="1" mass="147.035385"/>
-    </modification_info>
-    <search_score name="xcorr" value="0.024"/>
-    <search_score name="deltacn" value="1.000"/>
-    <search_score name="deltacnstar" value="0.000"/>
-    <search_score name="spscore" value="0.0"/>
-    <search_score name="sprank" value="1"/>
-    <search_score name="expect" value="5.71E+002"/>
-   </search_hit>
   </search_result>
  </spectrum_query>
  </msms_run_summary>
