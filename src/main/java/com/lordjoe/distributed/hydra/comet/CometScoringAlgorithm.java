@@ -239,23 +239,23 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
      * true if scanMass within mass2 + gPlusLimit mass2 - gMinusLimit
      *
      * @param scanMass test scanMass
-     * @param mass2
+     * @param peptideMass
      * @return
      */
     @Override
-    public boolean isWithinLimits(double scanMass, double mass2, int charge) {
-        double del = scanMass - mass2;
-        if (charge > 1)
-            del /= charge;
+    public boolean isWithinLimits(double scanMass, double peptideMass, int charge) {
+        double del = scanMass - peptideMass;
+//        if (charge > 1)
+//            del /= charge;
 
         if (Math.abs(del) < 0.3)  // look at close calls
             XTandemUtilities.breakHere();
 
-        double averageMass = (scanMass + mass2) / 2;
+        double averageMass = (scanMass + peptideMass) / 2;
         if (averageMass < 200)
             return false; // too low to score
 
-        del /= averageMass;
+        del /= peptideMass;
         boolean ret = false;
         //       XTandemUtilities.workUntil(2012,5,3);
         // Note looks backwards but this is what they do

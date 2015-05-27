@@ -15,7 +15,7 @@ import java.util.*;
 public class PeptideModification implements Comparable<PeptideModification>,Serializable {
     public static final PeptideModification[] EMPTY_ARRAY = {};
 
-    private static boolean gHardCodeModifications = true;
+    private static boolean gHardCodeModifications = false; // onlt true for tandem true;
 
     public static final Random RND = new Random();
 

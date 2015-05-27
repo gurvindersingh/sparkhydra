@@ -175,8 +175,10 @@ public class CometScoringDoneTest {
         for (IPolypeptide pp : notComet) {
             if (getUsedSpectrum(pp, used) == null) {  // comet did not score
                 CometTheoreticalBinnedSet ts = (CometTheoreticalBinnedSet) scorer.generateSpectrum(pp);
-                if (willHydraScorePeptide(scorer, ts, spec, usedBins))
+                if (willHydraScorePeptide(scorer, ts, spec, usedBins)) {
+                    willHydraScorePeptide(scorer, ts, spec, usedBins); // rerun we score not comet
                     weScoreNotComet.add(pp); // comet did not score this
+                }
             }
         }
         Assert.assertEquals(0,weScoreNotComet.size());

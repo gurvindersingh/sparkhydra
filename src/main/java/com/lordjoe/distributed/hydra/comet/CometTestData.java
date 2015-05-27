@@ -520,10 +520,12 @@ public class CometTestData {
                         "\n" +
                         "<note>comet parameters</note>\n" +
                         "\t<note type=\"input\" label=\"comet.fragment_bin_tol\">0.02</note> <!-- value for High resolution -->\n" +
-                        "\t<note type=\"input\" label=\"comet.fragment_bin_offset\">0.4</note> <!-- value for High resolution -->\n" +
+                        "\t<note type=\"input\" label=\"comet.fragment_bin_offset\">0.0</note> <!-- value for High resolution -->\n" +
                         "\t<note type=\"input\" label=\"comet.mass_tolerance\">30</note> <!-- value for High resolution -->\n" +
                         "\t<note type=\"input\" label=\"comet.max_fragment_charge\">3</note> <!-- max charge in theoretical spectrum -->\n" +
-                        "<note>spectrum parameters</note>\n" +
+                        // XTandem wants this true - maybe not comet
+                        "\t<note type=\"input\" label=\"org.systemsbiology.xtandem.HardCodeModifications\">false</note> <!-- max charge in theoretical spectrum -->\n" +
+                  "<note>spectrum parameters</note>\n" +
                         "\t<note type=\"input\" label=\"spectrum, fragment monoisotopic mass error\">0.5</note>\n" +
                         "\t<note type=\"input\" label=\"spectrum, parent monoisotopic mass error plus\">20.0</note>\n" +
                         "\t<note type=\"input\" label=\"spectrum, parent monoisotopic mass error minus\">20.0</note>\n" +

@@ -224,7 +224,7 @@ public class PepXMLWriter implements Serializable {
     /*
        <aminoacid_modification aminoacid="C" massdiff="57.0215" mass="160.0306" variable="N" />
          <aminoacid_modification aminoacid="C" massdiff="-17.0265" mass="143.0041" variable="Y" symbol="^" /><!--X! Tandem n-terminal AA variable modification-->
-         <aminoacid_modification aminoacid="E" massdiff="-18.0106" mass="111.0320" variable="Y" symbol="^" /><!--X! Tandem n-terminal AA variable modification-->
+         <aminoacid_modification aminoacid="E" massdiff="2-18.0106" mass="111.0320" variable="Y" symbol="^" /><!--X! Tandem n-terminal AA variable modification-->
          <aminoacid_modification aminoacid="K" massdiff="8.0142" mass="136.1092" variable="Y" />
          <aminoacid_modification aminoacid="M" massdiff="15.9949" mass="147.0354" variable="Y" />
          <aminoacid_modification aminoacid="Q" massdiff="-17.0265" mass="111.0321" variable="Y" symbol="^" /><!--X! Tandem n-terminal AA variable modification-->

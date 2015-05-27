@@ -222,30 +222,10 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
                     numberScored++;
                     maxScore = Math.max(xcorr, maxScore);
 
-//                    // Start debugging code
-//                    scoredPeptides.add(ts.getPeptide());
-//                    int testResult = CometTesting.validatePeptideScore(scan,ts.getPeptide(),xcorr);
-//                    if(testResult == 0) {
-//                        numberGood++;  // got same score
-//                    }
-//                    else {
-//                        if(testResult == 1)  // score not same
-//                        {
-//                            // repeat to look in detail
-//                            double cometScore = CometTesting.getCometScore(scan,ts.getPeptide());
-//                            xcorr = comet.doXCorr(ts, scorer, counter, scan, null);
-//                             badScore.add(ts);
-//                        }
-//                        if(testResult == 2)  // did not score
-//                            notScored.add(ts);
-//                    }
-////                    // end debugging code
 
-                    if (xcorr > MINIMUM_ACCEPTABLE_SCORE) {
-                        IPolypeptide peptide = ts.getPeptide();
+                         IPolypeptide peptide = ts.getPeptide();
                         SpectralMatch spectralMatch = new SpectralMatch(peptide, raw, xcorr, xcorr, xcorr, scan, null);
                         result.addSpectralMatch(spectralMatch);
-                    }
 
                 }
 

@@ -3,6 +3,7 @@ package org.systemsbiology.xtandem.scoring;
 import com.lordjoe.distributed.hydra.*;
 import com.lordjoe.distributed.hydra.comet.CometScoredScan;
 import com.lordjoe.distributed.hydra.comet.CometScoringAlgorithm;
+import com.lordjoe.distributed.hydra.comet.CometTestingUtilities;
 import org.junit.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.hadoop.*;
@@ -61,7 +62,7 @@ public class PeptideScoringTest {
             "ILSTPVVTLK"
     };
 
-    public static final String TANDEM_XML =
+    public static final String TANDEM_XML_DO_NOT_USE =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                     "\n" +
                     "<bioml>\n" +
@@ -154,8 +155,7 @@ public class PeptideScoringTest {
     public void testScoring() throws Exception {
          IMeasuredSpectrum scan = XTandemHadoopUtilities.parseXMLString(TEST_SPECTRUM, new TopLevelMeasuredSpectrumHandler( ));
 
-        InputStream is = new StringBufferInputStream(TANDEM_XML);
-        XTandemMain application = new SparkXTandemMain(is, "TANDEM_XML");
+        XTandemMain application = CometTestingUtilities.getDefaultApplication();
 
         Assert.assertNotNull(scan);
         Assert.assertTrue(scan.getPrecursorCharge() > 0 );

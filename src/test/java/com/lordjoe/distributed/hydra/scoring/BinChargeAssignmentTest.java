@@ -2,6 +2,7 @@ package com.lordjoe.distributed.hydra.scoring;
 
 import com.lordjoe.distributed.hydra.*;
 import com.lordjoe.distributed.hydra.comet.CometScoringAlgorithm;
+import com.lordjoe.distributed.hydra.comet.CometTestingUtilities;
 import com.lordjoe.distributed.hydra.test.*;
 import com.lordjoe.distributed.spectrum.*;
 import org.junit.*;
@@ -42,9 +43,8 @@ public class BinChargeAssignmentTest {
     }
 
     public void storeSpectra(final List<Tuple2<String, String>> pHolder) throws Exception {
-        InputStream is = new StringBufferInputStream(PeptideScoringTest.TANDEM_XML);
-        XTandemMain application = new SparkXTandemMain(is, "TANDEM_XML");
-        Assert.assertNotNull(application);
+        XTandemMain application = CometTestingUtilities.getDefaultApplication();
+          Assert.assertNotNull(application);
         MGFStringTupleToSpectrumTuple func = new MGFStringTupleToSpectrumTuple(application);
         for (Tuple2<String, String> s : pHolder) {
             Iterable<Tuple2<String, IMeasuredSpectrum>> call = func.call(s);

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
- <msms_pipeline_analysis date="2015-05-27T07:53:04" xmlns="http://regis-web.systemsbiology.net/pepXML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://sashimi.sourceforge.net/schema_revision/pepXML/pepXML_v117.xsd" summary_xml="C:\sparkhydra\data\eg3_20Sample\eg3_20.pep.xml">
+ <msms_pipeline_analysis date="2015-05-27T10:29:15" xmlns="http://regis-web.systemsbiology.net/pepXML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://sashimi.sourceforge.net/schema_revision/pepXML/pepXML_v117.xsd" summary_xml="C:\sparkhydra\data\eg3_20Sample\eg3_20.pep.xml">
  <msms_run_summary base_name="C:\sparkhydra\data\eg3_20Sample\eg3_20" msManufacturer="unknown" msModel="unknown" raw_data_type="raw" raw_data=".mzXML">
  <sample_enzyme name="Trypsin">
   <specificity cut="KR" no_cut="P" sense="C"/>

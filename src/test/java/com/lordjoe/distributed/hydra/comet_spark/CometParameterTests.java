@@ -30,11 +30,8 @@ public class CometParameterTests {
     public void testCometEg0() throws Exception {
         XTandemMain.setShowParameters(false);  // I do not want to see parameters
 
-
-        InputStream is = new StringBufferInputStream(CometTestData.TANDEM_XML);
-        SparkXTandemMain application = new SparkXTandemMain(is, "TANDEM_XML");
-        CometScoringAlgorithm comet = (CometScoringAlgorithm) application.getAlgorithms()[0];
-        comet.configure(application);
+        XTandemMain application = CometTestingUtilities.getDefaultApplication();
+        CometScoringAlgorithm comet = CometTestingUtilities.getComet(application);
 
         IMeasuredSpectrum spectrum  = generateTestSpectrum();
         testSpectrumPeaks(spectrum);

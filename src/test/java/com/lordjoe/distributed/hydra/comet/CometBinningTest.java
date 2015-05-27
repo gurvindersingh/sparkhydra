@@ -1,5 +1,6 @@
 package com.lordjoe.distributed.hydra.comet;
 
+import com.lordjoe.distributed.hydra.test.TestUtilities;
 import org.junit.Assert;
 import org.junit.Test;
 import org.systemsbiology.xtandem.RawPeptideScan;
@@ -40,9 +41,13 @@ public class CometBinningTest {
         CometScoringAlgorithm comet = CometTestingUtilities.getComet(application);
         Scorer scorer = application.getScoreRunner();
 
+        int totalBins = 0;
+        int totalBadBins = 0;
         Map<IPolypeptide, List<BinnedChargeIonIndex>> cBons = CometTestingUtilities.readCometBinsFromResource("/eg3_20/Scoring_EG20.txt");
         for (IPolypeptide pp : cBons.keySet()) {
-            validateBins(pp,cBons.get(pp),comet,scorer);
+            List<BinnedChargeIonIndex> bins = cBons.get(pp);
+            totalBins += bins.size();
+            totalBadBins += validateBins(pp, bins,comet,scorer);
         }
     }
 
@@ -51,7 +56,7 @@ public class CometBinningTest {
     private static int numberFailed;
     private static int numberRun;
 
-    private void validateBins(IPolypeptide pp, List<BinnedChargeIonIndex> bins,CometScoringAlgorithm comet, Scorer scorer) {
+    private int validateBins(IPolypeptide pp, List<BinnedChargeIonIndex> bins,CometScoringAlgorithm comet, Scorer scorer) {
         int testCharge = 1;
         for (BinnedChargeIonIndex bin : bins) {
             testCharge = Math.max(bin.charge,testCharge);
@@ -76,12 +81,13 @@ public class CometBinningTest {
                 if(Math.abs(bin.index - bin2.index) > 1)
                     Assert.assertEquals(bin.index, bin2.index);
                 numberFailed++;
-                if(numberFailed > 20)
+                if(numberFailed > 50)
                      Assert.assertEquals(bin.index, bin2.index);
             }
         }
-
-
+       if(numberFailed > 0)
+           TestUtilities.breakHere();
+        return numberFailed;
     }
 
 

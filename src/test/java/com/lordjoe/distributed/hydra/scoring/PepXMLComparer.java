@@ -1,5 +1,6 @@
 package com.lordjoe.distributed.hydra.scoring;
 
+import com.lordjoe.distributed.hydra.test.TestUtilities;
 import org.systemsbiology.xtandem.fdr.*;
 import org.systemsbiology.xtandem.peptide.IPolypeptide;
 
@@ -103,7 +104,11 @@ public class PepXMLComparer {
             if(spectrumHit.hypderscore < score)
                 lowerscoreseen = true;
              if(peptide1.equivalent(spectrumHit.peptide))   {
-                return new DifferentScoringResult(peptide1,Math.abs(score - spectrumHit.hypderscore ) < 0.05,true,false);
+                 boolean scoreSimilar = Math.abs(score - spectrumHit.hypderscore) < 0.05;
+                 if(!scoreSimilar)
+                     TestUtilities.breakHere();
+
+                 return new DifferentScoringResult(peptide1, scoreSimilar,true,false);
             }
         }
         return new DifferentScoringResult(peptide1,false,false,lowerscoreseen);

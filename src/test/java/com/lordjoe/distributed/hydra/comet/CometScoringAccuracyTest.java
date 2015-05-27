@@ -36,7 +36,7 @@ public class CometScoringAccuracyTest {
     }
 
 
-    //  @Test
+     //  @Test
     public void testExpectedValue() {
         Map<Integer, List<UsedSpectrum>> spectraMap =
                 CometTestingUtilities.readUsedSpectraFromResource("/UsedSpectraComet.txt");
@@ -121,7 +121,7 @@ public class CometScoringAccuracyTest {
         CometTheoreticalBinnedSet cometTs = (CometTheoreticalBinnedSet) scorer.generateSpectrum(cometBest);
 
         double cometBestScore = CometScoringAlgorithm.doRealScoring(spec, scorer, cometTs, application);
-        Assert.assertEquals(0.152, cometBestScore, 0.01);
+        Assert.assertEquals(0.245, cometBestScore, 0.01);
 
         double bestScore = 0;
         IPolypeptide bestPeptide = null;
@@ -130,7 +130,7 @@ public class CometScoringAccuracyTest {
             if (cometBest.equals(inBin)) {
                 cometTs = (CometTheoreticalBinnedSet) scorer.generateSpectrum(inBin);
                 cometBestScore = CometScoringAlgorithm.doRealScoring(spec, scorer, cometTs, application);
-                Assert.assertEquals(0.152, cometBestScore, 0.01);
+                Assert.assertEquals(0.245, cometBestScore, 0.01);
             }
             CometTheoreticalBinnedSet ts1 = (CometTheoreticalBinnedSet) scorer.generateSpectrum(inBin);
 
@@ -186,7 +186,7 @@ public class CometScoringAccuracyTest {
 
         CometScoringData.populateFromScan(scan);
         double xcorr1 = CometScoringAlgorithm.doRealScoring(scan, scorer, ts1, application);
-        Assert.assertEquals(2.070, xcorr1, 0.002);
+//        Assert.assertEquals(2.070, xcorr1, 0.002);  // old scoring
 
         IPolypeptide interestimgCase = Polypeptide.fromString("NIKPECPTLACGQPR");
 
@@ -229,7 +229,7 @@ public class CometScoringAccuracyTest {
             double xcorr_repeat2 = CometScoringAlgorithm.doRealScoring(scan, scorer, tsx, application);
         }
 
-        Assert.assertTrue(numberCorrect + 1 >= numberTested);
+        Assert.assertTrue(numberCorrect == numberTested);
         //    Assert.assertEquals("Missed after " + numberCorrect + " of " + numberTested,numberTested,numberCorrect);
 
     }
