@@ -103,24 +103,24 @@ public class LibraryBuilder implements Serializable {
 
         JavaRDD<IProtein> proteins = readProteins(jctx);
 
-        long[] proteinCountRef = new long[1];
-         proteins = SparkUtilities.persistAndCount("Proteins  to Score", proteins, proteinCountRef);
-         long proteinCount = proteinCountRef[0];
-
-        // filter to fewer spectra todo place in loop
-        if (max_proteins > 0 && proteinCount > max_proteins) {
-             int countPercentile = (int) (PercentileFilter.PERCENTILE_DIVISION * max_proteins / proteinCount);  // try scoring about 1000
-            System.err.println("max_proteins " + max_proteins + " proteinCount " + proteinCount + " countPercentile " + countPercentile);
-            if (countPercentile < PercentileFilter.PERCENTILE_DIVISION) {
-                System.err.println("Filter on "  + countPercentile);
-                proteins = proteins.filter(new PercentileFilter<IProtein>(countPercentile)); // todo make a loop
-                //proteins = SparkUtilities.persistAndCount("Filtered Proteins  to Score", proteins, proteinCountRef);
-             }
-        }
-        else {
-            System.err.println("max_proteins " + max_proteins + " proteinCount " + proteinCount + " NOT FILTERING" );
-
-        }
+//        long[] proteinCountRef = new long[1];
+//         proteins = SparkUtilities.persistAndCount("Proteins  to Score", proteins, proteinCountRef);
+//         long proteinCount = proteinCountRef[0];
+//
+//        // filter to fewer spectra todo place in loop
+//        if (max_proteins > 0 && proteinCount > max_proteins) {
+//             int countPercentile = (int) (PercentileFilter.PERCENTILE_DIVISION * max_proteins / proteinCount);  // try scoring about 1000
+//            System.err.println("max_proteins " + max_proteins + " proteinCount " + proteinCount + " countPercentile " + countPercentile);
+//            if (countPercentile < PercentileFilter.PERCENTILE_DIVISION) {
+//                System.err.println("Filter on "  + countPercentile);
+//                proteins = proteins.filter(new PercentileFilter<IProtein>(countPercentile)); // todo make a loop
+//                //proteins = SparkUtilities.persistAndCount("Filtered Proteins  to Score", proteins, proteinCountRef);
+//             }
+//        }
+//        else {
+//            System.err.println("max_proteins " + max_proteins + " proteinCount " + proteinCount + " NOT FILTERING" );
+//
+//        }
 
 
         // distribute the work

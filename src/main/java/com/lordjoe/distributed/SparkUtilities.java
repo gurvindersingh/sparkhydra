@@ -1021,10 +1021,17 @@ public class SparkUtilities implements Serializable {
      */
     @Nonnull
     public static <V> JavaRDD<V> persist(@Nonnull final JavaRDD<V> inp) {
-        StorageLevel storageLevel = inp.getStorageLevel();
-        if (storageLevel == null)
-            storageLevel = DEFAULT_STORAGE_LEVEL;
-        return inp.persist(storageLevel);
+        return persist(inp,DEFAULT_STORAGE_LEVEL);
+    }
+    /**
+     * persist in the best way - saves remembering which storage level
+     *
+     * @param inp
+     * @return
+     */
+    @Nonnull
+    public static <V> JavaRDD<V> persist(@Nonnull final JavaRDD<V> inp,StorageLevel storageLevel) {
+           return inp.persist(storageLevel);
     }
 
     /**
@@ -1049,9 +1056,17 @@ public class SparkUtilities implements Serializable {
      */
     @Nonnull
     public static <K, V> JavaPairRDD<K, V> persist(@Nonnull final JavaPairRDD<K, V> inp) {
-        StorageLevel storageLevel = inp.getStorageLevel();
-        if (storageLevel == null)
-            storageLevel = DEFAULT_STORAGE_LEVEL;
+         return  persist(inp, DEFAULT_STORAGE_LEVEL);
+    }
+    /**
+     * persist in the best way - saves remembering which storage level
+     *
+     * @param inp
+     * @return
+     */
+    @Nonnull
+    public static <K, V> JavaPairRDD<K, V> persist(@Nonnull final JavaPairRDD<K, V> inp,StorageLevel storageLevel) {
+
         return inp.persist(storageLevel);
     }
 
@@ -1164,6 +1179,22 @@ public class SparkUtilities implements Serializable {
         return ret;
     }
 
+    /**
+     * persist and show count
+     *
+     * @param message message to show
+     * @param inp     rdd
+     * @return
+     */
+    @Nonnull
+    public static <K, V> JavaPairRDD<K, V> persistAndCountPair(@Nonnull final String message, @Nonnull final JavaPairRDD<K, V> inp, long[] countRef,StorageLevel storage) {
+        JavaPairRDD<K, V> ret = persist(inp,storage);
+        long count = ret.count();
+        System.err.println(message + " has " + Long_Formatter.format(count));
+        countRef[0] = count;
+        return ret;
+    }
+
 
     /**
      * persist and show count
@@ -1179,6 +1210,21 @@ public class SparkUtilities implements Serializable {
         System.err.println(message + " has " + Long_Formatter.format(count));
         return ret;
     }
+    /**
+     * persist and show count
+     *
+     * @param message message to show
+     * @param inp     rdd
+     * @return
+     */
+    @Nonnull
+    public static <V> JavaRDD<V> persistAndCount(@Nonnull final String message, @Nonnull final JavaRDD<V> inp,StorageLevel storage) {
+        JavaRDD<V> ret = persist(inp, storage);
+        long count = ret.count();
+        System.err.println(message + " has " + Long_Formatter.format(count));
+        return ret;
+    }
+
 
     /**
      * persist and show count
