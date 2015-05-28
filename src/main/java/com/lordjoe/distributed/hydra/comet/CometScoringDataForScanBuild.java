@@ -1,5 +1,6 @@
 package com.lordjoe.distributed.hydra.comet;
 
+import java.lang.ref.SoftReference;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -11,23 +12,39 @@ import java.util.Map;
 // Note we do not want to serialize this
 public class CometScoringDataForScanBuild {
 
-    private static transient ThreadLocal<CometScoringDataForScanBuild> gPreallocatedData;
+    private static transient ThreadLocal<SoftReference<CometScoringDataForScanBuild>> gPreallocatedData;
 
 
 
     public static CometScoringDataForScanBuild getScoringData() {
         synchronized (CometScoringDataForScanBuild.class) {
             if (gPreallocatedData == null) {
-                gPreallocatedData = new ThreadLocal<CometScoringDataForScanBuild>();
+                gPreallocatedData = new ThreadLocal<SoftReference<CometScoringDataForScanBuild>>();
             }
         }
-        CometScoringDataForScanBuild ret = gPreallocatedData.get();
-        if (ret == null) {
-            ret = new CometScoringDataForScanBuild();
-            gPreallocatedData.set(ret);
+//        CometScoringDataForScanBuild ret = gPreallocatedData.get();
+//        if (ret == null) {
+//            ret = new CometScoringDataForScanBuild();
+//            gPreallocatedData.set(ret);
+//        }
+//        return ret;
+//        synchronized (CometScoringData.class) {
+//            if (gPreallocatedData == null) {
+//                gPreallocatedData = new ThreadLocal<SoftReference<CometScoringDataForScanBuild>>();
+//            }
+//        }
+        SoftReference<CometScoringDataForScanBuild> cometScoringDataSoftReference = gPreallocatedData.get();
+        if(cometScoringDataSoftReference == null || cometScoringDataSoftReference.get() == null)
+        {
+            CometScoringDataForScanBuild value = new CometScoringDataForScanBuild();
+            cometScoringDataSoftReference =  new SoftReference<CometScoringDataForScanBuild>(value);
+            gPreallocatedData.set(cometScoringDataSoftReference);
         }
+        CometScoringDataForScanBuild ret =  cometScoringDataSoftReference.get();
+
         return ret;
     }
+
 
     // big arrays only allocated once
     private CometScoredScan currentScan;

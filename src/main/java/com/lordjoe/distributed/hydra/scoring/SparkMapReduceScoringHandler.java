@@ -7,12 +7,14 @@ import com.lordjoe.distributed.hydra.comet.*;
 import com.lordjoe.distributed.hydra.fragment.*;
 import com.lordjoe.distributed.hydra.test.*;
 import com.lordjoe.distributed.spark.*;
+import com.lordjoe.distributed.spark.accumulators.SparkAccumulators;
 import com.lordjoe.distributed.tandem.*;
 import com.lordjoe.utilities.*;
 import org.apache.hadoop.conf.*;
 import org.apache.hadoop.fs.*;
 import org.apache.spark.*;
 import org.apache.spark.api.java.*;
+import org.apache.spark.api.java.function.PairFlatMapFunction;
 import org.systemsbiology.common.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.hadoop.*;
@@ -255,7 +257,20 @@ public class SparkMapReduceScoringHandler implements Serializable {
      * @return  peptides mapped to bins
      */
     public JavaPairRDD<BinChargeKey, IPolypeptide> mapFragmentsToBin(JavaRDD<IPolypeptide> inp,final Set<Integer> usedBins) {
-        return binMapper.mapFragmentsToBin(inp, usedBins);
+        JavaPairRDD<BinChargeKey, HashMap<String, IPolypeptide>> mappedByhash = binMapper.mapFragmentsToBinHash(inp, usedBins, CometScoringAlgorithm.getMaximumPeptideListSize());
+        JavaPairRDD<BinChargeKey, IPolypeptide> binnedPeptides = mappedByhash.flatMapToPair(new PairFlatMapFunction<Tuple2<BinChargeKey, HashMap<String, IPolypeptide>>, BinChargeKey, IPolypeptide>() {
+            @Override
+            public Iterable<Tuple2<BinChargeKey, IPolypeptide>> call(Tuple2<BinChargeKey, HashMap<String, IPolypeptide>> v) throws Exception {
+                List<Tuple2<BinChargeKey, IPolypeptide>> ret = new ArrayList<Tuple2<BinChargeKey, IPolypeptide>>();
+                  HashMap<String, IPolypeptide> hm = v._2();
+                List<IPolypeptide> pps = new ArrayList<IPolypeptide>(hm.values());
+                for (IPolypeptide pp : pps) {
+                    ret.add(new Tuple2(v._1(), pp));
+                }
+                 return ret;
+            }
+        });
+        return binnedPeptides;
     }
 
     public JavaPairRDD<BinChargeKey, CometTheoreticalBinnedSet> mapTheoreticalsToBin(JavaRDD<IPolypeptide> inp,final Set<Integer> usedBins) {

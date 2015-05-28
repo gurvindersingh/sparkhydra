@@ -419,32 +419,31 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
         return ret;
     }
 
-    public double doXCorr(final CometTheoreticalBinnedSet pTs,final Scorer scorerData, final IonUseCounter pCounter, CometScoredScan scorer, List<XCorrUsedData> used) {
+    public double doXCorr(final CometTheoreticalBinnedSet pTs,final Scorer scorerData, final IonUseCounter pCounter, CometScoredScan scan, List<XCorrUsedData> used) {
         //if(true)
         //    return Math.random();
         CometTheoreticalBinnedSet sts = pTs;
-        float[] fastXcorrDataMap =  CometScoringData.getFastDataForScan(scorer);
-        float[] fastXcorrDataNL =  CometScoringData.getFastDataNLForScan(scorer);
-
-        boolean interesting = false;
-        if(TestUtilities.isInterestingPeptide(sts.getPeptide())) {
-            interesting = true;
-            int nzScoring = TestUtilities.getNonZeroElements(fastXcorrDataMap);
-            int nzNLScoring = TestUtilities.getNonZeroElements(fastXcorrDataNL);
-        }
+//        float[] fastXcorrDataMap =  CometScoringData.getFastDataForScan(scan);
+//        float[] fastXcorrDataNL =  CometScoringData.getFastDataNLForScan(scan);
+//
+//        boolean interesting = false;
+//        if(TestUtilities.isInterestingPeptide(sts.getPeptide())) {
+//            interesting = true;
+//            int nzScoring = TestUtilities.getNonZeroElements(fastXcorrDataMap);
+//            int nzNLScoring = TestUtilities.getNonZeroElements(fastXcorrDataNL);
+//        }
 
         List<BinnedChargeIonIndex> binnedIndex = sts.getBinnedIndex(this,scorerData);
 
            double xcorr = 0;
 
-        int maxCharge = scorer.getCharge();
+        int maxCharge = scan.getCharge();
         if(maxCharge > 1 )
             maxCharge = maxCharge - 1;
         int scoredPeaks = 0;
 
-        if(interesting) {
-            CometTesting.validateOneIndexSet(binnedIndex);
-        }
+        Map<Integer, Double> fastScoringMap = scan.getFastScoringMap();
+        Map<Integer, Double> fastScoringMapNL = scan.getFastScoringMapNL();
 
         for (BinnedChargeIonIndex peak : binnedIndex) {
             int index = peak.index;
@@ -453,7 +452,8 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
             if(peak.charge > maxCharge)
                 continue;
 
-            float value = scorer.getScoredData(fastXcorrDataMap, fastXcorrDataNL,index, peak.charge);
+              double value =  scan.getScoredData(fastScoringMap, fastScoringMapNL,index, peak.charge);
+
 
             if (Math.abs(value) > 0.0001) {
                 xcorr += value;
@@ -464,7 +464,7 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
             }
         }
         if (scoredPeaks > 0) {
-            scorer.addHyperscore(xcorr);
+            scan.addHyperscore(xcorr);
               xcorr *= 0.005;
              xcorr = Math.max(XCORR_CUTOFF,xcorr);
         }

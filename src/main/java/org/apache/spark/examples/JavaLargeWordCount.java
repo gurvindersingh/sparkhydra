@@ -19,6 +19,8 @@ package org.apache.spark.examples;
 
 import com.lordjoe.distributed.*;
 import com.lordjoe.distributed.spark.*;
+import com.lordjoe.distributed.spark.accumulators.LongAccumulableParam;
+import com.lordjoe.distributed.spark.accumulators.SparkAccumulators;
 import com.lordjoe.distributed.util.*;
 import com.lordjoe.utilities.*;
 import org.apache.spark.*;
@@ -155,7 +157,7 @@ public final class JavaLargeWordCount {
         }
 
 
-        SparkAccumulators.showAccumulators(totalTime );
+        SparkAccumulators.showAccumulators(totalTime);
         java.lang.Long wordCount = totalWords.value();
         System.out.println("total words = " + wordCount);
 

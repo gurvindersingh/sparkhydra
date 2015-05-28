@@ -1,6 +1,7 @@
 package com.lordjoe.distributed.wordcount;
 
 import com.lordjoe.distributed.spark.*;
+import com.lordjoe.distributed.spark.accumulators.LongAccumulableParam;
 import org.apache.spark.*;
 import org.apache.spark.api.java.*;
 import org.apache.spark.api.java.function.*;

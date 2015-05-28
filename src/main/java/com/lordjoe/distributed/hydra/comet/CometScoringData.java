@@ -1,5 +1,6 @@
 package com.lordjoe.distributed.hydra.comet;
 
+import java.lang.ref.SoftReference;
 import java.util.*;
 
 /**
@@ -10,7 +11,7 @@ import java.util.*;
 // Note we do not want to serialize this
 public class CometScoringData {
 
-    private static transient ThreadLocal<CometScoringData> gPreallocatedData;
+    private static transient ThreadLocal<SoftReference<CometScoringData>> gPreallocatedData;
 
     public static void populateFromScan(CometScoredScan scan)
     {
@@ -54,18 +55,28 @@ public class CometScoringData {
     }
 
 
+    /**
+     * tricky we we use a thread local soft erference to allow
+     * @return
+     */
+    public static CometScoringData getScoringData() {
+        if(true)
+        throw new UnsupportedOperationException("fix this"); // todo add code
 
-    private static CometScoringData getScoringData() {
         synchronized (CometScoringData.class) {
             if (gPreallocatedData == null) {
-                gPreallocatedData = new ThreadLocal<CometScoringData>();
+                gPreallocatedData = new ThreadLocal<SoftReference<CometScoringData>>();
             }
         }
-        CometScoringData ret = gPreallocatedData.get();
-        if (ret == null) {
-            ret = new CometScoringData();
-            gPreallocatedData.set(ret);
+        SoftReference<CometScoringData> cometScoringDataSoftReference = gPreallocatedData.get();
+        if(cometScoringDataSoftReference == null || cometScoringDataSoftReference.get() == null)
+        {
+            CometScoringData value = new CometScoringData();
+            cometScoringDataSoftReference =  new SoftReference<CometScoringData>(value);
+            gPreallocatedData.set(cometScoringDataSoftReference);
         }
+        CometScoringData ret =  cometScoringDataSoftReference.get();
+
         return ret;
     }
 

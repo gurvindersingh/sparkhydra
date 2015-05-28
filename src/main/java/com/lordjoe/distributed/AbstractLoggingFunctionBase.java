@@ -1,6 +1,6 @@
 package com.lordjoe.distributed;
 
-import com.lordjoe.distributed.spark.*;
+import com.lordjoe.distributed.spark.accumulators.SparkAccumulators;
 
 import java.io.*;
 

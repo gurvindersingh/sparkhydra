@@ -1,6 +1,7 @@
 package com.lordjoe.distributed.hydra.fragment;
 
 import com.lordjoe.distributed.*;
+import com.lordjoe.distributed.hydra.comet.BinChargeMapper;
 import org.apache.spark.*;
 
 import java.io.*;
@@ -12,14 +13,13 @@ import java.io.*;
  */
 public class BinChargeKey implements Serializable, Comparable<BinChargeKey> {
 
-    public static final double QUANTIZATION = 0.05;
 
     public static int mzAsInt(double mz) {
-        return (int) (0.5 + (mz / QUANTIZATION));
+        return (int) (0.5 + (mz / BinChargeMapper.getBinSize()));
     }
 
     public static double intToMz(int mzInt) {
-        return QUANTIZATION * mzInt;
+        return BinChargeMapper.getBinSize() * mzInt;
     }
 
     public static Partitioner getPartitioner() {

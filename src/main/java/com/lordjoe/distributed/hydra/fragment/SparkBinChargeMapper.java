@@ -213,10 +213,6 @@ public class SparkBinChargeMapper implements Serializable {
 
             BinChargeKey key = BinChargeMapper.keyFromPeptide(pp);
 
-            if (TestUtilities.isInterestingPeptide(pp)) {
-                CometTesting.validateOneKey(); // We are hunting for when this stops working
-           }
-
 
             // if we don't use the bin don't get the peptide
             if (usedBins != null && usedBins.contains(key.getMzInt())) {

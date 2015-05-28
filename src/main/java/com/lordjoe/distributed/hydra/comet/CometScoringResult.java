@@ -22,7 +22,7 @@ public class CometScoringResult implements IScoredScan, IAddable<IScoredScan>, I
 
     private IMeasuredSpectrum m_Raw;
     private boolean matchesSorted;
-    private final Set<IPolypeptide> usedPeptides = new HashSet<IPolypeptide>();
+ //   private final Set<IPolypeptide> usedPeptides = new HashSet<IPolypeptide>();
     private final List<PeptideMatchScore> matches = new ArrayList<PeptideMatchScore>();
     //    private final IonUseScore m_IonUse = new IonUseCounter();
 //    //    private List<ISpectralMatch> m_Matches;
@@ -58,12 +58,12 @@ public class CometScoringResult implements IScoredScan, IAddable<IScoredScan>, I
         if (TestUtilities.isInterestingPeptide(peptide))
             TestUtilities.breakHere();
 
-        if (!usedPeptides.contains(peptide)) {
-            usedPeptides.add(peptide);
-            matches.add(pm);
-        } else {
-            TestUtilities.breakHere(); // duplicate this is bad
-        }
+        matches.add(pm);
+//        if (!usedPeptides.contains(peptide)) {
+//            usedPeptides.add(peptide);
+//        } else {
+//            TestUtilities.breakHere(); // duplicate this is bad
+//        }
     }
 
 
@@ -76,7 +76,12 @@ public class CometScoringResult implements IScoredScan, IAddable<IScoredScan>, I
             IonTypeScorer ions = new LowMemoryIonScorer(bestMatch);
             addMatch(new PeptideMatchScore(peptide, hyperScore, ions));
         }
+        keepOnlyHighestMatches();
 
+
+    }
+
+    protected void keepOnlyHighestMatches() {
         // keep only top   MAX_RETURNED_MATCHES matches
         if(matches.size() > 2 * MAX_RETURNED_MATCHES) {
             // highest scores first
@@ -223,6 +228,8 @@ public class CometScoringResult implements IScoredScan, IAddable<IScoredScan>, I
         } else {
             throw new UnsupportedOperationException("Fix This"); // ToDo
         }
+        keepOnlyHighestMatches();
+
     }
 
     /**

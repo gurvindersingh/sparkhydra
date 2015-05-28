@@ -18,7 +18,7 @@
 package org.apache.spark.examples;
 
 import com.lordjoe.distributed.*;
-import com.lordjoe.distributed.spark.*;
+import com.lordjoe.distributed.spark.accumulators.SparkAccumulators;
 import com.lordjoe.utilities.*;
 import org.apache.spark.api.java.*;
 import org.apache.spark.api.java.function.Function2;

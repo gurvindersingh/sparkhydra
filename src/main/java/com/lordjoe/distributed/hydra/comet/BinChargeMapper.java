@@ -16,10 +16,39 @@ import java.util.*;
 public class BinChargeMapper {
 
     // how wide are the bins
-    public static final double binSize = BinChargeKey.QUANTIZATION;
+    private static double binSize = 0.01;
+    private static int examWidthInBins = 9;
+
+
+
     // how wide to we search
-    public static final double examineWidth = binSize * 7;
+    public static  double examineWidth = binSize * 9;
     public static final int MAX_CHARGE_PLUS_ONE = 5;
+
+
+    public static double getBinSize() {
+        return binSize;
+    }
+
+    public static void setBinSize(double binSize) {
+        BinChargeMapper.binSize = binSize;
+    }
+
+    public static int getExamWidthInBins() {
+        return examWidthInBins;
+    }
+
+    public static void setExamWidthInBins(int examWidthInBins) {
+        BinChargeMapper.examWidthInBins = examWidthInBins;
+    }
+
+    public static double getExamineWidth() {
+        return examineWidth;
+    }
+
+    public static void setExamineWidth(double examineWidth) {
+        BinChargeMapper.examineWidth = examineWidth;
+    }
 
     /**
      * do the work of getting keys from a spectrum as a list

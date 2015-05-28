@@ -17,10 +17,10 @@ import java.util.List;
  */
 public class CometTheoreticalBinnedSet extends TheoreticalSpectrumSet {
 
-  //  private static boolean isInteresting;
+    //  private static boolean isInteresting;
 
-     private final List<BinnedChargeIonIndex> binnedIndex;
- //   private final List<BinnedChargeIonIndex> binnedIndexNL = new ArrayList<BinnedChargeIonIndex>();
+    private final List<BinnedChargeIonIndex> binnedIndex;
+    //   private final List<BinnedChargeIonIndex> binnedIndexNL = new ArrayList<BinnedChargeIonIndex>();
 
     public CometTheoreticalBinnedSet(final int pMaxCharge, final double mPlusH, final IPolypeptide pPeptide, CometScoringAlgorithm cmt, Scorer scorer) {
         super(pMaxCharge, mPlusH, pPeptide);
@@ -29,12 +29,13 @@ public class CometTheoreticalBinnedSet extends TheoreticalSpectrumSet {
 //        if(TestUtilities.isInterestingPeptide(pPeptide))
 //            isInteresting = true;
 
-        binnedIndex =  buildBinnedList(cmt,pMaxCharge, scorer);
+        binnedIndex = buildBinnedList(cmt, pMaxCharge, scorer);
     }
 
-    private List<BinnedChargeIonIndex> buildBinnedList(CometScoringAlgorithm comet,int maxCharge, Scorer scorer) {
-        final List<BinnedChargeIonIndex> binnedChargeIonIndexes  = new ArrayList<BinnedChargeIonIndex>();
-        int maxFragmentCharge = Math.min(maxCharge,comet.getMaxFragmentCharge());
+
+    private List<BinnedChargeIonIndex> buildBinnedList(CometScoringAlgorithm comet, int maxCharge, Scorer scorer) {
+        final List<BinnedChargeIonIndex> binnedChargeIonIndexes = new ArrayList<BinnedChargeIonIndex>();
+        int maxFragmentCharge = Math.min(maxCharge, comet.getMaxFragmentCharge());
 
         for (int charge = 1; charge <= maxFragmentCharge; charge++) {      // was < max charge
             PeptideSpectrum ps = new PeptideSpectrum(this, charge, IonType.B_ION_TYPES, scorer.getSequenceUtilities());
@@ -45,7 +46,7 @@ public class CometTheoreticalBinnedSet extends TheoreticalSpectrumSet {
 
             for (int i = 0; i < spectrum.length; i++) {
                 PeptideIon peptideIon = spectrum[i];
-                  int binnedIndexInParent = peptideIon.getIndexInParent();
+                int binnedIndexInParent = peptideIon.getIndexInParent();
                 IonType type = peptideIon.getType();
 
 //                if(isInteresting && type == IonType.Y && binnedIndexInParent == 9)
@@ -58,30 +59,32 @@ public class CometTheoreticalBinnedSet extends TheoreticalSpectrumSet {
                 if (type == IonType.Y) {   // ollok at this case binned position should go down
                     int sequenceLength = peptideIon.getSequence().length();
                     binnedIndexInParent = sequenceLength - 1;
-                }
-                else {
+                } else {
                     if (binnedIndexInParent == 10)
                         XTandemUtilities.breakHere();
                 }
-                double mass =  mz; // * peptideIon.getCharge();
+                double mass = mz; // * peptideIon.getCharge();
                 // todo take out
                 // keep mass for debugging
-      //          TestBinChargeIonIndex bcs = new TestBinChargeIonIndex(index, peptideIon.getCharge(), type, binnedIndexInParent,mass);
+                //          TestBinChargeIonIndex bcs = new TestBinChargeIonIndex(index, peptideIon.getCharge(), type, binnedIndexInParent,mass);
                 BinnedChargeIonIndex bcs = new BinnedChargeIonIndex(index, peptideIon.getCharge(), type, binnedIndexInParent);
                 binnedChargeIonIndexes.add(bcs);
             }
         }
-        Collections.sort(binnedChargeIonIndexes,BinnedChargeIonIndex.BY_INDEX);
+        Collections.sort(binnedChargeIonIndexes, BinnedChargeIonIndex.BY_INDEX);
         return binnedChargeIonIndexes;
     }
 
-    public List<BinnedChargeIonIndex> getBinnedIndex( CometScoringAlgorithm cmt, Scorer scorer) {
+    public List<BinnedChargeIonIndex> getBinnedIndex(CometScoringAlgorithm cmt, Scorer scorer) {
 
-        return  binnedIndex; //  buildBinnedList(cmt, scorer);
-
+        return binnedIndex; //  buildBinnedList(cmt, scorer);
     }
 
-    public List<BinnedChargeIonIndex> getBinnedIndexNL( CometScoringAlgorithm cmt, Scorer scorer) {
+    public int getBinnedIndexCount() {
+        return binnedIndex.size();
+    }
+
+    public List<BinnedChargeIonIndex> getBinnedIndexNL(CometScoringAlgorithm cmt, Scorer scorer) {
         throw new UnsupportedOperationException("Fix This"); // ToDo
 //        if(binnedIndex.isEmpty())
 //             buildBinnedList(cmt,scorer);

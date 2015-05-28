@@ -141,10 +141,10 @@ public class HydraKryoSerializer implements KryoRegistrator, Serializable {
         doRegistration(kryo, "com.lordjoe.distributed.input.FastaInputFormat");
         doRegistration(kryo, "com.lordjoe.distributed.protein.DigestProteinFunction");
         doRegistration(kryo, "com.lordjoe.distributed.spark.IdentityFunction");
-        doRegistration(kryo, "com.lordjoe.distributed.spark.LongAccumulableParam");
-        doRegistration(kryo, "com.lordjoe.distributed.spark.MachineUseAccumulator");
-        doRegistration(kryo, "com.lordjoe.distributed.spark.MachineUseAccumulator$MachineUseAccumulableParam");
-        doRegistration(kryo, "com.lordjoe.distributed.spark.SparkAccumulators");
+        doRegistration(kryo, "com.lordjoe.distributed.spark.accumulators.LongAccumulableParam");
+        doRegistration(kryo, "com.lordjoe.distributed.spark.accumulators.MachineUseAccumulator");
+        doRegistration(kryo, "com.lordjoe.distributed.spark.accumulators.MachineUseAccumulator$MachineUseAccumulableParam");
+        doRegistration(kryo, "com.lordjoe.distributed.spark.accumulators.SparkAccumulators");
         doRegistration(kryo, "com.lordjoe.distributed.tandem.LibraryBuilder");
         doRegistration(kryo, "com.lordjoe.distributed.tandem.LibraryBuilder$1");
         doRegistration(kryo, "com.lordjoe.distributed.tandem.LibraryBuilder$MapPolyPeptideToSequenceKeys");
@@ -193,7 +193,7 @@ public class HydraKryoSerializer implements KryoRegistrator, Serializable {
         doRegistration(kryo, "com.lordjoe.distributed.SparkUtilities$IdentityFunction");
         doRegistration(kryo, "com.lordjoe.distributed.SparkUtilities$TupleValues");
         doRegistration(kryo, "com.lordjoe.distributed.hydra.scoring.SparkMapReduceScoringHandler");
-        doRegistration(kryo, "com.lordjoe.distributed.spark.SparkAccumulators");
+        doRegistration(kryo, "com.lordjoe.distributed.spark.accumulators.SparkAccumulators");
         doRegistration(kryo, "com.lordjoe.utilities.ElapsedTimer");
         doRegistration(kryo, "org.systemsbiology.xtandem.XTandemMain");
         doRegistration(kryo, "org.systemsbiology.xtandem.reporting.BiomlReporter");
