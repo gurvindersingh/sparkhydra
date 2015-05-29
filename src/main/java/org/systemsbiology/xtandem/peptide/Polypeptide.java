@@ -767,6 +767,8 @@ public class Polypeptide implements IPolypeptide, Comparable<IPolypeptide> {
         int ret = getId().compareTo(o.getId());
         if (ret == 0)
             ret = getSequence().compareTo(o.getSequence());
+        if (ret == 0)
+            ret = toString().compareTo(o.toString());
         return ret;
     }
 

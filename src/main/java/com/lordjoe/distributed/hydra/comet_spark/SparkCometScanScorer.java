@@ -138,6 +138,27 @@ public class SparkCometScanScorer {
         // find all polypeptides and modified polypeptides
         JavaRDD<IPolypeptide> databasePeptides = pHandler.buildLibrary(max_proteins);
 
+//        // Debugging code
+//        List<IPolypeptide> withBuild = databasePeptides.collect();
+//        Collections.sort(withBuild);
+//
+//        JavaRDD<IPolypeptide> databasePeptidesnoBuild = pHandler.buildLibrary(max_proteins);
+//
+//        List<IPolypeptide> noBuild = databasePeptidesnoBuild.collect();
+//        Collections.sort(noBuild);
+//        // end debugging code
+//
+//        if(withBuild.size() != noBuild.size())
+//            throw new IllegalStateException("problem"); // todo fix
+//
+//        int index = 0;
+//        for (IPolypeptide nb : noBuild) {
+//              IPolypeptide bd = withBuild.get(index++);
+//            if(!nb.equals(bd))
+//                throw new IllegalStateException("problem"); // todo fix
+//
+//        }
+
 
         // DEBUGGING why do we see more than one instance of interesting peptide
         //List<IPolypeptide> interesting1 = new ArrayList<IPolypeptide>();

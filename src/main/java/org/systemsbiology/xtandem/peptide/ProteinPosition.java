@@ -14,6 +14,7 @@ public class ProteinPosition implements IProteinPosition {
 
     public static final String TAG = "ProteinPosition";
     public static final String SERIALIZATION_SEPARATOR = "|";
+    public static final String SERIALIZATION_SEPARATOR_SPILTTER = "\\" + SERIALIZATION_SEPARATOR;
 
 
     public static IProteinPosition asDecoy(IPolypeptide peop,ProteinPosition pp)
@@ -55,7 +56,7 @@ public class ProteinPosition implements IProteinPosition {
     }
 
     private final String m_Protein;
-    private final IPolypeptide m_Peptide;
+     private final IPolypeptide m_Peptide;
     private final FastaAminoAcid m_Before;
     private final FastaAminoAcid m_After;
     private final int m_StartPosition;
@@ -73,7 +74,7 @@ public class ProteinPosition implements IProteinPosition {
 
     private ProteinPosition(ProteinPosition pp,IPolypeptide ppx,boolean decoy) {
         m_Protein = "DECOY_" + pp.getProtein() ;
-        m_Peptide = ppx;
+         m_Peptide = ppx;
         m_Before = null;
         m_After = null;
         m_StartPosition = pp.getStartPosition();
@@ -93,9 +94,9 @@ public class ProteinPosition implements IProteinPosition {
      */
     public ProteinPosition(final IPolypeptide newPeptide, int offset, IProteinPosition oldpos) {
         m_Protein = XTandemUtilities.conditionProteinLabel(oldpos.getProtein());
-        m_Peptide = newPeptide;
+         m_Peptide = newPeptide;
         String oldSequence = oldpos.getPeptide().getSequence();
-        String newSequence = newPeptide.getSequence();
+      String newSequence = newPeptide.getSequence();
 
         if (offset <= 0)
             m_Before = oldpos.getBefore();
@@ -119,7 +120,7 @@ public class ProteinPosition implements IProteinPosition {
      */
     public ProteinPosition(final IPolypeptide mergedPeptide, IProteinPosition startPos, IProteinPosition endpos) {
         m_Protein = startPos.getProtein();
-        m_Peptide = mergedPeptide;
+         m_Peptide = mergedPeptide;
 
         m_Before = startPos.getBefore();
         m_After = endpos.getAfter();
@@ -129,20 +130,22 @@ public class ProteinPosition implements IProteinPosition {
     }
 
     public ProteinPosition(final IPolypeptide pPeptide, String str) {
-        String[] items = str.split("\\" + SERIALIZATION_SEPARATOR);
+        String[] items = str.split(SERIALIZATION_SEPARATOR_SPILTTER );
         try {
-            m_Protein = XTandemUtilities.conditionProteinLabel(items[0]);
-            m_Peptide = pPeptide;
-            if (items.length > 1)
-                m_Before = FastaAminoAcid.asAminoAcidOrNull(items[1]);
+            int index = 0;
+            m_Protein = XTandemUtilities.conditionProteinLabel(items[index++]);
+             m_Peptide = pPeptide;
+             index++; // next is peptide
+            if (items.length > index)
+                m_Before = FastaAminoAcid.asAminoAcidOrNull(items[index++]);
             else
                 m_Before = null;
-            if (items.length > 2)
-                m_After = FastaAminoAcid.asAminoAcidOrNull(items[2]);
+            if (items.length > index)
+                m_After = FastaAminoAcid.asAminoAcidOrNull(items[index++]);
             else
                 m_After = null;
-            if (items.length > 3)
-                m_StartPosition = Integer.parseInt(items[3]);
+            if (items.length > index)
+                m_StartPosition = Integer.parseInt(items[index++]);
             else
                 m_StartPosition = 0;
         }
@@ -163,7 +166,7 @@ public class ProteinPosition implements IProteinPosition {
         String id = prot.getId();
         //     String id = prot.getAnnotation();
         m_Protein = XTandemUtilities.conditionProteinLabel(id);
-        m_Peptide = prot;
+         m_Peptide = prot;
         m_Before = null;
         m_After = null;
         m_StartPosition = 0;
@@ -220,7 +223,7 @@ public class ProteinPosition implements IProteinPosition {
         if (m_StartPosition != that.m_StartPosition) return false;
         if (m_After != that.m_After) return false;
         if (m_Before != that.m_Before) return false;
-        if (m_Peptide != null ? !m_Peptide.equals(that.m_Peptide) : that.m_Peptide != null) return false;
+       if (m_Peptide != null ? !m_Peptide.equals(that.m_Peptide) : that.m_Peptide != null) return false;
         if (m_Protein != null ? !m_Protein.equals(that.m_Protein) : that.m_Protein != null) return false;
 
         return true;
@@ -229,18 +232,19 @@ public class ProteinPosition implements IProteinPosition {
     @Override
     public int hashCode() {
         int result = m_Protein != null ? m_Protein.hashCode() : 0;
-        result = 31 * result + (m_Peptide != null ? m_Peptide.hashCode() : 0);
+         result = 31 * result + (m_Peptide != null ? m_Peptide.hashCode() : 0);
         result = 31 * result + (m_Before != null ? m_Before.hashCode() : 0);
         result = 31 * result + (m_After != null ? m_After.hashCode() : 0);
         result = 31 * result + m_StartPosition;
         return result;
     }
 
+    // NOTE Don not serialize peptide
     @Override
     public String toString() {
         return
                 m_Protein +
-                        SERIALIZATION_SEPARATOR + m_Peptide +
+                        SERIALIZATION_SEPARATOR +  //m_Peptide +
                         SERIALIZATION_SEPARATOR + m_Before +
                         SERIALIZATION_SEPARATOR + m_After +
                         SERIALIZATION_SEPARATOR + m_StartPosition

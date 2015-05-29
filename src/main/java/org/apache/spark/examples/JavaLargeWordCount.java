@@ -86,14 +86,17 @@ public final class JavaLargeWordCount {
         String inputPath = SparkUtilities.buildPath(args[INPUT_FILE_INDEX]);
         JavaRDD<String> lines = ctx.textFile(inputPath, 1);
 
-        lines = SparkUtilities.persistAndCount("lines",lines);
 
-        lines = lines.repartition(NUMBER_PARTITIONS);
+  //     lines = SparkUtilities.persistAndCount("lines",lines);
+
+   //     lines = lines.repartition(NUMBER_PARTITIONS);
 
         // use my function not theirs
         JavaRDD<String> words = lines.flatMap(new WordsMapFunction());
 
         words = words.repartition(NUMBER_PARTITIONS);
+
+
 
         JavaPairRDD<String, Integer> ones = words.flatMapToPair(new PairFlatMapFunction<String, String, Integer>() {
             @Override
@@ -104,6 +107,8 @@ public final class JavaLargeWordCount {
                       return holder;
             }
         });
+
+
 //        JavaPairRDD<String, Integer> ones = words.mapToPair(new PairFunction<String, String, Integer>() {
 //            @Override
 //            public Tuple2<String, Integer> call(String s) {

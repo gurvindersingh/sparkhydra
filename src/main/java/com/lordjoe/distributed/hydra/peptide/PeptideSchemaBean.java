@@ -14,12 +14,13 @@ import org.apache.spark.sql.Row;
  */
 public class PeptideSchemaBean implements IDatabaseBean {
 
-    public static IProteinPosition[] getProteinPositions(PeptideSchemaBean bean) {
-        String[] split = bean.getProteinsString().split(":");
+    public static final String PROTEIN_POSITION_SEPARATOR = ":";
+    public static IProteinPosition[] getProteinPositions(PeptideSchemaBean bean, IPolypeptide pp) {
+        String[] split = bean.getProteinsString().split(PROTEIN_POSITION_SEPARATOR);
         IProteinPosition[] ret = new IProteinPosition[split.length];
         for (int i = 0; i < split.length; i++) {
-            throw new UnsupportedOperationException("Fix This"); // ToDo Build a Protein position from ID
-            //      ret[i] = new ProteinPosition();
+
+                 ret[i] = new ProteinPosition(pp,split[i]);
 
         }
         return ret;
@@ -45,7 +46,7 @@ public class PeptideSchemaBean implements IDatabaseBean {
             double mass1 = row.getDouble(0);
             ret.setMass(mass1);
             String sequence1 = row.getString(3);
-            ret.setSequence(sequence1);
+            ret.setSequenceString(sequence1);
             int scanMass = row.getInt(1);
             ret.setMassBin(scanMass);
             String protein = row.getString(2);
@@ -60,16 +61,13 @@ public class PeptideSchemaBean implements IDatabaseBean {
     public static final Function<PeptideSchemaBean, IPolypeptide> FROM_BEAN = new Function<PeptideSchemaBean, IPolypeptide>() {
         @Override
         public IPolypeptide call(final PeptideSchemaBean bean) throws Exception {
-            Polypeptide polypeptide = Polypeptide.fromString(bean.getSequence());
-          //  IProteinPosition[] pps = getProteinPositions(bean);
-         //   polypeptide.setContainedInProteins(pps);
-            return polypeptide;
+            return bean.asPeptide();
         }
     };
 
 
 
-    private String sequence;
+    private String sequenceString;
     private double mass;
     private int massBin;
     private String proteinsString;
@@ -81,7 +79,7 @@ public class PeptideSchemaBean implements IDatabaseBean {
     public PeptideSchemaBean(String line) {
         String[] parts = line.split(",");
         int index = 0;
-        setSequence(parts[index++]);
+        setSequenceString(parts[index++]);
         setMass(Double.parseDouble(parts[index++].trim()));
         setMassBin(Integer.parseInt(parts[index++].trim()));
         setProteinsString(parts[index++]);
@@ -89,34 +87,33 @@ public class PeptideSchemaBean implements IDatabaseBean {
 
     public PeptideSchemaBean(IPolypeptide pp) {
         int index = 0;
-        setSequence(pp.getSequence());
+        setSequenceString(pp.toString());
         setMass(pp.getMass());
         setMassBin((BinChargeKey.mzAsInt(pp.getMatchingMass())));
         IProteinPosition[] proteinPositions = pp.getProteinPositions();
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < proteinPositions.length; i++) {
             IProteinPosition ppx = proteinPositions[i];
-            if (i > 0) sb.append(",");
-            sb.append(ppx.getProteinId());
+            if (i > 0) sb.append(PROTEIN_POSITION_SEPARATOR);
+            sb.append(ppx.toString());
         }
         setProteinsString(sb.toString());
     }
 
     public IPolypeptide asPeptide() {
-        Polypeptide ret = new Polypeptide(getSequence());
+        Polypeptide ret =  Polypeptide.fromString(getSequenceString());
         ret.setMass(getMass());
-
-        //      ret.setContainedInProteins(getProteinPositions());
+         ret.setContainedInProteins(getProteinPositions(this,ret));
         return ret;
     }
 
 
-    public String getSequence() {
-        return sequence;
+    public String getSequenceString() {
+        return sequenceString;
     }
 
-    public void setSequence(final String pSequence) {
-        sequence = pSequence;
+    public void setSequenceString(final String pSequence) {
+        sequenceString = pSequence;
     }
 
     public double getMass() {
@@ -147,7 +144,7 @@ public class PeptideSchemaBean implements IDatabaseBean {
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(getSequence());
+        sb.append(getSequenceString());
         sb.append(",");
         sb.append(String.format("%10.4f", getMass()));
         sb.append(",");

@@ -10,7 +10,7 @@ import java.io.*;
  * User: steven
  * Date: Jan 10, 2011
  */
-public interface  IPolypeptide extends Serializable{
+public interface  IPolypeptide extends Serializable,Comparable<IPolypeptide> {
     public static final IPolypeptide[] EMPTY_ARRAY = {};
 
     public static final String KEY_SEPARATOR = "|";
