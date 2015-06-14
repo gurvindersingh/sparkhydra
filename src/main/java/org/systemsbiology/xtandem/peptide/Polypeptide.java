@@ -15,7 +15,7 @@ public class Polypeptide implements IPolypeptide, Comparable<IPolypeptide> {
     public static final Random RND = new Random();
 
     /**
-     * true if two pepetides have the same sequence with all Leucene repaced with IsoLeucene
+     * true if two pepetides have the same sequence with all Leucine repaced with IsoLeucine
      * @param pp1
      * @param pp2
      * @return
@@ -233,7 +233,7 @@ public class Polypeptide implements IPolypeptide, Comparable<IPolypeptide> {
                 return 1; // missed
             index = test.indexOf("K", index + 1);
         }
-        index = test.indexOf("R");
+        //index = test.indexOf("R");
         while (index > -1) {
             if (pSequence.charAt(index + 1) != 'P')
                 return 1; // missed
@@ -490,8 +490,8 @@ public class Polypeptide implements IPolypeptide, Comparable<IPolypeptide> {
         int missedCleavages = 0;
         for (int i = 0; i < m_Sequence.length() - 1; i++) {
             char c = m_Sequence.charAt(i);
-            if (c == 'R' || c == 'K') {
-                  if ('P' != m_Sequence.charAt(i + 1))
+            if (c == 'M') {
+                  if ('S' != m_Sequence.charAt(i + 1) || 'T' != m_Sequence.charAt(i + 1))
                     missedCleavages++;
             }
         }
