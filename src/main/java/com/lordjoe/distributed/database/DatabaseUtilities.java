@@ -12,6 +12,7 @@ import org.systemsbiology.xtandem.peptide.IPolypeptide;
 import org.systemsbiology.xtandem.peptide.Polypeptide;
 
 import java.io.*;
+import java.util.List;
 
 /**
  * com.lordjoe.distributed.database.DatabaseUtilities
@@ -33,6 +34,7 @@ public class DatabaseUtilities {
              HDFSAccessor accessor = new HDFSAccessor(fs);
              accessor.expunge(name);
 
+            List collect = data.collect();
             // JavaSchemaRDDs can be saved as Parquet files, maintaining the schema information.
             frame.saveAsParquetFile(name);
         }
