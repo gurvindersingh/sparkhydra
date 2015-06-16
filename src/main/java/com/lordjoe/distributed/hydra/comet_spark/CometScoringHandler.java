@@ -253,8 +253,8 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
      */
     public static class ScoreSpectrumAndPeptideWithCogroupWithoutHash extends AbstractLoggingFlatMapFunction<Tuple2<BinChargeKey, Tuple2<Iterable<CometScoredScan>, Iterable<IPolypeptide>>>, IScoredScan> {
 
-        public static final int MAX_BINS_TO_SCORE = 50000;
-        public static final int MAX_PEPTIDES_TO_SCORE = 500;
+        public static final int MAX_BINS_TO_SCORE = 500;
+        public static final int MAX_PEPTIDES_TO_SCORE = 5;
 
         private CometScoringAlgorithm comet;
         private Scorer scorer;
