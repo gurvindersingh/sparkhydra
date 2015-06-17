@@ -300,10 +300,9 @@ public class SparkBinChargeMapper implements Serializable {
 
             List<Tuple2<BinChargeKey, T>> holder = new ArrayList<Tuple2<BinChargeKey, T>>();
 
-            BinChargeKey[] keys = BinChargeMapper.keysFromSpectrum(spec);
+            Set<BinChargeKey> keys = BinChargeMapper.keysFromSpectrum(spec);
 
-            for (int i = 0; i < keys.length; i++) {
-                BinChargeKey key = keys[i];
+            for (BinChargeKey key : keys) {
                 holder.add(new Tuple2<BinChargeKey, T>(key, spec));
             }
             if (holder.isEmpty())
@@ -327,9 +326,8 @@ public class SparkBinChargeMapper implements Serializable {
         @Override
         public Iterable<Tuple2<BinChargeKey, Tuple2<BinChargeKey, T>>> doCall(final T spec) throws Exception {
             List<Tuple2<BinChargeKey, Tuple2<BinChargeKey, T>>> holder = new ArrayList<Tuple2<BinChargeKey, Tuple2<BinChargeKey, T>>>();
-            BinChargeKey[] keys = BinChargeMapper.keysFromSpectrum(spec);
-            for (int i = 0; i < keys.length; i++) {
-                BinChargeKey key = keys[i];
+            Set<BinChargeKey> keys = BinChargeMapper.keysFromSpectrum(spec);
+            for (BinChargeKey key : keys) {
                 holder.add(new Tuple2<BinChargeKey, Tuple2<BinChargeKey, T>>(key, new Tuple2<BinChargeKey, T>(key, spec)));
             }
             if (holder.isEmpty())
