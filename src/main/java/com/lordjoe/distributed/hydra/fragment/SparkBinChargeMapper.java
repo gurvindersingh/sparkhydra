@@ -292,11 +292,11 @@ public class SparkBinChargeMapper implements Serializable {
     private class mapMeasuredSpectraToBins<T extends IMeasuredSpectrum> extends AbstractLoggingPairFlatMapFunction<T, BinChargeKey, T> {
         @Override
         public Iterable<Tuple2<BinChargeKey, T>> doCall(final T spec) throws Exception {
-            int charge = spec.getPrecursorCharge();
-            charge = 1; // all peptides use 1 now
+//            int charge = spec.getPrecursorCharge();
+//            charge = 1; // all peptides use 1 now
 
-            if (TestUtilities.isInterestingSpectrum(spec))
-                TestUtilities.breakHere();
+//            if (TestUtilities.isInterestingSpectrum(spec))
+//                TestUtilities.breakHere();
 
             List<Tuple2<BinChargeKey, T>> holder = new ArrayList<Tuple2<BinChargeKey, T>>();
 
@@ -309,9 +309,9 @@ public class SparkBinChargeMapper implements Serializable {
             if (holder.isEmpty())
                 throw new IllegalStateException("problem"); // ToDo change
 
-            if (TestUtilities.isInterestingSpectrum(spec)) {
-                TestUtilities.saveSpectrumKey(holder);
-            }
+//            if (TestUtilities.isInterestingSpectrum(spec)) {
+//                TestUtilities.saveSpectrumKey(holder);
+//            }
 
             return holder;
         }
