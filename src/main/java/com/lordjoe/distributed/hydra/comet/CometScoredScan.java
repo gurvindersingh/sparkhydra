@@ -84,7 +84,7 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
         double mass = m_Raw.getPrecursorMass();    // todo is this peptide or
         maxArraySize = alg.asBin(mass) + 100; // ((int) ((mass + 100) / getBinTolerance()); //  pScoring->_spectrumInfoInternal.iArraySize
 
-        CometScoringDataForScanBuild makeSureReferenceIsNotGarbageCollected = CometScoringDataForScanBuild.getScoringData();
+        //CometScoringDataForScanBuild makeSureReferenceIsNotGarbageCollected = CometScoringDataForScanBuild.getScoringData();
 
         generateBinnedPeaks(alg);
         //List<SpectrumBinnedScore> weights1 = getWeights();
@@ -498,7 +498,7 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
             }
 
         }
-        int maxBin = algorithm.asBin(maxMass);
+        //int maxBin = algorithm.asBin(maxMass);
         int lastBin = 0;
         // put in bins
         for (ISpectrumPeak peak : peaks) {

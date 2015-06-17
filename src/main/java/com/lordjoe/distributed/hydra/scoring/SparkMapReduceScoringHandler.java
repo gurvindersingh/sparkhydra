@@ -262,8 +262,8 @@ public class SparkMapReduceScoringHandler implements Serializable {
             @Override
             public Iterable<Tuple2<BinChargeKey, IPolypeptide>> call(Tuple2<BinChargeKey, HashMap<String, IPolypeptide>> v) throws Exception {
                 List<Tuple2<BinChargeKey, IPolypeptide>> ret = new ArrayList<Tuple2<BinChargeKey, IPolypeptide>>();
-                  HashMap<String, IPolypeptide> hm = v._2();
-                List<IPolypeptide> pps = new ArrayList<IPolypeptide>(hm.values());
+                HashMap<String, IPolypeptide> hm = v._2();
+                Collection<IPolypeptide> pps = hm.values();
                 for (IPolypeptide pp : pps) {
                     ret.add(new Tuple2(v._1(), pp));
                 }
