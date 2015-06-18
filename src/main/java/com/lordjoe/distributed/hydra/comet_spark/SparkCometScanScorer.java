@@ -672,6 +672,7 @@ public class SparkCometScanScorer {
 
        // fine all bins we are scoring - this allows us to filter peptides
         keyedSpectra = SparkUtilities.persist(keyedSpectra);
+        List<Tuple2<BinChargeKey, CometScoredScan>> collect = keyedSpectra.collect();
         Set<Integer> usedBins = getUsedBins(keyedSpectra);
 
 
