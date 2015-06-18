@@ -64,7 +64,7 @@ public class CometTesting {
         // now leave the ones we did not score
         notMatching.removeAll(matching);
 
-         BinChargeKey[] keys = BinChargeMapper.keysFromSpectrum(scan);
+         Set<BinChargeKey> keys = BinChargeMapper.keysFromSpectrum(scan);
 
         for (UsedSpectrum usedSpectrum : notMatching) {
             BinChargeKey testKey = BinChargeMapper.keyFromPeptide(usedSpectrum.peptide);
@@ -85,7 +85,7 @@ public class CometTesting {
         //    double matchingMass = pp.getMatchingMass();
         BinChargeKey ppKey = BinChargeMapper.keyFromPeptide(pp);
         //    double matchingMass = pp.getMatchingMass();
-        BinChargeKey[] keys = BinChargeMapper.keysFromSpectrum(scan);
+        Set<BinChargeKey> keys = BinChargeMapper.keysFromSpectrum(scan);
 
         for (UsedSpectrum usedSpectrum : usedSpectrums) {
             BinChargeKey testKey = BinChargeMapper.keyFromPeptide(usedSpectrum.peptide);

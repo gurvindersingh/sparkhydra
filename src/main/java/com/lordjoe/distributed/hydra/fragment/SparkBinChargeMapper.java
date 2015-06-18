@@ -292,26 +292,25 @@ public class SparkBinChargeMapper implements Serializable {
     private class mapMeasuredSpectraToBins<T extends IMeasuredSpectrum> extends AbstractLoggingPairFlatMapFunction<T, BinChargeKey, T> {
         @Override
         public Iterable<Tuple2<BinChargeKey, T>> doCall(final T spec) throws Exception {
-            int charge = spec.getPrecursorCharge();
-            charge = 1; // all peptides use 1 now
+//            int charge = spec.getPrecursorCharge();
+//            charge = 1; // all peptides use 1 now
 
-            if (TestUtilities.isInterestingSpectrum(spec))
-                TestUtilities.breakHere();
+//            if (TestUtilities.isInterestingSpectrum(spec))
+//                TestUtilities.breakHere();
 
             List<Tuple2<BinChargeKey, T>> holder = new ArrayList<Tuple2<BinChargeKey, T>>();
 
-            BinChargeKey[] keys = BinChargeMapper.keysFromSpectrum(spec);
+            Set<BinChargeKey> keys = BinChargeMapper.keysFromSpectrum(spec);
 
-            for (int i = 0; i < keys.length; i++) {
-                BinChargeKey key = keys[i];
+            for (BinChargeKey key : keys) {
                 holder.add(new Tuple2<BinChargeKey, T>(key, spec));
             }
             if (holder.isEmpty())
                 throw new IllegalStateException("problem"); // ToDo change
 
-            if (TestUtilities.isInterestingSpectrum(spec)) {
-                TestUtilities.saveSpectrumKey(holder);
-            }
+//            if (TestUtilities.isInterestingSpectrum(spec)) {
+//                TestUtilities.saveSpectrumKey(holder);
+//            }
 
             return holder;
         }
@@ -327,9 +326,8 @@ public class SparkBinChargeMapper implements Serializable {
         @Override
         public Iterable<Tuple2<BinChargeKey, Tuple2<BinChargeKey, T>>> doCall(final T spec) throws Exception {
             List<Tuple2<BinChargeKey, Tuple2<BinChargeKey, T>>> holder = new ArrayList<Tuple2<BinChargeKey, Tuple2<BinChargeKey, T>>>();
-            BinChargeKey[] keys = BinChargeMapper.keysFromSpectrum(spec);
-            for (int i = 0; i < keys.length; i++) {
-                BinChargeKey key = keys[i];
+            Set<BinChargeKey> keys = BinChargeMapper.keysFromSpectrum(spec);
+            for (BinChargeKey key : keys) {
                 holder.add(new Tuple2<BinChargeKey, Tuple2<BinChargeKey, T>>(key, new Tuple2<BinChargeKey, T>(key, spec)));
             }
             if (holder.isEmpty())

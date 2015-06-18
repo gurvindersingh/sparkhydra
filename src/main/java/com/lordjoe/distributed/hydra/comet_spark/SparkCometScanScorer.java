@@ -1,17 +1,20 @@
 package com.lordjoe.distributed.hydra.comet_spark;
 
+import com.lordjoe.algorithms.Long_Formatter;
 import com.lordjoe.distributed.AbstractLoggingFunction;
 import com.lordjoe.distributed.PercentileFilter;
 import com.lordjoe.distributed.SparkUtilities;
 import com.lordjoe.distributed.hydra.AddIndexToSpectrum;
 import com.lordjoe.distributed.hydra.SparkScanScorer;
-import com.lordjoe.distributed.hydra.comet.*;
+import com.lordjoe.distributed.hydra.comet.CometScoredScan;
+import com.lordjoe.distributed.hydra.comet.CometScoringAlgorithm;
+import com.lordjoe.distributed.hydra.comet.CometTesting;
+import com.lordjoe.distributed.hydra.comet.CometTheoreticalBinnedSet;
 import com.lordjoe.distributed.hydra.fragment.BinChargeKey;
 import com.lordjoe.distributed.hydra.scoring.PepXMLScoredScanWriter;
 import com.lordjoe.distributed.hydra.scoring.SparkConsolidator;
 import com.lordjoe.distributed.hydra.scoring.SparkMapReduceScoringHandler;
 import com.lordjoe.distributed.hydra.test.TestUtilities;
-import com.lordjoe.algorithms.Long_Formatter;
 import com.lordjoe.distributed.spark.accumulators.SparkAccumulators;
 import com.lordjoe.distributed.tandem.LibraryBuilder;
 import com.lordjoe.distributed.test.CometSpectraUse;
@@ -26,7 +29,6 @@ import org.systemsbiology.xtandem.ionization.ITheoreticalSpectrumSet;
 import org.systemsbiology.xtandem.peptide.IPolypeptide;
 import org.systemsbiology.xtandem.pepxml.PepXMLWriter;
 import org.systemsbiology.xtandem.scoring.IScoredScan;
-import org.systemsbiology.xtandem.scoring.ISpectralMatch;
 import scala.Tuple2;
 
 import java.io.File;
@@ -671,8 +673,8 @@ public class SparkCometScanScorer {
         //keyedSpectra.partitionBy(partitioner);
 
        // fine all bins we are scoring - this allows us to filter peptides
-        keyedSpectra = SparkUtilities.persist(keyedSpectra);
-        List<Tuple2<BinChargeKey, CometScoredScan>> collect = keyedSpectra.collect();
+        //keyedSpectra = SparkUtilities.persist(keyedSpectra);
+        //List<Tuple2<BinChargeKey, CometScoredScan>> collect = keyedSpectra.collect();
         Set<Integer> usedBins = getUsedBins(keyedSpectra);
 
 

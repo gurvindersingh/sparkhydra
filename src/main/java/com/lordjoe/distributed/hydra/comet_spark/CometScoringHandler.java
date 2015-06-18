@@ -30,7 +30,6 @@ import scala.Tuple2;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * com.lordjoe.distributed.hydra.comet_spark.CometScoringHandler
@@ -253,8 +252,8 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
      */
     public static class ScoreSpectrumAndPeptideWithCogroupWithoutHash extends AbstractLoggingFlatMapFunction<Tuple2<BinChargeKey, Tuple2<Iterable<CometScoredScan>, Iterable<IPolypeptide>>>, IScoredScan> {
 
-        public static final int MAX_BINS_TO_SCORE = 50000;
-        public static final int MAX_PEPTIDES_TO_SCORE = 500;
+        public static final int MAX_BINS_TO_SCORE = 500;
+        public static final int MAX_PEPTIDES_TO_SCORE = 5;
 
         private CometScoringAlgorithm comet;
         private Scorer scorer;
@@ -277,112 +276,54 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
             Iterable<CometScoredScan> scans = inp._2()._1();
             Iterable<IPolypeptide> peptides = inp._2()._2();
 
-            Map<CometScoredScan, IScoredScan> spectrumToScore = new HashMap<CometScoredScan, IScoredScan>();
-            for (CometScoredScan scan : scans) {
-                spectrumToScore.put(scan, new CometScoringResult(scan.getRaw()));
-            }
-
-            int numberpeptides = 0;
-            int numberSpectra = spectrumToScore.size();
-
-
+//            Map<CometScoredScan, IScoredScan> spectrumToScore = new HashMap<CometScoredScan, IScoredScan>();
+//            for (CometScoredScan scan : scans) {
+//                spectrumToScore.put(scan, new CometScoringResult(scan.getRaw()));
+//            }
+//            int numberpeptides = 0;
+//            int numberSpectra = 0;
             long numberScored = 0;
-            int numberBins = 0;
-            List<CometTheoreticalBinnedSet> holder = new ArrayList<CometTheoreticalBinnedSet>();
             for (IPolypeptide peptide : peptides) {
                 CometTheoreticalBinnedSet ts = (CometTheoreticalBinnedSet) scorer.generateSpectrum(peptide);
-                numberpeptides++;
-                if (isScanScoredByAnySpectrum(ts, scans, scorer))
-                    holder.add(ts);
-                numberBins += ts.getBinnedIndexCount();
-                if (numberBins > MAX_BINS_TO_SCORE || holder.size() > MAX_PEPTIDES_TO_SCORE) {
-                    numberBins = 0;
-                    numberScored += scoreScansAgainstPeptideSet(spectrumToScore, holder);
-                    holder.clear();
+//                numberpeptides++;
+                if (isScanScoredByAnySpectrum(ts, scans, scorer)) {
+                    for (CometScoredScan scan : scans) {
+                        if (!scorer.isTheoreticalSpectrumScored(scan, ts))
+                            continue;
+                        if(!scan.isInitialized())
+                            scan.setAlgorithm(comet);
+                        IonUseCounter counter = new IonUseCounter();
+                        double xcorr = comet.doXCorr(ts, scorer, counter, scan, null);
+                        numberScored++;
+                        if (xcorr > MINIMUM_ACCEPTABLE_SCORE) {
+                            SpectralMatch spectralMatch = new SpectralMatch(ts.getPeptide(), scan.getRaw(), xcorr, xcorr, xcorr, scan, null);
+                            CometScoringResult res = new CometScoringResult(scan.getRaw());
+                            res.addSpectralMatch(spectralMatch);
+                            if(res.isValidMatch())
+                                ret.add(res);
+                        }
+                    }
                 }
             }
-            if (!holder.isEmpty())
-                numberScored += scoreScansAgainstPeptideSet(spectrumToScore, holder);
 
-            if(numberScored == 0)
-                return ret;
-
-            for (IScoredScan scan : spectrumToScore.values()) {
-                if(scan.isValidMatch())
-                    ret.add(scan);
-
-            }
+//            for (IScoredScan scan : result) {
+//                if(scan.isValidMatch())
+//                    ret.add(scan);
+//            }
             numberScoredAccumlator.add(numberScored);
-            peptideDistributionCounts.add(new CountedDistribution(numberpeptides));
-            spectrumDistributionCounts.add(new CountedDistribution(numberSpectra));
+//            peptideDistributionCounts.add(new CountedDistribution(numberpeptides));
+//            spectrumDistributionCounts.add(new CountedDistribution(numberSpectra));
             return ret;
-
-
-//            // This section popul;ates temporary data with the spectrum
-//            // a lot os free space used temporarily
-//            for (CometScoredScan scan : scans) {
-//                numberSpectra++;
-//                CometScoringResult result = new CometScoringResult();
-//                IMeasuredSpectrum raw = scan.getRaw();
-//                result.setRaw(raw);
-//
-////                int numberGood = 0;
-////                 // debugging why do we disagree
-////                List<CometTheoreticalBinnedSet> badScore = new ArrayList<CometTheoreticalBinnedSet>();
-////                List<CometTheoreticalBinnedSet> notScored = new ArrayList<CometTheoreticalBinnedSet>();
-////                List<IPolypeptide> scoredPeptides = new ArrayList<IPolypeptide>();
-//
-//                CometScoringData.populateFromScan(scan);
-//
-//                // use pregenerated peptide data but not peptide data
-//                double maxScore = 0;
-//                for (CometTheoreticalBinnedSet ts : holder) {
-//
-//                    if (!scorer.isTheoreticalSpectrumScored(scan, ts))
-//                        continue;
-//
-////                    if(TestUtilities.isInterestingPeptide(ts.getPeptide()))
-////                        TestUtilities.breakHere();
-//
-//                    IonUseCounter counter = new IonUseCounter();
-//                    double xcorr = comet.doXCorr(ts, scorer, counter, scan, null);
-//                    numberScored++;
-//                    maxScore = Math.max(xcorr, maxScore);
-//
-//
-//                    IPolypeptide peptide = ts.getPeptide();
-//                    SpectralMatch spectralMatch = new SpectralMatch(peptide, raw, xcorr, xcorr, xcorr, scan, null);
-//                    result.addSpectralMatch(spectralMatch);
-//
-//                }
-//
-//                //            int testResult = CometTesting.validatePeptideList(scan,scoredPeptides);
-//
-//
-//                if (result.isValidMatch())
-//                    ret.add(result);
-//            }
-//
-//            if (numberScored > 0) {
-//                numberScoredAccumlator.add(numberScored);
-//                peptideDistributionCounts.add(new CountedDistribution(numberpeptides));
-//                spectrumDistributionCounts.add(new CountedDistribution(numberSpectra));
-//                System.err.println("");
-//            }
-//
-//            return ret;
         }
 
-        private int scoreScansAgainstPeptideSet(Map<CometScoredScan, IScoredScan> spectrumToScore, List<CometTheoreticalBinnedSet> holder) {
+        private int scoreScansAgainstPeptideSet(Iterable<CometScoredScan> scans, CometTheoreticalBinnedSet ts, List<IScoredScan> results) {
             int numberScored = 0;
 
           //  CometScoringData scoringData = CometScoringData.getScoringData() ;
 
             // This section popul;ates temporary data with the spectrum
             // a lot os free space used temporarily
-            for (CometScoredScan scan : spectrumToScore.keySet()) {
-                CometScoringResult result = (CometScoringResult) spectrumToScore.get(scan);
-
+            for (CometScoredScan scan : scans) {
 //                int numberGood = 0;
 //                 // debugging why do we disagree
 //                List<CometTheoreticalBinnedSet> badScore = new ArrayList<CometTheoreticalBinnedSet>();
@@ -392,25 +333,23 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
             //    CometScoringData.populateFromScan(scan);
 
                 // use pregenerated peptide data but not peptide data
-                double maxScore = 0;
-                for (CometTheoreticalBinnedSet ts : holder) {
 
-                    if (!scorer.isTheoreticalSpectrumScored(scan, ts))
-                        continue;
+                if (!scorer.isTheoreticalSpectrumScored(scan, ts))
+                    continue;
 
 //                    if(TestUtilities.isInterestingPeptide(ts.getPeptide()))
 //                        TestUtilities.breakHere();
 
-                    IonUseCounter counter = new IonUseCounter();
-                    double xcorr = comet.doXCorr(ts, scorer, counter, scan, null);
-                    numberScored++;
-                    maxScore = Math.max(xcorr, maxScore);
-
-
+                IonUseCounter counter = new IonUseCounter();
+                double xcorr = comet.doXCorr(ts, scorer, counter, scan, null);
+                numberScored++;
+                if (xcorr > MINIMUM_ACCEPTABLE_SCORE) {
                     IPolypeptide peptide = ts.getPeptide();
                     SpectralMatch spectralMatch = new SpectralMatch(peptide, scan.getRaw(), xcorr, xcorr, xcorr, scan, null);
-                    result.addSpectralMatch(spectralMatch);
-
+                    CometScoringResult res = new CometScoringResult(scan.getRaw());
+                    res.addSpectralMatch(spectralMatch);
+                    if(res.isValidMatch())
+                        results.add(res);
                 }
 
             }

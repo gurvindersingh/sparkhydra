@@ -1,18 +1,17 @@
 package com.lordjoe.distributed.database;
 
-import com.lordjoe.distributed.*;
+import com.lordjoe.distributed.SparkUtilities;
 import com.lordjoe.distributed.hydra.peptide.PeptideSchemaBean;
-import org.apache.hadoop.conf.*;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
-import org.apache.spark.api.java.*;
-import org.apache.spark.api.java.function.Function;
-import org.apache.spark.sql.*;
-import org.systemsbiology.hadoop.*;
+import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.sql.DataFrame;
+import org.apache.spark.sql.SQLContext;
+import org.systemsbiology.hadoop.HDFSAccessor;
 import org.systemsbiology.xtandem.peptide.IPolypeptide;
-import org.systemsbiology.xtandem.peptide.Polypeptide;
 
-import java.io.*;
-import java.util.List;
+import java.io.IOException;
 
 /**
  * com.lordjoe.distributed.database.DatabaseUtilities
@@ -34,7 +33,7 @@ public class DatabaseUtilities {
              HDFSAccessor accessor = new HDFSAccessor(fs);
              accessor.expunge(name);
 
-            List collect = data.collect();
+            //List collect = data.collect();
             // JavaSchemaRDDs can be saved as Parquet files, maintaining the schema information.
             frame.saveAsParquetFile(name);
         }

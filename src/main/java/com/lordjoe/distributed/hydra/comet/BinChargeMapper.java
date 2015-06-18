@@ -1,11 +1,11 @@
 package com.lordjoe.distributed.hydra.comet;
 
 import com.lordjoe.distributed.hydra.fragment.BinChargeKey;
-import com.lordjoe.distributed.hydra.fragment.SparkBinChargeMapper;
 import org.systemsbiology.xtandem.IMeasuredSpectrum;
 import org.systemsbiology.xtandem.peptide.IPolypeptide;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * com.lordjoe.distributed.hydra.comet.BinChargeMapper
@@ -58,8 +58,8 @@ public class BinChargeMapper {
      */
     public static Set<BinChargeKey> getSpectrumBins(IMeasuredSpectrum spec) {
         Set<BinChargeKey> ret = new HashSet<BinChargeKey>();
-        BinChargeKey[] binChargeKeys = keysFromSpectrum(spec);
-        ret.addAll(Arrays.asList(binChargeKeys));
+        Set<BinChargeKey> binChargeKeys = keysFromSpectrum(spec);
+        ret.addAll(binChargeKeys);
         return ret;
     }
 
@@ -67,12 +67,12 @@ public class BinChargeMapper {
      * @param spec
      * @return
      */
-    public static BinChargeKey[] keysFromSpectrum(IMeasuredSpectrum spec) {
+    public static Set<BinChargeKey> keysFromSpectrum(IMeasuredSpectrum spec) {
         // this is the code used by BinCharge Mapper - todo make it a method
         int charge = 1; // all peptides use 1 now
         // code using MZ
         double matchingMass = spec.getPrecursorMass();   // todo decide whether mass or mz is better
-        BinChargeKey[] keys =  keysFromChargeMzXX(charge, matchingMass);
+        Set<BinChargeKey> keys =  keysFromChargeMzXX(charge, matchingMass);
         return keys;
     }
 
@@ -108,8 +108,8 @@ public class BinChargeMapper {
      * @param mz
      * @return
      */
-    private static BinChargeKey[] keysFromChargeMzXX(int charge, double mz) {
-        List<BinChargeKey> holder = new ArrayList<BinChargeKey>();
+    private static Set<BinChargeKey> keysFromChargeMzXX(int charge, double mz) {
+        Set<BinChargeKey> holder = new HashSet<BinChargeKey>();
         double startMZ = mz - examineWidth;
         int start = BinChargeKey.mzAsInt(startMZ);
         while (BinChargeKey.intToMz(start) < mz + examineWidth) {
@@ -123,8 +123,8 @@ public class BinChargeMapper {
 //        }
 
 
-        BinChargeKey[] ret = new BinChargeKey[holder.size()];
-        holder.toArray(ret);
-        return ret;
+//        BinChargeKey[] ret = new BinChargeKey[holder.size()];
+//        holder.toArray(ret);
+        return holder;
     }
 }

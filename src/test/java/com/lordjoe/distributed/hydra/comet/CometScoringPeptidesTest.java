@@ -94,11 +94,10 @@ public class CometScoringPeptidesTest {
             CometTesting.readCometScoredSpectra(usedSpactra);
         }
 
-        BinChargeKey[] keys = BinChargeMapper.keysFromSpectrum(spec);
+        Set<BinChargeKey> keys = BinChargeMapper.keysFromSpectrum(spec);
 
         Set<Integer> usedBins = new HashSet<Integer>();
-        for (int i = 0; i < keys.length; i++) {
-            BinChargeKey key = keys[i];
+        for (BinChargeKey key : keys) {
             usedBins.add(key.getMzInt());
         }
 

@@ -49,11 +49,10 @@ public class CometParameterTests {
          double matchingMass = CometScoringAlgorithm.getCometMatchingMass(pp);
          BinChargeKey peptideKey = BinChargeMapper.keyFromPeptide(pp);
 
-        BinChargeKey[] spectrumKeys = BinChargeMapper.keysFromSpectrum(spectrum) ;
+        Set<BinChargeKey> spectrumKeys = BinChargeMapper.keysFromSpectrum(spectrum) ;
 
         boolean willScore = false;
-        for (int i = 0; i < spectrumKeys.length; i++) {
-            BinChargeKey spectrumKey = spectrumKeys[i];
+        for (BinChargeKey spectrumKey : spectrumKeys) {
             if(peptideKey.getMzInt() == spectrumKey.getMzInt())
                 willScore = true;
         }
