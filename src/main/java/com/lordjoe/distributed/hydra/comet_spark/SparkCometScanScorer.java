@@ -503,7 +503,9 @@ public class SparkCometScanScorer {
 
         keyedSpectra = SparkUtilities.persist(keyedSpectra);
 
-        Set<Integer> usedBins = getUsedBins(keyedSpectra);
+        //  Set<Integer> usedBins = getUsedBins(keyedSpectra);
+        Map<BinChargeKey,Long> usedBinsMap = getUsedBins(keyedSpectra);
+        Set<Integer> usedBins = temporaryExpedientToExtractIntegers(usedBinsMap);
 
 
         JavaPairRDD<BinChargeKey, HashMap<String, IPolypeptide>> keyedPeptides = getBinChargePeptideHash(sparkProperties, usedBins, handler);
@@ -584,6 +586,31 @@ public class SparkCometScanScorer {
         TestUtilities.closeCaseLoggers();
         // purely debugging  code to see whether interesting peptides scored with interesting spectra
         //TestUtilities.writeSavedKeysAndSpectra();
+    }
+
+    protected static Set<Integer> temporaryExpedientToExtractIntegers(Map<BinChargeKey, Long> usedBinsMap) {
+        // temporary code for compatability
+        Set<Integer>  usedBins = new HashSet<Integer>();
+        List<Long>  binSizes = new ArrayList<Long>();
+
+        for (BinChargeKey key : usedBinsMap.keySet()) {
+            Long aLong1 = usedBinsMap.get(key);
+            binSizes.add(aLong1);
+
+            //   usedBins.add(v);
+            usedBins.add(key.getMzInt());
+        }
+
+        Collections.sort(binSizes);
+        Collections.reverse(binSizes); // biggest first
+        int index = 0;
+        System.out.println("Sizes of " + binSizes.size() + " bins" );
+        for (Long binSize : binSizes) {
+            System.out.println("binsize = " + binSize);
+            if(index++ > 30)
+                break;
+        }
+        return usedBins;
     }
 
     /**
@@ -675,9 +702,11 @@ public class SparkCometScanScorer {
        // fine all bins we are scoring - this allows us to filter peptides
         //keyedSpectra = SparkUtilities.persist(keyedSpectra);
         //List<Tuple2<BinChargeKey, CometScoredScan>> collect = keyedSpectra.collect();
-        Set<Integer> usedBins = getUsedBins(keyedSpectra);
+      //  Set<Integer> usedBins = getUsedBins(keyedSpectra);
+        Map<BinChargeKey,Long> usedBinsMap = getUsedBins(keyedSpectra);
 
-
+        // temporary code for compatability
+        Set<Integer> usedBins = temporaryExpedientToExtractIntegers(usedBinsMap);
 
         // read proteins - digest add modifications
         // JavaPairRDD<BinChargeKey, HashMap<String, IPolypeptide>> keyedPeptides = getBinChargePeptideHash(sparkProperties, usedBins, handler);
@@ -780,20 +809,37 @@ public class SparkCometScanScorer {
         //TestUtilities.writeSavedKeysAndSpectra();
     }
 
+//    /**
+//     * get all keys we use for scoring
+//     *
+//     * @param keyedSpectra
+//     * @return
+//     */
+//    private static Set<Integer> getUsedBins(JavaPairRDD<BinChargeKey, CometScoredScan> keyedSpectra) {
+//        final Set<Integer> ret = new HashSet<Integer>();
+//        JavaRDD<BinChargeKey> keys = keyedSpectra.keys();
+//        List<BinChargeKey> collect = keys.collect();
+//        for (BinChargeKey binChargeKey : collect) {
+//            ret.add(binChargeKey.getMzInt());
+//        }
+//
+//        return ret;
+//    }
+
+
     /**
      * get all keys we use for scoring
      *
      * @param keyedSpectra
      * @return
      */
-    private static Set<Integer> getUsedBins(JavaPairRDD<BinChargeKey, CometScoredScan> keyedSpectra) {
-        final Set<Integer> ret = new HashSet<Integer>();
-        JavaRDD<BinChargeKey> keys = keyedSpectra.keys();
-        List<BinChargeKey> collect = keys.collect();
-        for (BinChargeKey binChargeKey : collect) {
-            ret.add(binChargeKey.getMzInt());
+    private static Map<BinChargeKey,Long> getUsedBins(JavaPairRDD<BinChargeKey, CometScoredScan> keyedSpectra) {
+        Map<BinChargeKey, Object> intermediate = keyedSpectra.countByKey();
+        Map<BinChargeKey,Long> ret = new HashMap<BinChargeKey, Long>();
+        for (BinChargeKey key : intermediate.keySet()) {
+            Long item = (Long)intermediate.get(key);
+            ret.put(key,item);
         }
-
         return ret;
     }
 
