@@ -52,6 +52,7 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
     private boolean normalizationDone;
     private final Map<Integer, Double> fastScoringMap = new HashMap<Integer, Double>();
     private final Map<Integer, Double> fastScoringMapNL = new HashMap<Integer, Double>();
+    private boolean initialized = false;
 
     public CometScoredScan(IMeasuredSpectrum pRaw, CometScoringAlgorithm alg) {
         this();
@@ -62,7 +63,9 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
             m_Raw = pRaw;
 
         }
-        this.setAlgorithm(alg);
+        double mass = m_Raw.getPrecursorMass();    // todo is this peptide or
+        maxArraySize = alg.asBin(mass) + 100; // ((int) ((mass + 100) / getBinTolerance()); //  pScoring->_spectrumInfoInternal.iArraySize
+        //this.setAlgorithm(alg);
         // we keep the data locally
       //  final CometScoringDataForScanBuild scoringData = CometScoringDataForScanBuild.getScoringData();
       //  this.fastScoringMap.putAll(scoringData.getFastScoringMap());
@@ -76,13 +79,14 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
         return fastScoringMap;
     }
 
+    public boolean isInitialized() {
+        return initialized;
+    }
     public Map<Integer, Double> getFastScoringMapNL() {
         return fastScoringMapNL;
     }
 
     public void setAlgorithm(CometScoringAlgorithm alg) {
-        double mass = m_Raw.getPrecursorMass();    // todo is this peptide or
-        maxArraySize = alg.asBin(mass) + 100; // ((int) ((mass + 100) / getBinTolerance()); //  pScoring->_spectrumInfoInternal.iArraySize
 
         //CometScoringDataForScanBuild makeSureReferenceIsNotGarbageCollected = CometScoringDataForScanBuild.getScoringData();
 
@@ -98,6 +102,7 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
 
         normalizeForNL(alg);
 
+        initialized = true;
         return;
 
     }

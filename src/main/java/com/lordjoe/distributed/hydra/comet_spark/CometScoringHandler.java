@@ -290,6 +290,8 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
                     for (CometScoredScan scan : scans) {
                         if (!scorer.isTheoreticalSpectrumScored(scan, ts))
                             continue;
+                        if(!scan.isInitialized())
+                            scan.setAlgorithm(comet);
                         IonUseCounter counter = new IonUseCounter();
                         double xcorr = comet.doXCorr(ts, scorer, counter, scan, null);
                         numberScored++;

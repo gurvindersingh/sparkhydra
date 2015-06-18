@@ -2,7 +2,6 @@ package com.lordjoe.distributed.hydra.comet;
 
 import java.lang.ref.SoftReference;
 import java.util.Arrays;
-import java.util.Map;
 
 /**
  * com.lordjoe.distributed.hydra.comet.CometScoringData
@@ -61,7 +60,7 @@ public class CometScoringDataForScanBuild {
     public CometScoringDataForScanBuild() {
         m_Weightsx = allocateMemory();
         m_TmpFastXcorrData = allocateMemory();
-       m_ScoringFastXcorrData = allocateMemory();
+        m_ScoringFastXcorrData = allocateMemory();
         m_fFastXcorrDataNL = allocateMemory();
         m_TmpFastXcorrData2 = allocateMemory();
         currentScan = null;
