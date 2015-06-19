@@ -42,10 +42,15 @@ public class BinChargeKey implements Serializable, Comparable<BinChargeKey> {
 
     public final int charge;
     public final int mzInt;
+    public final int partition;
 
     public BinChargeKey(final int pCharge, final double pMz) {
+        this(pCharge,pMz,0) ;
+    }
+    public BinChargeKey(final int pCharge, final double pMz,int p ) {
         charge = pCharge;
         mzInt = mzAsInt(pMz);
+        partition = p;
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -72,6 +77,7 @@ public class BinChargeKey implements Serializable, Comparable<BinChargeKey> {
     //    if (charge != that.charge) return false;
 
         if ( mzInt != that.mzInt) return false;
+        if ( partition != that.partition) return false;
 
         return true;
     }
@@ -81,7 +87,7 @@ public class BinChargeKey implements Serializable, Comparable<BinChargeKey> {
         int result;
         result = mzInt;
 
-   //     result = 31 * result + (charge ^ (charge >>> 32));
+         result = 31 * result + (partition ^ (partition >>> 32));
         return result;
     }
 
@@ -90,10 +96,12 @@ public class BinChargeKey implements Serializable, Comparable<BinChargeKey> {
 //        int ret = Integer.compare(charge, o.charge);
 //        if (ret != 0)
 //            return ret;
+
         int x = mzInt;
         int y = o.mzInt;
-        if (x == y)
-            return 0;
+        if (x == y) {
+            return Integer.compare(partition, o.partition);
+        }
         return Integer.compare(x, y);
     }
 

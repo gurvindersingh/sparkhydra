@@ -1,5 +1,6 @@
 package com.lordjoe.distributed.hydra.fragment;
 
+import com.lordjoe.algorithms.MapOfLists;
 import com.lordjoe.distributed.*;
 import com.lordjoe.distributed.hydra.protein.*;
 import com.lordjoe.distributed.hydra.scoring.*;
@@ -94,6 +95,17 @@ public class SparkBinChargeMapper implements Serializable {
     public JavaPairRDD<BinChargeKey, HashMap<String, IPolypeptide>> mapFragmentsToBinHash(JavaRDD<IPolypeptide> inp, final Set<Integer> usedBins, int maxSize) {
         JavaPairRDD<BinChargeKey, IPolypeptide> ppBins = inp.flatMapToPair(new mapPolypeptidesToBin(application, usedBins));
         return mapToKeyedHash(ppBins, maxSize);
+    }
+
+    /**
+     * return a list of all peptides in a bin
+     *
+     * @param inp
+     * @return
+     */
+    public JavaPairRDD<BinChargeKey, HashMap<String, IPolypeptide>> mapSplitFragmentsToBinHash(JavaRDD<IPolypeptide> inp, final MapOfLists<Integer, BinChargeKey> splitKeys ) {
+        JavaPairRDD<BinChargeKey, IPolypeptide> ppBins = inp.flatMapToPair(new SplitMapPolypeptidesToBin(splitKeys));
+        return mapToKeyedHash(ppBins, Integer.MAX_VALUE);
     }
 
     /**
@@ -217,6 +229,41 @@ public class SparkBinChargeMapper implements Serializable {
             // if we don't use the bin don't get the peptide
             if (usedBins != null && usedBins.contains(key.getMzInt())) {
                 holder.add(new Tuple2<BinChargeKey, IPolypeptide>(key, pp));
+            }
+
+            return holder;
+        }
+    }
+
+
+    /**
+     * peptides are only mapped once whereas spectra map to multiple  bins
+     * Note the parameter is an ArrayList to guarantee serializability
+     */
+    public static class SplitMapPolypeptidesToBin extends AbstractLoggingPairFlatMapFunction<IPolypeptide, BinChargeKey, IPolypeptide> {
+
+         private final MapOfLists<Integer, BinChargeKey> splitKeys;
+
+        public SplitMapPolypeptidesToBin(  MapOfLists<Integer, BinChargeKey> splitKeys) {
+              this.splitKeys = splitKeys;
+        }
+
+        @Override
+        public Iterable<Tuple2<BinChargeKey, IPolypeptide>> doCall(final IPolypeptide pp) throws Exception {
+            //    double matchingMass = pp.getMatchingMass();
+            List<Tuple2<BinChargeKey, IPolypeptide>> holder = new ArrayList<Tuple2<BinChargeKey, IPolypeptide>>();
+
+            BinChargeKey key = BinChargeMapper.keyFromPeptide(pp);
+
+            List<BinChargeKey> binChargeKeys = splitKeys.get(key.getMzInt());
+
+            // if we don't use the bin don't get the peptide
+            if (binChargeKeys != null ) {
+                // else peptide may map to multiple keya
+                for (BinChargeKey binChargeKey : binChargeKeys) {
+                    holder.add(new Tuple2<BinChargeKey, IPolypeptide>(binChargeKey, pp));
+
+                }
             }
 
             return holder;

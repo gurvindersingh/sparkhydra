@@ -1,6 +1,8 @@
 package com.lordjoe.distributed.hydra.comet_spark;
 
 import com.lordjoe.algorithms.Long_Formatter;
+import com.lordjoe.algorithms.MapOfLists;
+import com.lordjoe.distributed.AbstractLoggingFlatMapFunction;
 import com.lordjoe.distributed.AbstractLoggingFunction;
 import com.lordjoe.distributed.PercentileFilter;
 import com.lordjoe.distributed.SparkUtilities;
@@ -32,6 +34,7 @@ import org.systemsbiology.xtandem.scoring.IScoredScan;
 import scala.Tuple2;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -54,6 +57,15 @@ public class SparkCometScanScorer {
         debuggingCountMade = pIsDebuggingCountMade;
     }
 
+    private static int maxBinSpectra = 100; // todo make this configurable
+
+    public static int getMaxBinSpectra() {
+        return maxBinSpectra;
+    }
+
+    public static void setMaxBinSpectra(int maxBinSpectra) {
+        SparkCometScanScorer.maxBinSpectra = maxBinSpectra;
+    }
 
     public static final int SPARK_CONFIG_INDEX = 0;
     public static final int TANDEM_CONFIG_INDEX = 1;
@@ -75,6 +87,20 @@ public class SparkCometScanScorer {
         JavaPairRDD<BinChargeKey, ITheoreticalSpectrumSet> keyedPeptides = pHandler.mapFragmentsToTheoreticalSets(databasePeptides);
 
         return keyedPeptides;
+    }
+
+    /**
+     * return all peptides associated with a key as an ArrayList (so Serializable is implemented)
+     *
+     * @param pSparkProperties
+     * @param pHandler
+     * @return
+     */
+    public static JavaPairRDD<BinChargeKey, HashMap<String, IPolypeptide>> getSplitBinChargePeptideHash(final Properties pSparkProperties, final MapOfLists<Integer, BinChargeKey> splitKeys, final SparkMapReduceScoringHandler pHandler) {
+        JavaRDD<IPolypeptide> databasePeptides = readAllPeptides(pSparkProperties, pHandler);
+        // Map peptides into bins
+        JavaPairRDD<BinChargeKey, HashMap<String, IPolypeptide>> keyedPeptidesList = pHandler.mapSplitFragmentsToBinHash(databasePeptides, splitKeys);
+        return keyedPeptidesList;
     }
 
 
@@ -106,12 +132,13 @@ public class SparkCometScanScorer {
 //        return keyedPeptides;
 //    }
 
-    public static JavaPairRDD<BinChargeKey,  CometTheoreticalBinnedSet> getBinChargeTheoreticalPeptide(final Properties pSparkProperties, final Set<Integer> usedBins, final SparkMapReduceScoringHandler pHandler) {
+    public static JavaPairRDD<BinChargeKey, CometTheoreticalBinnedSet> getBinChargeTheoreticalPeptide(final Properties pSparkProperties, final Set<Integer> usedBins, final SparkMapReduceScoringHandler pHandler) {
         JavaRDD<IPolypeptide> databasePeptides = readAllPeptides(pSparkProperties, pHandler);
         // Map peptides into bins
         JavaPairRDD<BinChargeKey, CometTheoreticalBinnedSet> keyedPeptides = pHandler.mapTheoreticalsToBin(databasePeptides, usedBins);
         return keyedPeptides;
     }
+
     /**
      * return all peptides associated with a key as an ArrayList (so Serializable is implemented)
      *
@@ -485,8 +512,8 @@ public class SparkCometScanScorer {
         String spectra = SparkUtilities.buildPath(spectrumPath);
 
         // debugging code set to  check data
-        if(SparkUtilities.isLocal())    {
-            String usedSpactra =  SparkUtilities.buildPath("UsedSpectra.txt");
+        if (SparkUtilities.isLocal()) {
+            String usedSpactra = SparkUtilities.buildPath("UsedSpectra.txt");
             CometTesting.readCometScoredSpectra(usedSpactra);
         }
 
@@ -500,15 +527,24 @@ public class SparkCometScanScorer {
         // these are spectra
         JavaPairRDD<BinChargeKey, CometScoredScan> keyedSpectra = handler.mapMeasuredSpectrumToKeys(cometSpectraToScore);
 
-
         keyedSpectra = SparkUtilities.persist(keyedSpectra);
 
         //  Set<Integer> usedBins = getUsedBins(keyedSpectra);
-        Map<BinChargeKey,Long> usedBinsMap = getUsedBins(keyedSpectra);
-        Set<Integer> usedBins = temporaryExpedientToExtractIntegers(usedBinsMap);
+        Map<BinChargeKey, Long> usedBinsMap = getUsedBins(keyedSpectra);
+
+        MapOfLists<Integer, BinChargeKey> splitKeys = computeBinSplit(usedBinsMap);
+
+        // todo this wrong spectra need to go to only one split
+        if (isBinSplitNeeded(usedBinsMap))     {
+            throw new UnsupportedOperationException("fix this"); // todo add code
+           // keyedSpectra = handler.mapMeasuredSpectrumToKeys(cometSpectraToScore);
+        }
+
+      //    Set<Integer> usedBins = temporaryExpedientToExtractIntegers(usedBinsMap);
 
 
-        JavaPairRDD<BinChargeKey, HashMap<String, IPolypeptide>> keyedPeptides = getBinChargePeptideHash(sparkProperties, usedBins, handler);
+
+        JavaPairRDD<BinChargeKey, HashMap<String, IPolypeptide>> keyedPeptides = getSplitBinChargePeptideHash(sparkProperties, splitKeys, handler);
         timer.showElapsed("Mapped Peptides", System.err);
 
 //        if(false) {
@@ -588,30 +624,75 @@ public class SparkCometScanScorer {
         //TestUtilities.writeSavedKeysAndSpectra();
     }
 
-    protected static Set<Integer> temporaryExpedientToExtractIntegers(Map<BinChargeKey, Long> usedBinsMap) {
-        // temporary code for compatability
-        Set<Integer>  usedBins = new HashSet<Integer>();
-        List<Long>  binSizes = new ArrayList<Long>();
-
-        for (BinChargeKey key : usedBinsMap.keySet()) {
-            Long aLong1 = usedBinsMap.get(key);
-            binSizes.add(aLong1);
-
-            //   usedBins.add(v);
-            usedBins.add(key.getMzInt());
+    private static boolean isBinSplitNeeded(Map<BinChargeKey, Long> usedBinsMap) {
+        int maxBinSize = getMaxBinSpectra();
+        for (Long aLong : usedBinsMap.values()) {
+            if (aLong > getMaxBinSpectra())
+                return true;
         }
-
-        Collections.sort(binSizes);
-        Collections.reverse(binSizes); // biggest first
-        int index = 0;
-        System.out.println("Sizes of " + binSizes.size() + " bins" );
-        for (Long binSize : binSizes) {
-            System.out.println("binsize = " + binSize);
-            if(index++ > 30)
-                break;
-        }
-        return usedBins;
+        return false;
     }
+
+    protected static MapOfLists<Integer, BinChargeKey> computeBinSplit(Map<BinChargeKey, Long> usedBinsMap) {
+        MapOfLists<Integer, BinChargeKey> ret = new MapOfLists<Integer, BinChargeKey>();
+        int maxSize = getMaxBinSpectra();
+        for (BinChargeKey key : usedBinsMap.keySet()) {
+            long binsize = usedBinsMap.get(key);
+            if (binsize < maxSize) {
+                ret.putItem(key.getMzInt(), key);
+            } else {   // split the key
+                BinChargeKey[] keys = splitKey(key, binsize, maxSize);
+                for (int i = 0; i < keys.length; i++) {
+                    BinChargeKey binChargeKey = keys[i];
+                    ret.putItem(binChargeKey.getMzInt(), key);
+                }
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * break one key into a split
+     *
+     * @param key     - original key
+     * @param binsize how many in bin
+     * @param maxSize max in bin
+     * @return array of partitioned keys
+     */
+    protected static BinChargeKey[] splitKey(BinChargeKey key, long binsize, int maxSize) {
+        int numberKeys = 1 + (int) (binsize / maxSize);
+        BinChargeKey[] ret = new BinChargeKey[numberKeys];
+        for (int i = 0; i < ret.length; i++) {
+            ret[i] = new BinChargeKey(key.getCharge(), key.getMz(), i + 1);
+
+        }
+        return ret;
+    }
+//
+//    protected static Set<Integer> temporaryExpedientToExtractIntegers(Map<BinChargeKey, Long> usedBinsMap) {
+//        // temporary code for compatability
+//        Set<Integer> usedBins = new HashSet<Integer>();
+//        List<Long> binSizes = new ArrayList<Long>();
+//
+//        for (BinChargeKey key : usedBinsMap.keySet()) {
+//            Long aLong1 = usedBinsMap.get(key);
+//            binSizes.add(aLong1);
+//
+//            //   usedBins.add(v);
+//            usedBins.add(key.getMzInt());
+//        }
+//
+//        Collections.sort(binSizes);
+//        Collections.reverse(binSizes); // biggest first
+//        int index = 0;
+//        System.out.println("Sizes of " + binSizes.size() + " bins");
+//        for (Long binSize : binSizes) {
+//            System.out.println("binsize = " + binSize);
+//            if (index++ > 30)
+//                break;
+//        }
+//        return usedBins;
+//    }
 
     /**
      * score with a join of a List of peptides
@@ -680,7 +761,7 @@ public class SparkCometScanScorer {
 //        spectraToScore = SparkUtilities.persistAndCount("Total Spectra",spectraToScore,spectraCounts);
 //        long numberSpectra = spectraCounts[0];
 
-        JavaRDD<IPolypeptide> allPeptides = readAllPeptides(sparkProperties,  handler);
+        JavaRDD<IPolypeptide> allPeptides = readAllPeptides(sparkProperties, handler);
 
 //        long[] peptideCounts = new long[1];
 //        allPeptides = SparkUtilities.persistAndCount("Total Peptides",allPeptides,peptideCounts);
@@ -699,20 +780,28 @@ public class SparkCometScanScorer {
         JavaPairRDD<BinChargeKey, CometScoredScan> keyedSpectra = handler.mapMeasuredSpectrumToKeys(cometSpectraToScore);
         //keyedSpectra.partitionBy(partitioner);
 
-       // fine all bins we are scoring - this allows us to filter peptides
+        // fine all bins we are scoring - this allows us to filter peptides
         //keyedSpectra = SparkUtilities.persist(keyedSpectra);
         //List<Tuple2<BinChargeKey, CometScoredScan>> collect = keyedSpectra.collect();
-      //  Set<Integer> usedBins = getUsedBins(keyedSpectra);
-        Map<BinChargeKey,Long> usedBinsMap = getUsedBins(keyedSpectra);
+        //  Set<Integer> usedBins = getUsedBins(keyedSpectra);
+        Map<BinChargeKey, Long> usedBinsMap = getUsedBins(keyedSpectra);
 
         // temporary code for compatability
-        Set<Integer> usedBins = temporaryExpedientToExtractIntegers(usedBinsMap);
+        //  Set<Integer> usedBins = temporaryExpedientToExtractIntegers(usedBinsMap);
+
+        MapOfLists<Integer, BinChargeKey> splitKeys = computeBinSplit(usedBinsMap);
+
+        /**
+         * if spectra are split remap them
+         */
+        keyedSpectra = remapSpectra(keyedSpectra,usedBinsMap);
 
         // read proteins - digest add modifications
         // JavaPairRDD<BinChargeKey, HashMap<String, IPolypeptide>> keyedPeptides = getBinChargePeptideHash(sparkProperties, usedBins, handler);
-       // JavaPairRDD<BinChargeKey, IPolypeptide> keyedPeptides = getBinChargePeptide(sparkProperties, usedBins, handler);
+        // JavaPairRDD<BinChargeKey, IPolypeptide> keyedPeptides = getBinChargePeptide(sparkProperties, usedBins, handler);
         //JavaPairRDD<BinChargeKey, CometTheoreticalBinnedSet> keyedTheoreticalPeptides = getBinChargeTheoreticalPeptide(sparkProperties, usedBins, handler);
-        JavaPairRDD<BinChargeKey, IPolypeptide> keyedPeptides = handler.mapFragmentsToBin(allPeptides, usedBins);
+      //  JavaPairRDD<BinChargeKey, IPolypeptide> keyedPeptides = handler.mapFragmentsToBin(allPeptides, usedBins);
+        JavaPairRDD<BinChargeKey, HashMap<String, IPolypeptide>> keyedPeptides = getSplitBinChargePeptideHash(sparkProperties, splitKeys, handler);
 
 
         //keyedPeptides.partitionBy(partitioner);
@@ -809,6 +898,19 @@ public class SparkCometScanScorer {
         //TestUtilities.writeSavedKeysAndSpectra();
     }
 
+    /**
+     *
+     * @param keyedSpectra
+     * @param usedBinsMap
+     * @return
+     */
+    private static JavaPairRDD<BinChargeKey, CometScoredScan> remapSpectra(JavaPairRDD<BinChargeKey, CometScoredScan> keyedSpectra, Map<BinChargeKey, Long> usedBinsMap) {
+       boolean remapNeeded = false;
+        for (BinChargeKey binChargeKey : usedBinsMap.keySet()) {
+            if(usedBinsMap.get(binChargeKey).s)
+        }
+    }
+
 //    /**
 //     * get all keys we use for scoring
 //     *
@@ -833,12 +935,12 @@ public class SparkCometScanScorer {
      * @param keyedSpectra
      * @return
      */
-    private static Map<BinChargeKey,Long> getUsedBins(JavaPairRDD<BinChargeKey, CometScoredScan> keyedSpectra) {
+    private static Map<BinChargeKey, Long> getUsedBins(JavaPairRDD<BinChargeKey, CometScoredScan> keyedSpectra) {
         Map<BinChargeKey, Object> intermediate = keyedSpectra.countByKey();
-        Map<BinChargeKey,Long> ret = new HashMap<BinChargeKey, Long>();
+        Map<BinChargeKey, Long> ret = new HashMap<BinChargeKey, Long>();
         for (BinChargeKey key : intermediate.keySet()) {
-            Long item = (Long)intermediate.get(key);
-            ret.put(key,item);
+            Long item = (Long) intermediate.get(key);
+            ret.put(key, item);
         }
         return ret;
     }

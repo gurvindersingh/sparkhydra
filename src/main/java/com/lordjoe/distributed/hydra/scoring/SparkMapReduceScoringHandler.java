@@ -1,5 +1,6 @@
 package com.lordjoe.distributed.hydra.scoring;
 
+import com.lordjoe.algorithms.MapOfLists;
 import com.lordjoe.distributed.*;
 import com.lordjoe.distributed.database.*;
 import com.lordjoe.distributed.hydra.*;
@@ -197,6 +198,35 @@ public class SparkMapReduceScoringHandler implements Serializable {
     }
 
 
+    public <T extends IMeasuredSpectrum> JavaPairRDD<BinChargeKey, T> reMapMeasuredSpectrumToKeys(JavaRDD<T> inp, MapOfLists<Integer, BinChargeKey> splitKeys) {
+          return binMapper.mapMeasuredSpectrumToKeys(inp);
+    }
+
+    // in this case we support a split key where spectra map to
+    private class ReMapMeasuredSpectraToBins<T extends IMeasuredSpectrum> extends AbstractLoggingPairFlatMapFunction<T, BinChargeKey, T> {
+        private final MapOfLists<Integer, BinChargeKey> splitKeys;
+
+        public ReMapMeasuredSpectraToBins(MapOfLists<Integer, BinChargeKey> splitKeys) {
+            this.splitKeys = splitKeys;
+        }
+
+        @Override
+        public Iterable<Tuple2<BinChargeKey, T>> doCall(final T spec) throws Exception {
+             List<Tuple2<BinChargeKey, T>> holder = new ArrayList<Tuple2<BinChargeKey, T>>();
+
+            Set<BinChargeKey> keys = BinChargeMapper.keysFromSpectrum(spec);
+
+            for (BinChargeKey key : keys) {
+                List<BinChargeKey> binChargeKeys = splitKeys.get(key.getMzInt());
+                for (BinChargeKey binChargeKey : binChargeKeys) {
+                    holder.add(new Tuple2<BinChargeKey, T>(binChargeKey, spec));
+               }
+            }
+             return holder;
+        }
+    }
+
+
     public <T extends IMeasuredSpectrum> JavaPairRDD<BinChargeKey, T> mapMeasuredSpectrumToKeys(JavaRDD<T> inp) {
         inp = SparkUtilities.repartitionIfNeeded(inp);
         return binMapper.mapMeasuredSpectrumToKeys(inp);
@@ -243,13 +273,22 @@ public class SparkMapReduceScoringHandler implements Serializable {
          return binMapper.mapFragmentsToBinList(inp, usedBins);
      }
     /**
-       * map a set of peptides to  ITheoreticalSpectrumSet in each bin
-       * @param inp  set of peptides
-       * @return  peptides mapped to bins
-       */
-      public JavaPairRDD<BinChargeKey,HashMap<String, IPolypeptide>> mapFragmentsToBinHash(JavaRDD<IPolypeptide> inp,final Set<Integer> usedBins) {
-          return binMapper.mapFragmentsToBinHash(inp,usedBins, CometScoringAlgorithm.getMaximumPeptideListSize());
-      }
+     * map a set of peptides to  ITheoreticalSpectrumSet in each bin
+     * @param inp  set of peptides
+     * @param splitKeys map mz to keys - supports splitting keys
+     * @return  peptides mapped to bins
+     */
+    public JavaPairRDD<BinChargeKey,HashMap<String, IPolypeptide>> mapSplitFragmentsToBinHash(JavaRDD<IPolypeptide> inp,  final MapOfLists<Integer, BinChargeKey> splitKeys) {
+        return binMapper.mapSplitFragmentsToBinHash(inp, splitKeys);
+    }
+    /**
+     * map a set of peptides to  ITheoreticalSpectrumSet in each bin
+     * @param inp  set of peptides
+     * @return  peptides mapped to bins
+     */
+    public JavaPairRDD<BinChargeKey,HashMap<String, IPolypeptide>> mapFragmentsToBinHash(JavaRDD<IPolypeptide> inp,final Set<Integer> usedBins) {
+        return binMapper.mapFragmentsToBinHash(inp,usedBins, CometScoringAlgorithm.getMaximumPeptideListSize());
+    }
 
     /**
      * map a set of peptides to  ITheoreticalSpectrumSet in each bin
