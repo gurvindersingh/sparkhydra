@@ -36,4 +36,13 @@ public class MapOfLists<K,V> implements Serializable {
     }
 
 
+    public boolean containsEntryGreaterThanOne()
+    {
+        for (List<V> vs : items.values()) {
+            if(vs.size() > 1)
+                return true;
+        }
+        return false;
+    }
+
 }

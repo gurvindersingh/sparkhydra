@@ -278,8 +278,21 @@ public class SparkMapReduceScoringHandler implements Serializable {
      * @param splitKeys map mz to keys - supports splitting keys
      * @return  peptides mapped to bins
      */
-    public JavaPairRDD<BinChargeKey,HashMap<String, IPolypeptide>> mapSplitFragmentsToBinHash(JavaRDD<IPolypeptide> inp,  final MapOfLists<Integer, BinChargeKey> splitKeys) {
-        return binMapper.mapSplitFragmentsToBinHash(inp, splitKeys);
+    public JavaPairRDD<BinChargeKey, IPolypeptide > mapSplitFragmentsToBinHash(JavaRDD<IPolypeptide> inp,  final MapOfLists<Integer, BinChargeKey> splitKeys) {
+        JavaPairRDD<BinChargeKey, HashMap<String, IPolypeptide>> mappedByhash = binMapper.mapSplitFragmentsToBinHash(inp, splitKeys);
+          JavaPairRDD<BinChargeKey, IPolypeptide> binnedPeptides = mappedByhash.flatMapToPair(new PairFlatMapFunction<Tuple2<BinChargeKey, HashMap<String, IPolypeptide>>, BinChargeKey, IPolypeptide>() {
+            @Override
+            public Iterable<Tuple2<BinChargeKey, IPolypeptide>> call(Tuple2<BinChargeKey, HashMap<String, IPolypeptide>> v) throws Exception {
+                List<Tuple2<BinChargeKey, IPolypeptide>> ret = new ArrayList<Tuple2<BinChargeKey, IPolypeptide>>();
+                HashMap<String, IPolypeptide> hm = v._2();
+                Collection<IPolypeptide> pps = hm.values();
+                for (IPolypeptide pp : pps) {
+                    ret.add(new Tuple2(v._1(), pp));
+                }
+                return ret;
+            }
+        });
+        return binnedPeptides;
     }
     /**
      * map a set of peptides to  ITheoreticalSpectrumSet in each bin
