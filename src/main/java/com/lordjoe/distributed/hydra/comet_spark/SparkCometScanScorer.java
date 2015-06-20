@@ -59,7 +59,7 @@ public class SparkCometScanScorer {
         debuggingCountMade = pIsDebuggingCountMade;
     }
 
-    private static int maxBinSpectra = 100; // todo make this configurable
+    private static int maxBinSpectra = 30; // todo make this configurable
 
     public static int getMaxBinSpectra() {
         return maxBinSpectra;
@@ -918,12 +918,11 @@ public class SparkCometScanScorer {
                 CometScoredScan spectrum = v._2();
                 List<Tuple2<BinChargeKey, CometScoredScan>> ret = new ArrayList<Tuple2<BinChargeKey, CometScoredScan>>();
                 List<BinChargeKey> binChargeKeys = splitKeys.get(mzI);
-                int keyIndex = Math.abs(index++) % splitKeys.size() ;
+                int keyIndex = Math.abs(index++) % binChargeKeys.size() ;
                 BinChargeKey newKey = binChargeKeys.get(keyIndex);
                 return new Tuple2<BinChargeKey, CometScoredScan>(newKey,spectrum);
             }
         }) ;
-
     }
 
 //    /**

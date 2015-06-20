@@ -879,19 +879,19 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
      * @return
      */
     public ITheoreticalSpectrumSet generateSpectrum(Scorer scorer, final IPolypeptide pPeptide) {
-        if (pPeptide.isModified())
-            TestUtilities.breakHere();
-        if (TestUtilities.isInterestingPeptide(pPeptide))
-            TestUtilities.breakHere();
+//        if (pPeptide.isModified())
+//            TestUtilities.breakHere();
+//        if (TestUtilities.isInterestingPeptide(pPeptide))
+//            TestUtilities.breakHere();
 
-        final SequenceUtilities su = scorer.getSequenceUtilities();
+//        final SequenceUtilities su = scorer.getSequenceUtilities();
         double massPlusH = pPeptide.getMass() + XTandemUtilities.getProtonMass() + XTandemUtilities.getCleaveCMass() + XTandemUtilities.getCleaveNMass();
         CometTheoreticalBinnedSet set = new CometTheoreticalBinnedSet(scorer.MAX_CHARGE, massPlusH,
                 pPeptide, this, scorer);
 
-        if (TestUtilities.isInterestingPeptide(pPeptide)) {
-            CometTesting.validateOneIndexSet(set.getBinnedIndex(this,scorer));
-        }
+//        if (TestUtilities.isInterestingPeptide(pPeptide)) {
+//            CometTesting.validateOneIndexSet(set.getBinnedIndex(this,scorer));
+//        }
         return set;
     }
 

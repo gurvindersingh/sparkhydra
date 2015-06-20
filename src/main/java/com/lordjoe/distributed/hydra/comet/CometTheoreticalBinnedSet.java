@@ -1,6 +1,5 @@
 package com.lordjoe.distributed.hydra.comet;
 
-import com.lordjoe.distributed.hydra.test.TestUtilities;
 import org.systemsbiology.xtandem.XTandemUtilities;
 import org.systemsbiology.xtandem.ionization.*;
 import org.systemsbiology.xtandem.peptide.IPolypeptide;
@@ -41,8 +40,8 @@ public class CometTheoreticalBinnedSet extends TheoreticalSpectrumSet {
             PeptideSpectrum ps = new PeptideSpectrum(this, charge, IonType.B_ION_TYPES, scorer.getSequenceUtilities());
             PeptideIon[] spectrum = ps.getSpectrum();
 
-            if (charge > 1)
-                TestUtilities.breakHere();
+//            if (charge > 1)
+//                TestUtilities.breakHere();
 
             for (int i = 0; i < spectrum.length; i++) {
                 PeptideIon peptideIon = spectrum[i];
