@@ -456,7 +456,7 @@ public class PepXMLWriter implements Serializable {
         out.append(peptide.getSequence());
         out.append("\"");
         IMeasuredSpectrum conditionedScan = scan.getConditionedScan();
-        int totalPeaks = conditionedScan.getPeaks().length;
+        int totalPeaks = conditionedScan.getPeaksCount();
         IMeasuredSpectrum raw = scan.getRaw();
         double precursorMass = raw.getPrecursorMass(); // raw.getPrecursorMass(scan.getCharge());
         double pepMass = peptide.getMatchingMass();

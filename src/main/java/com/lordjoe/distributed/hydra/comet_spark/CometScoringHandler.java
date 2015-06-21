@@ -23,6 +23,7 @@ import org.systemsbiology.xtandem.ionization.ITheoreticalSpectrumSet;
 import org.systemsbiology.xtandem.ionization.IonUseCounter;
 import org.systemsbiology.xtandem.peptide.IPolypeptide;
 import org.systemsbiology.xtandem.scoring.IScoredScan;
+import org.systemsbiology.xtandem.scoring.LowMemoryIdOnlySpectrum;
 import org.systemsbiology.xtandem.scoring.Scorer;
 import org.systemsbiology.xtandem.scoring.SpectralMatch;
 import scala.Tuple2;
@@ -296,14 +297,16 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
                         double xcorr = comet.doXCorr(ts, scorer, counter, scan, null);
                         numberScored++;
                         if (xcorr > MINIMUM_ACCEPTABLE_SCORE) {
-                            SpectralMatch spectralMatch = new SpectralMatch(ts.getPeptide(), scan.getRaw(), xcorr, xcorr, xcorr, scan, null);
-                            CometScoringResult res = new CometScoringResult(scan.getRaw());
+                            IMeasuredSpectrum raw = new LowMemoryIdOnlySpectrum(scan.getRaw());
+                            SpectralMatch spectralMatch = new SpectralMatch(ts.getPeptide(), raw, xcorr, xcorr, xcorr, scan, null);
+                            CometScoringResult res = new CometScoringResult(raw);
                             res.addSpectralMatch(spectralMatch);
                             if(res.isValidMatch())
                                 ret.add(res);
                         }
                     }
                 }
+                ts = null; // please garbage collect
             }
 
 //            for (IScoredScan scan : result) {
