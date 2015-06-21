@@ -58,6 +58,8 @@ public class BinChargeKey implements Serializable, Comparable<BinChargeKey> {
         return mzInt;
     }
 
+    public int getPartition() { return partition;  }
+
     public double getMz() {
           return intToMz(mzInt);
     }
@@ -106,6 +108,6 @@ public class BinChargeKey implements Serializable, Comparable<BinChargeKey> {
     }
 
     public String toString() {
-        return Integer.toString(charge) + ":" + String.format("%10.3f", getMz()) + ":" + getMzInt();
+        return Integer.toString(charge) + ":" + String.format("%10.3f", getMz()) + ":" + getMzInt() + ":" + partition;
     }
 }

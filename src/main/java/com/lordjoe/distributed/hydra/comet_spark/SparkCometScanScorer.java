@@ -24,6 +24,7 @@ import com.lordjoe.utilities.ElapsedTimer;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.function.FlatMapFunction;
+import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.PairFunction;
 import org.apache.spark.storage.StorageLevel;
 import org.systemsbiology.xtandem.IMeasuredSpectrum;
@@ -646,7 +647,7 @@ public class SparkCometScanScorer {
                 BinChargeKey[] keys = splitKey(key, binsize, maxSize);
                 for (int i = 0; i < keys.length; i++) {
                     BinChargeKey binChargeKey = keys[i];
-                    ret.putItem(binChargeKey.getMzInt(), key);
+                    ret.putItem(binChargeKey.getMzInt(), binChargeKey);
                 }
             }
         }
@@ -916,7 +917,6 @@ public class SparkCometScanScorer {
             public Tuple2<BinChargeKey, CometScoredScan> call(Tuple2<BinChargeKey, CometScoredScan> v) throws Exception {
                 Integer mzI = v._1().getMzInt();
                 CometScoredScan spectrum = v._2();
-                List<Tuple2<BinChargeKey, CometScoredScan>> ret = new ArrayList<Tuple2<BinChargeKey, CometScoredScan>>();
                 List<BinChargeKey> binChargeKeys = splitKeys.get(mzI);
                 int keyIndex = Math.abs(index++) % binChargeKeys.size() ;
                 BinChargeKey newKey = binChargeKeys.get(keyIndex);
