@@ -1,6 +1,5 @@
 package com.lordjoe.distributed.hydra.comet;
 
-import com.lordjoe.distributed.hydra.test.*;
 import org.systemsbiology.sax.*;
 import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.*;

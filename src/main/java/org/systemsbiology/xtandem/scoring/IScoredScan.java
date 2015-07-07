@@ -11,7 +11,6 @@ import org.systemsbiology.xtandem.ionization.*;
  */
 public interface IScoredScan extends IonTypeScorer, Comparable<IScoredScan> {
 
-
     /**
      * combine two scores
      *

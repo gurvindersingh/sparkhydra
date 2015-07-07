@@ -13,7 +13,7 @@ import java.util.*;
  * User: Steve
  * Date: 11/24/2014
  */
-public class MachineUseAccumulator implements Serializable {
+public class MachineUseAccumulator implements IAccumulator<MachineUseAccumulator> {
     public static final MachineUseAccumulableParam PARAM_INSTANCE = new MachineUseAccumulableParam();
 
     public static class MachineUseAccumulableParam implements AccumulatorParam<MachineUseAccumulator>, Serializable {
@@ -22,8 +22,7 @@ public class MachineUseAccumulator implements Serializable {
 
         @Override
         public MachineUseAccumulator addAccumulator(final MachineUseAccumulator t1, final MachineUseAccumulator t2) {
-            t1.addAll(t2);
-            return new MachineUseAccumulator(t1);
+             return new MachineUseAccumulator(t1.add(t2));
         }
 
         /**
@@ -36,9 +35,8 @@ public class MachineUseAccumulator implements Serializable {
          */
         @Override
         public MachineUseAccumulator addInPlace(final MachineUseAccumulator r1, final MachineUseAccumulator r2) {
-            r1.addAll(r2);
-            return r1;
-        }
+            return r1.add(r2);
+           }
 
         /**
          * Return the "zero" (identity) value for an accumulator type, given its initial value. For
@@ -97,12 +95,13 @@ public class MachineUseAccumulator implements Serializable {
     }
 
 
-    protected void addAll(MachineUseAccumulator added) {
+    public MachineUseAccumulator add(MachineUseAccumulator added) {
         for (String t : added.items.keySet()) {
             long value = added.get(t);
             addEntry(t, value);
         }
         totalTime += added.getTotalTime();
+        return this;
     }
 
 

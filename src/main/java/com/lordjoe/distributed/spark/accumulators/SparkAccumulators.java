@@ -2,7 +2,7 @@ package com.lordjoe.distributed.spark.accumulators;
 
 import com.lordjoe.distributed.*;
 import com.lordjoe.distributed.hydra.test.*;
-import com.lordjoe.distributed.spark.SpectrumScoringAccumulator;
+import com.lordjoe.distributed.spark.*;
 import com.lordjoe.utilities.*;
 import org.apache.spark.*;
 import org.apache.spark.api.java.*;
@@ -18,6 +18,7 @@ import java.util.*;
  */
 public class SparkAccumulators implements Serializable {
 
+    public static final String MEMORY_ACCUMULATOR_NAME = "MemoryUsage";
 
     public static final int MAX_TRACKED_THREADS = 10;
     private static SparkAccumulators instance;
@@ -43,6 +44,9 @@ public class SparkAccumulators implements Serializable {
             instance.createSpecialAccumulator(id, SpectrumScoringAccumulator.PARAM_INSTANCE,new SpectrumScoringAccumulator(id));
         }
         }
+
+        instance.createSpecialAccumulator(MEMORY_ACCUMULATOR_NAME, MemoryUseAccumulator.PARAM_INSTANCE,new MemoryUseAccumulator());
+
 //        for (int i = 0; i < MAX_TRACKED_THREADS; i++) {
 //            //noinspection AccessStaticViaInstance
 //            instance.createAccumulator(ThreadUseLogger.getThreadAccumulatorName(i));

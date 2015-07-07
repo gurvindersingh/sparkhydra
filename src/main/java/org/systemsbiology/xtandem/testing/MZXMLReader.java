@@ -43,14 +43,17 @@ public class MZXMLReader {
          LineNumberReader rdr = new LineNumberReader(new InputStreamReader(pIs));
         String line = rdr.readLine();
         int scanLevel = 0;
-        while (line != null) {
+          while (line != null) {
             if (line.contains("<scan")) {
                 scanLevel++;
                 break;
             }
             line = rdr.readLine();
         }
-        do {
+         if(scanLevel > 0)
+             sb.append(line);
+
+          do {
 
             line = rdr.readLine();
             sb.append(line);

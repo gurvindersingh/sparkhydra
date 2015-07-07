@@ -1,7 +1,8 @@
 package com.lordjoe.algorithms;
 
-import java.io.Serializable;
-import java.util.Arrays;
+import com.lordjoe.distributed.spark.accumulators.*;
+
+import java.util.*;
 
 /**
  * com.lordjoe.algorithms.CountedDistribution
@@ -9,7 +10,7 @@ import java.util.Arrays;
  * @author Steve Lewis
  * @date 5/28/2015
  */
-public class CountedDistribution implements Serializable {
+public class CountedDistribution implements  IAccumulator<CountedDistribution> {
 
 
     public CountedDistribution() {

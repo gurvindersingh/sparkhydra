@@ -419,7 +419,11 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
         return ret;
     }
 
-    public double doXCorr(final CometTheoreticalBinnedSet pTs,final Scorer scorerData, final IonUseCounter pCounter, CometScoredScan scan, List<XCorrUsedData> used) {
+    public double doXCorr(final CometTheoreticalBinnedSet pTs,
+                          final Scorer scorerData,
+                          final IonUseCounter pCounter,
+                          CometScoredScan scan,
+                          List<XCorrUsedData> used) {
         //if(true)
         //    return Math.random();
         CometTheoreticalBinnedSet sts = pTs;

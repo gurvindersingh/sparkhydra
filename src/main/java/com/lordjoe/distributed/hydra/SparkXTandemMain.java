@@ -1,8 +1,8 @@
 package com.lordjoe.distributed.hydra;
 
 import com.lordjoe.distributed.*;
-import org.systemsbiology.xtandem.*;
 import com.lordjoe.distributed.hydra.comet.*;
+import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.hadoop.*;
 
 import java.io.*;

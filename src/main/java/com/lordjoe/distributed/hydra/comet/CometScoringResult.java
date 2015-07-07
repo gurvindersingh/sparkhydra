@@ -38,9 +38,10 @@ public class CometScoringResult implements IScoredScan, IAddable<IScoredScan>, I
 
 
     /**
-     * make an empty result
+     * make a result with a spectrum
      */
     public CometScoringResult(IMeasuredSpectrum raw) {
+        this();
         m_Raw = raw;
 
     }

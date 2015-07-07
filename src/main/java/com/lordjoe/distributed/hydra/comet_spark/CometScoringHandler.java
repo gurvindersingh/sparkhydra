@@ -1,6 +1,6 @@
 package com.lordjoe.distributed.hydra.comet_spark;
 
-import com.lordjoe.algorithms.CountedDistribution;
+import com.lordjoe.algorithms.*;
 import com.lordjoe.distributed.AbstractLoggingFlatMapFunction;
 import com.lordjoe.distributed.AbstractLoggingFunction2;
 import com.lordjoe.distributed.AbstractLoggingPairFlatMapFunction;
@@ -9,8 +9,7 @@ import com.lordjoe.distributed.hydra.comet.*;
 import com.lordjoe.distributed.hydra.fragment.BinChargeKey;
 import com.lordjoe.distributed.hydra.scoring.SparkMapReduceScoringHandler;
 import com.lordjoe.distributed.hydra.test.TestUtilities;
-import com.lordjoe.distributed.spark.accumulators.CountedDistributionAccumulatorParam;
-import com.lordjoe.distributed.spark.accumulators.SparkAccumulators;
+import com.lordjoe.distributed.spark.accumulators.*;
 import com.lordjoe.utilities.ElapsedTimer;
 import org.apache.spark.Accumulator;
 import org.apache.spark.api.java.JavaPairRDD;
@@ -258,6 +257,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
 
         private CometScoringAlgorithm comet;
         private Scorer scorer;
+        private Accumulator<MemoryUseAccumulator> memoryAccululator;
         private final Accumulator<Long> numberScoredAccumlator = SparkAccumulators.createAccumulator(TOTAL_SCORRED_ACCUMULATOR_NAME);
         private final Accumulator<CountedDistribution> peptideDistributionCounts = SparkAccumulators.createSpecialAccumulator(PEPTIDES_ACCUMULATOR_NAME,
                 CountedDistributionAccumulatorParam.INSTANCE, new CountedDistribution());
@@ -268,11 +268,16 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
         public ScoreSpectrumAndPeptideWithCogroupWithoutHash(XTandemMain application) {
             comet = (CometScoringAlgorithm) application.getAlgorithms()[0];
             scorer = application.getScoreRunner();
+            SparkAccumulators instance = SparkAccumulators.getInstance();
+            memoryAccululator = (Accumulator<MemoryUseAccumulator>) instance.getSpecialAccumulator(SparkAccumulators.MEMORY_ACCUMULATOR_NAME);
         }
 
 
         @Override
         public Iterable<IScoredScan> doCall(Tuple2<BinChargeKey, Tuple2<Iterable<CometScoredScan>, Iterable<IPolypeptide>>> inp) throws Exception {
+
+            MemoryUseAccumulator acc = new MemoryUseAccumulator();
+
             List<IScoredScan> ret = new ArrayList<IScoredScan>();
             Iterable<CometScoredScan> scans = inp._2()._1();
             Iterable<IPolypeptide> peptides = inp._2()._2();
@@ -304,6 +309,8 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
                             if(res.isValidMatch())
                                 ret.add(res);
                         }
+
+                        acc.check(); // record memory use
                     }
                 }
                 ts = null; // please garbage collect
@@ -314,8 +321,15 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
 //                    ret.add(scan);
 //            }
             numberScoredAccumlator.add(numberScored);
+
+            acc.saveBins(); // get max use
+            memoryAccululator.add(acc);
+
 //            peptideDistributionCounts.add(new CountedDistribution(numberpeptides));
 //            spectrumDistributionCounts.add(new CountedDistribution(numberSpectra));
+
+            System.gc(); // try to clean up
+
             return ret;
         }
 

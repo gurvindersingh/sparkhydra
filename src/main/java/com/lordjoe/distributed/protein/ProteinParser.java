@@ -1,12 +1,9 @@
 package com.lordjoe.distributed.protein;
 
 import org.systemsbiology.xtandem.peptide.*;
-import org.systemsbiology.xtandem.taxonomy.FastaParser;
-import org.systemsbiology.xtandem.taxonomy.IFastaHandler;
+import org.systemsbiology.xtandem.taxonomy.*;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.*;
 
 /**

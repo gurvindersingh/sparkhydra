@@ -31,7 +31,8 @@ import scala.*;
 import java.util.*;
 import java.util.regex.*;
 
-public final class JavaLargeWordCount {
+public final class
+        JavaLargeWordCount {
     private static final Pattern SPACE = Pattern.compile(" ");
 
     public static class PartitionByStart extends Partitioner {
