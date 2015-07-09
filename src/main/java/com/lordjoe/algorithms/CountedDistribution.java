@@ -2,6 +2,7 @@ package com.lordjoe.algorithms;
 
 import com.lordjoe.distributed.spark.accumulators.*;
 
+import java.io.*;
 import java.util.*;
 
 /**
@@ -84,6 +85,22 @@ public class CountedDistribution implements  IAccumulator<CountedDistribution> {
         return this;
     }
 
+    /**
+     * like toString but might add more information than a shorter string
+     * usually implemented bu appending toString
+     *
+     * @param out
+     */
+    @Override
+    public void buildReport(final Appendable out) {
+        try {
+            out.append(toString()) ;
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+
+        }
+    }
 
     public int getMaxValue() {
         return maxValue;

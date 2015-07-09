@@ -110,7 +110,7 @@ public class SparkAccumulators implements Serializable {
         for (String accumulatorName : functionAccumulatorNames) {
             Accumulator<MachineUseAccumulator> accumulator = pMe.getFunctionAccumulator(accumulatorName);
             MachineUseAccumulator value = accumulator.value();
-            totalCalls.addAll(value);
+            totalCalls.add(value);
             //noinspection StringConcatenationInsideStringBufferAppend
             out.append(accumulatorName + " " + value + "\n");
         }
@@ -122,14 +122,23 @@ public class SparkAccumulators implements Serializable {
         for (String accumulatorName : specialAccumulatorNames) {
             Accumulator accumulator = pMe.getSpecialAccumulator(accumulatorName);
             Object value = accumulator.value();
-            if (value instanceof SpectrumScoringAccumulator) {
-                SpectrumScoringAccumulator spectr = (SpectrumScoringAccumulator) value;
-                if(spectr.getTotalCalls() == 0)
-                    continue;
+            if(value instanceof IAccumulator)   {
+                // let the value figure out how to make a report
+                out.append(accumulatorName + "\n"  );
+                ((IAccumulator)value).buildReport(out);
+                out.append( "\n");
             }
-            //noinspection StringConcatenationInsideStringBufferAppend
-            out.append(accumulatorName + "\n" + value.toString() + "\n");
-        }
+            else {
+                if (value instanceof SpectrumScoringAccumulator) {
+                  SpectrumScoringAccumulator spectr = (SpectrumScoringAccumulator) value;
+                  if(spectr.getTotalCalls() == 0)
+                      continue;
+              }
+              //noinspection StringConcatenationInsideStringBufferAppend
+              out.append(accumulatorName + "\n" + value.toString() + "\n");
+
+            }
+           }
     }
 
 

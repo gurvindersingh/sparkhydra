@@ -104,7 +104,7 @@ public class MemoryUseAccumulator implements IAccumulator<MemoryUseAccumulator> 
         iBin = Math.min(allocated.length - 1,iBin);
         allocated[iBin]++;
         iBin = (int) (maxHeap / MEG_40);
-        iBin = Math.min(bins.length - 1,iBin);
+        iBin = Math.min(bins.length - 1, iBin);
         bins[iBin]++;
     }
 
@@ -122,7 +122,22 @@ public class MemoryUseAccumulator implements IAccumulator<MemoryUseAccumulator> 
     }
 
 
+    /**
+           * like toString but might add more information than a shorter string
+           * usually implemented bu appending toString
+           *
+           * @param out
+           */
+          @Override
+          public void buildReport(final Appendable out) {
+              try {
+                  out.append(toString());
+              }
+              catch (IOException e) {
+                  throw new RuntimeException(e);
 
+              }
+          }
 
     @Override
     public String toString() {

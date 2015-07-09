@@ -17,6 +17,7 @@ import java.util.*;
  */
 public class MemoryUseAccumulatorAndBinSize implements IAccumulator<MemoryUseAccumulatorAndBinSize> {
 
+    public static final String BIN_ACCUMULATOR_NAME = "BinUsage";
     public static final MemoryUseAccumulatorAndBinSizeParam PARAM_INSTANCE = new MemoryUseAccumulatorAndBinSizeParam();
 
     public static class MemoryUseAccumulatorAndBinSizeParam implements AccumulatorParam<MemoryUseAccumulatorAndBinSize>, Serializable {
@@ -56,50 +57,11 @@ public class MemoryUseAccumulatorAndBinSize implements IAccumulator<MemoryUseAcc
     }
 
 
-    private class MemoryAndBinSize implements Comparable<MemoryAndBinSize> {
-        public final long memoryUse;
-        public final int numberSpectra;
-        public final int numberPeptides;
-
-        public MemoryAndBinSize(final long pMemoryUse, final int pNumberSpectra, final int pNumberPeptides) {
-            memoryUse = pMemoryUse;
-            numberSpectra = pNumberSpectra;
-            numberPeptides = pNumberPeptides;
-        }
-
-        /**
-         * sorts highest usage first
-         * @param o
-         * @return
-         */
-        @Override
-        public int compareTo(final MemoryAndBinSize o) {
-            int ret = Long.compare(o.memoryUse, memoryUse);
-            if (ret != 0)
-                return ret;
-            ret = Integer.compare(o.numberPeptides, numberPeptides);
-            if (ret != 0)
-                ret = Integer.compare(o.numberSpectra, numberSpectra);
-            if (ret != 0)
-                return ret;
-            return 0;
-        }
-
-        @Override
-        public String toString() {
-            return "MemoryAndBinSize{" +
-                    "memoryUse=" + memoryUse +
-                    ", numberSpectra=" + numberSpectra +
-                    ", numberPeptides=" + numberPeptides +
-                    '}';
-        }
-    }
-
     private transient long startAllocation;
     private transient long maxAllocated;
 
     private long maxHeap;
-    private List<MemoryAndBinSize> usage;
+    private List<MemoryAndBinSize> usage = new ArrayList<MemoryAndBinSize>();
 
     public MemoryUseAccumulatorAndBinSize() {
         startAllocation = MemoryTracker.threadAllocatedBytes();
@@ -132,13 +94,47 @@ public class MemoryUseAccumulatorAndBinSize implements IAccumulator<MemoryUseAcc
         return this;
     }
 
+    /**
+     * like toString but might add more information than a shorter string
+     * usually implemented bu appending toString
+     *
+     * @param out
+     */
+    @Override
+    public void buildReport(final Appendable out) {
+        buildReport(out, Integer.MAX_VALUE);
+    }
+
+    /**
+     * like toString but might add more information than a shorter string
+     * usually implemented bu appending toString
+     *
+     * @param out
+     */
+    protected void buildReport(final Appendable out, int maxReprt) {
+        int lines = 0;
+        List<MemoryAndBinSize> usage = getUsage();
+        Collections.sort(usage);  // get highest
+        try {
+            for (MemoryAndBinSize memoryAndBinSize : usage) {
+                out.append(memoryAndBinSize.toString());
+                out.append("\n");
+
+                if (lines++ > maxReprt)
+                    break;
+            }
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        if(true)
-            throw new UnsupportedOperationException("Fix This"); // ToDo
+        buildReport(sb, 20);
         return sb.toString();
     }
 

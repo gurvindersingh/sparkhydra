@@ -15,6 +15,17 @@ import java.io.*;
  */
 public class SparkXTandemMain extends XTandemMain {
 
+     // Define some property names
+     public static final String PREPEND_NAME_PROPERTY =  "com.lordjoe.distributed.PathPrepend";
+    // if true  do not score  - default false
+    public static final String BYPASS_SCORING_PROPERTY =  "com.lordjoe.distributed.hydra.BypassScoring";
+    // if true  do keep statistics on bin sizes  - default false
+    public static final String KEEP__BIN_STATISTICS_PROPERTY =  "com.lordjoe.distributed.hydra.KeepBinStatistics";
+    // if true  do keep statistics on bin sizes  - default false
+    public static final String DO_GC_AFTER_BIN =  "com.lordjoe.distributed.hydra.doGCAfterBin";
+    // maximum bin size - default Integer.MAX_VALUE
+    public static final String MAX_BIN_SIZE_PROPERTY =  "com.lordjoe.distributed.hydra.MaxBinSize";
+
     public SparkXTandemMain(final InputStream is, final String url) {
         super(is, url);
         String algorithm = getParameter("scoring, algorithm");
@@ -27,7 +38,7 @@ public class SparkXTandemMain extends XTandemMain {
             }
         }
         addOpener(new SparkFileOpener(this));
-        String pathPrepend = SparkUtilities.getSparkProperties().getProperty("com.lordjoe.distributed.PathPrepend");
+        String pathPrepend = SparkUtilities.getSparkProperties().getProperty(PREPEND_NAME_PROPERTY);
 
         if (pathPrepend != null) {
             System.err.println("Setting default path " + pathPrepend);

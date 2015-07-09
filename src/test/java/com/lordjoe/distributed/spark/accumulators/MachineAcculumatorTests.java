@@ -1,7 +1,6 @@
 package com.lordjoe.distributed.spark.accumulators;
 
 import com.lordjoe.distributed.*;
-import com.lordjoe.distributed.spark.accumulators.MachineUseAccumulator;
 import org.junit.*;
 
 import java.util.*;
@@ -55,7 +54,7 @@ public class MachineAcculumatorTests {
         Assert.assertEquals(1, acc2.size());
         Assert.assertEquals(NUMBER_ENTRIES, acc2.get(name));
 
-        acc.addAll(acc2);
+        acc.add(acc2);
         Assert.assertEquals(2 * NUMBER_ENTRIES, acc.getTotalCalls());
         Assert.assertEquals(expected, acc2.getTotalTime());
         Assert.assertEquals(1, acc.size());

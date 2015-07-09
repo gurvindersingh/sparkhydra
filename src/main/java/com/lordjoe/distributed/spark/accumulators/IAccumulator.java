@@ -17,4 +17,11 @@ public interface IAccumulator<K> extends Serializable {
      */
     public K add(K added);
 
+    /**
+     * like toString but might add more information than a shorter string
+     * usually implemented bu appending toString
+     * @param out
+     */
+    public void buildReport(Appendable out);
+
 }

@@ -1,35 +1,25 @@
 package com.lordjoe.distributed.hydra.comet_spark;
 
 import com.lordjoe.algorithms.*;
-import com.lordjoe.distributed.AbstractLoggingFlatMapFunction;
-import com.lordjoe.distributed.AbstractLoggingFunction2;
-import com.lordjoe.distributed.AbstractLoggingPairFlatMapFunction;
-import com.lordjoe.distributed.SparkUtilities;
+import com.lordjoe.distributed.*;
+import com.lordjoe.distributed.hydra.*;
 import com.lordjoe.distributed.hydra.comet.*;
-import com.lordjoe.distributed.hydra.fragment.BinChargeKey;
-import com.lordjoe.distributed.hydra.scoring.SparkMapReduceScoringHandler;
-import com.lordjoe.distributed.hydra.test.TestUtilities;
+import com.lordjoe.distributed.hydra.fragment.*;
+import com.lordjoe.distributed.hydra.scoring.*;
+import com.lordjoe.distributed.hydra.test.*;
 import com.lordjoe.distributed.spark.accumulators.*;
-import com.lordjoe.utilities.ElapsedTimer;
-import org.apache.spark.Accumulator;
-import org.apache.spark.api.java.JavaPairRDD;
-import org.apache.spark.api.java.JavaRDD;
-import org.apache.spark.api.java.function.PairFlatMapFunction;
-import org.apache.spark.api.java.function.PairFunction;
-import org.systemsbiology.xtandem.IMeasuredSpectrum;
-import org.systemsbiology.xtandem.XTandemMain;
-import org.systemsbiology.xtandem.ionization.ITheoreticalSpectrumSet;
-import org.systemsbiology.xtandem.ionization.IonUseCounter;
-import org.systemsbiology.xtandem.peptide.IPolypeptide;
-import org.systemsbiology.xtandem.scoring.IScoredScan;
-import org.systemsbiology.xtandem.scoring.LowMemoryIdOnlySpectrum;
-import org.systemsbiology.xtandem.scoring.Scorer;
-import org.systemsbiology.xtandem.scoring.SpectralMatch;
-import scala.Tuple2;
+import com.lordjoe.utilities.*;
+import org.apache.spark.*;
+import org.apache.spark.api.java.*;
+import org.apache.spark.api.java.function.*;
+import org.systemsbiology.xtandem.*;
+import org.systemsbiology.xtandem.ionization.*;
+import org.systemsbiology.xtandem.peptide.*;
+import org.systemsbiology.xtandem.scoring.*;
+import scala.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.lang.Long;
+import java.util.*;
 
 /**
  * com.lordjoe.distributed.hydra.comet_spark.CometScoringHandler
@@ -41,8 +31,9 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
 
     public static final String TOTAL_SCORRED_ACCUMULATOR_NAME = "TotalPeptidesScored";
     public static final String PEPTIDES_ACCUMULATOR_NAME = "PeptideDistribution";
-    public static final String SPECTRA_ACCUMULATOR_NAME = "SpectrumDictribution";
+    public static final String SPECTRA_ACCUMULATOR_NAME = "SpectrumDistribution";
     public static final double MINIMUM_ACCEPTABLE_SCORE = 0.01;
+
 
     public CometScoringHandler(final String congiguration, final boolean createDb) {
 
@@ -50,6 +41,8 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
 
         XTandemMain application = getApplication();
         CometScoringAlgorithm comet = (CometScoringAlgorithm) application.getAlgorithms()[0];
+
+
         comet.configure(application);
     }
 
@@ -164,6 +157,9 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
         private CometScoringAlgorithm comet;
         private Scorer scorer;
         private final Accumulator<Long> numberScoredAccumlator = SparkAccumulators.createAccumulator(TOTAL_SCORRED_ACCUMULATOR_NAME);
+        // track bin usage   - make the accumulator exist
+        private final Accumulator<MemoryUseAccumulatorAndBinSize> binUsage = SparkAccumulators.createSpecialAccumulator(MemoryUseAccumulatorAndBinSize.BIN_ACCUMULATOR_NAME,
+                MemoryUseAccumulatorAndBinSize.PARAM_INSTANCE, new MemoryUseAccumulatorAndBinSize());
 
 
         public ScoreSpectrumAndPeptideWithCogroup(XTandemMain application) {
@@ -258,11 +254,20 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
         private CometScoringAlgorithm comet;
         private Scorer scorer;
         private Accumulator<MemoryUseAccumulator> memoryAccululator;
+        private final boolean bypassScoring;
+        private final boolean doGCAfterBin;
+        private final boolean keepBinStatistics;
+         private final int maxBinSize;
+
         private final Accumulator<Long> numberScoredAccumlator = SparkAccumulators.createAccumulator(TOTAL_SCORRED_ACCUMULATOR_NAME);
+
+
         private final Accumulator<CountedDistribution> peptideDistributionCounts = SparkAccumulators.createSpecialAccumulator(PEPTIDES_ACCUMULATOR_NAME,
                 CountedDistributionAccumulatorParam.INSTANCE, new CountedDistribution());
         private final Accumulator<CountedDistribution> spectrumDistributionCounts = SparkAccumulators.createSpecialAccumulator(SPECTRA_ACCUMULATOR_NAME,
                 CountedDistributionAccumulatorParam.INSTANCE, new CountedDistribution());
+        private final Accumulator<MemoryUseAccumulatorAndBinSize> binAccululator = SparkAccumulators.createSpecialAccumulator(MemoryUseAccumulatorAndBinSize.BIN_ACCUMULATOR_NAME,
+                MemoryUseAccumulatorAndBinSize.PARAM_INSTANCE, new MemoryUseAccumulatorAndBinSize());
 
 
         public ScoreSpectrumAndPeptideWithCogroupWithoutHash(XTandemMain application) {
@@ -270,6 +275,12 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
             scorer = application.getScoreRunner();
             SparkAccumulators instance = SparkAccumulators.getInstance();
             memoryAccululator = (Accumulator<MemoryUseAccumulator>) instance.getSpecialAccumulator(SparkAccumulators.MEMORY_ACCUMULATOR_NAME);
+            bypassScoring = application.getBooleanParameter(SparkXTandemMain.BYPASS_SCORING_PROPERTY, false);
+            keepBinStatistics = application.getBooleanParameter(SparkXTandemMain.KEEP__BIN_STATISTICS_PROPERTY, false);
+            doGCAfterBin = application.getBooleanParameter(SparkXTandemMain.DO_GC_AFTER_BIN, false);
+             maxBinSize = application.getIntParameter(SparkXTandemMain.MAX_BIN_SIZE_PROPERTY, Integer.MAX_VALUE);
+
+
         }
 
 
@@ -277,6 +288,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
         public Iterable<IScoredScan> doCall(Tuple2<BinChargeKey, Tuple2<Iterable<CometScoredScan>, Iterable<IPolypeptide>>> inp) throws Exception {
 
             MemoryUseAccumulator acc = new MemoryUseAccumulator();
+            MemoryUseAccumulatorAndBinSize binAcc = new MemoryUseAccumulatorAndBinSize();
 
             List<IScoredScan> ret = new ArrayList<IScoredScan>();
             Iterable<CometScoredScan> scans = inp._2()._1();
@@ -286,17 +298,25 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
 //            for (CometScoredScan scan : scans) {
 //                spectrumToScore.put(scan, new CometScoringResult(scan.getRaw()));
 //            }
-//            int numberpeptides = 0;
-//            int numberSpectra = 0;
+            int numberpeptides = 0;
+            boolean firstPass = true;
+            int numberSpectra = 0;
             long numberScored = 0;
+
             for (IPolypeptide peptide : peptides) {
+                 numberpeptides++;
+
+                if(bypassScoring)     // for debugging and performance we can bypass scoring
+                    continue;
+
                 CometTheoreticalBinnedSet ts = (CometTheoreticalBinnedSet) scorer.generateSpectrum(peptide);
-//                numberpeptides++;
                 if (isScanScoredByAnySpectrum(ts, scans, scorer)) {
                     for (CometScoredScan scan : scans) {
+                        if(firstPass)
+                            numberSpectra++;
                         if (!scorer.isTheoreticalSpectrumScored(scan, ts))
                             continue;
-                        if(!scan.isInitialized())
+                        if (!scan.isInitialized())
                             scan.setAlgorithm(comet);
                         IonUseCounter counter = new IonUseCounter();
                         double xcorr = comet.doXCorr(ts, scorer, counter, scan, null);
@@ -306,12 +326,14 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
                             SpectralMatch spectralMatch = new SpectralMatch(ts.getPeptide(), raw, xcorr, xcorr, xcorr, scan, null);
                             CometScoringResult res = new CometScoringResult(raw);
                             res.addSpectralMatch(spectralMatch);
-                            if(res.isValidMatch())
+                            if (res.isValidMatch())
                                 ret.add(res);
                         }
-
+                        if (keepBinStatistics)
+                            binAcc.check();
                         acc.check(); // record memory use
                     }
+                    firstPass = false;  // quit counting spectra - we run through them many times
                 }
                 ts = null; // please garbage collect
             }
@@ -322,13 +344,17 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
 //            }
             numberScoredAccumlator.add(numberScored);
 
+            if (keepBinStatistics && numberpeptides > 0) {
+                binAcc.saveUsage(numberSpectra, numberpeptides);
+                binAccululator.add(binAcc);
+            }
             acc.saveBins(); // get max use
             memoryAccululator.add(acc);
 
 //            peptideDistributionCounts.add(new CountedDistribution(numberpeptides));
 //            spectrumDistributionCounts.add(new CountedDistribution(numberSpectra));
-
-            System.gc(); // try to clean up
+            if(doGCAfterBin)
+                System.gc(); // try to clean up
 
             return ret;
         }
@@ -336,7 +362,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
         private int scoreScansAgainstPeptideSet(Iterable<CometScoredScan> scans, CometTheoreticalBinnedSet ts, List<IScoredScan> results) {
             int numberScored = 0;
 
-          //  CometScoringData scoringData = CometScoringData.getScoringData() ;
+            //  CometScoringData scoringData = CometScoringData.getScoringData() ;
 
             // This section popul;ates temporary data with the spectrum
             // a lot os free space used temporarily
@@ -347,7 +373,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
 //                List<CometTheoreticalBinnedSet> notScored = new ArrayList<CometTheoreticalBinnedSet>();
 //                List<IPolypeptide> scoredPeptides = new ArrayList<IPolypeptide>();
 
-            //    CometScoringData.populateFromScan(scan);
+                //    CometScoringData.populateFromScan(scan);
 
                 // use pregenerated peptide data but not peptide data
 
@@ -365,7 +391,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
                     SpectralMatch spectralMatch = new SpectralMatch(peptide, scan.getRaw(), xcorr, xcorr, xcorr, scan, null);
                     CometScoringResult res = new CometScoringResult(scan.getRaw());
                     res.addSpectralMatch(spectralMatch);
-                    if(res.isValidMatch())
+                    if (res.isValidMatch())
                         results.add(res);
                 }
 

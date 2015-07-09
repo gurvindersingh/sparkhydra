@@ -217,6 +217,10 @@ public class HydraKryoSerializer implements KryoRegistrator, Serializable {
         doRegistration(kryo, "com.lordjoe.distributed.hydra.comet.CometScoringResult");
         doRegistration(kryo, "com.lordjoe.distributed.hydra.comet.PeptideMatchScore");
         doRegistration(kryo, "org.systemsbiology.xtandem.scoring.LowMemoryIonScorer");
+        doRegistration(kryo, "com.lordjoe.distributed.spark.accumulators.MemoryAndBinSize");
+        doRegistration(kryo, "com.lordjoe.distributed.spark.accumulators.MemoryUseAccumulatorAndBinSize");
+
+
 
     }
 

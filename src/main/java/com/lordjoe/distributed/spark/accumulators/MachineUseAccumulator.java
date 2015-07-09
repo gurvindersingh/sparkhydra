@@ -104,6 +104,22 @@ public class MachineUseAccumulator implements IAccumulator<MachineUseAccumulator
         return this;
     }
 
+    /**
+        * like toString but might add more information than a shorter string
+        * usually implemented bu appending toString
+        *
+        * @param out
+        */
+       @Override
+       public void buildReport(final Appendable out) {
+           try {
+               out.append(toString());
+           }
+           catch (IOException e) {
+               throw new RuntimeException(e);
+
+           }
+       }
 
     public long get(String item) {
         if (items.containsKey(item)) {
