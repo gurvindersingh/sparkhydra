@@ -18,43 +18,12 @@ import java.util.*;
 public class MemoryUseAccumulatorAndBinSize implements IAccumulator<MemoryUseAccumulatorAndBinSize> {
 
     public static final String BIN_ACCUMULATOR_NAME = "BinUsage";
-    public static final MemoryUseAccumulatorAndBinSizeParam PARAM_INSTANCE = new MemoryUseAccumulatorAndBinSizeParam();
 
-    public static class MemoryUseAccumulatorAndBinSizeParam implements AccumulatorParam<MemoryUseAccumulatorAndBinSize>, Serializable {
-        private MemoryUseAccumulatorAndBinSizeParam() {
-        }
+    public static final AccumulatorParam<MemoryUseAccumulatorAndBinSize> PARAM_INSTANCE = new IAccumulatorParam<MemoryUseAccumulatorAndBinSize>();
 
-        @Override
-        public MemoryUseAccumulatorAndBinSize addAccumulator(final MemoryUseAccumulatorAndBinSize t1, final MemoryUseAccumulatorAndBinSize t2) {
-            t1.add(t2);
-            return t1;
-        }
-
-        /**
-         * Merge two accumulated values together. Is allowed to modify and return the first value
-         * for efficiency (to avoid allocating objects).
-         *
-         * @param r1 one set of accumulated data
-         * @param r2 another set of accumulated data
-         * @return both data sets merged together
-         */
-        @Override
-        public MemoryUseAccumulatorAndBinSize addInPlace(final MemoryUseAccumulatorAndBinSize r1, final MemoryUseAccumulatorAndBinSize r2) {
-            r1.add(r2);
-            return r1;
-        }
-
-        /**
-         * Return the "zero" (identity) value for an accumulator type, given its initial value. For
-         * example, if R was a vector of N dimensions, this would return a vector of N zeroes.
-         *
-         * @param initialValue
-         */
-        @Override
-        public MemoryUseAccumulatorAndBinSize zero(final MemoryUseAccumulatorAndBinSize initialValue) {
-            return new MemoryUseAccumulatorAndBinSize();
-        }
-    }
+      public static MemoryUseAccumulatorAndBinSize empty() {
+         return new MemoryUseAccumulatorAndBinSize();
+      }
 
 
     private transient long startAllocation;
@@ -63,10 +32,24 @@ public class MemoryUseAccumulatorAndBinSize implements IAccumulator<MemoryUseAcc
     private long maxHeap;
     private List<MemoryAndBinSize> usage = new ArrayList<MemoryAndBinSize>();
 
-    public MemoryUseAccumulatorAndBinSize() {
+    /**
+     * Use static method empty
+     */
+    private MemoryUseAccumulatorAndBinSize() {
         startAllocation = MemoryTracker.threadAllocatedBytes();
         maxHeap = startAllocation;
         maxAllocated = 0;
+    }
+
+    /**
+     * given a value return it as 0
+     * default behavior os th return the value itself
+     *
+     * @return
+     */
+    @Override
+    public MemoryUseAccumulatorAndBinSize asZero() {
+        return empty();
     }
 
     public List<MemoryAndBinSize> getUsage() {

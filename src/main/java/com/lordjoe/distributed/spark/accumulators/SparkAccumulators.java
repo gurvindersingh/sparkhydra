@@ -45,7 +45,7 @@ public class SparkAccumulators implements Serializable {
         }
         }
 
-        instance.createSpecialAccumulator(MEMORY_ACCUMULATOR_NAME, MemoryUseAccumulator.PARAM_INSTANCE,new MemoryUseAccumulator());
+        instance.createSpecialAccumulator(MEMORY_ACCUMULATOR_NAME, MemoryUseAccumulator.PARAM_INSTANCE,MemoryUseAccumulator.empty());
 
 //        for (int i = 0; i < MAX_TRACKED_THREADS; i++) {
 //            //noinspection AccessStaticViaInstance
@@ -105,7 +105,7 @@ public class SparkAccumulators implements Serializable {
     }
 
     public static MachineUseAccumulator showMachineUseAccumulators(final Appendable out, final SparkAccumulators pMe) throws IOException {
-        MachineUseAccumulator totalCalls = new MachineUseAccumulator();
+        MachineUseAccumulator totalCalls =  MachineUseAccumulator.empty();
         List<String> functionAccumulatorNames = pMe.getFunctionAccumulatorNames();
         for (String accumulatorName : functionAccumulatorNames) {
             Accumulator<MachineUseAccumulator> accumulator = pMe.getFunctionAccumulator(accumulatorName);
@@ -170,7 +170,7 @@ public class SparkAccumulators implements Serializable {
         if (me.functionaccumulators.get(acc) != null)
             return me.functionaccumulators.get(acc); // already done - should an exception be thrown
         JavaSparkContext currentContext = SparkUtilities.getCurrentContext();
-        Accumulator<MachineUseAccumulator> accumulator = currentContext.accumulator(new MachineUseAccumulator(), "function:" + acc, MachineUseAccumulator.PARAM_INSTANCE);
+        Accumulator<MachineUseAccumulator> accumulator = currentContext.accumulator( MachineUseAccumulator.empty(), "function:" + acc, MachineUseAccumulator.PARAM_INSTANCE);
         me.functionaccumulators.put(acc, accumulator);
         return accumulator;
     }

@@ -16,7 +16,7 @@ public class CountedDistributionTests {
     {
         CountedDistribution ds;
         for (int i = 0; i <31; i++) {
-            ds = new CountedDistribution();
+            ds =  CountedDistribution.empty();
             int test = 1 << i;
             ds.add(test) ;
             Assert.assertEquals(1, ds.getBin(i));

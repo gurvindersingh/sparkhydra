@@ -159,7 +159,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
         private final Accumulator<Long> numberScoredAccumlator = SparkAccumulators.createAccumulator(TOTAL_SCORRED_ACCUMULATOR_NAME);
         // track bin usage   - make the accumulator exist
         private final Accumulator<MemoryUseAccumulatorAndBinSize> binUsage = SparkAccumulators.createSpecialAccumulator(MemoryUseAccumulatorAndBinSize.BIN_ACCUMULATOR_NAME,
-                MemoryUseAccumulatorAndBinSize.PARAM_INSTANCE, new MemoryUseAccumulatorAndBinSize());
+                MemoryUseAccumulatorAndBinSize.PARAM_INSTANCE, MemoryUseAccumulatorAndBinSize.empty());
 
 
         public ScoreSpectrumAndPeptideWithCogroup(XTandemMain application) {
@@ -263,11 +263,11 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
 
 
         private final Accumulator<CountedDistribution> peptideDistributionCounts = SparkAccumulators.createSpecialAccumulator(PEPTIDES_ACCUMULATOR_NAME,
-                CountedDistributionAccumulatorParam.INSTANCE, new CountedDistribution());
+                CountedDistribution.PARAM_INSTANCE,  CountedDistribution.empty());
         private final Accumulator<CountedDistribution> spectrumDistributionCounts = SparkAccumulators.createSpecialAccumulator(SPECTRA_ACCUMULATOR_NAME,
-                CountedDistributionAccumulatorParam.INSTANCE, new CountedDistribution());
+                CountedDistribution.PARAM_INSTANCE, CountedDistribution.empty());
         private final Accumulator<MemoryUseAccumulatorAndBinSize> binAccululator = SparkAccumulators.createSpecialAccumulator(MemoryUseAccumulatorAndBinSize.BIN_ACCUMULATOR_NAME,
-                MemoryUseAccumulatorAndBinSize.PARAM_INSTANCE, new MemoryUseAccumulatorAndBinSize());
+                MemoryUseAccumulatorAndBinSize.PARAM_INSTANCE,  MemoryUseAccumulatorAndBinSize.empty());
 
 
         public ScoreSpectrumAndPeptideWithCogroupWithoutHash(XTandemMain application) {
@@ -287,8 +287,8 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
         @Override
         public Iterable<IScoredScan> doCall(Tuple2<BinChargeKey, Tuple2<Iterable<CometScoredScan>, Iterable<IPolypeptide>>> inp) throws Exception {
 
-            MemoryUseAccumulator acc = new MemoryUseAccumulator();
-            MemoryUseAccumulatorAndBinSize binAcc = new MemoryUseAccumulatorAndBinSize();
+            MemoryUseAccumulator acc =  MemoryUseAccumulator.empty();
+            MemoryUseAccumulatorAndBinSize binAcc =  MemoryUseAccumulatorAndBinSize.empty();
 
             List<IScoredScan> ret = new ArrayList<IScoredScan>();
             Iterable<CometScoredScan> scans = inp._2()._1();
@@ -345,7 +345,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
             numberScoredAccumlator.add(numberScored);
 
             if (keepBinStatistics && numberpeptides > 0) {
-                binAcc.saveUsage(numberSpectra, numberpeptides);
+                 binAcc.saveUsage(numberSpectra, numberpeptides);
                 binAccululator.add(binAcc);
             }
             acc.saveBins(); // get max use

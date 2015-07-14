@@ -14,41 +14,12 @@ import java.util.*;
  * Date: 11/24/2014
  */
 public class MachineUseAccumulator implements IAccumulator<MachineUseAccumulator> {
-    public static final MachineUseAccumulableParam PARAM_INSTANCE = new MachineUseAccumulableParam();
+    public static final AccumulatorParam<MachineUseAccumulator> PARAM_INSTANCE = new IAccumulatorParam<MachineUseAccumulator>();
 
-    public static class MachineUseAccumulableParam implements AccumulatorParam<MachineUseAccumulator>, Serializable {
-        private MachineUseAccumulableParam() {
-        }
-
-        @Override
-        public MachineUseAccumulator addAccumulator(final MachineUseAccumulator t1, final MachineUseAccumulator t2) {
-             return new MachineUseAccumulator(t1.add(t2));
-        }
-
-        /**
-         * Merge two accumulated values together. Is allowed to modify and return the first value
-         * for efficiency (to avoid allocating objects).
-         *
-         * @param r1 one set of accumulated data
-         * @param r2 another set of accumulated data
-         * @return both data sets merged together
-         */
-        @Override
-        public MachineUseAccumulator addInPlace(final MachineUseAccumulator r1, final MachineUseAccumulator r2) {
-            return r1.add(r2);
-           }
-
-        /**
-         * Return the "zero" (identity) value for an accumulator type, given its initial value. For
-         * example, if R was a vector of N dimensions, this would return a vector of N zeroes.
-         *
-         * @param initialValue
-         */
-        @Override
-        public MachineUseAccumulator zero(final MachineUseAccumulator initialValue) {
-            return new MachineUseAccumulator(initialValue);
-        }
+    public static MachineUseAccumulator empty() {
+       return new MachineUseAccumulator();
     }
+
 
     // key is the machine MAC address
     private Map<String, Long> items = new HashMap<String, Long>();
@@ -56,9 +27,9 @@ public class MachineUseAccumulator implements IAccumulator<MachineUseAccumulator
     private long totalTime;   // call time in nanosec
 
     /**
-     * will be called to count use on a single machine
+     * Use static method empty
      */
-    public MachineUseAccumulator() {
+     private MachineUseAccumulator() {
     }
 
     /**
@@ -120,6 +91,17 @@ public class MachineUseAccumulator implements IAccumulator<MachineUseAccumulator
 
            }
        }
+
+    /**
+     * given a value return it as 0
+     * default behavior os th return the value itself
+     *
+     * @return
+     */
+    @Override
+    public MachineUseAccumulator asZero() {
+        return empty();
+    }
 
     public long get(String item) {
         if (items.containsKey(item)) {

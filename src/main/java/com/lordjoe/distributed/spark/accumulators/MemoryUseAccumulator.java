@@ -23,44 +23,11 @@ public class MemoryUseAccumulator implements IAccumulator<MemoryUseAccumulator> 
     public static final int MEG_4 = 4000000; // 1 MB
     public static final int MAX_TRACKED_4_MEG_CHUNKS = 2000; // up to 20 gb
 
-    public static final MemoryUseAccumulatorParam PARAM_INSTANCE = new MemoryUseAccumulatorParam();
+    public static final AccumulatorParam<MemoryUseAccumulator> PARAM_INSTANCE = new IAccumulatorParam<MemoryUseAccumulator>();
 
-    public static class MemoryUseAccumulatorParam implements AccumulatorParam<MemoryUseAccumulator>, Serializable {
-        private MemoryUseAccumulatorParam() {
-        }
-
-        @Override
-        public MemoryUseAccumulator addAccumulator(final MemoryUseAccumulator t1, final MemoryUseAccumulator t2) {
-            t1.add(t2);
-            return t1;
-        }
-
-        /**
-         * Merge two accumulated values together. Is allowed to modify and return the first value
-         * for efficiency (to avoid allocating objects).
-         *
-         * @param r1 one set of accumulated data
-         * @param r2 another set of accumulated data
-         * @return both data sets merged together
-         */
-        @Override
-        public MemoryUseAccumulator addInPlace(final MemoryUseAccumulator r1, final MemoryUseAccumulator r2) {
-            r1.add(r2);
-            return r1;
-        }
-
-        /**
-         * Return the "zero" (identity) value for an accumulator type, given its initial value. For
-         * example, if R was a vector of N dimensions, this would return a vector of N zeroes.
-         *
-         * @param initialValue
-         */
-        @Override
-        public MemoryUseAccumulator zero(final MemoryUseAccumulator initialValue) {
-            return new MemoryUseAccumulator();
-        }
+    public static MemoryUseAccumulator empty() {
+        return new MemoryUseAccumulator();
     }
-
 
     private transient long startAllocation;
     private transient long maxAllocated;
@@ -69,10 +36,24 @@ public class MemoryUseAccumulator implements IAccumulator<MemoryUseAccumulator> 
     private final int[] bins = new int[MAX_TRACKED_10_MEG_CHUNKS];
     private final int[] allocated = new int[MAX_TRACKED_4_MEG_CHUNKS];
 
-    public MemoryUseAccumulator() {
+    /**
+     * Use static method empty
+     */
+    private MemoryUseAccumulator() {
         startAllocation = MemoryTracker.threadAllocatedBytes();
         maxHeap = startAllocation;
         maxAllocated = 0;
+    }
+
+    /**
+     * given a value return it as 0
+     * default behavior os th return the value itself
+     *
+     * @return
+     */
+    @Override
+    public MemoryUseAccumulator asZero() {
+        return null;
     }
 
     public int getBin(int bin) {
@@ -101,7 +82,7 @@ public class MemoryUseAccumulator implements IAccumulator<MemoryUseAccumulator> 
 
     public void saveBins() {
         int iBin = (int) (maxAllocated / MEG_4);
-        iBin = Math.min(allocated.length - 1,iBin);
+        iBin = Math.min(allocated.length - 1, iBin);
         allocated[iBin]++;
         iBin = (int) (maxHeap / MEG_40);
         iBin = Math.min(bins.length - 1, iBin);
@@ -111,7 +92,7 @@ public class MemoryUseAccumulator implements IAccumulator<MemoryUseAccumulator> 
 
     public MemoryUseAccumulator add(MemoryUseAccumulator added) {
 
-        maxHeap = Math.max(maxHeap,added.maxHeap);
+        maxHeap = Math.max(maxHeap, added.maxHeap);
         for (int i = 0; i < bins.length; i++) {
             bins[i] += added.bins[i];
         }
@@ -123,21 +104,21 @@ public class MemoryUseAccumulator implements IAccumulator<MemoryUseAccumulator> 
 
 
     /**
-           * like toString but might add more information than a shorter string
-           * usually implemented bu appending toString
-           *
-           * @param out
-           */
-          @Override
-          public void buildReport(final Appendable out) {
-              try {
-                  out.append(toString());
-              }
-              catch (IOException e) {
-                  throw new RuntimeException(e);
+     * like toString but might add more information than a shorter string
+     * usually implemented bu appending toString
+     *
+     * @param out
+     */
+    @Override
+    public void buildReport(final Appendable out) {
+        try {
+            out.append(toString());
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
 
-              }
-          }
+        }
+    }
 
     @Override
     public String toString() {
@@ -157,15 +138,15 @@ public class MemoryUseAccumulator implements IAccumulator<MemoryUseAccumulator> 
 
         sb.append("Allocated\n");
 
-         index = MEG_4;
-           for (int i = 0; i < allocated.length; i++) {
-               int bin = allocated[i];
-               if (bin > 0) {
-                   sb.append(Long_Formatter.format(index) + "\t" + Long_Formatter.format(bin));
-                   sb.append("\n");
-               }
-               index += MEG_4;
-           }
+        index = MEG_4;
+        for (int i = 0; i < allocated.length; i++) {
+            int bin = allocated[i];
+            if (bin > 0) {
+                sb.append(Long_Formatter.format(index) + "\t" + Long_Formatter.format(bin));
+                sb.append("\n");
+            }
+            index += MEG_4;
+        }
 
         return sb.toString();
     }

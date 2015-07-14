@@ -1,9 +1,9 @@
 package com.lordjoe.distributed.spark;
 
 import com.lordjoe.distributed.*;
+import com.lordjoe.distributed.spark.accumulators.*;
 import org.apache.spark.*;
 
-import java.io.*;
 import java.util.*;
 
 /**
@@ -12,55 +12,63 @@ import java.util.*;
  * User: Steve
  * Date: 11/24/2014
  */
-public class SpectrumScoringAccumulator implements Serializable {
-    public static final SpectrumScoringAccumulableParam PARAM_INSTANCE = new SpectrumScoringAccumulableParam();
+public class SpectrumScoringAccumulator implements IAccumulator<SpectrumScoringAccumulator> {
+    public static final AccumulatorParam<SpectrumScoringAccumulator> PARAM_INSTANCE = new IAccumulatorParam<SpectrumScoringAccumulator>();
 
-    public static class SpectrumScoringAccumulableParam implements AccumulatorParam<SpectrumScoringAccumulator>, Serializable {
-        private SpectrumScoringAccumulableParam() {
-        }
+     public static SpectrumScoringAccumulator empty() {
+        return new SpectrumScoringAccumulator();
+     }
 
-        @Override
-        public SpectrumScoringAccumulator addAccumulator(final SpectrumScoringAccumulator t1, final SpectrumScoringAccumulator t2) {
-            t1.addAll(t2);
-            return new SpectrumScoringAccumulator(t1);
-        }
-
-        /**
-         * Merge two accumulated values together. Is allowed to modify and return the first value
-         * for efficiency (to avoid allocating objects).
-         *
-         * @param r1 one set of accumulated data
-         * @param r2 another set of accumulated data
-         * @return both data sets merged together
-         */
-        @Override
-        public SpectrumScoringAccumulator addInPlace(final SpectrumScoringAccumulator r1, final SpectrumScoringAccumulator r2) {
-            r1.addAll(r2);
-            return r1;
-        }
-
-        /**
-         * Return the "zero" (identity) value for an accumulator type, given its initial value. For
-         * example, if R was a vector of N dimensions, this would return a vector of N zeroes.
-         *
-         * @param initialValue
-         */
-        @Override
-        public SpectrumScoringAccumulator zero(final SpectrumScoringAccumulator initialValue) {
-            return new SpectrumScoringAccumulator(initialValue);
-        }
-    }
 
     // key is the machine MAC address
     public final String scoredID;
     private Map<String, Long> items = new HashMap<String, Long>();
     private long totalCalls;  // number function calls
 
+    private  SpectrumScoringAccumulator() {
+        scoredID = null;
+    }
     /**
      * will be called to count use on a single machine
      */
     public SpectrumScoringAccumulator(String id) {
         scoredID = id;
+    }
+
+    /**
+     * add the accumulated data to another instance
+     *
+     * @param added
+     * @return
+     */
+    @Override
+    public SpectrumScoringAccumulator add(final SpectrumScoringAccumulator added) {
+        if(scoredID == null)
+            return added;
+        addAll(added);
+        return this;
+    }
+
+    /**
+     * given a value return it as 0
+     * default behavior is to return the value itself
+     *
+     * @return
+     */
+    @Override
+    public SpectrumScoringAccumulator asZero() {
+        return null;
+    }
+
+    /**
+     * like toString but might add more information than a shorter string
+     * usually implemented bu appending toString
+     *
+     * @param out
+     */
+    @Override
+    public void buildReport(final Appendable out) {
+
     }
 
     /**
@@ -79,9 +87,19 @@ public class SpectrumScoringAccumulator implements Serializable {
         items.putAll(copy.items);
      }
 
+    protected void validateId() {
+        if(this.scoredID == null)
+            throw new IllegalStateException("no scored Id");
+    }
 
+    protected void validateId(SpectrumScoringAccumulator test) {
+          if(!this.scoredID.equals(test.scoredID))
+              throw new IllegalStateException("bad scored Id");
+      }
 
     protected void addEntry(String peptide,long value) {
+        validateId( );  // id better not be null
+
         long present = 0;
         if (items.containsKey(peptide))
             present += items.get(peptide);
@@ -90,6 +108,8 @@ public class SpectrumScoringAccumulator implements Serializable {
 
 
     protected void addAll(SpectrumScoringAccumulator added) {
+        validateId(added);
+
         for (String t : added.items.keySet()) {
             long value = added.get(t);
             addEntry(t, value);

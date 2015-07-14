@@ -1,6 +1,7 @@
 package com.lordjoe.algorithms;
 
 import com.lordjoe.distributed.spark.accumulators.*;
+import org.apache.spark.*;
 
 import java.io.*;
 import java.util.*;
@@ -13,9 +14,16 @@ import java.util.*;
  */
 public class CountedDistribution implements  IAccumulator<CountedDistribution> {
 
+    public static final AccumulatorParam<CountedDistribution> PARAM_INSTANCE = new IAccumulatorParam<CountedDistribution>();
 
-    public CountedDistribution() {
+    public static CountedDistribution empty() {
+        return new CountedDistribution();
     }
+
+    private CountedDistribution() {
+    }
+
+
 
     /**
      * convenience methos to make one with one count
@@ -83,6 +91,17 @@ public class CountedDistribution implements  IAccumulator<CountedDistribution> {
             bins[i] += added.bins[i];
         }
         return this;
+    }
+
+    /**
+     * given a value return it as 0
+     * default behavior os th return the value itself
+     *
+     * @return
+     */
+    @Override
+    public CountedDistribution asZero() {
+        return empty();
     }
 
     /**

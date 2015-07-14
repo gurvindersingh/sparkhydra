@@ -32,9 +32,9 @@ public class MachineAcculumatorTests {
     public void testMachineAccumulator() {
         String name = SparkUtilities.getMacAddress();
 
-        MachineUseAccumulator acc = new MachineUseAccumulator();
-        MachineUseAccumulator acc2 = new MachineUseAccumulator();
-        MachineUseAccumulator acc3 = new MachineUseAccumulator();
+        MachineUseAccumulator acc = MachineUseAccumulator.empty();
+        MachineUseAccumulator acc2 = MachineUseAccumulator.empty();
+        MachineUseAccumulator acc3 = MachineUseAccumulator.empty();
         for (int i = 0; i < NUMBER_ENTRIES; i++) {
             acc.add(1, TIME_NAMO_SEC);
             acc2.add(1, TIME_NAMO_SEC);
