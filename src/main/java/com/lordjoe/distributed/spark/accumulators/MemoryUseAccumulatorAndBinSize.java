@@ -66,7 +66,7 @@ public class MemoryUseAccumulatorAndBinSize implements IAccumulator<MemoryUseAcc
 
 
     public void saveUsage(int nSpectra, int nPeptides) {
-        usage.add(new MemoryAndBinSize(maxHeap, nSpectra, nPeptides));
+        usage.add(new MemoryAndBinSize(maxHeap,maxAllocated, nSpectra, nPeptides));
     }
 
 

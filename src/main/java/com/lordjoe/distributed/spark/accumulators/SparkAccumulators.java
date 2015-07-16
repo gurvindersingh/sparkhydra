@@ -46,6 +46,8 @@ public class SparkAccumulators implements Serializable {
         }
 
         instance.createSpecialAccumulator(MEMORY_ACCUMULATOR_NAME, MemoryUseAccumulator.PARAM_INSTANCE,MemoryUseAccumulator.empty());
+        instance.createSpecialAccumulator(GCTimeAccumulator.GCTIME_ACCUMULATOR_NAME,
+                GCTimeAccumulator.PARAM_INSTANCE,GCTimeAccumulator.empty());
 
 //        for (int i = 0; i < MAX_TRACKED_THREADS; i++) {
 //            //noinspection AccessStaticViaInstance

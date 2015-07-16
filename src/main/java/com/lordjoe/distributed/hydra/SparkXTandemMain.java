@@ -6,6 +6,7 @@ import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.hadoop.*;
 
 import java.io.*;
+import java.util.*;
 
 /**
  * com.lordjoe.distributed.hydra.SparkXTandemMain
@@ -38,13 +39,19 @@ public class SparkXTandemMain extends XTandemMain {
             }
         }
         addOpener(new SparkFileOpener(this));
-        String pathPrepend = SparkUtilities.getSparkProperties().getProperty(PREPEND_NAME_PROPERTY);
+        Properties sparkProperties = SparkUtilities.getSparkProperties();
+        String pathPrepend = sparkProperties.getProperty(PREPEND_NAME_PROPERTY);
+
+        for (String key : sparkProperties.stringPropertyNames()) {
+            setParameter(key, sparkProperties.getProperty(key));
+
+        }
+
 
         if (pathPrepend != null) {
             System.err.println("Setting default path " + pathPrepend);
             XTandemHadoopUtilities.setDefaultPath(pathPrepend);
-            setParameter("com.lordjoe.distributed.PathPrepend", pathPrepend);
-        }
+          }
         try {
             is.close();
         }
