@@ -2,6 +2,7 @@ package com.lordjoe.distributed.input.spark;
 
 import com.lordjoe.distributed.*;
 import com.lordjoe.distributed.input.*;
+import com.lordjoe.distributed.spectrum.*;
 import org.apache.spark.api.java.*;
 
 /**
@@ -11,13 +12,6 @@ import org.apache.spark.api.java.*;
  */
 public class SparkTandemUtilitiesTests {
 
-
-     public static class MZXMLInputFormat extends XMLTagInputFormat
-     {
-         public MZXMLInputFormat() {
-             super("scan");
-         }
-     }
 
     public static JavaPairRDD<String,String> parseSpectrumFile(String path,JavaSparkContext ctx) {
 
@@ -31,7 +25,7 @@ public class SparkTandemUtilitiesTests {
      }
 
     public static JavaPairRDD<String,String> parseAsMZXML(final String path, final JavaSparkContext ctx) {
-        Class inputFormatClass = MZXMLInputFormat.class;
+        Class inputFormatClass = SparkSpectrumUtilities.MZXMLInputFormat.class;
          Class keyClass = String.class;
          Class valueClass = String.class;
 

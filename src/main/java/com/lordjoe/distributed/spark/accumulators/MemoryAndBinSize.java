@@ -38,7 +38,8 @@ public class MemoryAndBinSize implements Comparable<MemoryAndBinSize>, Serializa
             return ret;
         ret = Integer.compare(o.numberPeptides, numberPeptides);
         if (ret != 0)
-            ret = Integer.compare(o.numberSpectra, numberSpectra);
+            return ret;
+         ret = Integer.compare(o.numberSpectra, numberSpectra);
         if (ret != 0)
             return ret;
         return 0;

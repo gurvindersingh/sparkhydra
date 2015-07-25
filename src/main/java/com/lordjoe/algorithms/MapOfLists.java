@@ -16,6 +16,10 @@ public class MapOfLists<K,V> implements Serializable {
     }
 
 
+    public Collection<List<V>>  values() {
+        return items.values();
+    }
+
     public int size() {
         return items.size();
     }

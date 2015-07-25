@@ -9,6 +9,7 @@ import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapred.*;
 import org.apache.hadoop.mapreduce.*;
 import org.apache.hadoop.mapreduce.Counters;
+import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.TaskAttemptID;
@@ -180,6 +181,25 @@ public class HadoopUtilities {
 
     private HadoopUtilities() {
     } // do not construct
+
+    /**
+     * make sure splits cover the file and do not duplicate
+     * @param pSplits
+     */
+    public static void validateSplits(final List<InputSplit> pSplits) {
+         long nextStart = 0;
+
+         for (InputSplit split : pSplits) {
+             org.apache.hadoop.mapreduce.lib.input.FileSplit fs = (org.apache.hadoop.mapreduce.lib.input.FileSplit)split;
+             long start = fs.getStart();
+             long length = fs.getLength();
+             if(start > 0) {
+                if(start != nextStart)
+                    throw new IllegalStateException("bad split starts at " + start + " should be " + nextStart);
+             }
+             nextStart = start + length;
+         }
+     }
 
 
     /**

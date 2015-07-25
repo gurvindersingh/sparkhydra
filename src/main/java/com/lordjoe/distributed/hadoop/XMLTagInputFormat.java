@@ -11,6 +11,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.io.compress.*;
 import org.apache.hadoop.mapreduce.*;
 import org.apache.hadoop.mapreduce.lib.input.*;
+import org.systemsbiology.hadoop.*;
 
 import java.io.*;
 import java.util.*;
@@ -245,6 +246,7 @@ public class XMLTagInputFormat extends FileInputFormat<String, String> {
             }
         }
    //     LOG.debug("Total # of splits: " + splits.size());
+        HadoopUtilities.validateSplits(splits);
         return splits;
     }
 
@@ -293,8 +295,7 @@ public class XMLTagInputFormat extends FileInputFormat<String, String> {
             }
             else {
                 m_Input = new BufferedReader(new InputStreamReader(fileIn));
-                m_End = length;
-            }
+              }
             m_Current = m_Start;
             m_Key = split.getPath().getName();
 

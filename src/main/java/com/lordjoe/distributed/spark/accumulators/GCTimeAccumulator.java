@@ -75,7 +75,7 @@ public class GCTimeAccumulator implements IAccumulator<GCTimeAccumulator> {
      * Use static method empty
      */
     private GCTimeAccumulator() {
-        startAllocation = MemoryTracker.threadAllocatedBytes();
+        startAllocation = MemoryTracker.usedBytes();
         maxHeap = startAllocation;
         maxAllocated = 0;
         startRunTime = System.nanoTime();
@@ -105,7 +105,7 @@ public class GCTimeAccumulator implements IAccumulator<GCTimeAccumulator> {
 
 
     public void check() {
-        long current = MemoryTracker.threadAllocatedBytes();
+        long current = MemoryTracker.usedBytes();
         long allocated = current - startAllocation;
         maxHeap = Math.max(maxHeap, current);
         maxAllocated = Math.max(maxAllocated, allocated);
@@ -144,7 +144,7 @@ public class GCTimeAccumulator implements IAccumulator<GCTimeAccumulator> {
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("Max Allocation " + Long_Formatter.format(maxHeap));
+        sb.append("GC Time Max Allocation " + Long_Formatter.format(maxHeap));
         sb.append("\n");
     //    throw new UnsupportedOperationException("Fix This"); // ToDo
 

@@ -1,10 +1,10 @@
 package com.lordjoe.distributed.hydra;
 
-import com.lordjoe.algorithms.Long_Formatter;
+import com.lordjoe.algorithms.*;
 import com.lordjoe.distributed.*;
 import com.lordjoe.distributed.hydra.fragment.*;
 import com.lordjoe.distributed.hydra.scoring.*;
-import com.lordjoe.distributed.spark.accumulators.SparkAccumulators;
+import com.lordjoe.distributed.spark.accumulators.*;
 import com.lordjoe.distributed.spectrum.*;
 import com.lordjoe.utilities.*;
 import org.apache.spark.api.java.*;
@@ -26,12 +26,12 @@ import java.util.*;
 /**
  * com.lordjoe.distributed.hydra.SparkScanScorer
  * Attempt to exploit Spark - not converted Hadoop design for scoring
- *
+ * <p/>
  * 25-Mar modifications
  * 1) raised quantization
- *  2) exaination Width
- *  3) caused NinChargeKey to igore charge // todo see is XTandem cares abotu charge
- *
+ * 2) exaination Width
+ * 3) caused NinChargeKey to igore charge // todo see is XTandem cares abotu charge
+ * <p/>
  * User: Steve
  * Date: 10/7/2014
  */
@@ -163,7 +163,7 @@ public class SparkScanScorer {
 
         // DEBUGGING why do we see more than one instance of interesting peptide
         //List<IPolypeptide> interesting2 = new ArrayList<IPolypeptide>();
-       // databasePeptides = TestUtilities.findInterestingPeptides(databasePeptides, interesting2);
+        // databasePeptides = TestUtilities.findInterestingPeptides(databasePeptides, interesting2);
 
         databasePeptides = SparkUtilities.repartitionIfNeeded(databasePeptides);
 
@@ -187,7 +187,7 @@ public class SparkScanScorer {
 
         // read spectra
         JavaPairRDD<String, IMeasuredSpectrum> scans = SparkSpectrumUtilities.parseSpectrumFile(pSpectra, application);
-        scans = SparkUtilities.repartitionIfNeeded(scans);
+       // scans = SparkUtilities.repartitionIfNeeded(scans);
 
         long[] spectraCountRef = new long[1];
         if (isDebuggingCountMade())
@@ -195,8 +195,9 @@ public class SparkScanScorer {
 
         JavaRDD<IMeasuredSpectrum> spectraToScore = scans.values();
 
-        if (isDebuggingCountMade())
+        if (true || isDebuggingCountMade()) {
             spectraToScore = SparkUtilities.persistAndCount("Spectra  to Score", spectraToScore, spectraCountRef);
+        }
 
 
         spectraToScore = indexSpectra(spectraToScore);
@@ -242,9 +243,9 @@ public class SparkScanScorer {
 
     public static JavaRDD<IMeasuredSpectrum> indexSpectra(JavaRDD<IMeasuredSpectrum> pSpectraToScore) {
 
-        JavaPairRDD<IMeasuredSpectrum,Long> indexed = pSpectraToScore.zipWithIndex();
+        JavaPairRDD<IMeasuredSpectrum, Long> indexed = pSpectraToScore.zipWithIndex();
 
-        pSpectraToScore = indexed.map(new AddIndexToSpectrum()) ;
+        pSpectraToScore = indexed.map(new AddIndexToSpectrum());
         return pSpectraToScore;
     }
 
@@ -327,7 +328,7 @@ public class SparkScanScorer {
         List<PairCounter> pairs = null;
 
         // for debugging show class path
-       // String property = System.getProperty("java.class.path");
+        // String property = System.getProperty("java.class.path");
         //System.out.println(property);
 
         // Force PepXMLWriter to load
@@ -368,6 +369,12 @@ public class SparkScanScorer {
 
         String spectrumPath = handler.getApplication().getSpectrumPath();
         String spectra = SparkUtilities.buildPath(spectrumPath);
+
+        // =======================================
+        // Spark work starts here
+        // =======================================
+
+
         JavaRDD<IMeasuredSpectrum> spectraToScore = getMeasuredSpectra(timer, sparkProperties, spectra, handler.getApplication());
 
         // debugging
@@ -455,12 +462,12 @@ public class SparkScanScorer {
         XTandemMain application = handler.getApplication();
 
         // code using PepXMLWriter new uses tandem writer
-              PepXMLWriter pwrtr = new PepXMLWriter(application);
-            PepXMLScoredScanWriter pWrapper = new PepXMLScoredScanWriter(pwrtr);
+        PepXMLWriter pwrtr = new PepXMLWriter(application);
+        PepXMLScoredScanWriter pWrapper = new PepXMLScoredScanWriter(pwrtr);
         SparkConsolidator consolidator = new SparkConsolidator(pWrapper, application);
 
-   //      BiomlReporter writer = new BiomlReporter(application);
-    //   SparkConsolidator consolidator = new SparkConsolidator(writer, application);
+        //      BiomlReporter writer = new BiomlReporter(application);
+        //   SparkConsolidator consolidator = new SparkConsolidator(writer, application);
 
 
         int numberScores = consolidator.writeScores(bestScores);

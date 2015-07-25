@@ -5,8 +5,8 @@ package org.systemsbiology.xtandem.hadoop;
  * Date: 3/7/11
  */
 
+import com.lordjoe.distributed.input.*;
 import org.apache.hadoop.mapreduce.*;
-import org.systemsbiology.hadoop.*;
 
 import java.io.*;
 import java.util.*;

@@ -17,11 +17,11 @@ public class MemoryTrackerTests {
      */
     @Test
     public void testMemoryTrack() throws Exception {
-        long start = MemoryTracker.threadAllocatedBytes();
+        long start = MemoryTracker.usedBytes();
 
         int allocSize = 1000000;
         int[] allocated1 = new int[allocSize];
-        long used1 = MemoryTracker.threadAllocatedBytes();
+        long used1 = MemoryTracker.usedBytes();
 
         long delMemory = used1 - start;
         int expectedDel = 4 * allocSize;
@@ -30,7 +30,7 @@ public class MemoryTrackerTests {
 
         allocSize = 100000000;
         int[] allocated2 = new int[allocSize];
-        long used2 = MemoryTracker.threadAllocatedBytes();
+        long used2 = MemoryTracker.usedBytes();
 
        expectedDel = 4 * allocSize;
         long delMemory2 = used2 - used1;

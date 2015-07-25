@@ -18,10 +18,10 @@ import java.util.*;
  */
 public class MemoryUseAccumulator implements IAccumulator<MemoryUseAccumulator> {
 
-    public static final int MEG_40 = 10000000; // 10 MB
-    public static final int MAX_TRACKED_10_MEG_CHUNKS = 2000; // up to 20 gb
-    public static final int MEG_4 = 4000000; // 1 MB
-    public static final int MAX_TRACKED_4_MEG_CHUNKS = 2000; // up to 20 gb
+    public static final int MEG_40 = 100000000; // 10 MB
+    public static final int MAX_TRACKED_100_MEG_CHUNKS = 2000; // up to 20 gb
+    public static final int MEG_4 = 40000000; // 1 MB
+    public static final int MAX_TRACKED_40_MEG_CHUNKS = 200; // up to 20 gb
 
     public static final AccumulatorParam<MemoryUseAccumulator> PARAM_INSTANCE = new IAccumulatorParam<MemoryUseAccumulator>();
 
@@ -33,14 +33,14 @@ public class MemoryUseAccumulator implements IAccumulator<MemoryUseAccumulator> 
     private transient long maxAllocated;
 
     private long maxHeap;
-    private final int[] bins = new int[MAX_TRACKED_10_MEG_CHUNKS];
-    private final int[] allocated = new int[MAX_TRACKED_4_MEG_CHUNKS];
+    private final int[] bins = new int[MAX_TRACKED_100_MEG_CHUNKS];
+    private final int[] allocated = new int[MAX_TRACKED_40_MEG_CHUNKS];
 
     /**
      * Use static method empty
      */
     private MemoryUseAccumulator() {
-        startAllocation = MemoryTracker.threadAllocatedBytes();
+        startAllocation = MemoryTracker.usedBytes();
         maxHeap = startAllocation;
         maxAllocated = 0;
     }
@@ -73,7 +73,7 @@ public class MemoryUseAccumulator implements IAccumulator<MemoryUseAccumulator> 
     }
 
     public void check() {
-        long current = MemoryTracker.threadAllocatedBytes();
+        long current = MemoryTracker.usedBytes();
         long allocated = current - startAllocation;
         maxHeap = Math.max(maxHeap, current);
         maxAllocated = Math.max(maxAllocated, allocated);
@@ -124,8 +124,10 @@ public class MemoryUseAccumulator implements IAccumulator<MemoryUseAccumulator> 
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("Max Allocation " + Long_Formatter.format(maxHeap));
+        sb.append("Mem Use Max Allocation " + Long_Formatter.format(maxHeap));
         sb.append("\n");
+
+
         long index = MEG_40;
         for (int i = 0; i < bins.length; i++) {
             int bin = bins[i];

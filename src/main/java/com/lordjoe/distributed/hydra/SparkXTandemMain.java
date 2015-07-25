@@ -19,6 +19,8 @@ public class SparkXTandemMain extends XTandemMain {
      // Define some property names
      public static final String PREPEND_NAME_PROPERTY =  "com.lordjoe.distributed.PathPrepend";
     // if true  do not score  - default false
+    public static final String COUNT_SPECTRA_ONLY =  "com.lordjoe.distributed.hydra.CountSpectraOnly";
+    // if true  do not score  - default false
     public static final String BYPASS_SCORING_PROPERTY =  "com.lordjoe.distributed.hydra.BypassScoring";
     // if true  do keep statistics on bin sizes  - default false
     public static final String KEEP__BIN_STATISTICS_PROPERTY =  "com.lordjoe.distributed.hydra.KeepBinStatistics";

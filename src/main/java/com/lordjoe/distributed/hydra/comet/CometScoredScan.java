@@ -52,6 +52,7 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
     private final Map<Integer, Double> fastScoringMap = new HashMap<Integer, Double>();
     private final Map<Integer, Double> fastScoringMapNL = new HashMap<Integer, Double>();
     private boolean initialized = false;
+    private transient CometScoringDataForScanBuild tempData;
 
     public CometScoredScan(IMeasuredSpectrum pRaw, CometScoringAlgorithm alg) {
         this();
@@ -87,6 +88,11 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
 
     public void setAlgorithm(CometScoringAlgorithm alg) {
 
+        if(tempData != null)
+            throw new IllegalStateException("should not have temp data yet");
+
+        tempData =  CometScoringDataForScanBuild.borrowScoringMemory();
+
         //CometScoringDataForScanBuild makeSureReferenceIsNotGarbageCollected = CometScoringDataForScanBuild.getScoringData();
 
         generateBinnedPeaks(alg);
@@ -102,22 +108,26 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
         normalizeForNL(alg);
 
         initialized = true;
+
+        CometScoringDataForScanBuild.releaseScoringMemory(tempData);
+        tempData = null;
+
         return;
 
     }
 
-    protected void populateWeights(CometScoringAlgorithm alg) {
-        CometScoringDataForScanBuild scoringData = CometScoringDataForScanBuild.getScoringData();
-        float[] wts = scoringData.getWeights();
-        Arrays.fill(wts, 0);
-        if (m_Raw instanceof CometScoringAlgorithm.BinnedMutableSpectrum) {
-            ((CometScoringAlgorithm.BinnedMutableSpectrum) m_Raw).populateWeights(wts);
-            return;
-        }
-        if (true)
-            throw new UnsupportedOperationException("Never get here");
-
-    }
+//    protected void populateWeights(CometScoringAlgorithm alg) {
+//        CometScoringDataForScanBuild scoringData = CometScoringDataForScanBuild.getScoringData();
+//        float[] wts = scoringData.getWeights();
+//        Arrays.fill(wts, 0);
+//        if (m_Raw instanceof CometScoringAlgorithm.BinnedMutableSpectrum) {
+//            ((CometScoringAlgorithm.BinnedMutableSpectrum) m_Raw).populateWeights(wts);
+//            return;
+//        }
+//        if (true)
+//            throw new UnsupportedOperationException("Never get here");
+//
+//    }
 
 
     /**
@@ -127,8 +137,8 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
      * @param peaks
      */
     public void windowedNormalize(CometScoringAlgorithm alg) {
-        CometScoringDataForScanBuild scoringData = CometScoringDataForScanBuild.getScoringData();
-        float[] peaks = scoringData.getWeights();
+        final CometScoringDataForScanBuild scoringData = tempData;
+         float[] peaks = scoringData.getWeights();
         float[] pdTmpCorrelationData = scoringData.getTmpFastXcorrData2();
 
         int highestPeak = 0;
@@ -157,6 +167,7 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
             if (Math.abs(pk) < 0.001)
                 continue;
             int nWindow = i / windowWidth;
+
             if (nWindow >= maxWindow.length)
                 throw new IllegalStateException("problem"); // ToDo change
             maxWindow[nWindow] = Math.max(maxWindow[nWindow], pk);
@@ -187,8 +198,8 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
      * @return
      */
     public double normalizeBinnedPeaks(CometScoringAlgorithm alg) {
-        CometScoringDataForScanBuild scoringData = CometScoringDataForScanBuild.getScoringData();
-        float[] pdTmpCorrelationData = scoringData.getTmpFastXcorrData2();
+        final CometScoringDataForScanBuild scoringData = tempData;
+         float[] pdTmpCorrelationData = scoringData.getTmpFastXcorrData2();
         float[] pdTmpFastXcorrData = scoringData.getTmpFastXcorrData();
         double sum = 0;
         int i = 0;
@@ -231,7 +242,7 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
 
     public void normalizeForNL(CometScoringAlgorithm alg) {
         int i;
-        final CometScoringDataForScanBuild scoringData = CometScoringDataForScanBuild.getScoringData();
+        final CometScoringDataForScanBuild scoringData = tempData;
         float[] pPdTmpFastXcorrData = scoringData.getTmpFastXcorrData();
         float[] pdTmpCorrelationData = scoringData.getTmpFastXcorrData2();
 
@@ -363,7 +374,8 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
 
     public List<SpectrumBinnedScore> getWeights() {
         List<SpectrumBinnedScore> holder = new ArrayList<SpectrumBinnedScore>();
-        final CometScoringDataForScanBuild scoringData = CometScoringDataForScanBuild.getScoringData();
+        final CometScoringDataForScanBuild scoringData = tempData;
+
         float[] weights = scoringData.getWeights();
         int length = weights.length;
         for (int i = 0; i < length; i++) {
@@ -376,7 +388,7 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
 
     public List<SpectrumBinnedScore> getTmpFastXcorrData() {
         List<SpectrumBinnedScore> holder = new ArrayList<SpectrumBinnedScore>();
-        final CometScoringDataForScanBuild scoringData = CometScoringDataForScanBuild.getScoringData();
+        final CometScoringDataForScanBuild scoringData = tempData;
         float[] weights = scoringData.getTmpFastXcorrData();
         int length = weights.length;
         for (int i = 0; i < length; i++) {
@@ -389,8 +401,8 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
 
     public List<SpectrumBinnedScore> getFastScoringDataArray() {
         List<SpectrumBinnedScore> holder = new ArrayList<SpectrumBinnedScore>();
-        final CometScoringDataForScanBuild scoringData = CometScoringDataForScanBuild.getScoringData();
-        float[] weights = scoringData.getScoringFastXcorrData();
+        final CometScoringDataForScanBuild scoringData = tempData;
+         float[] weights = scoringData.getScoringFastXcorrData();
         int length = weights.length;
         for (int i = 0; i < length; i++) {
             float weight = weights[i];
@@ -402,8 +414,8 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
 
     public List<SpectrumBinnedScore> getTmpFastXcorrData2() {
         List<SpectrumBinnedScore> holder = new ArrayList<SpectrumBinnedScore>();
-        final CometScoringDataForScanBuild scoringData = CometScoringDataForScanBuild.getScoringData();
-        float[] weights = scoringData.getTmpFastXcorrData2();
+        final CometScoringDataForScanBuild scoringData = tempData;
+         float[] weights = scoringData.getTmpFastXcorrData2();
         int length = weights.length;
         for (int i = 0; i < length; i++) {
             float weight = weights[i];
@@ -426,9 +438,6 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
     }
 
 
-    public void clearScoringData() {
-        CometScoringDataForScanBuild.getScoringData().clearData();
-    }
 
     public boolean isNormalizationDone() {
         return normalizationDone;
@@ -437,17 +446,17 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
     public void setNormalizationDone(final boolean pIsNormalizationDone) {
         normalizationDone = pIsNormalizationDone;
     }
-
-    public void guaranteeScoringData(CometScoringAlgorithm alg) {
-        if (isNormalizationDone())
-            return;
-        IMeasuredSpectrum scan = getRaw();
-
-        // double sum = normalizeBinnedPeaks(binnedPeaks, MaxArraySize, pdTmpFastXcorrData);
-        normalizeBinnedPeaks(alg);
-        normalizeForNL(alg);
-        setNormalizationDone(true);
-    }
+//
+//    public void guaranteeScoringData(CometScoringAlgorithm alg) {
+//        if (isNormalizationDone())
+//            return;
+//        IMeasuredSpectrum scan = getRaw();
+//
+//        // double sum = normalizeBinnedPeaks(binnedPeaks, MaxArraySize, pdTmpFastXcorrData);
+//        normalizeBinnedPeaks(alg);
+//        normalizeForNL(alg);
+//        setNormalizationDone(true);
+//    }
 
     public double getScoredData(final Map<Integer, Double> fastScoringMap, final Map<Integer, Double> fastScoringMapNL, Integer index, int charge) {
         if (charge == 1) {
@@ -464,21 +473,21 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
         }
     }
 
-    public float getScoredData(final float[] fastScoringMap, final float[] fastScoringMapNL, int index, int charge) {
-        if(index == 25767) {
-            double x1 = fastScoringMapNL[index];
-            double x2 = fastScoringMap[index];
-
-        }
-
-        if (index >= fastScoringMap.length)
-            return 0;
-        if (charge == 1) {
-            return fastScoringMapNL[index];
-        } else {
-            return fastScoringMap[index];
-        }
-    }
+//    public float getScoredData(final float[] fastScoringMap, final float[] fastScoringMapNL, int index, int charge) {
+//        if(index == 25767) {
+//            double x1 = fastScoringMapNL[index];
+//            double x2 = fastScoringMap[index];
+//
+//        }
+//
+//        if (index >= fastScoringMap.length)
+//            return 0;
+//        if (charge == 1) {
+//            return fastScoringMapNL[index];
+//        } else {
+//            return fastScoringMap[index];
+//        }
+//    }
 
     /**
      * same as Comet LoadIOns
@@ -487,8 +496,8 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
      */
     protected void generateBinnedPeaks(CometScoringAlgorithm algorithm) {
         // get space
-        final CometScoringDataForScanBuild scoringData = CometScoringDataForScanBuild.getScoringData();
-        scoringData.clearData();
+        final CometScoringDataForScanBuild scoringData = tempData;
+          scoringData.clearData();
         float[] binned = scoringData.getWeights();
         ISpectrumPeak[] peaks = getRaw().getPeaks();
         double maxPeak = 0;

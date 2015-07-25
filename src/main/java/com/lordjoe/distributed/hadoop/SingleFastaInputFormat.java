@@ -14,6 +14,7 @@ import org.apache.hadoop.io.compress.*;
 import org.apache.hadoop.mapreduce.*;
 import org.apache.hadoop.mapreduce.lib.input.*;
 import org.apache.hadoop.util.*;
+import org.systemsbiology.hadoop.*;
 
 import java.io.*;
 import java.util.*;
@@ -196,6 +197,7 @@ public class SingleFastaInputFormat extends FileInputFormat<String, String> {
             }
         }
    //     LOG.debug("Total # of splits: " + splits.size());
+        HadoopUtilities.validateSplits(splits);
         return splits;
     }
 

@@ -19,6 +19,7 @@ import java.util.*;
 public class XMLTagInputFormat extends FileInputFormat<String, String> {
 
     private static final double SPLIT_SLOP = 1.1;   // 10% slop
+    private static final double SPLIT_SLOP_ABSOLUTE = 1000000; // of one million
 
     public static final int BUFFER_SIZE = 4096;
 
@@ -37,6 +38,7 @@ public class XMLTagInputFormat extends FileInputFormat<String, String> {
     public String getExtension() {
         return m_Extension;
     }
+
 
     @SuppressWarnings("UnusedDeclaration")
     public void setExtension(final String pExtension) {
@@ -83,7 +85,7 @@ public class XMLTagInputFormat extends FileInputFormat<String, String> {
     public RecordReader<String, String> createRecordReader(InputSplit split,
                                                            TaskAttemptContext context) {
         if (isSplitReadable(split))
-            return new MyXMLFileReader();
+            return new MyXMLFileReader(Integer.MAX_VALUE);
         else
             return NullRecordReader.INSTANCE; // do not read
     }
@@ -152,7 +154,7 @@ public class XMLTagInputFormat extends FileInputFormat<String, String> {
                 long splitSize = computeSplitSize(blockSize, minSize, maxSize);
 
                 long bytesRemaining = length;
-                while (((double) bytesRemaining) / splitSize > SPLIT_SLOP) {
+                while (withinSlop(splitSize, bytesRemaining)) {
                     int blkIndex = getBlockIndex(blkLocations, length - bytesRemaining);
                     splits.add(new FileSplit(path, length - bytesRemaining, splitSize,
                             blkLocations[blkIndex].getHosts()));
@@ -172,18 +174,28 @@ public class XMLTagInputFormat extends FileInputFormat<String, String> {
                 splits.add(new FileSplit(path, 0, length, new String[0]));
             }
         }
+        System.out.println("Total # of splits: " + splits.size());
         //     LOG.debug("Total # of splits: " + splits.size());
         return splits;
     }
 
     /**
-     * Custom RecordReader which returns the entire file as a
-     * single m_Value with the name as a m_Key
-     * Value is the entire file
+     * allor a modicum of slop
+     * @param pSplitSize
+     * @param pBytesRemaining
+     * @return
+     */
+    private boolean withinSlop(final long pSplitSize, final double pBytesRemaining) {
+        return pBytesRemaining / pSplitSize > SPLIT_SLOP;
+    }
+
+    /**
+     * Custom RecordReader reading a scan from an mzxml
      * Key is the file name
      */
     public class MyXMLFileReader extends RecordReader<String, String> {
 
+        private final int maxTagLength;
         private CompressionCodecFactory compressionCodecs = null;
         private long m_Start;
         private long m_End;
@@ -193,6 +205,10 @@ public class XMLTagInputFormat extends FileInputFormat<String, String> {
         private String m_Value = null;
         private char[] m_Buffer = new char[BUFFER_SIZE];
         StringBuilder m_Sb = new StringBuilder();
+
+        public MyXMLFileReader(final int pMaxTagLength) {
+            maxTagLength = pMaxTagLength;
+        }
 
         public void initialize(InputSplit genericSplit,
                                TaskAttemptContext context) throws IOException {
@@ -221,12 +237,21 @@ public class XMLTagInputFormat extends FileInputFormat<String, String> {
             }
             else {
                 m_Input = new BufferedReader(new InputStreamReader(fileIn));
-                m_End = length;
-            }
+             }
             m_Current = m_Start;
             m_Key = split.getPath().getName();
 
         }
+
+        /**
+         * override to restrict tag length
+         * @return
+         */
+        public int getMaxTagLength() {
+            return maxTagLength;
+        }
+
+
 
         /**
          * look for a   tag whose text is getStartTag() then read until it closes
@@ -264,6 +289,13 @@ public class XMLTagInputFormat extends FileInputFormat<String, String> {
                         m_Value = null;
                         m_Sb.setLength(0);
                         return false;
+                    }
+                    if(m_Sb.length() > getMaxTagLength())  {
+                        m_Key = null;
+                         m_Value = null;
+                         m_Sb.setLength(0);
+                         return false;
+
                     }
                 }
 
@@ -310,7 +342,7 @@ public class XMLTagInputFormat extends FileInputFormat<String, String> {
             int index = bufferHasStartTag();
             if(index == -1)
                     return false;
-             startText = startText.substring(index);
+            startText = startText.substring(index);
             m_Sb.setLength(0);
             m_Sb.append(startText);
 
@@ -355,4 +387,7 @@ public class XMLTagInputFormat extends FileInputFormat<String, String> {
             }
         }
     }
+
+
+
 }

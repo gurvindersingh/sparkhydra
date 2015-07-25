@@ -216,24 +216,20 @@ public class CometTesting {
 
     }
 
-    private static float[] getWeights(final CometScoringAlgorithm alg, CometScoredScan scan) {
-        CometScoringDataForScanBuild scoringData = CometScoringDataForScanBuild.getScoringData();
-        return scoringData.getWeights();
-    }
-
-    private static float[] getTmpFastXcorrData(final CometScoringAlgorithm alg, CometScoredScan scan) {
-        CometScoringDataForScanBuild scoringData = CometScoringDataForScanBuild.getScoringData();
-        return scoringData.getWeights();
-    }
-
-    public static void testWeightsState(final CometScoringAlgorithm alg, CometScoredScan scan) {
-        float[] binnedPeaks = getWeights(alg, scan);
-        double testIntensity = binnedPeaks[CometScoredScan.TEST_BIN];
-        assertEquals(50, testIntensity);
-        double testIntensity1 = binnedPeaks[CometScoredScan.TEST_BIN + 1];
-        assertEquals(33.283268, testIntensity1);
-        double testIntensity2 = binnedPeaks[CometScoredScan.TEST_BIN + 2];
-    }
+//    private static float[] getWeights(final CometScoringAlgorithm alg, CometScoredScan scan) {
+//        CometScoringDataForScanBuild scoringData = CometScoringDataForScanBuild.getScoringData();
+//        return scoringData.getWeights();
+//    }
+//
+//
+//    public static void testWeightsState(final CometScoringAlgorithm alg, CometScoredScan scan) {
+//        float[] binnedPeaks = getWeights(alg, scan);
+//        double testIntensity = binnedPeaks[CometScoredScan.TEST_BIN];
+//        assertEquals(50, testIntensity);
+//        double testIntensity1 = binnedPeaks[CometScoredScan.TEST_BIN + 1];
+//        assertEquals(33.283268, testIntensity1);
+//        double testIntensity2 = binnedPeaks[CometScoredScan.TEST_BIN + 2];
+//    }
 
 //
 //    public static void testWindowedIntensities(final CometScoringAlgorithm alg, CometScoredScan scan) {

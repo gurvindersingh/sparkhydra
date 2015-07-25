@@ -21,9 +21,9 @@ public class MemoryUseAccumulatorAndBinSize implements IAccumulator<MemoryUseAcc
 
     public static final AccumulatorParam<MemoryUseAccumulatorAndBinSize> PARAM_INSTANCE = new IAccumulatorParam<MemoryUseAccumulatorAndBinSize>();
 
-      public static MemoryUseAccumulatorAndBinSize empty() {
-         return new MemoryUseAccumulatorAndBinSize();
-      }
+    public static MemoryUseAccumulatorAndBinSize empty() {
+        return new MemoryUseAccumulatorAndBinSize();
+    }
 
 
     private transient long startAllocation;
@@ -36,7 +36,7 @@ public class MemoryUseAccumulatorAndBinSize implements IAccumulator<MemoryUseAcc
      * Use static method empty
      */
     private MemoryUseAccumulatorAndBinSize() {
-        startAllocation = MemoryTracker.threadAllocatedBytes();
+        startAllocation = MemoryTracker.usedBytes();
         maxHeap = startAllocation;
         maxAllocated = 0;
     }
@@ -58,7 +58,7 @@ public class MemoryUseAccumulatorAndBinSize implements IAccumulator<MemoryUseAcc
 
 
     public void check() {
-        long current = MemoryTracker.threadAllocatedBytes();
+        long current = MemoryTracker.usedBytes();
         long allocated = current - startAllocation;
         maxHeap = Math.max(maxHeap, current);
         maxAllocated = Math.max(maxAllocated, allocated);
@@ -66,7 +66,7 @@ public class MemoryUseAccumulatorAndBinSize implements IAccumulator<MemoryUseAcc
 
 
     public void saveUsage(int nSpectra, int nPeptides) {
-        usage.add(new MemoryAndBinSize(maxHeap,maxAllocated, nSpectra, nPeptides));
+        usage.add(new MemoryAndBinSize(maxHeap, maxAllocated, nSpectra, nPeptides));
     }
 
 
@@ -95,17 +95,33 @@ public class MemoryUseAccumulatorAndBinSize implements IAccumulator<MemoryUseAcc
      * @param out
      */
     protected void buildReport(final Appendable out, int maxReprt) {
-        int lines = 0;
-        List<MemoryAndBinSize> usage = getUsage();
-        Collections.sort(usage);  // get highest
         try {
-            for (MemoryAndBinSize memoryAndBinSize : usage) {
-                out.append(memoryAndBinSize.toString());
-                out.append("\n");
+            int lines = 0;
+            List<MemoryAndBinSize> usage = getUsage();
+            Collections.sort(usage);  // get highest
 
-                if (lines++ > maxReprt)
-                    break;
-            }
+            int pct75 = (int) ((usage.size() * 0.75) / usage.size());
+            int pct50 = (int) ((usage.size() * 0.50) / usage.size());
+            int pct25 = (int) ((usage.size() * 0.25) / usage.size());
+
+            if(usage.size() == 0)
+                return;
+            MemoryAndBinSize memoryAndBinSize1 = usage.get(0);
+            out.append("max " + memoryAndBinSize1.toString());
+            out.append("0.75 " + usage.get(pct75).toString());
+            out.append("\n");
+            out.append("0.50 " + usage.get(pct50).toString());
+            out.append("\n");
+            out.append("0.25 " + usage.get(pct25).toString());
+            out.append("\n");
+
+//            for (MemoryAndBinSize memoryAndBinSize : usage) {
+//                out.append(memoryAndBinSize.toString());
+//                out.append("\n");
+//
+//                if (lines++ > maxReprt)
+//                    break;
+//            }
         }
         catch (IOException e) {
             throw new RuntimeException(e);

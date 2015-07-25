@@ -1,17 +1,17 @@
 package com.lordjoe.distributed.spectrum;
 
 import com.lordjoe.distributed.*;
-import com.lordjoe.distributed.hydra.comet_spark.SparkCometScanScorer;
+import com.lordjoe.distributed.hydra.comet_spark.*;
+import com.lordjoe.distributed.hydra.scoring.*;
 import com.lordjoe.distributed.input.*;
+import org.apache.hadoop.mapreduce.*;
 import org.apache.spark.api.java.*;
-import org.apache.spark.api.java.function.Function;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.hadoop.*;
 import scala.*;
 
 import javax.annotation.*;
 import java.io.*;
-import java.lang.Boolean;
 
 /**
  * com.lordjoe.distributed.spectrum.SparkSpectrumUtilities
@@ -19,6 +19,8 @@ import java.lang.Boolean;
  * Date: 9/24/2014
  */
 public class SparkSpectrumUtilities {
+
+    public static final int MAX_MZXML_TAG_LENGTH = 500 * 1000;
 
     private static boolean gMSLevel1Dropped = true;
 
@@ -59,6 +61,14 @@ public class SparkSpectrumUtilities {
         public MZXMLInputFormat() {
             super("scan");
         }
+
+        @Override
+        public RecordReader<String, String> createRecordReader(final InputSplit split, final TaskAttemptContext context) {
+            if (isSplitReadable(split))
+               return new MyXMLFileReader(MAX_MZXML_TAG_LENGTH);   // retrict max tag length
+           else
+               return NullRecordReader.INSTANCE; // do not read
+          }
     }
 
     @Nonnull
@@ -79,51 +89,68 @@ public class SparkSpectrumUtilities {
 
     @Nonnull
     public static JavaPairRDD<String, IMeasuredSpectrum> parseAsMZXML(@Nonnull final String path, @Nonnull final JavaSparkContext ctx,XTandemMain application) {
-        Class inputFormatClass = MZXMLInputFormat.class;
+        Class inputFormatClass = MZXMLSpectrumInputFormat.class;
         Class keyClass = String.class;
-        Class valueClass = String.class;
+        Class valueClass = IMapReduce.class;
 
-        JavaPairRDD<String, String> spectraAsStrings = ctx.newAPIHadoopFile(
+        JavaPairRDD<String, IMeasuredSpectrum> parsed = ctx.newAPIHadoopFile(
                 path,
                 inputFormatClass,
                 keyClass,
                 valueClass,
                 SparkUtilities.getHadoopConfiguration()
         );
-
-        long[] countRef = new long[1];
-        if (SparkCometScanScorer.isDebuggingCountMade())
-            spectraAsStrings = SparkUtilities.persistAndCountPair("Raw spectra", spectraAsStrings, countRef);
-        // debug code
-        //spectraAsStrings = SparkUtilities.realizeAndReturn(spectraAsStrings);
-
-        if (isMSLevel1Dropped()) {
-            // filter out MS Level 1 spectra
-            spectraAsStrings = spectraAsStrings.filter(new Function<Tuple2<String, String>, Boolean>() {
-                                                           public Boolean call(Tuple2<String, String> s) {
-                                                               String s1 = s._2();
-                                                               if (s1.contains("msLevel=\"2\""))
-                                                                   return true;
-                                                               return false;
-                                                           }
-                                                       }
-            );
-            if (SparkCometScanScorer.isDebuggingCountMade())
-                spectraAsStrings = SparkUtilities.persistAndCountPair("Filtered spectra", spectraAsStrings, countRef);
-        }
-
-        // debug code
-        //spectraAsStrings = SparkUtilities.realizeAndReturn(spectraAsStrings);
-
-        // parse scan tags as  IMeasuredSpectrum key is id
-        JavaPairRDD<String, IMeasuredSpectrum> parsed = spectraAsStrings.mapToPair(new MapSpectraStringToRawScan());
-        // TODO normalize
-
-        // kill duplicates todo why are there duplicated
-        parsed = SparkUtilities.chooseOneValue(parsed);
-
-        return parsed;
+         return parsed;
     }
+
+//    @Nonnull
+//     public static JavaPairRDD<String, IMeasuredSpectrum> parseAsMZXMLOLD_CODE(@Nonnull final String path, @Nonnull final JavaSparkContext ctx,XTandemMain application) {
+//         Class inputFormatClass = MZXMLInputFormat.class;
+//         Class keyClass = String.class;
+//         Class valueClass = String.class;
+//
+//         JavaPairRDD<String, String> spectraAsStrings = ctx.newAPIHadoopFile(
+//                 path,
+//                 inputFormatClass,
+//                 keyClass,
+//                 valueClass,
+//                 SparkUtilities.getHadoopConfiguration()
+//         );
+//
+//         long[] countRef = new long[1];
+//         if (SparkCometScanScorer.isDebuggingCountMade())
+//             spectraAsStrings = SparkUtilities.persistAndCountPair("Raw spectra", spectraAsStrings, countRef);
+//         // debug code
+//         //spectraAsStrings = SparkUtilities.realizeAndReturn(spectraAsStrings);
+//
+//         if (isMSLevel1Dropped()) {
+//             // filter out MS Level 1 spectra
+//             spectraAsStrings = spectraAsStrings.filter(new Function<Tuple2<String, String>, Boolean>() {
+//                                                            public Boolean call(Tuple2<String, String> s) {
+//                                                                String s1 = s._2();
+//                                                                if (s1.contains("msLevel=\"2\""))
+//                                                                    return true;
+//                                                                return false;
+//                                                            }
+//                                                        }
+//             );
+//             if (SparkCometScanScorer.isDebuggingCountMade())
+//                 spectraAsStrings = SparkUtilities.persistAndCountPair("Filtered spectra", spectraAsStrings, countRef);
+//         }
+//
+//         // debug code
+//         //spectraAsStrings = SparkUtilities.realizeAndReturn(spectraAsStrings);
+//
+//         // parse scan tags as  IMeasuredSpectrum key is id
+//         JavaPairRDD<String, IMeasuredSpectrum> parsed = spectraAsStrings.mapToPair(new MapSpectraStringToRawScan());
+//         // TODO normalize
+//
+//         // kill duplicates todo why are there duplicated
+//         parsed = SparkUtilities.chooseOneValue(parsed);
+//
+//         return parsed;
+//     }
+
 
 //    @Nonnull
 //    public static JavaPairRDD<String, IMeasuredSpectrum> parseAsOldMGF(@Nonnull final String path, @Nonnull final JavaSparkContext ctx) {

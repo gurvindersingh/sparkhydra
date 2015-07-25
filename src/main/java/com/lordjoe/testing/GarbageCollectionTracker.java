@@ -8,12 +8,16 @@ import java.util.*;
 
 /**
  * com.lordjoe.testing.MemoryTracker
- * A class to track memory allocation
+ * A class to track garbae collection times
  * User: Steve
  * Date: 7/2/2015
  */
 
 public class GarbageCollectionTracker {
+
+
+    private long startTime;
+    private long gcTime;
 
     /**
      * how many bytes are in use right now

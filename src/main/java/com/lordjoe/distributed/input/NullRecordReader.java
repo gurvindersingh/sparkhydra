@@ -12,12 +12,12 @@ import java.io.*;
  * Date: 9/24/2014
  */
 
-public class NullRecordReader extends RecordReader<String, String> {
+public class NullRecordReader<K> extends RecordReader<String, K> {
 
     // only one ever built
     public static RecordReader<String, String> INSTANCE = new NullRecordReader();
 
-    private NullRecordReader() {
+    public NullRecordReader() {
     }
 
     /**
@@ -65,7 +65,7 @@ public class NullRecordReader extends RecordReader<String, String> {
      * @throws InterruptedException
      */
     @Override
-    public String getCurrentValue() throws IOException, InterruptedException {
+    public K getCurrentValue() throws IOException, InterruptedException {
         return null;
     }
 
