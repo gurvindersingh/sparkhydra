@@ -31,7 +31,9 @@ public class CometScoringDataForScanBuild {
 
     public static int getNumberTimesMemoryAllocated() {
         guaranteeAllocationIdentifier();
-        return numberTimesMemoryAllocated;
+        int ret = numberTimesMemoryAllocated;
+        numberTimesMemoryAllocated = 0; // we have recorded this
+        return ret;
     }
 
     private static void incrementMemoryAllocated(long allocated) {
@@ -42,7 +44,9 @@ public class CometScoringDataForScanBuild {
 
     public static long getTotalTemporaryMemoryAllocated() {
         guaranteeAllocationIdentifier();
-        return totalTemporaryMemoryAllocated;
+        long ret = totalTemporaryMemoryAllocated;
+        totalTemporaryMemoryAllocated = 0; // we have recorded this
+        return ret;
     }
 
     private static void guaranteeAllocationIdentifier() {
@@ -52,21 +56,21 @@ public class CometScoringDataForScanBuild {
 
     public static CometScoringDataForScanBuild borrowScoringMemory() {
         synchronized (pool) {
-  //          synchronized (CometScoringDataForScanBuild.class) {
-      //       if (pool == null)
-   //             pool = new Stack<CometScoringDataForScanBuild>();
+            //          synchronized (CometScoringDataForScanBuild.class) {
+            //       if (pool == null)
+            //             pool = new Stack<CometScoringDataForScanBuild>();
             if (pool.isEmpty())
                 pool.push(new CometScoringDataForScanBuild());
             CometScoringDataForScanBuild ret = pool.pop();
             ret.clearData();
             return ret;
-         }
+        }
     }
 
 
     public static void releaseScoringMemory(CometScoringDataForScanBuild released) {
-          pool.push(released);
-     }
+        pool.push(released);
+    }
 
 //    public static CometScoringDataForScanBuild borrowScoringMemory() {
 //        return preallocatedData;

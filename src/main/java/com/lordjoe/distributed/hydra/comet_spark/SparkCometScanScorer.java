@@ -793,6 +793,8 @@ public class SparkCometScanScorer {
         // Assign bins to spectra
         JavaPairRDD<BinChargeKey, CometScoredScan> keyedSpectra = handler.mapMeasuredSpectrumToKeys(cometSpectraToScore);
 
+        keyedSpectra = SparkUtilities.persist(keyedSpectra);
+
         // fine all bins we are scoring - this allows us to filter peptides
         //keyedSpectra = SparkUtilities.persist(keyedSpectra);
         //List<Tuple2<BinChargeKey, CometScoredScan>> collect = keyedSpectra.collect();
@@ -804,14 +806,25 @@ public class SparkCometScanScorer {
 
         MapOfLists<Integer, BinChargeKey> splitKeys = computeBinSplit(usedBinsMap);
 
-        int maxSpectraInBin = scoringApplication.getIntParameter(BinPartitioner.MAX_SPECTRA_PARAMETER,BinPartitioner.DEFAULT_MAX_SPECTRA_IN_BIN);
-        int maxKeysInBin = scoringApplication.getIntParameter(BinPartitioner.MAX_SPECTRA_PARAMETER,BinPartitioner.DEFAULT_MAX_KEYS_IN_BIN) ;
 
-        BinPartitioner partitioner = new BinPartitioner(totalSpectra, splitKeys, usedBinsMap, maxSpectraInBin, maxKeysInBin);
-        /**
+
+        int maxSpectraInBin = scoringApplication.getIntParameter(BinPartitioner.MAX_SPECTRA_PARAMETER,BinPartitioner.DEFAULT_MAX_SPECTRA_IN_BIN);
+        int maxKeysInBin = scoringApplication.getIntParameter(BinPartitioner.MAX_KEYS_PARAMETER,BinPartitioner.DEFAULT_MAX_KEYS_IN_BIN) ;
+
+         /**
          * if spectra are split remap them
          */
         keyedSpectra = remapSpectra(keyedSpectra, splitKeys);
+
+        keyedSpectra = SparkUtilities.persist(keyedSpectra);
+
+        usedBinsMap = getUsedBins(keyedSpectra); // use new keys
+
+        // make a smart partitioner
+        BinPartitioner partitioner = new BinPartitioner(totalSpectra, splitKeys, usedBinsMap, maxSpectraInBin, maxKeysInBin);
+
+        showBinningData(totalSpectra, splitKeys, usedBinsMap, maxSpectraInBin, maxKeysInBin);
+
 
         // redivide
         keyedSpectra.partitionBy(partitioner);
@@ -866,10 +879,16 @@ public class SparkCometScanScorer {
 
         // added SLewis to reduce memory stress
 
+        binP = binP.partitionBy(partitioner);
+
 
         // NOTE this is where all the real work is done
         //JavaRDD<? extends IScoredScan> bestScores = handler.scoreCometBinPair(binP);
         JavaRDD<? extends IScoredScan> bestScores = handler.scoreCometBinPairPolypeptide(binP);
+
+        // once we score we can go back to normal partitions
+        // bestScores = bestScores.repartition(SparkUtilities.getDefaultNumberPartitions());
+
 
 //        bestScores = SparkUtilities.persistAndCount("After Scoring",bestScores,counts);
 //        long scoredCounts = counts[0];
@@ -921,6 +940,33 @@ public class SparkCometScanScorer {
         // purely debugging  code to see whether interesting peptides scored with interesting spectra
         //TestUtilities.writeSavedKeysAndSpectra();
     }
+
+    /**
+      * show data used in intellignet binning
+      */
+     public static void showBinningData(final long pTotalSpectra,MapOfLists<Integer, BinChargeKey> keys,Map<BinChargeKey, Long> usedBinsMap,int pMaxSpectraInBin,int pMaxKeysInBin ) {
+          PrintWriter savedAccumulators = SparkUtilities.getHadoopPrintWriter("BinningData.txt");
+          savedAccumulators.println("TotalSpectra " + Long_Formatter.format(pTotalSpectra) + "\tMaxSpectraInBin " + pMaxSpectraInBin + "\tMaxKeysInBin " + pMaxKeysInBin);
+         List<Integer>   keysSorted = new ArrayList<Integer>(keys.keySet());
+         Collections.sort(keysSorted);
+         for (Integer key : keysSorted) {
+             savedAccumulators.print( key + "\t" );
+             for (BinChargeKey binChargeKey : keys.get(key)) {
+                 savedAccumulators.print( binChargeKey + ";" );
+             }
+             savedAccumulators.println( );
+         }
+         savedAccumulators.println("=========================================");
+         List<BinChargeKey> bins =  new ArrayList<BinChargeKey>(usedBinsMap.keySet());
+         Collections.sort(bins);
+         for (BinChargeKey key : bins) {
+             String s = key + "\t" + usedBinsMap.get(key);
+             savedAccumulators.println(s);
+         }
+          savedAccumulators.close();
+     }
+
+
 
     /**
      * Map a Spectrum to one of multiple bins

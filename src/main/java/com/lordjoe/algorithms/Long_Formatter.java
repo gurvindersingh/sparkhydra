@@ -29,4 +29,27 @@ public class Long_Formatter {
         return Long.toString(n) + "T";
     }
 
+    public static long unFormat(String s)
+    {
+        s = s.trim();
+        char last = s.charAt(s.length() - 1);
+        if(Character.isDigit(last))
+            return Long.parseLong(s);
+        s = s.substring(0,s.length() - 1);
+        long ret = Long.parseLong(s);
+        switch(last)  {
+            case 'K' :
+                return ret * ONE_K;
+            case 'M' :
+                return ret * ONE_MEG;
+            case 'G' :
+                return ret * ONE_GIG;
+            case 'T' :
+                return ret * ONE_TERA;
+            default:
+                throw new IllegalStateException("Cannot understand suffix \'"  + last + '\'');
+
+        }
+    }
+
 }

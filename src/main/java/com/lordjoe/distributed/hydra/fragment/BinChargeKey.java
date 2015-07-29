@@ -1,7 +1,7 @@
 package com.lordjoe.distributed.hydra.fragment;
 
 import com.lordjoe.distributed.*;
-import com.lordjoe.distributed.hydra.comet.BinChargeMapper;
+import com.lordjoe.distributed.hydra.comet.*;
 import org.apache.spark.*;
 
 import java.io.*;
@@ -45,23 +45,35 @@ public class BinChargeKey implements Serializable, Comparable<BinChargeKey> {
     public final int partition;
 
     public BinChargeKey(final int pCharge, final double pMz) {
-        this(pCharge,pMz,0) ;
+        this(pCharge, pMz, 0);
     }
-    public BinChargeKey(final int pCharge, final double pMz,int p ) {
+
+    public BinChargeKey(final int pCharge, final double pMz, int p) {
         charge = pCharge;
         mzInt = mzAsInt(pMz);
         partition = p;
     }
+
+    public BinChargeKey(String s) {
+        String[] items = s.split(":");
+        charge = Integer.parseInt(items[0]);
+        mzInt = mzAsInt(Double.parseDouble(items[1]));
+        partition = Integer.parseInt(items[2]);
+
+    }
+
 
     @SuppressWarnings("UnusedDeclaration")
     public int getMzInt() {
         return mzInt;
     }
 
-    public int getPartition() { return partition;  }
+    public int getPartition() {
+        return partition;
+    }
 
     public double getMz() {
-          return intToMz(mzInt);
+        return intToMz(mzInt);
     }
 
 
@@ -76,10 +88,10 @@ public class BinChargeKey implements Serializable, Comparable<BinChargeKey> {
 
         final BinChargeKey that = (BinChargeKey) o;
 
-    //    if (charge != that.charge) return false;
+        //    if (charge != that.charge) return false;
 
-        if ( mzInt != that.mzInt) return false;
-        if ( partition != that.partition) return false;
+        if (mzInt != that.mzInt) return false;
+        if (partition != that.partition) return false;
 
         return true;
     }
@@ -89,7 +101,7 @@ public class BinChargeKey implements Serializable, Comparable<BinChargeKey> {
         int result;
         result = mzInt;
 
-         result = 31 * result + (partition ^ (partition >>> 32));
+        result = 31 * result + (partition ^ (partition >>> 32));
         return result;
     }
 

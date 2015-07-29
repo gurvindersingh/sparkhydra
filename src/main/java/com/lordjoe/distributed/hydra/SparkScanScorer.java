@@ -494,6 +494,8 @@ public class SparkScanScorer {
         for (PairCounter pair : pPairs) {
             pairCount += pair.product;
         }
+
+
         System.out.println("Total Pairs " + SparkUtilities.formatLargeNumber(pairCount));
         System.out.println("Spectra times Peptides " + SparkUtilities.formatLargeNumber(totalSpectra * peptidecounts));
 

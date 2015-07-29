@@ -16,6 +16,10 @@ public class MapOfLists<K,V> implements Serializable {
     }
 
 
+    public Set<K>  keySet() {
+        return items.keySet();
+    }
+
     public Collection<List<V>>  values() {
         return items.values();
     }
