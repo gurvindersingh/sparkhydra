@@ -109,6 +109,19 @@ public class AttributeParameterHolder implements IParameterHolder {
             return null;
         return new Integer(val);
     }
+    /**
+      * access a parameter from a parameter map
+      *
+      * @param key !null key
+      * @return possibly null parameter
+      */
+     @Override
+     public Long getLongParameter(String key) {
+         String val = getParameter(key);
+         if (val == null || "".equals(val))
+             return null;
+         return new Long(val);
+     }
 
     /**
      * access a parameter from a parameter map
@@ -189,6 +202,21 @@ public class AttributeParameterHolder implements IParameterHolder {
             return defaultValue;
         return new Integer(val);
     }
+
+    /**
+        * access a parameter from a parameter map
+        *
+        * @param key !null key
+        * @return possibly null parameter
+        */
+       @Override
+       public Long getLongParameter(String key, long defaultValue) {
+           String val = getParameter(key);
+           if (val == null || "".equals(val))
+               return defaultValue;
+           return new Long(val);
+       }
+
 
     /**
      * access a parameter from a parameter map

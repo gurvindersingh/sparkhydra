@@ -1011,7 +1011,7 @@ public class SparkUtilities implements Serializable {
         throw new UnsupportedOperationException("Fix This"); // ToDo
     }
 
-    public static final StorageLevel DEFAULT_STORAGE_LEVEL = StorageLevel.MEMORY_AND_DISK();
+    public static final StorageLevel DEFAULT_STORAGE_LEVEL = StorageLevel.DISK_ONLY(); //  StorageLevel.MEMORY_AND_DISK(); //StorageLevel.OFF_HEAP(); //
 
     /**
      * persist in the best way - saves remembering which storage level
@@ -1034,19 +1034,19 @@ public class SparkUtilities implements Serializable {
            return inp.persist(storageLevel);
     }
 
-    /**
-     * persist in the best way - saves remembering which storage level
-     *
-     * @param inp
-     * @return
-     */
-    @Nonnull
-    public static <K, V> JavaRDD<Tuple2<K, V>> persistTuple(@Nonnull final JavaRDD<Tuple2<K, V>> inp) {
-        StorageLevel storageLevel = inp.getStorageLevel();
-        if (storageLevel == null)
-            storageLevel = DEFAULT_STORAGE_LEVEL;
-        return inp.persist(storageLevel);
-    }
+//    /**
+//     * persist in the best way - saves remembering which storage level
+//     *
+//     * @param inp
+//     * @return
+//     */
+//    @Nonnull
+//    public static <K, V> JavaRDD<Tuple2<K, V>> persistTuple(@Nonnull final JavaRDD<Tuple2<K, V>> inp) {
+//        StorageLevel storageLevel = inp.getStorageLevel();
+//        if (storageLevel == null)
+//            storageLevel = DEFAULT_STORAGE_LEVEL;
+//        return inp.persist(storageLevel);
+//    }
 
     /**
      * persist in the best way - saves remembering which storage level
@@ -1147,21 +1147,21 @@ public class SparkUtilities implements Serializable {
         return ret;
     }
 
-    /**
-     * persist and show count
-     *
-     * @param message message to show
-     * @param inp     rdd
-     * @return
-     */
-    @Nonnull
-    public static <K, V> JavaRDD<Tuple2<K, V>> persistAndCountTuple(@Nonnull final String message, @Nonnull final JavaRDD<Tuple2<K, V>> inp, long[] countRef) {
-        JavaRDD<Tuple2<K, V>> ret = persistTuple(inp);
-        long count = ret.count();
-        System.err.println(message + " has " + Long_Formatter.format(count));
-        countRef[0] = count;
-        return ret;
-    }
+//    /**
+//     * persist and show count
+//     *
+//     * @param message message to show
+//     * @param inp     rdd
+//     * @return
+//     */
+//    @Nonnull
+//    public static <K, V> JavaRDD<Tuple2<K, V>> persistAndCountTuple(@Nonnull final String message, @Nonnull final JavaRDD<Tuple2<K, V>> inp, long[] countRef) {
+//        JavaRDD<Tuple2<K, V>> ret = persistTuple(inp);
+//        long count = ret.count();
+//        System.err.println(message + " has " + Long_Formatter.format(count));
+//        countRef[0] = count;
+//        return ret;
+//    }
 
     /**
      * persist and show count

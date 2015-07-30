@@ -19,7 +19,7 @@ public class DefaultParameterHolder implements ISetableParameterHolder {
     @SuppressWarnings("UnusedDeclaration")
     public static final String FORCE_PATH_PREFIX_KEY = "org.systemsbiology.xtandem.hdfs.forcePathPrefix";
     @SuppressWarnings("UnusedDeclaration")
-     public static final String HOST_KEY = "org.systemsbiology.xtandem.hdfs.host";
+    public static final String HOST_KEY = "org.systemsbiology.xtandem.hdfs.host";
     @SuppressWarnings("UnusedDeclaration")
     public static final String HOST_PORT_KEY = "org.systemsbiology.xtandem.hdfs.port";
     @SuppressWarnings("UnusedDeclaration")
@@ -81,12 +81,14 @@ public class DefaultParameterHolder implements ISetableParameterHolder {
             opener = new HDFSStreamOpener(pConfiguration);
             addPreLoadOpener(opener);
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
 
             //noinspection ConstantConditions
             if (e instanceof RuntimeException) {
                 throw (RuntimeException) e;
-            } else {
+            }
+            else {
                 throw new RuntimeException(e);
             }
             //   opener = new FileStreamOpener();
@@ -98,10 +100,12 @@ public class DefaultParameterHolder implements ISetableParameterHolder {
         if (context != null) {
             if (context instanceof MapContext) {
                 System.err.println("in mapper paramsFile = " + paramsFile);
-            } else if (context instanceof ReduceContext) {
+            }
+            else if (context instanceof ReduceContext) {
                 System.err.println("in reducer paramsFile = " + paramsFile);
 
-            } else {
+            }
+            else {
                 // Huh - who knows where we are
                 System.err.println("in context " + context.getClass().getName() + " paramsFile = " + paramsFile);
 
@@ -154,7 +158,8 @@ public class DefaultParameterHolder implements ISetableParameterHolder {
             for (String key : props.stringPropertyNames()) {
                 m_Parameters.put(key, (String) props.get(key));
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -196,7 +201,7 @@ public class DefaultParameterHolder implements ISetableParameterHolder {
     @SuppressWarnings("UnusedDeclaration")
     protected void initOpeners() {
         addOpener(new FileStreamOpener());
-   //     addOpener(new StreamOpeners.ResourceStreamOpener(DefaultParameterHolder.class));
+        //     addOpener(new StreamOpeners.ResourceStreamOpener(DefaultParameterHolder.class));
         for (IStreamOpener opener : getPreloadOpeners())
             addOpener(opener);
     }
@@ -386,6 +391,36 @@ public class DefaultParameterHolder implements ISetableParameterHolder {
      * @return possibly null parameter
      */
     @Override
+    public Long getLongParameter(String key, long defaultValue) {
+        String val = getParameter(key);
+        if (val == null || "".equals(val))
+            return defaultValue;
+        return new Long(val);
+    }
+
+
+
+    /**
+     * access a parameter from a parameter map
+     *
+     * @param key !null key
+     * @return possibly null parameter
+     */
+    @Override
+    public Long getLongParameter(String key) {
+        String val = getParameter(key);
+        if (val == null || "".equals(val))
+            return null;
+        return new Long(val);
+    }
+
+    /**
+     * access a parameter from a parameter map
+     *
+     * @param key !null key
+     * @return possibly null parameter
+     */
+    @Override
     public Boolean getBooleanParameter(String key, boolean defaultValue) {
         String val = getParameter(key);
         if (val == null)
@@ -414,7 +449,8 @@ public class DefaultParameterHolder implements ISetableParameterHolder {
             return defaultValue;
         try {
             return new Float(val);
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             throw new RuntimeException(e);
 
         }

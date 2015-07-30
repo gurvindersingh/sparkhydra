@@ -8,6 +8,7 @@ import com.lordjoe.distributed.hydra.fragment.*;
 import com.lordjoe.distributed.hydra.scoring.*;
 import com.lordjoe.distributed.hydra.test.*;
 import com.lordjoe.distributed.spark.accumulators.*;
+import com.lordjoe.testing.*;
 import com.lordjoe.utilities.*;
 import org.apache.spark.*;
 import org.apache.spark.api.java.*;
@@ -29,8 +30,9 @@ import java.util.*;
  */
 public class CometScoringHandler extends SparkMapReduceScoringHandler {
 
+    public static final String TOTAL_SCORED_SPECTRA_NAME = "TotalSpectraScored";
     public static final String TOTAL_SCORRED_ACCUMULATOR_NAME = "TotalPeptidesScored";
-    public static final String PEPTIDES_ACCUMULATOR_NAME = "PeptideDistribution";
+      public static final String PEPTIDES_ACCUMULATOR_NAME = "PeptideDistribution";
     public static final String SPECTRA_ACCUMULATOR_NAME = "SpectrumDistribution";
     public static final double MINIMUM_ACCEPTABLE_SCORE = 0.01;
 
@@ -156,7 +158,8 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
 
         private CometScoringAlgorithm comet;
         private Scorer scorer;
-        private final Accumulator<Long> numberScoredAccumlator = SparkAccumulators.createAccumulator(TOTAL_SCORRED_ACCUMULATOR_NAME);
+        private final Accumulator<Long> numberScoredSpectraAccumlator = SparkAccumulators.createAccumulator(TOTAL_SCORED_SPECTRA_NAME);
+        private final Accumulator<Long> numberScoredAccumlator = SparkAccumulators.createAccumulator(TOTAL_SCORED_SPECTRA_NAME);
         // track bin usage   - make the accumulator exist
         private final Accumulator<MemoryUseAccumulatorAndBinSize> binUsage = SparkAccumulators.createSpecialAccumulator(MemoryUseAccumulatorAndBinSize.BIN_ACCUMULATOR_NAME,
                 MemoryUseAccumulatorAndBinSize.PARAM_INSTANCE, MemoryUseAccumulatorAndBinSize.empty());
@@ -255,11 +258,14 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
         private Scorer scorer;
         private Accumulator<MemoryUseAccumulator> memoryAccululator;
         private final boolean bypassScoring;
-             private final boolean doGCAfterBin;
+        private final boolean doGCAfterBin;
         private final boolean keepBinStatistics;
+        private final long maxMemoryAllocartion;
+
         private final int maxBinSize;
 
         private final Accumulator<Long> numberScoredAccumlator = SparkAccumulators.createAccumulator(TOTAL_SCORRED_ACCUMULATOR_NAME);
+        private final Accumulator<Long> numberSpectraAccumlator = SparkAccumulators.createAccumulator(TOTAL_SCORED_SPECTRA_NAME);
 
 
         private final Accumulator<CountedDistribution> peptideDistributionCounts = SparkAccumulators.createSpecialAccumulator(PEPTIDES_ACCUMULATOR_NAME,
@@ -269,8 +275,10 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
         private final Accumulator<MemoryUseAccumulatorAndBinSize> binAccululator = SparkAccumulators.createSpecialAccumulator(MemoryUseAccumulatorAndBinSize.BIN_ACCUMULATOR_NAME,
                 MemoryUseAccumulatorAndBinSize.PARAM_INSTANCE, MemoryUseAccumulatorAndBinSize.empty());
         // track special comet memory
-        private final Accumulator<CometTemporaryMemoryAccumulator> temporaryMemoryAccululator = SparkAccumulators.createSpecialAccumulator(CometTemporaryMemoryAccumulator.COMET_MEMORY_ACCUMULATOR_NAME,
-                CometTemporaryMemoryAccumulator.PARAM_INSTANCE, CometTemporaryMemoryAccumulator.empty());
+//        private final Accumulator<CometTemporaryMemoryAccumulator> temporaryMemoryAccululator = SparkAccumulators.createSpecialAccumulator(CometTemporaryMemoryAccumulator.COMET_MEMORY_ACCUMULATOR_NAME,
+//                CometTemporaryMemoryAccumulator.PARAM_INSTANCE, CometTemporaryMemoryAccumulator.empty());
+        private final Accumulator<NotScoredBins> unscoredAccumulator = SparkAccumulators.createSpecialAccumulator(NotScoredBins.BIN_ACCUMULATOR_NAME,
+                NotScoredBins.PARAM_INSTANCE, NotScoredBins.empty());
 
 
         public ScoreSpectrumAndPeptideWithCogroupWithoutHash(XTandemMain application) {
@@ -278,9 +286,12 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
             scorer = application.getScoreRunner();
             SparkAccumulators instance = SparkAccumulators.getInstance();
             memoryAccululator = (Accumulator<MemoryUseAccumulator>) instance.getSpecialAccumulator(SparkAccumulators.MEMORY_ACCUMULATOR_NAME);
-             keepBinStatistics = application.getBooleanParameter(SparkXTandemMain.KEEP__BIN_STATISTICS_PROPERTY, false);
+
+
+            keepBinStatistics = application.getBooleanParameter(SparkXTandemMain.KEEP__BIN_STATISTICS_PROPERTY, false);
             doGCAfterBin = application.getBooleanParameter(SparkXTandemMain.DO_GC_AFTER_BIN, false);
             maxBinSize = application.getIntParameter(SparkXTandemMain.MAX_BIN_SIZE_PROPERTY, Integer.MAX_VALUE);
+            maxMemoryAllocartion = application.getLongParameter(SparkXTandemMain.MAX_MEMORY_ALLOCATION_PROPERTY, Long.MAX_VALUE);
 
             // purely debigging
             bypassScoring = application.getBooleanParameter(SparkXTandemMain.BYPASS_SCORING_PROPERTY, false);
@@ -292,11 +303,12 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
         public Iterable<IScoredScan> doCall(Tuple2<BinChargeKey, Tuple2<Iterable<CometScoredScan>, Iterable<IPolypeptide>>> inp) throws Exception {
 
             MemoryUseAccumulator acc = MemoryUseAccumulator.empty();
-            CometTemporaryMemoryAccumulator tempAcc = CometTemporaryMemoryAccumulator.empty();
+        //    CometTemporaryMemoryAccumulator tempAcc = CometTemporaryMemoryAccumulator.empty();
             MemoryUseAccumulatorAndBinSize binAcc = MemoryUseAccumulatorAndBinSize.empty();
 
 
             List<IScoredScan> ret = new ArrayList<IScoredScan>();
+            BinChargeKey binChargeKey = inp._1();
             Iterable<CometScoredScan> scans = inp._2()._1();
             Iterable<IPolypeptide> peptides = inp._2()._2();
 
@@ -306,30 +318,40 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
 //            }
             int numberpeptides = 0;
             boolean firstPass = true;
-            int numberSpectra = 0;
+            long numberSpectra = 0;
             long numberScored = 0;
 
+            boolean memoryLimitHit = isMemoryLimitHit();
+
             // just count
-            if (bypassScoring) {    // for debugging and performance we can bypass scoring
-                for (IPolypeptide peptide : peptides) {
-                    numberpeptides++;
-                }
-                for (CometScoredScan scan : scans) {
-                    numberSpectra++;
-                }
+            if (memoryLimitHit || bypassScoring) {    // for debugging and performance we can bypass scoring
+                numberpeptides = registerScoringSkipped(scans, peptides, numberpeptides);
             }
             else {
                 for (IPolypeptide peptide : peptides) {
                     numberpeptides++;
+                    memoryLimitHit = isMemoryLimitHit();
+                    if(memoryLimitHit)   {
+                        registerScoringSkipped(scans, peptides, numberpeptides);
+                        continue;
+                    }
                     CometTheoreticalBinnedSet ts = (CometTheoreticalBinnedSet) scorer.generateSpectrum(peptide);
                     if (isScanScoredByAnySpectrum(ts, scans, scorer)) {
                         for (CometScoredScan scan : scans) {
-                            if (firstPass)
+                            if (firstPass) {
                                 numberSpectra++;
+                            }
                             if (!scorer.isTheoreticalSpectrumScored(scan, ts))
+                                continue;
+                            if(isMemoryLimitHit())
                                 continue;
                             if (!scan.isInitialized())
                                 scan.setAlgorithm(comet);
+                            if(isMemoryLimitHit())
+                                     continue;
+                            if (firstPass) {                // actually scored
+                                numberSpectraAccumlator.add(1L);
+                            }
                             IonUseCounter counter = new IonUseCounter();
                             double xcorr = comet.doXCorr(ts, scorer, counter, scan, null);
                             numberScored++;
@@ -357,18 +379,18 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
 
             }
 
-
+            numberSpectraAccumlator.add(numberSpectra);
             numberScoredAccumlator.add(numberScored);
 
             if (keepBinStatistics && numberpeptides > 0) {
-                binAcc.saveUsage(numberSpectra, numberpeptides);
+                binAcc.saveUsage((int)numberSpectra, numberpeptides);
                 binAccululator.add(binAcc);
             }
             acc.saveBins(); // get max use
             memoryAccululator.add(acc);
 
-            tempAcc.check();
-            temporaryMemoryAccululator.add(tempAcc);
+ //           tempAcc.check();
+//          temporaryMemoryAccululator.add(tempAcc);
 
 //            peptideDistributionCounts.add(new CountedDistribution(numberpeptides));
 //            spectrumDistributionCounts.add(new CountedDistribution(numberSpectra));
@@ -376,6 +398,34 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
                 System.gc(); // try to clean up
 
             return ret;
+        }
+
+        public int registerScoringSkipped(final Iterable<CometScoredScan> pScans, final Iterable<IPolypeptide> pPeptides, int pNumberpeptides) {
+            NotScoredBins term = NotScoredBins.empty();
+            int notScored = 0;
+            for (IPolypeptide peptide : pPeptides) {
+                pNumberpeptides++;
+            }
+            for (CometScoredScan scan : pScans) {
+                notScored++;
+            }
+            long heap = MemoryTracker.usedBytes();
+            NotScoredBins.NotScoredStatistics notScoredStatistics = new NotScoredBins.NotScoredStatistics(heap, notScored, notScored, pNumberpeptides);
+            term.add(notScoredStatistics);
+            unscoredAccumulator.add(term);
+            return pNumberpeptides;
+        }
+
+        /**
+         * if true we are using more than the maximum memory allocation
+         * @return
+         */
+        protected boolean isMemoryLimitHit() {
+            if(maxMemoryAllocartion == Long.MAX_VALUE)
+                return false; // not checking
+            long current = MemoryTracker.usedBytes();
+            return current > maxMemoryAllocartion;
+
         }
 
         private int scoreScansAgainstPeptideSet(Iterable<CometScoredScan> scans, CometTheoreticalBinnedSet ts, List<IScoredScan> results) {
@@ -503,8 +553,9 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
      * @return
      */
     public JavaRDD<CometScoringResult> combineScanScores(JavaRDD<? extends IScoredScan> uncombined) {
+        SparkAccumulators.createAccumulator(TOTAL_SCORED_SPECTRA_NAME);
         SparkAccumulators.createAccumulator(TOTAL_SCORRED_ACCUMULATOR_NAME);
-        // map by scan ids
+             // map by scan ids
         JavaPairRDD<String, CometScoringResult> mappedScors = uncombined.mapToPair(new keyScoresByScanId());
         JavaPairRDD<String, CometScoringResult> ret = mappedScors.aggregateByKey(
                 new CometScoringResult(),
@@ -707,7 +758,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
 //
 
 
-    public JavaRDD<? extends IScoredScan> scoreCometBinPairs(final JavaPairRDD<BinChargeKey, Tuple2<ITheoreticalSpectrumSet, CometScoredScan>> binPairs,Partitioner p, long[] countRef) {
+    public JavaRDD<? extends IScoredScan> scoreCometBinPairs(final JavaPairRDD<BinChargeKey, Tuple2<ITheoreticalSpectrumSet, CometScoredScan>> binPairs, Partitioner p, long[] countRef) {
         ElapsedTimer timer = new ElapsedTimer();
         XTandemMain application = getApplication();
         CometScoringAlgorithm comet = (CometScoringAlgorithm) application.getAlgorithms()[0];
@@ -726,7 +777,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
         //  bySpectrumId = SparkUtilities.persistAndCountPair("ScoredPairs", bySpectrumId, countRef);
 
         int numberPartitions = SparkUtilities.getDefaultNumberPartitions();
-        if(p != null)
+        if (p != null)
             numberPartitions = p.numPartitions();
 
         JavaPairRDD<String, ? extends IScoredScan> scores = bySpectrumId.aggregateByKey(

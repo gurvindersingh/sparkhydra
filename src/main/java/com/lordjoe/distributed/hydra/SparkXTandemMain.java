@@ -28,6 +28,8 @@ public class SparkXTandemMain extends XTandemMain {
     public static final String DO_GC_AFTER_BIN =  "com.lordjoe.distributed.hydra.doGCAfterBin";
     // maximum bin size - default Integer.MAX_VALUE
     public static final String MAX_BIN_SIZE_PROPERTY =  "com.lordjoe.distributed.hydra.MaxBinSize";
+   // maximum memory allocation - after this scoring is aborted
+    public static final String MAX_MEMORY_ALLOCATION_PROPERTY =  "com.lordjoe.distributed.hydra.MaxMemoryAllocation";
 
     public SparkXTandemMain(final InputStream is, final String url) {
         super(is, url);

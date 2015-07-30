@@ -471,13 +471,15 @@ public class SparkScanScorer {
 
 
         int numberScores = consolidator.writeScores(bestScores);
-        System.out.println("Total Scans Scored " + numberScores);
 
         SparkAccumulators.showAccumulators(totalTime);
         if (isDebuggingCountMade())
             showAnalysisTotals(totalSpectra, peptidecounts, keyedSpectrumCounts, pairs);
 
         totalTime.showElapsed("Finished Scoring");
+
+        System.out.println("Output to path " + pwrtr.getPath());
+        System.out.println("Total Scans Scored " + numberScores);
 
         // purely debugging  code to see whether interesting peptides scored with interesting spectra
         //TestUtilities.writeSavedKeysAndSpectra();

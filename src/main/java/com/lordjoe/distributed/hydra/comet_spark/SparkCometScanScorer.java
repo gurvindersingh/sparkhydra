@@ -932,9 +932,9 @@ public class SparkCometScanScorer {
         int numberScores = consolidator.writeScores(cometBestScores);
         System.out.println("Total Scans Scored " + numberScores);
 
-        SparkAccumulators.showAccumulators(totalTime);
-
         totalTime.showElapsed("Finished Scoring");
+
+        SparkAccumulators.showAccumulators(totalTime);
 
         TestUtilities.closeCaseLoggers();
         // purely debugging  code to see whether interesting peptides scored with interesting spectra

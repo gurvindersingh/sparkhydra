@@ -17,7 +17,7 @@ import java.util.*;
  */
 public class MemoryUseAccumulatorAndBinSize implements IAccumulator<MemoryUseAccumulatorAndBinSize> {
 
-    public static final String BIN_ACCUMULATOR_NAME = "BinUsage";
+    public static final String BIN_ACCUMULATOR_NAME = "MemoryUseAccumulatorAndBinSize";
 
     public static final AccumulatorParam<MemoryUseAccumulatorAndBinSize> PARAM_INSTANCE = new IAccumulatorParam<MemoryUseAccumulatorAndBinSize>();
 
@@ -108,14 +108,26 @@ public class MemoryUseAccumulatorAndBinSize implements IAccumulator<MemoryUseAcc
                 return;
             MemoryAndBinSize memoryAndBinSize1 = usage.get(0);
             out.append("max " + memoryAndBinSize1.toString());
-            out.append("0.75 " + usage.get(pct75).toString());
             out.append("\n");
-            out.append("0.50 " + usage.get(pct50).toString());
-            out.append("\n");
-            out.append("0.25 " + usage.get(pct25).toString());
-            out.append("\n");
+            out.append("max " + memoryAndBinSize1.toString());
+              out.append("\n");
+            MemoryAndBinSize ns75 = usage.get(pct75);
+              if (ns75 != memoryAndBinSize1) {
+                  out.append("0.75 " + ns75.toString());
+                  out.append("\n");
+              }
+            MemoryAndBinSize ns50 = usage.get(pct50);
+              if (ns50 != memoryAndBinSize1) {
+                  out.append("0.50 " + ns75.toString());
+                  out.append("\n");
+              }
+            MemoryAndBinSize ns25 = usage.get(pct25);
+              if (ns50 != memoryAndBinSize1) {
+                  out.append("0.25 " + ns25.toString());
+                  out.append("\n");
+              }
 
-//            for (MemoryAndBinSize memoryAndBinSize : usage) {
+  //            for (MemoryAndBinSize memoryAndBinSize : usage) {
 //                out.append(memoryAndBinSize.toString());
 //                out.append("\n");
 //

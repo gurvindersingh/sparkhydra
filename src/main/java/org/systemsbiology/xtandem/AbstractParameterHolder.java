@@ -141,6 +141,22 @@ public abstract class AbstractParameterHolder implements ISetableParameterHolder
     }
 
     /**
+      * access a parameter from a parameter map
+      *
+      * @param key !null key
+      * @return possibly null parameter
+      */
+     @Override
+     public Long getLongParameter(String key ) {
+         String val = getParameter(key);
+         if (val == null || "".equals(val))
+             return null;
+         return new Long(val);
+     }
+
+
+
+    /**
      * access a parameter from a parameter map
      *
      * @param key !null key
@@ -217,13 +233,27 @@ public abstract class AbstractParameterHolder implements ISetableParameterHolder
      * @return possibly null parameter
      */
     @Override
-    public Integer getIntParameter(String key, int defaultValue)
+    public Long getLongParameter(String key, long defaultValue)
     {
         String val = getParameter(key);
         if (val == null || "".equals(val))
             return defaultValue;
-        return new Integer(val);
+        return new Long(val);
     }
+    /**
+      * access a parameter from a parameter map
+      *
+      * @param key !null key
+      * @return possibly null parameter
+      */
+     @Override
+     public Integer getIntParameter(String key, int defaultValue)
+     {
+         String val = getParameter(key);
+         if (val == null || "".equals(val))
+             return defaultValue;
+         return new Integer(val);
+     }
 
     /**
      * access a parameter from a parameter map

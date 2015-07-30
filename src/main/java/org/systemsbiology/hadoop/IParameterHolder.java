@@ -52,6 +52,14 @@ public interface IParameterHolder extends IStreamOpener {
      * @param key !null key
      * @return possibly null parameter
      */
+    public Long getLongParameter(String key);
+
+    /**
+     * access a parameter from a parameter map
+     *
+     * @param key !null key
+     * @return possibly null parameter
+     */
     public Boolean getBooleanParameter(String key);
 
     /**
@@ -101,6 +109,15 @@ public interface IParameterHolder extends IStreamOpener {
     public Integer getIntParameter(String key, int defaultValue);
 
     /**
+      * access a parameter from a parameter map
+      *
+      * @param key !null key
+      * @return possibly null parameter
+      * @defaultValue what to set when the parameter is null
+      */
+     public Long getLongParameter(String key, long defaultValue);
+
+     /**
      * access a parameter from a parameter map
      *
      * @param key !null key
@@ -195,6 +212,17 @@ public interface IParameterHolder extends IStreamOpener {
          * @return possibly null parameter
          */
         @Override
+        public Long getLongParameter(final String key) {
+            return null;
+        }
+
+        /**
+         * access a parameter from a parameter map
+         *
+         * @param key !null key
+         * @return possibly null parameter
+         */
+        @Override
         public Integer getIntParameter(final String key) {
             return null;
         }
@@ -267,6 +295,18 @@ public interface IParameterHolder extends IStreamOpener {
          */
         @Override
         public Integer getIntParameter(final String key, final int defaultValue) {
+            return defaultValue;
+        }
+
+        /**
+         * access a parameter from a parameter map
+         *
+         * @param key          !null key
+         * @param defaultValue what to set when the parameter is null
+         * @return possibly null parameter
+         */
+        @Override
+        public Long getLongParameter(final String key, final long defaultValue) {
             return defaultValue;
         }
 
