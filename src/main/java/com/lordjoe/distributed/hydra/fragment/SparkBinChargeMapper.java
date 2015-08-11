@@ -5,6 +5,7 @@ import com.lordjoe.distributed.*;
 import com.lordjoe.distributed.hydra.protein.*;
 import com.lordjoe.distributed.hydra.scoring.*;
 import com.lordjoe.distributed.hydra.test.*;
+import com.lordjoe.distributed.spark.accumulators.*;
 import org.apache.spark.api.java.*;
 import org.systemsbiology.xtandem.*;
 import com.lordjoe.distributed.hydra.comet.*;

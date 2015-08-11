@@ -4,7 +4,7 @@ import com.lordjoe.algorithms.Long_Formatter;
 import com.lordjoe.distributed.*;
 import com.lordjoe.distributed.hydra.fragment.*;
 import com.lordjoe.distributed.hydra.scoring.*;
-import com.lordjoe.distributed.spark.accumulators.SparkAccumulators;
+import com.lordjoe.distributed.spark.accumulators.*;
 import com.lordjoe.distributed.spectrum.*;
 import com.lordjoe.utilities.*;
 import org.apache.hadoop.conf.*;

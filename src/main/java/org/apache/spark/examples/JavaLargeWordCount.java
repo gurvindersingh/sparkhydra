@@ -19,8 +19,7 @@ package org.apache.spark.examples;
 
 import com.lordjoe.distributed.*;
 import com.lordjoe.distributed.spark.*;
-import com.lordjoe.distributed.spark.accumulators.LongAccumulableParam;
-import com.lordjoe.distributed.spark.accumulators.SparkAccumulators;
+import com.lordjoe.distributed.spark.accumulators.*;
 import com.lordjoe.distributed.util.*;
 import com.lordjoe.utilities.*;
 import org.apache.spark.*;
@@ -80,7 +79,7 @@ public final class
 
         // Add some accumulators  NOTE functions extending AbstractLoggingFunctionBase register automatically
         //   SparkAccumulators.createAccumulator("WordsMapFunction");
-        SparkAccumulators.createAccumulator("TotalLetters");
+        AccumulatorUtilities.getInstance().createAccumulator("TotalLetters");
         final Accumulator<Statistics> letterStats = ctx.accumulator(Statistics.ZERO, "Letter Statistics", Statistics.PARAM_INSTANCE);
         final Accumulator<java.lang.Long> totalWords = ctx.accumulator(0L, "Word Statistics", LongAccumulableParam.INSTANCE);
 

@@ -1,8 +1,8 @@
 package com.lordjoe.distributed.hydra.protein;
 
-import com.lordjoe.distributed.*;
 import com.lordjoe.distributed.hydra.test.*;
 import com.lordjoe.distributed.spark.*;
+import com.lordjoe.distributed.spark.accumulators.*;
 import org.apache.spark.api.java.*;
 import org.systemsbiology.xtandem.peptide.*;
 

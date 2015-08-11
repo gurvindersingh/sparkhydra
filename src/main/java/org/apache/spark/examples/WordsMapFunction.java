@@ -1,6 +1,6 @@
 package org.apache.spark.examples;
 
-import com.lordjoe.distributed.*;
+import com.lordjoe.distributed.spark.accumulators.*;
 
 import java.util.*;
 import java.util.regex.*;

@@ -32,6 +32,7 @@ public class HydraKryoSerializer implements KryoRegistrator, Serializable {
             doRegistration(kryo, c);
         }
         catch (ClassNotFoundException e) {
+            System.err.println("Kryo - class not found " + s);
             return;
         }
     }
@@ -114,9 +115,8 @@ public class HydraKryoSerializer implements KryoRegistrator, Serializable {
         doRegistration(kryo, "org.systemsbiology.xtandem.scoring.OriginatingScoredScan");
         doRegistration(kryo, "org.systemsbiology.xtandem.ScanTypeEnum");
         doRegistration(kryo, "org.systemsbiology.xtandem.ScanPrecursorMz");
-        doRegistration(kryo, "org.systemsbiology.xtandem.ScanPolarity");
-        doRegistration(kryo, "rg.systemsbiology.xtandem.ScanPolarity");
-        doRegistration(kryo, "org.systemsbiology.xtandem.SpectrumPeak");
+       doRegistration(kryo, "org.systemsbiology.xtandem.ScanPolarity");
+           doRegistration(kryo, "org.systemsbiology.xtandem.SpectrumPeak");
         doRegistration(kryo, "com.lordjoe.distributed.hydra.fragment.BinChargeKey");
         doRegistration(kryo, "org.systemsbiology.xtandem.ISpectrumPeak");
         doRegistration(kryo, "java.util.HashMap");
@@ -143,8 +143,7 @@ public class HydraKryoSerializer implements KryoRegistrator, Serializable {
         doRegistration(kryo, "com.lordjoe.distributed.spark.IdentityFunction");
         doRegistration(kryo, "com.lordjoe.distributed.spark.accumulators.LongAccumulableParam");
         doRegistration(kryo, "com.lordjoe.distributed.spark.accumulators.MachineUseAccumulator");
-        doRegistration(kryo, "com.lordjoe.distributed.spark.accumulators.MachineUseAccumulator$MachineUseAccumulableParam");
-        doRegistration(kryo, "com.lordjoe.distributed.spark.accumulators.SparkAccumulators");
+         doRegistration(kryo, "com.lordjoe.distributed.spark.accumulators.SparkAccumulators");
         doRegistration(kryo, "com.lordjoe.distributed.tandem.LibraryBuilder");
         doRegistration(kryo, "com.lordjoe.distributed.tandem.LibraryBuilder$1");
         doRegistration(kryo, "com.lordjoe.distributed.tandem.LibraryBuilder$MapPolyPeptideToSequenceKeys");
@@ -206,9 +205,8 @@ public class HydraKryoSerializer implements KryoRegistrator, Serializable {
         doRegistration(kryo, "com.lordjoe.distributed.hydra.comet_spark.CometScoringHandler");
         doRegistration(kryo, "com.lordjoe.distributed.hydra.comet.CometScoredScan");
         doRegistration(kryo, "com.lordjoe.distributed.hydra.comet.BinnedChargeIonIndex");
-        doRegistration(kryo, "com.lordjoe.distributed.hydra.comet.SpectrinBinnedScore");
-        doRegistration(kryo, "com.lordjoe.distributed.hydra.comet.CometParameterTests");
-        doRegistration(kryo, "com.lordjoe.distributed.hydra.comet.XCorrUsedData");
+        doRegistration(kryo, "com.lordjoe.distributed.hydra.comet.SpectrumBinnedScore");
+          doRegistration(kryo, "com.lordjoe.distributed.hydra.comet.XCorrUsedData");
         doRegistration(kryo, "com.lordjoe.distributed.hydra.comet.CometUtilities");
         doRegistration(kryo, "com.lordjoe.distributed.hydra.comet.CometTheoreticalBinnedSet");
         doRegistration(kryo, "com.lordjoe.distributed.hydra.comet.CometScoringAlgorithm");
@@ -221,7 +219,7 @@ public class HydraKryoSerializer implements KryoRegistrator, Serializable {
         doRegistration(kryo, "com.lordjoe.distributed.spark.accumulators.MemoryUseAccumulatorAndBinSize");
 
 
-
+        doRegistration(kryo, "com.lordjoe.distributed.spark.accumulators.AccumulatorUtilities");
     }
 
 

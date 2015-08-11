@@ -18,7 +18,7 @@
 package org.apache.spark.examples;
 
 import com.lordjoe.distributed.*;
-import com.lordjoe.distributed.spark.accumulators.SparkAccumulators;
+import com.lordjoe.distributed.spark.accumulators.*;
 import com.lordjoe.utilities.*;
 import org.apache.spark.api.java.*;
 import org.apache.spark.api.java.function.Function2;
@@ -51,8 +51,8 @@ public final class JavaWordCount {
         JavaSparkContext ctx = SparkUtilities.getCurrentContext();
 
         // Add some accumulators
-        SparkAccumulators.createAccumulator("WordsMapFunction");
-        SparkAccumulators.createAccumulator("TotalLetters");
+        AccumulatorUtilities.getInstance().createAccumulator("WordsMapFunction");
+        AccumulatorUtilities.getInstance().createAccumulator("TotalLetters");
 
         JavaRDD<String> lines = ctx.textFile(args[0], 12);
 

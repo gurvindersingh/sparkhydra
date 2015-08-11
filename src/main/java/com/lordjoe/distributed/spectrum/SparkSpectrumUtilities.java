@@ -4,6 +4,7 @@ import com.lordjoe.distributed.*;
 import com.lordjoe.distributed.hydra.comet_spark.*;
 import com.lordjoe.distributed.hydra.scoring.*;
 import com.lordjoe.distributed.input.*;
+import com.lordjoe.distributed.spark.accumulators.*;
 import org.apache.hadoop.mapreduce.*;
 import org.apache.spark.api.java.*;
 import org.systemsbiology.xtandem.*;

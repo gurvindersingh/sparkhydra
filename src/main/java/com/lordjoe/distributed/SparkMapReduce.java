@@ -1,5 +1,6 @@
 package com.lordjoe.distributed;
 
+import com.lordjoe.distributed.spark.accumulators.*;
 import com.lordjoe.distributed.util.*;
 import com.lordjoe.distributed.wordcount.*;
 import org.apache.spark.*;

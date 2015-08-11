@@ -1,6 +1,6 @@
 package com.lordjoe.distributed.hydra.scoring;
 
-import com.lordjoe.distributed.*;
+import com.lordjoe.distributed.spark.accumulators.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.scoring.*;
 

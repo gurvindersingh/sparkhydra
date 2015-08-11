@@ -8,7 +8,7 @@ import com.lordjoe.distributed.hydra.comet.*;
 import com.lordjoe.distributed.hydra.fragment.*;
 import com.lordjoe.distributed.hydra.test.*;
 import com.lordjoe.distributed.spark.*;
-import com.lordjoe.distributed.spark.accumulators.SparkAccumulators;
+import com.lordjoe.distributed.spark.accumulators.*;
 import com.lordjoe.distributed.tandem.*;
 import com.lordjoe.utilities.*;
 import org.apache.hadoop.conf.*;
@@ -819,7 +819,7 @@ public class SparkMapReduceScoringHandler implements Serializable {
 
         public ScoreScansByCharge(final XTandemMain pApplication) {
             super();
-            SparkAccumulators.createAccumulator("NumberSavedScores");
+            AccumulatorUtilities.getInstance().createAccumulator("NumberSavedScores");
             application = pApplication;
         }
 
@@ -843,7 +843,7 @@ public class SparkMapReduceScoringHandler implements Serializable {
             ISpectralMatch bestMatch = score.getBestMatch();
             if (bestMatch != null) {
                 if (bestMatch.getHyperScore() > MIMIMUM_HYPERSCORE) {
-                    SparkAccumulators instance = SparkAccumulators.getInstance();
+                    ISparkAccumulators instance = AccumulatorUtilities.getInstance();
                     if (instance != null)
                         instance.incrementAccumulator("NumberSavedScores");
                     holder.add(score);
@@ -861,7 +861,7 @@ public class SparkMapReduceScoringHandler implements Serializable {
 
         public ScoreScansByChargeFlatMap(final XTandemMain pApplication) {
             super();
-            SparkAccumulators.createAccumulator("NumberSavedScores");
+            AccumulatorUtilities.getInstance().createAccumulator("NumberSavedScores");
             application = pApplication;
         }
 
@@ -892,7 +892,7 @@ public class SparkMapReduceScoringHandler implements Serializable {
                     }
                 }
             }
-            SparkAccumulators instance = SparkAccumulators.getInstance();
+            ISparkAccumulators instance = AccumulatorUtilities.getInstance();
             if (instance != null)
                 instance.incrementAccumulator("NumberSavedScores", holder.size());
             return holder;
@@ -941,7 +941,7 @@ public class SparkMapReduceScoringHandler implements Serializable {
                 ISpectralMatch bestMatch = cummulativeScore.getBestMatch();
                 if (bestMatch != null) {
                     if (bestMatch.getHyperScore() > MIMIMUM_HYPERSCORE) {
-                        SparkAccumulators instance = SparkAccumulators.getInstance();
+                        ISparkAccumulators instance = AccumulatorUtilities.getInstance();
                         if (instance != null)
                             instance.incrementAccumulator("NumberSavedScores");
                         holder.add(score);

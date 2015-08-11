@@ -1,6 +1,6 @@
 package com.lordjoe.distributed.wordcount;
 
-import com.lordjoe.distributed.*;
+import com.lordjoe.distributed.spark.accumulators.*;
 import com.lordjoe.distributed.util.*;
 import org.apache.spark.spillable.*;
 import scala.*;

@@ -2,8 +2,8 @@ package com.lordjoe.distributed.hydra.test;
 
 import com.lordjoe.distributed.*;
 import com.lordjoe.distributed.hydra.fragment.*;
+import com.lordjoe.distributed.spark.accumulators.*;
 import org.apache.spark.api.java.*;
-import org.apache.spark.api.java.function.*;
 import org.apache.spark.api.java.function.Function;
 import org.systemsbiology.hadoop.*;
 import org.systemsbiology.xtandem.*;
@@ -12,7 +12,6 @@ import org.systemsbiology.xtandem.ionization.*;
 import org.systemsbiology.xtandem.peptide.*;
 import org.systemsbiology.xtandem.scoring.*;
 import scala.*;
-import scala.Long;
 
 import java.io.*;
 import java.lang.Boolean;

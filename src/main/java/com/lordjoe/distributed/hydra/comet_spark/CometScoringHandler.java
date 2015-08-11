@@ -9,7 +9,7 @@ import com.lordjoe.distributed.hydra.scoring.*;
 import com.lordjoe.distributed.hydra.test.*;
 import com.lordjoe.distributed.spark.accumulators.*;
 import com.lordjoe.testing.*;
-import com.lordjoe.utilities.*;
+import com.lordjoe.utilities.ElapsedTimer;
 import org.apache.spark.*;
 import org.apache.spark.api.java.*;
 import org.apache.spark.api.java.function.*;
@@ -158,10 +158,10 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
 
         private CometScoringAlgorithm comet;
         private Scorer scorer;
-        private final Accumulator<Long> numberScoredSpectraAccumlator = SparkAccumulators.createAccumulator(TOTAL_SCORED_SPECTRA_NAME);
-        private final Accumulator<Long> numberScoredAccumlator = SparkAccumulators.createAccumulator(TOTAL_SCORED_SPECTRA_NAME);
+        private final Accumulator<Long> numberScoredSpectraAccumlator = AccumulatorUtilities.getInstance().createAccumulator(TOTAL_SCORED_SPECTRA_NAME);
+        private final Accumulator<Long> numberScoredAccumlator = AccumulatorUtilities.getInstance().createAccumulator(TOTAL_SCORED_SPECTRA_NAME);
         // track bin usage   - make the accumulator exist
-        private final Accumulator<MemoryUseAccumulatorAndBinSize> binUsage = SparkAccumulators.createSpecialAccumulator(MemoryUseAccumulatorAndBinSize.BIN_ACCUMULATOR_NAME,
+        private final Accumulator<MemoryUseAccumulatorAndBinSize> binUsage = AccumulatorUtilities.getInstance().createSpecialAccumulator(MemoryUseAccumulatorAndBinSize.BIN_ACCUMULATOR_NAME,
                 MemoryUseAccumulatorAndBinSize.PARAM_INSTANCE, MemoryUseAccumulatorAndBinSize.empty());
 
 
@@ -264,27 +264,27 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
 
         private final int maxBinSize;
 
-        private final Accumulator<Long> numberScoredAccumlator = SparkAccumulators.createAccumulator(TOTAL_SCORRED_ACCUMULATOR_NAME);
-        private final Accumulator<Long> numberSpectraAccumlator = SparkAccumulators.createAccumulator(TOTAL_SCORED_SPECTRA_NAME);
+        private final Accumulator<Long> numberScoredAccumlator = AccumulatorUtilities.getInstance().createAccumulator(TOTAL_SCORRED_ACCUMULATOR_NAME);
+        private final Accumulator<Long> numberSpectraAccumlator = AccumulatorUtilities.getInstance().createAccumulator(TOTAL_SCORED_SPECTRA_NAME);
 
 
-        private final Accumulator<CountedDistribution> peptideDistributionCounts = SparkAccumulators.createSpecialAccumulator(PEPTIDES_ACCUMULATOR_NAME,
+        private final Accumulator<CountedDistribution> peptideDistributionCounts = AccumulatorUtilities.getInstance().createSpecialAccumulator(PEPTIDES_ACCUMULATOR_NAME,
                 CountedDistribution.PARAM_INSTANCE, CountedDistribution.empty());
-        private final Accumulator<CountedDistribution> spectrumDistributionCounts = SparkAccumulators.createSpecialAccumulator(SPECTRA_ACCUMULATOR_NAME,
+        private final Accumulator<CountedDistribution> spectrumDistributionCounts = AccumulatorUtilities.getInstance().createSpecialAccumulator(SPECTRA_ACCUMULATOR_NAME,
                 CountedDistribution.PARAM_INSTANCE, CountedDistribution.empty());
-        private final Accumulator<MemoryUseAccumulatorAndBinSize> binAccululator = SparkAccumulators.createSpecialAccumulator(MemoryUseAccumulatorAndBinSize.BIN_ACCUMULATOR_NAME,
+        private final Accumulator<MemoryUseAccumulatorAndBinSize> binAccululator = AccumulatorUtilities.getInstance().createSpecialAccumulator(MemoryUseAccumulatorAndBinSize.BIN_ACCUMULATOR_NAME,
                 MemoryUseAccumulatorAndBinSize.PARAM_INSTANCE, MemoryUseAccumulatorAndBinSize.empty());
         // track special comet memory
 //        private final Accumulator<CometTemporaryMemoryAccumulator> temporaryMemoryAccululator = SparkAccumulators.createSpecialAccumulator(CometTemporaryMemoryAccumulator.COMET_MEMORY_ACCUMULATOR_NAME,
 //                CometTemporaryMemoryAccumulator.PARAM_INSTANCE, CometTemporaryMemoryAccumulator.empty());
-        private final Accumulator<NotScoredBins> unscoredAccumulator = SparkAccumulators.createSpecialAccumulator(NotScoredBins.BIN_ACCUMULATOR_NAME,
+        private final Accumulator<NotScoredBins> unscoredAccumulator = AccumulatorUtilities.getInstance().createSpecialAccumulator(NotScoredBins.BIN_ACCUMULATOR_NAME,
                 NotScoredBins.PARAM_INSTANCE, NotScoredBins.empty());
 
 
         public ScoreSpectrumAndPeptideWithCogroupWithoutHash(XTandemMain application) {
             comet = (CometScoringAlgorithm) application.getAlgorithms()[0];
             scorer = application.getScoreRunner();
-            SparkAccumulators instance = SparkAccumulators.getInstance();
+            ISparkAccumulators instance = AccumulatorUtilities.getInstance();
             memoryAccululator = (Accumulator<MemoryUseAccumulator>) instance.getSpecialAccumulator(SparkAccumulators.MEMORY_ACCUMULATOR_NAME);
 
 
@@ -477,7 +477,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
 
         private CometScoringAlgorithm comet;
         private Scorer scorer;
-        private final Accumulator<Long> numberScoredAccumlator = SparkAccumulators.createAccumulator(TOTAL_SCORRED_ACCUMULATOR_NAME);
+        private final Accumulator<Long> numberScoredAccumlator = AccumulatorUtilities.getInstance().createAccumulator(TOTAL_SCORRED_ACCUMULATOR_NAME);
 
 
         public ScoreSpectrumAndTheoreticalPeptide(XTandemMain application) {
@@ -553,8 +553,8 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
      * @return
      */
     public JavaRDD<CometScoringResult> combineScanScores(JavaRDD<? extends IScoredScan> uncombined) {
-        SparkAccumulators.createAccumulator(TOTAL_SCORED_SPECTRA_NAME);
-        SparkAccumulators.createAccumulator(TOTAL_SCORRED_ACCUMULATOR_NAME);
+        AccumulatorUtilities.getInstance().createAccumulator(TOTAL_SCORED_SPECTRA_NAME);
+        AccumulatorUtilities.getInstance().createAccumulator(TOTAL_SCORRED_ACCUMULATOR_NAME);
              // map by scan ids
         JavaPairRDD<String, CometScoringResult> mappedScors = uncombined.mapToPair(new keyScoresByScanId());
         JavaPairRDD<String, CometScoringResult> ret = mappedScors.aggregateByKey(

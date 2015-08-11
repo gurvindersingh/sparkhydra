@@ -1,11 +1,12 @@
 package com.lordjoe.distributed;
 
-import com.lordjoe.algorithms.Long_Formatter;
+import com.lordjoe.algorithms.*;
 import com.lordjoe.distributed.database.*;
 import com.lordjoe.distributed.hydra.test.*;
-import com.lordjoe.distributed.spark.*;
 import com.lordjoe.distributed.spark.JavaSparkListener;
-import com.lordjoe.distributed.spark.accumulators.SparkAccumulators;
+import com.lordjoe.distributed.spark.*;
+import com.lordjoe.distributed.spark.accumulators.*;
+import com.lordjoe.distributed.spark.accumulators.CountedItem;
 import com.lordjoe.distributed.test.*;
 import org.apache.hadoop.conf.*;
 import org.apache.hadoop.fs.FileSystem;
@@ -615,7 +616,7 @@ public class SparkUtilities implements Serializable {
                 setDefaultNumberPartitions(Integer.parseInt(value));
             }
             else if (LOG_FUNCTIONS_PROPERTY_NAME.equals(property)) {
-                SparkAccumulators.setFunctionsLoggedByDefault(Boolean.parseBoolean(value));
+                AccumulatorUtilities.setFunctionsLoggedByDefault(Boolean.parseBoolean(value));
             }
         }
 

@@ -1,17 +1,18 @@
 package com.lordjoe.distributed.hydra;
 
-import com.lordjoe.distributed.*;
+import com.lordjoe.distributed.spark.accumulators.*;
 import org.systemsbiology.xtandem.*;
 import scala.*;
 
 import java.lang.*;
+import java.lang.Long;
 
 /**
 * com.lordjoe.distributed.hydra.AddIndexToSpectrum
 * User: Steve
 * Date: 3/11/2015
 */
-public class AddIndexToSpectrum extends AbstractLoggingFunction<Tuple2<IMeasuredSpectrum, java.lang.Long>, IMeasuredSpectrum> {
+public class AddIndexToSpectrum extends AbstractLoggingFunction<Tuple2<IMeasuredSpectrum, Long>, IMeasuredSpectrum> {
     @Override
     public IMeasuredSpectrum doCall(final Tuple2<IMeasuredSpectrum, java.lang.Long> v1) throws Exception {
         IMeasuredSpectrum spec = v1._1();
