@@ -286,6 +286,9 @@ public class MzXMLScanHandler extends AbstractXTandemElementSaxHandler<RawPeptid
                 setURL(value);
                 return;
             }
+            if ("ms2 file charge state".equals(name)) {
+                  return; // todo can I do this
+            }
             throw new IllegalStateException("canot handle nameValue " + name + " " + value);
         }
         if ("precursorMz".equals(el)) {

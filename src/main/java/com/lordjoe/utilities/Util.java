@@ -1,23 +1,25 @@
-/**{ file
- @name Util.java
- @function this class - a Nullity implements a large number of
- useful functions
- @author> Steven M. Lewis
- @copyright>
-  ************************
-  *  Copyright (c) 1996,97,98
-  *  Steven M. Lewis
-  *  www.LordJoe.com
- ************************
-
- @date> Mon Jun 22 21:48:24 PDT 1998
- @version> 1.0
-
- }*/
+/**
+ * { file
+ *
+ * @name Util.java
+ * @function this class - a Nullity implements a large number of
+ * useful functions
+ * @author> Steven M. Lewis
+ * @copyright> ***********************
+ * Copyright (c) 1996,97,98
+ * Steven M. Lewis
+ * www.LordJoe.com
+ * ***********************
+ * @date> Mon Jun 22 21:48:24 PDT 1998
+ * @version> 1.0
+ * <p/>
+ * }
+ */
 package com.lordjoe.utilities;
 
 import org.xml.sax.*;
 
+import javax.annotation.*;
 import java.awt.*;
 import java.beans.*;
 import java.io.*;
@@ -85,7 +87,7 @@ public abstract class Util {
     public static final String DATE_FORMAT_STRING = "yyyy-MM-dd";
     public static final DateFormat DB_DATE_TIME = new SimpleDateFormat(DATE_FORMAT_STRING);
     public static final String gStartTimeString = US_DATE_TIME.format(gStartTime);
-  //  public static final Comparator NAME_COMPARATOR = new NameComparator();
+    //  public static final Comparator NAME_COMPARATOR = new NameComparator();
     public static final Comparator<Object> OBJECT_COMPARATOR = new BaseJavaComparator();  // what object does
     public static final int DEFAULT_MAX_STRING_LENGTH = 0x4fff;
 
@@ -190,7 +192,7 @@ public abstract class Util {
         int max = 0;
         int[] temp = new int[maxValue + 1];
         for (int i = 0; i < values.length; i++) {
-            int val = Math.min( maxValue, (int) values[i]);
+            int val = Math.min(maxValue, (int) values[i]);
             max = Math.max(val, max);
             if (val < 0)
                 throw new IllegalStateException("statistics are fpr positive numbers only ");
@@ -2855,7 +2857,7 @@ public abstract class Util {
      */
     public static String makeCharString(char i) {
         StringBuilder s = new StringBuilder(2);
-        s.append( i);
+        s.append(i);
         return (s.toString());
     }
 
@@ -2981,7 +2983,7 @@ public abstract class Util {
         @SuppressWarnings("unchecked")
         T[] ret = (T[]) Array.newInstance(cls, data.length);
         for (int i = 0; i < data.length; i++) {
-             ret[i] = data[data.length - i - 1];
+            ret[i] = data[data.length - i - 1];
 
         }
         return ret;
@@ -2992,7 +2994,7 @@ public abstract class Util {
      * @name reverse
      * @function reverse array in place
      */
-    public static  void reverse(Object[] data) {
+    public static void reverse(Object[] data) {
         int n = data.length / 2;
         int src = data.length - 1;
         for (int i = 0; i < n; i++) {
@@ -3425,10 +3427,10 @@ public abstract class Util {
      * @return - one variable
      */
     public static double randomNormalGaussian() {
-        double r ;
-        double f  ;
-        double v1 ;
-        double v2 ;
+        double r;
+        double f;
+        double v1;
+        double v2;
         do {
             v1 = gRandomizer.nextDouble();
             v2 = gRandomizer.nextDouble();
@@ -3616,8 +3618,8 @@ public abstract class Util {
      * @function - convert FieFieFoe to Fie Fie Foe
      * NOTE Seqiences i.e. XML will be concatinated
      */
- @SuppressWarnings("UnusedDeclaration")
- public static String nerdCapsToWords(String in) {
+    @SuppressWarnings("UnusedDeclaration")
+    public static String nerdCapsToWords(String in) {
         in = in.trim();
         if (in.length() == 0)
             return ("");
@@ -3828,7 +3830,7 @@ public abstract class Util {
      * @param out   non-null PrintStream
      * @param level non-negative every level indents 4 spaces
      * @return string with indented CR
-     */              
+     */
     @SuppressWarnings("UnusedDeclaration")
     public static String indentTransform(String in, int indent) {
         StringBuilder sb = new StringBuilder(in.length() + 64 * indent);
@@ -4044,7 +4046,7 @@ public abstract class Util {
      * @return next multiple of del >= in
      */
     public static int roundUpTo(int in, int del) {
-        int n =   (in / del);
+        int n = (in / del);
         int ret = n * del;
         if (ret == in)
             return (ret);
@@ -5020,7 +5022,7 @@ public abstract class Util {
         int count = 0;
         int index = s1.indexOf(SubString);
         int sublength = SubString.length();
-        int start  ;
+        int start;
         while (index > -1) {
             count++;
             start = index + sublength;
@@ -5846,11 +5848,11 @@ public abstract class Util {
         }
 
         public int compare(String o1, String o2) {
-            return ((  o1).compareTo(  o2));
+            return ((o1).compareTo(o2));
         }
 
         public boolean equals(Object o1, Object o2) {
-            return (( o1).equals(o2));
+            return ((o1).equals(o2));
         }
     }
 
@@ -5884,7 +5886,7 @@ public abstract class Util {
         }
 
         public int compare(String o1, String o2) {
-              //noinspection StringEquality
+            //noinspection StringEquality
             if (o1 == o2)
                 return 0;
             long l1 = Long.parseLong(o1);
@@ -5914,7 +5916,7 @@ public abstract class Util {
         }
 
         public boolean equals(Object o1, Object o2) {
-            return ((  o1).equals(o2));
+            return ((o1).equals(o2));
         }
     }
 
@@ -6272,7 +6274,7 @@ public abstract class Util {
      * @param d2 non-null date
      * @return as above
      */
-    @SuppressWarnings(  "deprecation" )
+    @SuppressWarnings("deprecation")
     public static boolean sameDay(Date d1, Date d2) {
         if (d1.getYear() != d2.getYear())
             return false;
@@ -7107,7 +7109,6 @@ public abstract class Util {
     }
 
 
-
     public static double[] convertToValueType(Double[] inp) {
         double[] ret = new double[inp.length];
         for (int i = 0; i < inp.length; i++) {
@@ -7138,8 +7139,8 @@ public abstract class Util {
     }
 
 
-    public static InputStream getResourceStream(  String resourceStr) {
-         return getResourceStream(Util.class,resourceStr);
+    public static InputStream getResourceStream(String resourceStr) {
+        return getResourceStream(Util.class, resourceStr);
     }
 
     public static InputStream getResourceStream(Class theClass, String resourceStr) {
@@ -7169,6 +7170,34 @@ public abstract class Util {
         }
     }
 
+
+    /**
+     * return a line number reader for a String
+     * @param s inpout string
+     * @return reader
+     */
+    public static
+    @Nonnull
+    InputStream asInputStream(@Nonnull String s) {
+        return new ByteArrayInputStream(s.getBytes());
+    }
+
+    /**
+     * return a line number reader for a String
+     * @param s inpout string
+     * @return reader
+     */
+    public  static
+    @Nonnull
+    LineNumberReader asLineReader(@Nonnull String s) {
+        try {
+            return new LineNumberReader(new InputStreamReader(asInputStream(s)));
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+
+        }
+    }
 
 
 }

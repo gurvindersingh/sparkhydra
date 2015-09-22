@@ -52,20 +52,26 @@ public class CometTestingUtilities {
         return mapped;
     }
 
-    public static XTandemMain getDefaultApplication() {
+    public static XTandemMain getDefaultApplication(String params) {
 
         //   FileUtilities.writeFile("BadParametersX,xml",CometTestData.USED_PARAMETERS);
         //    FileUtilities.writeFile("GoodParameters,xml",CometTestData.COMET_XML);
 
         XTandemMain.setShowParameters(false);  // I do not want to see parameters
 
-        InputStream is = new StringBufferInputStream(CometTestData.COMET_XML); //USED_PARAMETERS); // old was COMET_XML);
+        InputStream is = new StringBufferInputStream(params); //USED_PARAMETERS); // old was COMET_XML);
         XTandemMain application = new XTandemMain(is, "TANDEM_XML");
         CometScoringAlgorithm comet = (CometScoringAlgorithm) application.getAlgorithms()[0];
         comet.configure(application);
 
         return application;
     }
+
+
+    public static XTandemMain getDefaultApplication() {
+        return getDefaultApplication(CometTestData.COMET_XML);
+    }
+
 
     public static CometScoringAlgorithm getComet(XTandemMain application) {
         return (CometScoringAlgorithm) application.getAlgorithms()[0];

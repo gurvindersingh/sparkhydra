@@ -24,7 +24,7 @@ public class ScoringModifications  implements Serializable {
     private float m_NTerminalCharge;
     private String[] m_ResidueModifications;
     private String m_ResiduePotentialModifications;
-    private PeptideModification[] m_Modifications;
+    private List<PeptideModification>  m_ModificationsList = new ArrayList<PeptideModification>();
 
     public ScoringModifications(IParameterHolder app) {
         m_NTerminalModificationMass = app.getFloatParameter(
@@ -43,7 +43,7 @@ public class ScoringModifications  implements Serializable {
     }
 
     protected void buildModifications(IParameterHolder app) {
-        if (m_Modifications != null && m_Modifications.length > 0)
+        if (!m_ModificationsList.isEmpty())
             return;
 
         List<PeptideModification> holder = new ArrayList<PeptideModification>();
@@ -58,13 +58,16 @@ public class ScoringModifications  implements Serializable {
             holder.add(PeptideModification.getCysteinModification());
         }
 
-        m_Modifications = new PeptideModification[holder.size()];
-        holder.toArray(m_Modifications);
+        m_ModificationsList.addAll(holder);
+    }
+
+    public void addModification(PeptideModification added) {
+         m_ModificationsList.add(added);
     }
 
 
     public PeptideModification[] getModifications() {
-        return m_Modifications;
+        return m_ModificationsList.toArray(new PeptideModification[m_ModificationsList.size()]);
     }
 
     public float getCTerminalModificationMass() {

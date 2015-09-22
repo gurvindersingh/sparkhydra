@@ -29,3 +29,6 @@ hs_err_pid*
 /*.ipr
 /testPairs/_temporary/0/_temporary/attempt_201502021734_0001_r_000000_1/*.crc
 /*.iws
+*.ms2
+run.sh
+README

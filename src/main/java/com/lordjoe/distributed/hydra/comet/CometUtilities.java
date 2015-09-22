@@ -2,16 +2,13 @@ package com.lordjoe.distributed.hydra.comet;
 
 //import org.proteios.io.*;
 
-import com.lordjoe.distributed.hydra.fragment.BinChargeKey;
+import com.lordjoe.distributed.hydra.fragment.*;
 import org.systemsbiology.xtandem.*;
-import org.systemsbiology.xtandem.peptide.IPolypeptide;
+import org.systemsbiology.xtandem.peptide.*;
 import org.systemsbiology.xtandem.testing.*;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * com.lordjoe.distributed.hydra.comet.CometUtilities
@@ -48,6 +45,7 @@ public class CometUtilities implements Serializable {
 
     /**
      * normalize an array to a maximum of maximum also set negative values to 0
+     *
      * @param values
      * @param maximum
      */
@@ -68,20 +66,18 @@ public class CometUtilities implements Serializable {
 
     }
 
-    public static List<IPolypeptide> getPeptidesInBins(List<IPolypeptide> peptides,Set<Integer> bins)
-    {
+    public static List<IPolypeptide> getPeptidesInBins(List<IPolypeptide> peptides, Set<Integer> bins) {
         List<IPolypeptide> holder = new ArrayList<IPolypeptide>();
         for (IPolypeptide peptide : peptides) {
             BinChargeKey binChargeKey = BinChargeMapper.keyFromPeptide(peptide);
-            if(bins.contains(binChargeKey.getMzInt()))
+            if (bins.contains(binChargeKey.getMzInt()))
                 holder.add(peptide);
         }
         return holder;
     }
 
-    public static List<IPolypeptide> getPeptidesInKeyBins(List<IPolypeptide> peptides,Set<BinChargeKey> bins)
-    {
-         return getPeptidesInBins(peptides,getSpectrumBinsIntegers(bins));
+    public static List<IPolypeptide> getPeptidesInKeyBins(List<IPolypeptide> peptides, Set<BinChargeKey> bins) {
+        return getPeptidesInBins(peptides, getSpectrumBinsIntegers(bins));
     }
 
 
@@ -102,4 +98,88 @@ public class CometUtilities implements Serializable {
         }
         return ret;
     }
+
+    public static void fromCometParameters(XTandemMain holder, String text) {
+        try {
+            fromCometParameters(holder,new ByteArrayInputStream(text.getBytes("UTF-8")));
+          }
+        catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+
+        }
+    }
+
+    public static void fromCometParameters(XTandemMain holder, InputStream is) {
+          try {
+                LineNumberReader inp = new LineNumberReader(new InputStreamReader(is));
+              fromCometParameters(holder, inp);
+          }
+          catch ( Exception e) {
+              throw new RuntimeException(e);
+
+          }
+      }
+
+
+
+    public static void fromCometParameters(XTandemMain holder, LineNumberReader rdr) {
+        String line = null;
+        try {
+              line = rdr.readLine();
+            while (line != null) {
+                handleLine(holder, line);
+                line = rdr.readLine();
+            }
+        }
+        catch (UnsupportedOperationException e) {
+            throw new RuntimeException(e);
+
+        }
+        catch (IOException e) {
+              throw new RuntimeException(e);
+
+          }
+          finally {
+            try {
+                rdr.close();
+            }
+            catch (IOException e) {
+                throw new RuntimeException(e);
+
+            }
+        }
+    }
+
+    private static void handleLine(final XTandemMain pHolder, String pLine) {
+        pLine = pLine.trim();
+        if (pLine.length() == 0)
+            return; // empty line
+        if (pLine.startsWith("#"))
+            return; // comment
+        // drop terminal comments
+        int hashIndex = pLine.indexOf("#");
+        if(hashIndex > -1)  {
+            pLine = pLine.substring(0,hashIndex).trim();
+        }
+        if (pLine.startsWith("["))  // like  [COMET_ENZYME_INFO]
+             return; // comment
+        char firstChar = pLine.charAt(0);
+        if(Character.isDigit(firstChar))
+            return;    // 0.  No_enzyme              0      -           -
+
+         String[] items = pLine.split("=");
+        if (items.length < 2)
+              return; // empty line
+        String prop = items[0].trim();
+        String value = items[1].trim();
+
+        CometProperties.PropertyHandler handler = CometProperties.getHandler(prop);
+        if( handler == null)    {
+            throw new UnsupportedOperationException("no handler for " + prop); // ToDo
+        }
+        handler.handleProperty(pHolder,value);
+
+    }
+
+
 }

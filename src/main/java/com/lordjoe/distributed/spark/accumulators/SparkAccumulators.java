@@ -38,6 +38,7 @@ public class SparkAccumulators implements ISparkAccumulators {
             }
         }
 
+        me.createSpecialAccumulator(LogRareEventsAccumulator.LOG_RARE_EVENTS_NAME, LogRareEventsAccumulator.PARAM_INSTANCE, LogRareEventsAccumulator.empty());
         me.createSpecialAccumulator(MEMORY_ACCUMULATOR_NAME, MemoryUseAccumulator.PARAM_INSTANCE, MemoryUseAccumulator.empty());
         me.createSpecialAccumulator(GCTimeAccumulator.GCTIME_ACCUMULATOR_NAME,
                 GCTimeAccumulator.PARAM_INSTANCE, GCTimeAccumulator.empty());

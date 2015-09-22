@@ -16,13 +16,13 @@ import java.util.Set;
 public class BinChargeMapper {
 
     // how wide are the bins
-    private static double binSize = 0.01;
-    private static int examWidthInBins = 9;
+    private static double binSize = 0.01; //0.005; // 0.01;
+    private static int examWidthInBins =  9; // 18; // 9; //
 
 
 
     // how wide to we search
-    public static  double examineWidth = binSize * 9;
+    public static  double examineWidth = binSize * examWidthInBins;
     public static final int MAX_CHARGE_PLUS_ONE = 5;
 
 

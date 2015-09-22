@@ -777,9 +777,9 @@ public class SparkCometScanScorer {
 
         JavaRDD<IPolypeptide> allPeptides = readAllPeptides(sparkProperties, handler);
 
-//        long[] peptideCounts = new long[1];
-//        allPeptides = SparkUtilities.persistAndCount("Total Peptides",allPeptides,peptideCounts);
-//        long numberpeptides = peptideCounts[0];
+         long[] peptideCounts = new long[1];
+        allPeptides = SparkUtilities.persistAndCount("Total Peptides",allPeptides,peptideCounts);
+         long numberpeptides = peptideCounts[0];
 //
 //        System.out.println("Number Spectra " + Long_Formatter.format(numberSpectra) + " Number Peptides " +   Long_Formatter.format(numberpeptides));
 //        System.err.println("Number Spectra " + Long_Formatter.format(numberSpectra) + " Number Peptides " +   Long_Formatter.format(numberpeptides));
