@@ -37,9 +37,16 @@ public class DigestProteinFunction extends AbstractLoggingFlatMapFunction<IProte
         return digestWithModifications(prot, digester, peptideModifications, isGenerateDecoysForModifiedPeptides());
     }
 
-    public static List<IPolypeptide> digestWithModifications(IProtein prot, IPeptideDigester digester, PeptideModification[] peptideModifications) {
-        return digestWithModifications(prot, digester, peptideModifications, false);
+    public List<IPolypeptide> digestWithModifications(List<IProtein> prots) {
+        List<IPolypeptide> holder = new ArrayList<IPolypeptide>();
+        for (IProtein prot : prots) {
+            holder.addAll(digestWithModifications(prot, digester, peptideModifications, isGenerateDecoysForModifiedPeptides()));
+          }
+         return holder;
     }
+    public static List<IPolypeptide> digestWithModifications(IProtein prot, IPeptideDigester digester, PeptideModification[] peptideModifications) {
+           return digestWithModifications(prot, digester, peptideModifications, false);
+       }
 
     public static List<IPolypeptide> digestWithModifications(IProtein prot,
                                                              IPeptideDigester digester,

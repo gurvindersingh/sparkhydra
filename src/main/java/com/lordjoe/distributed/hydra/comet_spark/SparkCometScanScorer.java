@@ -15,6 +15,7 @@ import org.apache.log4j.*;
 import org.apache.spark.*;
 import org.apache.spark.api.java.*;
 import org.apache.spark.api.java.function.*;
+import org.apache.spark.sql.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.hadoop.*;
 import org.systemsbiology.xtandem.ionization.*;
@@ -786,6 +787,9 @@ public class SparkCometScanScorer {
 
         // convert spectra into an object with scoring information
         JavaRDD<CometScoredScan> cometSpectraToScore = spectraToScore.map(new MapToCometSpectrum(comet));
+
+        DataFrame  dataFrame = SparkUtilities.getCurrentSQLContext().createDataFrame(cometSpectraToScore, CometScoredScan.class);
+          System.out.println("count dataframe is"+dataFrame.count());
 
         // if you want to limt do so here
         // cometSpectraToScore = countAndLimitSpectra(cometSpectraToScore);

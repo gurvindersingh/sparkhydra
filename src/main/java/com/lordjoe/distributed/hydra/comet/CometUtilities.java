@@ -177,7 +177,13 @@ public class CometUtilities implements Serializable {
         if( handler == null)    {
             throw new UnsupportedOperationException("no handler for " + prop); // ToDo
         }
-        handler.handleProperty(pHolder,value);
+        try {
+            handler.handleProperty(pHolder,value);
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+
+        }
 
     }
 

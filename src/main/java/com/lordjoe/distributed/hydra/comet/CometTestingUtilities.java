@@ -1,16 +1,13 @@
 package com.lordjoe.distributed.hydra.comet;
 
-import com.lordjoe.distributed.hydra.fragment.BinChargeKey;
-import com.lordjoe.utilities.FileUtilities;
- import org.systemsbiology.xtandem.IMeasuredSpectrum;
-import org.systemsbiology.xtandem.RawPeptideScan;
-import org.systemsbiology.xtandem.XTandemMain;
-import org.systemsbiology.xtandem.ionization.IonType;
-import org.systemsbiology.xtandem.peptide.IPolypeptide;
-import org.systemsbiology.xtandem.peptide.PeptideModification;
-import org.systemsbiology.xtandem.peptide.PeptideModificationRestriction;
-import org.systemsbiology.xtandem.peptide.Polypeptide;
-import org.systemsbiology.xtandem.testing.MZXMLReader;
+import com.lordjoe.algorithms.*;
+import com.lordjoe.distributed.hydra.fragment.*;
+import com.lordjoe.utilities.*;
+import org.systemsbiology.xtandem.*;
+import org.systemsbiology.xtandem.ionization.*;
+import org.systemsbiology.xtandem.peptide.*;
+import org.systemsbiology.xtandem.testing.*;
+import scala.*;
 
 import java.io.*;
 import java.util.*;
@@ -72,6 +69,10 @@ public class CometTestingUtilities {
         return getDefaultApplication(CometTestData.COMET_XML);
     }
 
+    public static XTandemMain getDefaultApplication2() {
+        return getDefaultApplication(CometTestData.COMET_XML2);
+    }
+
 
     public static CometScoringAlgorithm getComet(XTandemMain application) {
         return (CometScoringAlgorithm) application.getAlgorithms()[0];
@@ -102,6 +103,40 @@ public class CometTestingUtilities {
         RawPeptideScan rp = MZXMLReader.handleScan(scanTag);
         return rp;
     }
+
+    /**
+     * merge as a tuple all pairs with common key
+     * @param ml1
+     * @param ml2
+     * @param <K>
+     * @param <V1>
+     * @param <V2>
+     * @return
+     */
+    public static <K, V1, V2> MapOfLists<K, Tuple2<V1, V2>> join(MapOfLists<K, V1> ml1, MapOfLists<K, V2> ml2) {
+        MapOfLists<K, Tuple2<V1, V2>> ret = new MapOfLists<K, Tuple2<V1, V2>>();
+        for (K k : ml1.keySet()) {
+           if(ml2.containsKey(k))  {
+               List<Tuple2<V1, V2>> tuple2s = joinLists(ml1.get(k), ml2.get(k));
+               ret.putItems(k,tuple2s);
+           }
+        }
+
+        return ret;
+    }
+
+    public static <V1, V2> List<Tuple2<V1, V2>> joinLists(List<V1> l1,List<V2> l2) {
+        List<Tuple2<V1, V2>> ret = new ArrayList<Tuple2<V1, V2>>();
+        for (V1 v1 : l1) {
+            for (V2 v2 : l2) {
+                  ret.add(new Tuple2<V1, V2>(v1,v2));
+             }
+
+        }
+
+        return ret;
+    }
+
 
     /**
      * read a resource mxXML file and return a set of scans
@@ -177,7 +212,7 @@ public class CometTestingUtilities {
         for (UsedSpectrum usedSpectrum : spectrumUsed) {
             BinChargeKey pepKey = BinChargeMapper.keyFromPeptide(usedSpectrum.peptide);
 
-         //   Assert.assertTrue(spectrumBins.contains(pepKey));
+            //   Assert.assertTrue(spectrumBins.contains(pepKey));
         }
     }
 
@@ -199,7 +234,8 @@ public class CometTestingUtilities {
             }
             rdr.close();
             return ret;
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new UnsupportedOperationException(e);
         }
     }
@@ -208,7 +244,7 @@ public class CometTestingUtilities {
         // copied of the console ^&)(&^(*&^(*%*&^
         while (line.contains("  "))
             line = line.replace("  ", " ");
-         line = line.replace(" ", "\t");
+        line = line.replace(" ", "\t");
         while (line.contains("\t\t"))
             line = line.replace("\t\t", "\t");
 
@@ -227,10 +263,10 @@ public class CometTestingUtilities {
         int charge = Integer.parseInt(split[index++]);
         IonType type = IonType.valueOf(split[index++]);
         double mass = 0;
-        if(split.length > 5)
-            mass = Double.parseDouble(split[index++]);
-        BinnedChargeIonIndex bx = new TestBinChargeIonIndex(bin, charge, type, pos,mass);
-        if(!list.contains(bx))
+        if (split.length > 5)
+            mass = java.lang.Double.parseDouble(split[index++]);
+        BinnedChargeIonIndex bx = new TestBinChargeIonIndex(bin, charge, type, pos, mass);
+        if (!list.contains(bx))
             list.add(bx);
 
     }

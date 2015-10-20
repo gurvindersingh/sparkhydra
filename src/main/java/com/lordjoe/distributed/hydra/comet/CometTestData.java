@@ -695,6 +695,198 @@ public class CometTestData {
 
 
 
+        public static final String COMET_XML2 =
+                  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                          "\n" +
+                          "<bioml>\n" +
+                          " \n" +
+                          " <note> FILE LOCATIONS. Replace them with your input (.mzXML) file and output file -- these are REQUIRED. Optionally a log file and a sequence output file of all protein sequences identified in the first-pass can be specified. Use of FULL path (not relative) paths is recommended. </note>\n" +
+                          "\n" +
+                          " <!--   <note type=\"input\" label=\"spectrum, path\">LargeSample/OR20080317_S_SILAC-LH_1-1_01.mzXML</note>   -->\n" +
+                               "\t<note type=\"input\" label=\"protein, taxon\">yeast_orfs_all_REV.20060126.short.fasta</note>\n" +
+                          "\t<note type=\"input\" label=\"spectrum, path\">spectra</note>\n" +
+                          "\t<note type=\"input\" label=\"output, path\">full_tandem_output_path</note>\n" +
+                          "\t<note type=\"input\" label=\"output, sequence path\">full_tandem_output_sequence_path</note>\n" +
+                          "<note>list path parameters</note>\n" +
+                           "\t\t<note>This value is ignored when it is present in the default parameter\n" +
+                          "\t\tlist path.</note>\n" +
+                          "\t<note type=\"input\" label=\"list path, taxonomy information\">taxonomy_searchGUI.xml</note>\n" +
+                          "\n" +
+                          "<note>comet parameters</note>\n" +
+                          "\t<note type=\"input\" label=\"comet.fragment_bin_tol\">0.02</note> <!-- value for High resolution -->\n" +
+                          "\t<note type=\"input\" label=\"comet.fragment_bin_offset\">0.0</note> <!-- value for High resolution -->\n" +
+                          "\t<note type=\"input\" label=\"comet.mass_tolerance\">30</note> <!-- value for High resolution -->\n" +
+                          "\t<note type=\"input\" label=\"comet.max_fragment_charge\">3</note> <!-- max charge in theoretical spectrum -->\n" +
+                          // XTandem wants this true - maybe not comet
+                          "\t<note type=\"input\" label=\"org.systemsbiology.xtandem.HardCodeModifications\">false</note> <!-- max charge in theoretical spectrum -->\n" +
+                    "<note>spectrum parameters</note>\n" +
+                          "\t<note type=\"input\" label=\"spectrum, fragment monoisotopic mass error\">0.5</note>\n" +
+                          "\t<note type=\"input\" label=\"spectrum, parent monoisotopic mass error plus\">20.0</note>\n" +
+                          "\t<note type=\"input\" label=\"spectrum, parent monoisotopic mass error minus\">20.0</note>\n" +
+                          "\t<note type=\"input\" label=\"spectrum, parent monoisotopic mass isotope error\">yes</note>\n" +
+                          "\t<note type=\"input\" label=\"spectrum, fragment monoisotopic mass error units\">Daltons</note>\n" +
+                          "\t<note>The value for this parameter may be 'Daltons' or 'ppm': all other values are ignored</note>\n" +
+                          "\t<note type=\"input\" label=\"spectrum, parent monoisotopic mass error units\">ppm</note>\n" +
+                          "\t\t<note>The value for this parameter may be 'Daltons' or 'ppm': all other values are ignored</note>\n" +
+                          "\t<note type=\"input\" label=\"spectrum, fragment mass type\">monoisotopic</note>\n" +
+                          "\t\t<note>values are monoisotopic|average </note>\n" +
+                          "\n" +
+                                  "<note>spectrum conditioning parameters</note>\n" +
+                          "\t<note type=\"input\" label=\"spectrum, dynamic range\">100.0</note>\n" +
+                          "\t\t<note>The peaks read in are normalized so that the most intense peak\n" +
+                          "\t\tis set to the dynamic range value. All peaks with values of less that\n" +
+                          "\t\t1, using this normalization, are not used. This normalization has the\n" +
+                          "\t\toverall effect of setting a threshold value for peak intensities.</note>\n" +
+                          "\t<note type=\"input\" label=\"spectrum, total peaks\">50</note> \n" +
+                          "\t\t<note>If this value is 0, it is ignored. If it is greater than zero (lets say 50),\n" +
+                          "\t\tthen the number of peaks in the spectrum with be limited to the 50 most intense\n" +
+                          "\t\tpeaks in the spectrum. X! tandem does not do any peak finding: it only\n" +
+                          "\t\tlimits the peaks used by this parameter, and the dynamic range parameter.</note>\n" +
+                          "\t<note type=\"input\" label=\"spectrum, maximum parent charge\">4</note>\n" +
+                          "\t<note type=\"input\" label=\"spectrum, use noise suppression\">no</note>\n" +
+                          "\t<note type=\"input\" label=\"spectrum, minimum parent m+h\">500.0</note>\n" +
+                          "\t<note type=\"input\" label=\"spectrum, minimum fragment mz\">200.0</note>\n" +
+                          "\t<note type=\"input\" label=\"spectrum, minimum peaks\">5</note> \n" +
+                          "\t<note type=\"input\" label=\"spectrum, threads\">4</note>\n" +
+                          "\t<note type=\"input\" label=\"spectrum, sequence batch size\">1000</note>\n" +
+                          "\t\n" +
+                          "<note>residue modification parameters</note>\n" +
+                          "\t<note type=\"input\" label=\"residue, modification mass\"></note>\n" +
+                          "\t\t<note></note>\n" +
+                          " \t <note type=\"input\" label=\"residue, potential modification mass\"></note>\n" +
+                          "\t\t<note>phosphorylation of t,phosphorylation of s,carbamidomethyl c,oxidation of m,phosphorylation of y</note>\n" +
+                          "\t<note type=\"input\" label=\"residue, potential modification motif\"></note>\n" +
+                          "\t\t<note>The format of this parameter is similar to residue, modification mass,\n" +
+                          "\t\twith the addition of a modified PROSITE notation sequence motif specification.\n" +
+                          "\t\tFor example, a value of 80@[ST!]PX[KR] indicates a modification\n" +
+                          "\t\tof either S or T when followed by P, and residue and the a K or an R.\n" +
+                          "\t\tA value of 204@N!{P}[ST]{P} indicates a modification of N by 204, if it\n" +
+                          "\t\tis NOT followed by a P, then either an S or a T, NOT followed by a P.\n" +
+                          "\t\tPositive and negative values are allowed.\n" +
+                          "\t\t</note>\n" +
+                          "\t<note type=\"input\" label=\"org.systemsbiology.jxtandem.ModifiedPolypeptide.MaxPeptideModification\">3</note>\n" +
+                          "\n" +
+                          "<note>protein parameters</note>\n" +
+                          "\t<note type=\"input\" label=\"protein, taxon\">all</note>\n" +
+                          "\t\t<note>This value is interpreted using the information in taxonomy.xml.</note>\n" +
+                          "\t<note type=\"input\" label=\"protein, cleavage site\">[RK]|{P}</note>\n" +
+                          "\t\t<note>this setting corresponds to the enzyme trypsin. The first characters\n" +
+                          "\t\tin brackets represent residues N-terminal to the bond - the '|' pipe -\n" +
+                          "\t\tand the second set of characters represent residues C-terminal to the\n" +
+                          "\t\tbond. The characters must be in square brackets (denoting that only\n" +
+                          "\t\tthese residues are allowed for a cleavage) or french brackets (denoting\n" +
+                          "\t\tthat these residues cannot be in that position). Use UPPERCASE characters.\n" +
+                          "\t\tTo denote cleavage at any residue, use [X]|[X] and reset the \n" +
+                          "\t\tscoring, maximum missed cleavage site parameter (see below) to something like 50.\n" +
+                          "\t\t</note>\n" +
+                          "\t<note type=\"input\" label=\"protein, cleavage semi\">no</note>\n" +
+                          "\t<note type=\"input\" label=\"protein, modified residue mass file\"></note>\n" +
+                          "\t<note type=\"input\" label=\"protein, cleavage C-terminal mass change\">19.0178</note>\n" + // 17.0027
+                          "\t<note type=\"input\" label=\"protein, cleavage N-terminal mass change\">1.007276466</note>\n" +
+                          "\t<note type=\"input\" label=\"protein, quick acetyl\">yes</note>\n" +
+                          "\t<note type=\"input\" label=\"protein, quick pyrolidone\">yes</note>\n" +
+                          "\t<note type=\"input\" label=\"protein, stP bias\">no</note>\n" +
+                          "\t<note type=\"input\" label=\"protein, N-terminal residue modification mass\">0.0</note>\n" +
+                          "\t<note type=\"input\" label=\"protein, C-terminal residue modification mass\">0.0</note>\n" +
+                          "\t<note type=\"input\" label=\"protein, homolog management\">no</note>\n" +
+                          "\t\t<note>if yes, an upper limit is set on the number of homologues kept for a particular spectrum</note>\n" +
+                          "\n" +
+                          "<note>model refinement parameters</note>\n" +
+                          "\t<note type=\"input\" label=\"refine\">yes</note>\n" +
+                          "\t<note type=\"input\" label=\"refine, modification mass\"></note>\n" +
+                          "\t<note type=\"input\" label=\"refine, sequence path\"></note>\n" +
+                          "\t<note type=\"input\" label=\"refine, tic percent\">20</note>\n" +
+                          "\t<note type=\"input\" label=\"refine, spectrum synthesis\">yes</note>\n" +
+                          "\t<note type=\"input\" label=\"refine, maximum valid expectation value\">0.01</note>\n" +
+                          "\t<note type=\"input\" label=\"refine, unanticipated cleavage\">yes</note>\n" +
+                          "\t<note type=\"input\" label=\"refine, cleavage semi\">no</note>\n" +
+                          "\t<note type=\"input\" label=\"refine, point mutations\">no</note>\n" +
+                          "\t<note type=\"input\" label=\"refine, saps\">no</note>\n" +
+                          "\t<note type=\"input\" label=\"refine, use potential modifications for full refinement\">no</note>\n" +
+                          "\t<note type=\"input\" label=\"refine, potential N-terminus modifications\"></note>\n" +
+                          "\t<note type=\"input\" label=\"refine, potential C-terminus modifications\"></note>\n" +
+                          "\t<note type=\"input\" label=\"refine, potential modification mass\"></note>\n" +
+                          "\t<note type=\"input\" label=\"refine, potential modification motif\"></note>\n" +
+                          "\t<note>The format of this parameter is similar to residue, modification mass,\n" +
+                          "\t\twith the addition of a modified PROSITE notation sequence motif specification.\n" +
+                          "\t\tFor example, a value of 80@[ST!]PX[KR] indicates a modification\n" +
+                          "\t\tof either S or T when followed by P, and residue and the a K or an R.\n" +
+                          "\t\tA value of 204@N!{P}[ST]{P} indicates a modification of N by 204, if it\n" +
+                          "\t\tis NOT followed by a P, then either an S or a T, NOT followed by a P.\n" +
+                          "\t\tPositive and negative values are allowed.\n" +
+                          "\t\t</note>\n" +
+                          "\n" +
+                          "<note>scoring parameters</note>\n" +
+                          "\t<note type=\"input\" label=\"scoring, minimum ion count\">4</note>\n" +
+                          "\t<note type=\"input\" label=\"scoring, maximum missed cleavage sites\">2</note>\n" +
+                          "\t<note type=\"input\" label=\"scoring, x ions\">no</note>\n" +
+                          "\t<note type=\"input\" label=\"scoring, y ions\">yes</note>\n" +
+                          "\t<note type=\"input\" label=\"scoring, z ions\">no</note>\n" +
+                          "\t<note type=\"input\" label=\"scoring, a ions\">no</note>\n" +
+                          "\t<note type=\"input\" label=\"scoring, b ions\">yes</note>\n" +
+                          "\t<note type=\"input\" label=\"scoring, c ions\">no</note>\n" +
+                          "\t<note type=\"input\" label=\"scoring, cyclic permutation\">no</note>\n" +
+                          "\t\t<note>if yes, cyclic peptide sequence permutation is used to pad the scoring histograms</note>\n" +
+                          "\t<note type=\"input\" label=\"scoring, include reverse\">no</note>\n" +
+                          "\t\t<note>if yes, then reversed sequences are searched at the same time as forward sequences</note>\n" +
+                          "\n" +
+                          "<note>output parameters</note>\n" +
+                          "\t<note type=\"input\" label=\"output, log path\"></note>\n" +
+                          "\t<note type=\"input\" label=\"output, message\"></note>\n" +
+                          "\t<note type=\"input\" label=\"output, one sequence copy\">no</note>\n" +
+                          "\t<note type=\"input\" label=\"output, sequence path\"></note>\n" +
+                          "\t<note type=\"input\" label=\"output, path\">output.xml</note>\n" +
+                          "\t<note type=\"input\" label=\"output, sort results by\">spectrum</note>\n" +
+                          "\t\t<note>values = protein|spectrum (spectrum is the default)</note>\n" +
+                          "\t<note type=\"input\" label=\"output, path hashing\">yes</note>\n" +
+                          "\t\t<note>values = yes|no</note>\n" +
+                          "\t<note type=\"input\" label=\"output, xsl path\">tandem-style.xsl</note>\n" +
+                          "\t<note type=\"input\" label=\"output, parameters\">yes</note>\n" +
+                          "\t\t<note>values = yes|no</note>\n" +
+                          "\t<note type=\"input\" label=\"output, performance\">yes</note>\n" +
+                          "\t\t<note>values = yes|no</note>\n" +
+                          "\t<note type=\"input\" label=\"output, spectra\">yes</note>\n" +
+                          "\t\t<note>values = yes|no</note>\n" +
+                          "\t<note type=\"input\" label=\"output, histograms\">no</note>\n" +
+                          "\t\t<note>values = yes|no</note>\n" +
+                          "\t<note type=\"input\" label=\"output, proteins\">yes</note>\n" +
+                          "\t\t<note>values = yes|no</note>\n" +
+                          "\t<note type=\"input\" label=\"output, sequences\">no</note>\n" +
+                          "\t\t<note>values = yes|no</note>\n" +
+                          "\t<note type=\"input\" label=\"output, one sequence copy\">no</note>\n" +
+                          "\t\t<note>values = yes|no, set to yes to produce only one copy of each protein sequence in the output xml</note>\n" +
+                          "\t<note type=\"input\" label=\"output, results\">all</note>\n" +
+                          "\t\t<note>values = all|valid|stochastic</note>\n" +
+                          "\t<note type=\"input\" label=\"output, maximum valid expectation value\">100.0</note>\n" +
+                          "\t\t<note>value is used in the valid|stochastic setting of output, results</note>\n" +
+                          "\t<note type=\"input\" label=\"output, histogram column width\">50</note>\n" +
+                          "\t\t<note>values any integer greater than 0. Setting this to '1' makes cutting and pasting histograms\n" +
+                          "\t\tinto spread sheet programs easier.</note>\n" +
+                          "<note type=\"description\">ADDITIONAL EXPLANATIONS</note>\n" +
+                          "\t<note type=\"description\">Each one of the parameters for X! tandem is entered as a labeled note\n" +
+                          "\t\t\tnode. In the current version of X!, keep those note nodes\n" +
+                          "\t\t\ton a single line.\n" +
+                          "\t</note>\n" +
+                          "\t<note type=\"description\">The presence of the type 'input' is necessary if a note is to be considered\n" +
+                          "\t\t\tan input parameter.\n" +
+                          "\t</note>\n" +
+                          "\t<note type=\"description\">Any of the parameters that are paths to files may require alteration for a \n" +
+                          "\t\t\tparticular installation. Full path names usually cause the least trouble,\n" +
+                          "\t\t\tbut there is no reason not to use relative path names, if that is the\n" +
+                          "\t\t\tmost convenient.\n" +
+                          "\t</note>\n" +
+                          "\t<note type=\"description\">Any parameter values set in the 'list path, default parameters' file are\n" +
+                          "\t\t\treset by entries in the normal input file, if they are present. Otherwise,\n" +
+                          "\t\t\tthe default set is used.\n" +
+                          "\t</note>\n" +
+                          "\t<note type=\"description\">The 'list path, taxonomy information' file must exist.\n" +
+                          "\t\t</note>\n" +
+                          "\t<note type=\"description\">The directory containing the 'output, path' file must exist: it will not be created.\n" +
+                          "\t\t</note>\n" +
+                          "\t<note type=\"description\">The 'output, xsl path' is optional: it is only of use if a good XSLT style sheet exists.\n" +
+                          "\t\t</note>\n" +
+                          "</bioml>";
+
 
 
         public static final String TANDEM_XML =

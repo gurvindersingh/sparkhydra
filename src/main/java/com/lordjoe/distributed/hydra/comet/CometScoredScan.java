@@ -64,7 +64,9 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
 
         }
         double mass = m_Raw.getPrecursorMass();    // todo is this peptide or
-        maxArraySize = alg.asBin(mass) + 100; // ((int) ((mass + 100) / getBinTolerance()); //  pScoring->_spectrumInfoInternal.iArraySize
+        // changed to look at observed peaks
+        mass = ((RawPeptideScan)m_Raw).getHighMz();
+        maxArraySize = alg.asBin(mass + 100); // ((int) ((mass + 100) / getBinTolerance()); //  pScoring->_spectrumInfoInternal.iArraySize
         //this.setAlgorithm(alg);
         // we keep the data locally
       //  final CometScoringDataForScanBuild scoringData = CometScoringDataForScanBuild.getScoringData();
@@ -253,7 +255,7 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
         // todo take out - debugging works  ONLY for eg0
   //      Map<Integer, SpectrumBinnedScore> desiredNL = CometTesting.getResourceMap("/eg0/pfFastXcorrDataNL.data");
 
-        // these shoiuld be set here
+        // these should be set here
         float[] pPScoringFastXcorrData = scoringData.getScoringFastXcorrData();
         float[] pPfFastXcorrDataNL = scoringData.getFastXcorrDataNL();
 
@@ -519,6 +521,9 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
             if (intensity > 0) {
                 double massChargeRatio =   peak.getMassChargeRatio();
                 int bin = algorithm.asBin(massChargeRatio);
+                if(bin > 1900)
+                    XTandemUtilities.breakHere();
+
                 if (bin > binned.length) {
                     System.err.println("bad bin " + bin + " max is " + binned.length + " mz " + massChargeRatio);
                     continue;
