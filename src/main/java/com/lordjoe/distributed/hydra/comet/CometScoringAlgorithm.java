@@ -189,6 +189,11 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
         if(isConfigured())
             throw new IllegalStateException("Comet should only configured once" );
 
+        reconfigure(params);
+        CometTesting.testCometConfiguration(this);
+     }
+
+    public void reconfigure(final IParameterHolder params) {
         super.configure(params);
         CometTesting.validateOneKey(); // We are hunting for when this stops working
         final String units = params.getParameter("spectrum, parent monoisotopic mass error units",
@@ -200,7 +205,7 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
 
 
         m_BinStartOffset = params.getDoubleParameter("comet.fragment_bin_offset", DEFAULT_BIN_OFFSET);
-         m_OneMinusBinOffset = 1.0 - m_BinStartOffset;
+        m_OneMinusBinOffset = 1.0 - m_BinStartOffset;
 
 
         m_MassTolerance = params.getDoubleParameter("comet.mass_tolerance", DEFAULT_MASS_TOLERANCE);
@@ -230,10 +235,7 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
             throw new IllegalStateException("comet needs " + 1.007276466 + " not " + testValue);
 
         setConfigured(true);
-        CometTesting.testCometConfiguration(this);
-
-
-    }
+     }
 
     /**
      * true if scanMass within mass2 + gPlusLimit mass2 - gMinusLimit
@@ -451,9 +453,10 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
 
         for (BinnedChargeIonIndex peak : binnedIndex) {
             int index = peak.index;
-            if(Math.abs(index - 17257) < 1)
-                TestUtilities.breakHere();
-            if(peak.charge > maxCharge)
+            if(index == 1932)
+                XTandemUtilities.breakHere();
+
+             if(peak.charge > 1 && peak.charge > maxCharge)
                 continue;
 
               double value =  scan.getScoredData(fastScoringMap, fastScoringMapNL,index, peak.charge);
@@ -462,6 +465,7 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
             if (Math.abs(value) > 0.0001) {
                 xcorr += value;
                 scoredPeaks++;
+                System.out.println("1\t" + peak.type + "\t" + index + "\t" + value);
                 //if (used != null)
                 //    used.add(new XCorrUsedData(peak.charge, peak.type, index, value));
                 pCounter.addCount(peak.type);

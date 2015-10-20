@@ -108,6 +108,36 @@ public class CometProperties {
                 holder.setParameter("spectrum, fragment mass type", "monoisotopic ");
         }
     };
+    private static PropertyHandler DecoySearchHandler = new PropertyHandler() {
+        @Override
+        public void handleProperty(final XTandemMain holder, final String value) {
+            if (value.equals("0"))
+                return;
+            else
+                return; // TODO - add decoy
+        }
+    };
+    private static PropertyHandler SearchEnzymeHandler = new PropertyHandler() {
+          @Override
+          public void handleProperty(final XTandemMain holder, final String value) {
+              holder.setParameter(XTandemUtilities.CREATE_DECOY_FOR_MODIFIED_PEPTIDES_PROPERTY,value.equals("0")? "false" : "true");
+          }
+      };
+
+
+    private static PropertyHandler buildAddRequiredModHandler(final FastaAminoAcid aa)
+    {
+        return new PropertyHandler() {
+            @Override
+            public void handleProperty(final XTandemMain holder, final String value) {
+                double val = Double.parseDouble(value);
+                if(val == 0)
+                    return;
+              //  throw new UnsupportedOperationException("Fix This"); // ToDo
+            }
+        } ;
+    }
+
 
 
     private static PropertyHandler Require0 = new RequireValue("0");
@@ -128,7 +158,7 @@ public class CometProperties {
         putHandler("precursor_tolerance_type", Require0);
         putHandler("isotope_error", Require0);
         putHandler("peptide_mass_units", Require0);
-        putHandler("search_enzyme_number", Require0);
+        putHandler("search_enzyme_number", SearchEnzymeHandler);
         putHandler("mass_type_parent", IGNORE);  // todo is this right
         putHandler("mass_type_fragment", MassFragmentHandler);
         putHandler("num_enzyme_termini", IGNORE);  // todo is this right
@@ -151,11 +181,11 @@ public class CometProperties {
         putHandler("use_B_ions", Require1);
         putHandler("theoretical_fragment_ions", Require1);
 
-        putHandler("decoy_search", Require0);
+        putHandler("decoy_search", DecoySearchHandler);
         putHandler("output_sqtstream", Require1);
         putHandler("output_sqtfile", Require0);
         putHandler("output_txtfile", Require0);
-        putHandler("output_pepxmlfile", Require0);
+        putHandler("output_pepxmlfile", IGNORE);
         putHandler("output_percolatorfile", Require0);
         putHandler("output_outfiles", Require0);
         putHandler("print_expect_score", Require1);
@@ -179,27 +209,27 @@ public class CometProperties {
         putHandler("add_Nterm_peptide", IGNORE);   // todo handle add_Nterm_peptide = 0.0
         putHandler("add_Cterm_protein", IGNORE);   // todo handle add_Cterm_protein = 0.0
         putHandler("add_Nterm_protein", IGNORE);   // todo handle add_Nterm_protein = 0.0
-        putHandler("add_G_glycine", Require0000);   // todo handle add_G_glycine = 0.0000
-        putHandler("add_A_alanine", Require0000);   // todo handle add_G_glycine = 0.0000
-        putHandler("add_S_serine", Require0000);   // todo handle add_G_glycine = 0.0000
-        putHandler("add_P_proline", Require0000);   // todo handle add_P_proline = 0.0000
-        putHandler("add_V_valine", Require0000);   // todo handle add_V_valine = 0.0000
-        putHandler("add_K_lysine", Require0000);   // todo handle add_V_valine = 0.0000
-          putHandler("add_T_threonine", Require0000);   // todo handle add_T_threonine = 0.0000
-        putHandler("add_L_leucine", Require0000);   // todo handle add_L_leucine = 0.0000
-        putHandler("add_I_isoleucine", Require0000);   // todo handle add_I_isoleucine = 0.0000
-        putHandler("add_N_asparagine", Require0000);   // todo handle add_N_asparagine = 0.0000
-        putHandler("add_D_aspartic_acid", Require0000);   // todo handle add_D_aspartic_acid = 0.0000
-        putHandler("add_Q_glutamine", Require0000);   // todo handle add_Q_glutamine = 0.0000
-        putHandler("add_E_glutamic_acid", Require0000);   // todo handle add_E_glutamic_acid = 0.0000
-        putHandler("add_M_methionine", Require0000);   // todo handle add_M_methionine = 0.0000
-        putHandler("add_O_ornithine", Require0000);   // todo handle add_O_ornithine = 0.0000
-        putHandler("add_H_histidine", Require0000);   // todo handle add_H_histidine = 0.0000
-        putHandler("add_F_phenylalanine", Require0000);   // todo handle add_F_phenylalanine = 0.0000
-        putHandler("add_R_arginine", Require0000);   // todo handle add_R_arginine = 0.0000
-        putHandler("add_Y_tyrosine", Require0000);   // todo handle add_Y_tyrosine = 0.0000
-        putHandler("add_W_tryptophan", Require0000);   // todo handle add_W_tryptophan = 0.0000
-        putHandler("add_B_user_amino_acid", Require0000);   // todo handle add_B_user_amino_acid = 0.0000
+        putHandler("add_G_glycine", buildAddRequiredModHandler(FastaAminoAcid.G));
+        putHandler("add_A_alanine", buildAddRequiredModHandler(FastaAminoAcid.A));
+        putHandler("add_S_serine", buildAddRequiredModHandler(FastaAminoAcid.S));
+        putHandler("add_P_proline",buildAddRequiredModHandler(FastaAminoAcid.P));
+        putHandler("add_V_valine", buildAddRequiredModHandler(FastaAminoAcid.V));
+        putHandler("add_K_lysine", buildAddRequiredModHandler(FastaAminoAcid.K));
+        putHandler("add_T_threonine", buildAddRequiredModHandler(FastaAminoAcid.T));
+        putHandler("add_L_leucine", buildAddRequiredModHandler(FastaAminoAcid.L));
+        putHandler("add_I_isoleucine",buildAddRequiredModHandler(FastaAminoAcid.I));
+        putHandler("add_N_asparagine", buildAddRequiredModHandler(FastaAminoAcid.N));
+        putHandler("add_D_aspartic_acid",buildAddRequiredModHandler(FastaAminoAcid.D));
+        putHandler("add_Q_glutamine", buildAddRequiredModHandler(FastaAminoAcid.Q));
+        putHandler("add_E_glutamic_acid", buildAddRequiredModHandler(FastaAminoAcid.E));
+        putHandler("add_M_methionine", buildAddRequiredModHandler(FastaAminoAcid.M));
+        putHandler("add_O_ornithine", Require0000);
+        putHandler("add_H_histidine", buildAddRequiredModHandler(FastaAminoAcid.H));
+        putHandler("add_F_phenylalanine", buildAddRequiredModHandler(FastaAminoAcid.F));
+        putHandler("add_R_arginine", buildAddRequiredModHandler(FastaAminoAcid.R));
+        putHandler("add_Y_tyrosine", buildAddRequiredModHandler(FastaAminoAcid.Y));
+        putHandler("add_W_tryptophan", buildAddRequiredModHandler(FastaAminoAcid.W));
+        putHandler("add_B_user_amino_acid", buildAddRequiredModHandler(FastaAminoAcid.B));
          putHandler("add_C_cysteine", IGNORE);   // todo handle add_B_user_amino_acid = 0.0000
         //    " = 57.021464             # added to C - avg. 103.1429, mono. 103.00918\n" +
          putHandler("add_J_user_amino_acid", Require0000);   // todo handle add_B_user_amino_acid = 0.0000
