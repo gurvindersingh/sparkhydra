@@ -40,7 +40,7 @@ public class HyperScoreStatistics implements Serializable {
     }
 
 
-    private final List<Integer> m_BinsX = new ArrayList<Integer>();
+    private List<Integer> m_BinsX = new ArrayList<Integer>();
     private int m_Count;
     private VariableStatisticsXY m_Statistics;
 
@@ -58,6 +58,28 @@ public class HyperScoreStatistics implements Serializable {
         setFromString(s);
 
     }
+
+    /********************************************
+     * getters and setters for bean to allow dataframe
+       */
+    private List<Integer> getBinsX() {
+        return m_BinsX;
+    }
+
+    private void setBinsX(final List<Integer> pBinsX) {
+        m_BinsX = pBinsX;
+    }
+
+    private void setCount(final int pCount) {
+        m_Count = pCount;
+    }
+
+    private void setStatistics(final VariableStatisticsXY pStatistics) {
+        m_Statistics = pStatistics;
+    }
+    /********************************************
+      * END getters and setters for bean to allow dataframe
+        */
 
     /**
      * do we have any data
