@@ -1,6 +1,6 @@
 package com.lordjoe.distributed.hydra.scoring;
 
-import com.lordjoe.algorithms.MapOfLists;
+import com.lordjoe.algorithms.*;
 import com.lordjoe.distributed.*;
 import com.lordjoe.distributed.database.*;
 import com.lordjoe.distributed.hydra.*;
@@ -15,7 +15,7 @@ import org.apache.hadoop.conf.*;
 import org.apache.hadoop.fs.*;
 import org.apache.spark.*;
 import org.apache.spark.api.java.*;
-import org.apache.spark.api.java.function.PairFlatMapFunction;
+import org.apache.spark.api.java.function.*;
 import org.systemsbiology.common.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.hadoop.*;
@@ -225,6 +225,54 @@ public class SparkMapReduceScoringHandler implements Serializable {
              return holder;
         }
     }
+
+
+
+//    public <T extends IMeasuredSpectrum> JavaPairRDD<BinChargeKey, T> mapMeasuredSpectrumToKeys(Dataset<T> inp) {
+//        inp = SparkUtilities.repartitionIfNeeded(inp);
+//        return binMapper.mapMeasuredSpectrumToKeys(inp);
+//    }
+//
+//    public <T extends IMeasuredSpectrum> JavaPairRDD<BinChargeKey, Tuple2<BinChargeKey, T>> mapMeasuredSpectrumToKeySpectrumPair(JavaRDD<T> inp) {
+//        inp = SparkUtilities.repartitionIfNeeded(inp);
+//        JavaPairRDD<BinChargeKey, Tuple2<BinChargeKey, T>> allSpectrumPairs = binMapper.mapMeasuredSpectrumToKeySpectrumPair(inp);
+//        // debugging only remove
+//        // allSpectrumPairs = SparkUtilities.persistAndCount("MapSpectraTo Keys",allSpectrumPairs);
+//        allSpectrumPairs = peptideDatabase.filterKeysWithData(allSpectrumPairs);
+//        // debugging only remove
+//        allSpectrumPairs = SparkUtilities.persistAndCount("Filter MapSpectraTo Keys", allSpectrumPairs);
+//        return allSpectrumPairs;
+//    }
+//
+//    public JavaPairRDD<BinChargeKey, IPolypeptide> mapFragmentsToKeys(JavaRDD<IPolypeptide> inp) {
+//        return binMapper.mapFragmentsToKeys(inp);
+//    }
+//
+//    /**
+//     * map a set of peptides to  ITheoreticalSpectrumSet in each bin
+//     * @param inp  set of peptides
+//     * @return  peptides mapped to bins
+//     */
+//    public JavaPairRDD<BinChargeKey, ITheoreticalSpectrumSet> mapFragmentsToTheoreticalSets(JavaRDD<IPolypeptide> inp) {
+//        return binMapper.mapFragmentsToTheoreticalSets(inp);
+//    }
+//
+//    /**
+//      * map a set of peptides to  ITheoreticalSpectrumSet in each bin
+//      * @param inp  set of peptides
+//      * @return  peptides mapped to bins
+//      */
+//     public JavaPairRDD<BinChargeKey, ArrayList<ITheoreticalSpectrumSet>> mapFragmentsToTheoreticalList(JavaRDD<IPolypeptide> inp) {
+//         return binMapper.mapFragmentsToTheoreticalList(inp);
+//     }
+//    /**
+//      * map a set of peptides to  ITheoreticalSpectrumSet in each bin
+//      * @param inp  set of peptides
+//      * @return  peptides mapped to bins
+//      */
+//     public JavaPairRDD<BinChargeKey, ArrayList<IPolypeptide>> mapFragmentsToBinList(JavaRDD<IPolypeptide> inp,final Set<Integer> usedBins) {
+//         return binMapper.mapFragmentsToBinList(inp, usedBins);
+//     }
 
 
     public <T extends IMeasuredSpectrum> JavaPairRDD<BinChargeKey, T> mapMeasuredSpectrumToKeys(JavaRDD<T> inp) {

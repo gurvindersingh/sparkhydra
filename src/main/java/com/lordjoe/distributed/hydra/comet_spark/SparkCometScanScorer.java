@@ -343,6 +343,7 @@ public class SparkCometScanScorer {
     }
 
 
+
     /**
      * score with a join of individual items
      *
@@ -788,8 +789,22 @@ public class SparkCometScanScorer {
         // convert spectra into an object with scoring information
         JavaRDD<CometScoredScan> cometSpectraToScore = spectraToScore.map(new MapToCometSpectrum(comet));
 
-        DataFrame  dataFrame = SparkUtilities.getCurrentSQLContext().createDataFrame(cometSpectraToScore, CometScoredScan.class);
-          System.out.println("count dataframe is"+dataFrame.count());
+        SQLContext sqlCtx = SparkUtilities.getCurrentSQLContext();
+        /*    ==================================================
+             Creating a DataFrame fails
+         ===========================================================*/
+ //       DataFrame  dataFrame = sqlCtx.createDataFrame(cometSpectraToScore, CometScoredScan.class);
+ //         System.out.println("count dataframe is"+dataFrame.count());
+
+        /*    ==================================================
+             Creating a Dataset Not sure how
+         ===========================================================*/
+
+        cometSpectraToScore = SparkUtilities.persist(cometSpectraToScore); // save a copy
+
+        Encoder<CometScoredScan>  evidence = Encoders.bean(CometScoredScan.class);
+        Dataset<CometScoredScan> dataset = sqlCtx.createDataset(cometSpectraToScore.rdd(), evidence);
+
 
         // if you want to limt do so here
         // cometSpectraToScore = countAndLimitSpectra(cometSpectraToScore);

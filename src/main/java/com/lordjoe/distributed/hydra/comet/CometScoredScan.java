@@ -1374,5 +1374,9 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
         return true;
     }
 
+    /*  ==================================================================
+          Getters and Steeers for Beanness
+    ===================================================================== */
+
 
 }

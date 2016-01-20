@@ -140,6 +140,38 @@ public class SparkUtilities implements Serializable {
         }
     };
 
+    /**
+     * converts an RDD from one type to amother type
+     * @param inp input RDD
+     * @param out  output RDD
+     * @param <I>   input type
+     * @param <O>   output type
+      * @return
+     */
+    public static <I, O> JavaRDD<O>  asConcreteRDD(JavaRDD<I> inp, Class<O> out) {
+        return inp.map(new CastFunction<I,O>(out)) ;
+    }
+
+    /**
+     * this does a case to an assumed type - needed to convert an RDD from an interface type to a
+     * concrete type
+     * @param <I>   input type
+     * @param <O>   output type
+     */
+    public static class CastFunction<I, O> implements Function<I, O> {
+        private final Class<O>outClass;
+
+
+        public CastFunction(final Class<O> pOutClass) {
+            outClass = pOutClass;
+        }
+
+        @Override
+          public O call(final I pT) throws Exception {
+              return (O)pT;
+          }
+
+    }
 
     public static synchronized SQLContext getCurrentSQLContext() {
         if (sqlContext != null)
