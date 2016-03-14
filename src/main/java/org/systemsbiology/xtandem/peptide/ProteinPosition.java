@@ -2,7 +2,6 @@ package org.systemsbiology.xtandem.peptide;
 
 import org.systemsbiology.sax.*;
 import org.systemsbiology.xtandem.*;
-import org.systemsbiology.xtandem.sax.*;
 
 /**
  * org.systemsbiology.xtandem.peptide.ProteinPosition
@@ -55,12 +54,17 @@ public class ProteinPosition implements IProteinPosition {
         return ret;
     }
 
-    private final String m_Protein;
-     private final IPolypeptide m_Peptide;
-    private final FastaAminoAcid m_Before;
-    private final FastaAminoAcid m_After;
-    private final int m_StartPosition;
-    private final boolean m_Decoy;
+    // Dropped final so this can be a bean
+    private  String m_Protein;
+    private  IPolypeptide m_Peptide;
+    private  FastaAminoAcid m_Before;
+    private  FastaAminoAcid m_After;
+    private  int m_StartPosition;
+    private  boolean m_Decoy;
+
+    // use whne building up a bean
+    private ProteinPosition() {
+      }
 
     public ProteinPosition(final String pProtein, final IPolypeptide pPeptide, final FastaAminoAcid pBefore, final FastaAminoAcid pAfter, final int pStartPosition) {
         m_Protein = XTandemUtilities.conditionProteinLabel(pProtein);
@@ -295,4 +299,36 @@ public class ProteinPosition implements IProteinPosition {
         adder.closeTag(TAG);
     }
 
+
+    /*  ======================
+     only use for bean stuff
+         ====================== */
+
+    private boolean isDecoy() {
+        return m_Decoy;
+    }
+
+    private void setProtein(final String pProtein) {
+        m_Protein = pProtein;
+    }
+
+    private void setPeptide(final IPolypeptide pPeptide) {
+        m_Peptide = pPeptide;
+    }
+
+    private void setBefore(final FastaAminoAcid pBefore) {
+        m_Before = pBefore;
+    }
+
+    private void setAfter(final FastaAminoAcid pAfter) {
+        m_After = pAfter;
+    }
+
+    private void setStartPosition(final int pStartPosition) {
+        m_StartPosition = pStartPosition;
+    }
+
+    private void setDecoy(final boolean pDecoy) {
+        m_Decoy = pDecoy;
+    }
 }

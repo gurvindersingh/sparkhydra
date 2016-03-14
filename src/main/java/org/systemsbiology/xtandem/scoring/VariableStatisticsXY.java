@@ -32,6 +32,14 @@ public class VariableStatisticsXY {
          }
     }
 
+
+    public VariableStatisticsXY(VariableStatisticsXY copy) {
+        m_X.add(copy.m_X);
+        m_Y.add(copy.m_Y);
+         m_SumXY = copy.m_SumXY;
+     }
+
+
     /**
      * build the object from the toString representation
      * - this can be useful in serialization

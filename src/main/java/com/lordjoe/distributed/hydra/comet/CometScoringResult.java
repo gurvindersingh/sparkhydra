@@ -19,11 +19,11 @@ public class CometScoringResult implements IScoredScan, IAddable<IScoredScan>, I
 
     public static final int MAX_RETURNED_MATCHES = 2;
 
-
+    private String m_id;
     private IMeasuredSpectrum m_Raw;
     private boolean matchesSorted;
  //   private final Set<IPolypeptide> usedPeptides = new HashSet<IPolypeptide>();
-    private final List<PeptideMatchScore> matches = new ArrayList<PeptideMatchScore>();
+    private  List<PeptideMatchScore> matches = new ArrayList<PeptideMatchScore>();
     //    private final IonUseScore m_IonUse = new IonUseCounter();
 //    //    private List<ISpectralMatch> m_Matches;
 //    private final HyperScoreStatistics m_HyperScores = new HyperScoreStatistics();
@@ -42,13 +42,42 @@ public class CometScoringResult implements IScoredScan, IAddable<IScoredScan>, I
      */
     public CometScoringResult(IMeasuredSpectrum raw) {
         this();
-        m_Raw = raw;
+       setRaw(raw);
 
     }
 
 
+    public void setId(String id) {
+        m_id = id;
+    }
+
+    public boolean isMatchesSorted() {
+        return matchesSorted;
+    }
+
+    public void setMatchesSorted(boolean matchesSorted) {
+        this.matchesSorted = matchesSorted;
+    }
+
+    public List<PeptideMatchScore> getMatches() {
+        return matches;
+    }
+
+    public void setMatches(List<PeptideMatchScore> matches) {
+        this.matches = matches;
+    }
+
+    public int getNumberZeroResults() {
+        return numberZeroResults;
+    }
+
+    public void setNumberZeroResults(int numberZeroResults) {
+        this.numberZeroResults = numberZeroResults;
+    }
+
     public void setRaw(IMeasuredSpectrum raw) {
         m_Raw = raw;
+        m_id = raw.getId();
     }
 
 
@@ -75,7 +104,7 @@ public class CometScoringResult implements IScoredScan, IAddable<IScoredScan>, I
             numberZeroResults++;
         } else {
             IonTypeScorer ions = new LowMemoryIonScorer(bestMatch);
-            addMatch(new PeptideMatchScore(peptide, hyperScore, ions));
+            addMatch(new PeptideMatchScore(peptide, hyperScore, ions,getId()));
         }
         keepOnlyHighestMatches();
 

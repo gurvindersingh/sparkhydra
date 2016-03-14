@@ -29,6 +29,8 @@ public class VariableStatistics implements Serializable {
 
     }
 
+
+
     public void setFromString(final String s) {
         String[] items = s.split(",");
         m_Count = Integer.parseInt(items[0]);

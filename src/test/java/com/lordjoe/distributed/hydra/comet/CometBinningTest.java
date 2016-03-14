@@ -33,7 +33,8 @@ public class CometBinningTest {
         // this version will make test bins
          Map<IPolypeptide, List<BinnedChargeIonIndex>> cBons = CometTestingUtilities.readCometBinsFromResource("/CometAssignedBins.txt");
         for (IPolypeptide pp : cBons.keySet()) {
-            validateBins(pp,cBons.get(pp),comet,scorer,mds);
+            List<BinnedChargeIonIndex> bins = cBons.get(pp);
+            validateBins(pp, bins,comet,scorer,mds);
         }
     }
 
@@ -81,7 +82,9 @@ public class CometBinningTest {
         for (BinnedChargeIonIndex bin : bins) {
             numberTested++;
             BinnedChargeIonIndex bin2 = hydraFinds.get(index++);
-           int mdBin = mds.accumulateDifference(((TestBinChargeIonIndex)bin).mass,((TestBinChargeIonIndex)bin2).mass,bin2.type);
+    //        TestBinChargeIonIndex bin1 = (TestBinChargeIonIndex) bin;
+   //         TestBinChargeIonIndex bin21 = (TestBinChargeIonIndex) bin2;
+    //        int mdBin = mds.accumulateDifference(bin1.mass, bin2.mass,bin2.type);
             if(bin.index != bin2.index) {
                 ts = new CometTheoreticalBinnedSet(testCharge,matchingMass, pp, comet, scorer);
                 if(Math.abs(bin.index - bin2.index) > 1)

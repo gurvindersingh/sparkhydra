@@ -34,18 +34,35 @@ public class DataSetTester {
 
         List<DatasetTestObject> holder = new ArrayList<DatasetTestObject>();
         for (int i = 0; i < NUMBER_OBJECTS; i++) {
-            holder.add(DatasetTestObject.generateTestObject());
-        }
+            DatasetTestObject test = DatasetTestObject.generateTestObject();
+            holder.add(test);
+            int count = test.findCount();
+             if( count != DatasetTestObject.NUMBER_ENTRIES)
+                 throw new IllegalStateException("problem"); // ToDo change
+         }
 
         JavaRDD<DatasetTestObject> asRDD = currentContext.parallelize(holder);
-
-        Encoder<DatasetTestObject> evidence = Encoders.kryo(DatasetTestObject.class);
+        Encoder<DatasetTestObject> evidence = Encoders.bean(DatasetTestObject.class);
         Dataset<DatasetTestObject> dataset = sqlCtx.createDataset(asRDD.rdd(), evidence);
 
         DatasetTestObject[] collect = (DatasetTestObject[]) dataset.collect();
         for (int i = 0; i < collect.length; i++) {
-            DatasetTestObject datasetTestObject = collect[i];
-            
+            DatasetTestObject test = collect[i];
+            int count = test.findCount();
+            if( count != DatasetTestObject.NUMBER_ENTRIES)
+                throw new IllegalStateException("problem"); // ToDo change
+        }
+
+        asRDD = currentContext.parallelize(holder);
+        evidence = Encoders.kryo(DatasetTestObject.class);
+        dataset = sqlCtx.createDataset(asRDD.rdd(), evidence);
+
+        collect = (DatasetTestObject[]) dataset.collect();
+        for (int i = 0; i < collect.length; i++) {
+            DatasetTestObject test = collect[i];
+            int count = test.findCount();
+            if( count != DatasetTestObject.NUMBER_ENTRIES)
+                    throw new IllegalStateException("problem"); // ToDo change
         }
 
     }

@@ -75,6 +75,35 @@ public class CometScoredScan implements IScoredScan, IAddable<IScoredScan>, IMea
         //  this.fastScoringMapNL.putAll(scoringData.getFastScoringMapNL());
     }
 
+    protected CometScoredScan(CometScoredScan copy) {
+         this( );
+        IMeasuredSpectrum pRaw = copy.getRaw();
+         if (pRaw instanceof ScoringMeasuredSpectrum) {
+             ScoringMeasuredSpectrum sm = (ScoringMeasuredSpectrum) pRaw;
+             m_Raw = sm;
+         }
+         else {
+             m_Raw = pRaw;
+
+         }
+         double mass = m_Raw.getPrecursorMass();    // todo is this peptide or
+         // changed to look at observed peaks
+         mass = ((RawPeptideScan) m_Raw).getHighMz();
+         maxArraySize = copy.maxArraySize;
+
+        fastScoringMap.clear();
+        fastScoringMap.putAll(copy.fastScoringMap);
+
+        fastScoringMapNL.clear();
+        fastScoringMapNL.putAll(copy.fastScoringMapNL);
+        m_BinnedSpectrum = copy.m_BinnedSpectrum;
+        m_Matches = copy.m_Matches;
+        m_HyperScores.clear();
+        m_HyperScores.add(copy.m_HyperScores) ;
+        m_IonUse.add(copy.m_IonUse);
+      }
+
+
     public CometScoredScan() {
     }
 

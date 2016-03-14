@@ -7,6 +7,7 @@ import com.lordjoe.distributed.spark.accumulators.*;
 import com.lordjoe.utilities.*;
 import org.apache.spark.api.java.*;
 import org.apache.spark.sql.*;
+import org.apache.spark.sql.types.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.peptide.*;
 import org.systemsbiology.xtandem.pepxml.*;
@@ -101,14 +102,24 @@ public class DataSetCometScorer {
 
         Dataset<CometScoredScan> cometSpectraToScore = spectraToScore.map(mapToCometRawSpectrum,Encoders.kryo(CometScoredScan.class));
 
+        StructType schema = cometSpectraToScore.schema();
+        StructField[] fields = schema.fields();
+        for (int i = 0; i < fields.length; i++) {
+            StructField field = fields[i];
+            System.out.println(field);
+        }
 
 
-//        // if you want to limt do so here
-//        // cometSpectraToScore = countAndLimitSpectra(cometSpectraToScore);
+         // if you want to limt do so here
+         // cometSpectraToScore = countAndLimitSpectra(cometSpectraToScore);
 //
-//        // Assign bins to spectra
-//        JavaPairRDD<BinChargeKey, CometScoredScan> keyedSpectra = handler.mapMeasuredSpectrumToKeys(cometSpectraToScore);
-//
+         // Assign bins to spectra
+        Dataset<KeyedCometScoredScan> keyedSpectra = null; //handler.mapMeasuredSpectrumToKeys(cometSpectraToScore);
+
+
+   //     JavaPairRDD<BinChargeKey, HashMap<String, IPolypeptide>> keyedPeptides = getBinChargePeptideHash(sparkProperties, usedBins, handler);
+
+
 //        keyedSpectra = SparkUtilities.persist(keyedSpectra);
 //
 //        // fine all bins we are scoring - this allows us to filter peptides

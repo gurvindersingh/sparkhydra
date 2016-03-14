@@ -13,15 +13,23 @@ import java.io.*;
  * @date 5/5/2015
  */
 public class PeptideMatchScore implements Serializable, Comparable<PeptideMatchScore> {
-    public final IPolypeptide peptide;
-    public final double score;
-    public final IonTypeScorer ions;
+    public   IPolypeptide peptide;
+    public   double score;
+    public   IonTypeScorer ions;
+    public   String spectrumId;
+
+    /**
+     * just here for beany stuff
+     */
+    private PeptideMatchScore( ) {
+      }
 
 
-    public PeptideMatchScore(IPolypeptide peptideStr, double score,IonTypeScorer ions) {
+    public PeptideMatchScore(IPolypeptide peptideStr, double score,IonTypeScorer ions,String pSpectrumId) {
         this.peptide = peptideStr;
         this.score = score;
         this.ions = new LowMemoryIonScorer(ions);
+        this.spectrumId = pSpectrumId;
     }
 
 
@@ -40,4 +48,42 @@ public class PeptideMatchScore implements Serializable, Comparable<PeptideMatchS
                 ", score=" + score +
                 '}';
     }
+
+    /* ========================
+       Make this a bean
+
+     */
+    public IPolypeptide getPeptide() {
+        return peptide;
+    }
+
+    public void setPeptide(final IPolypeptide pPeptide) {
+        peptide = pPeptide;
+    }
+
+    public double getScore() {
+        return score;
+    }
+
+    public void setScore(final double pScore) {
+        score = pScore;
+    }
+
+    public IonTypeScorer getIons() {
+        return ions;
+    }
+
+    public void setIons(final IonTypeScorer pIons) {
+        ions = pIons;
+    }
+
+    public String getSpectrumId() {
+        return spectrumId;
+    }
+
+    public void setSpectrumId(final String pSpectrumId) {
+        spectrumId = pSpectrumId;
+    }
+
+
 }

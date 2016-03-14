@@ -12,10 +12,7 @@ import java.io.*;
  */
 public interface IonTypeScorer extends  Serializable
 {
-    public static IonTypeScorer[] EMPTY_ARRAY = {};
-    public static Class THIS_CLASS = IonTypeScorer.class;
-
-    /**
+      /**
      * weak test for equality
      * @param test !null test
      * @return  true if equivalent

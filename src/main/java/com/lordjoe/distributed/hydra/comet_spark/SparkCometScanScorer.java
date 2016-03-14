@@ -802,8 +802,6 @@ public class SparkCometScanScorer {
 
         cometSpectraToScore = SparkUtilities.persist(cometSpectraToScore); // save a copy
 
-        Encoder<CometScoredScan>  evidence = Encoders.bean(CometScoredScan.class);
-        Dataset<CometScoredScan> dataset = sqlCtx.createDataset(cometSpectraToScore.rdd(), evidence);
 
 
         // if you want to limt do so here
@@ -889,7 +887,7 @@ public class SparkCometScanScorer {
         }
         long keyedSpectrumCounts = counts[0];
         // find spectra-peptide pairs to score
-        // JavaPairRDD<BinChargeKey, Tuple2<Iterable<CometScoredScan>, Iterable<HashMap<String, IPolypeptide>>>> binP = keyedSpectra.cogroup(keyedPeptides);
+       // JavaPairRDD<BinChargeKey, Tuple2<Iterable<CometScoredScan>, Iterable<HashMap<String, IPolypeptide>>>> binP = keyedSpectra.cogroup(keyedPeptides);
         JavaPairRDD<BinChargeKey, Tuple2<Iterable<CometScoredScan>, Iterable<IPolypeptide>>> binP = keyedSpectra.cogroup(keyedPeptides);
         //JavaPairRDD<BinChargeKey, Tuple2<Iterable<CometScoredScan>, Iterable<CometTheoreticalBinnedSet>>> binP = keyedSpectra.cogroup(keyedTheoreticalPeptides);
 
@@ -902,8 +900,7 @@ public class SparkCometScanScorer {
 
 
         // NOTE this is where all the real work is done
-        //JavaRDD<? extends IScoredScan> bestScores = handler.scoreCometBinPair(binP);
-        JavaRDD<? extends IScoredScan> bestScores = handler.scoreCometBinPairPolypeptide(binP);
+        JavaRDD<? extends IScoredScan> bestScores = null; // handler.scoreCometBinPair(binP);
 
         // once we score we can go back to normal partitions
         // bestScores = bestScores.repartition(SparkUtilities.getDefaultNumberPartitions());

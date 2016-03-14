@@ -9,20 +9,59 @@ import java.util.*;
 /**
  * org.systemsbiology.xtandem.scoring.LowMemoryIonScorer
  * a version  of IonTypeScorer without the memory requirements for comet scoring
+ * Modified to be a bean and support only B and Y types
  */
-public class LowMemoryIonScorer implements IonTypeScorer,Serializable {
+public class LowMemoryIonScorer implements IonTypeScorer, Serializable {
 
-    private final int numberMatchedPeaks;
-    private final Map<IonType,Integer> ionCounts = new HashMap<IonType,Integer>();
-    private final Map<IonType,Double>  ionScores = new HashMap<IonType,Double>();
+    private static int ionTypeToIndex(IonType type) {
+        switch (type) {
+            case B:
+                return 0;
+            case Y:
+                return 1;
+            default:
+                throw new IllegalStateException("only B and Y handled");
+        }
+    }
+
+    private int numberMatchedPeaks;
+    private int[] ionCounts = new int[2];
+    private double[] ionScores = new double[2];
+    //   private final Map<IonType,Integer> ionCounts = new HashMap<IonType,Integer>();
+//    private final Map<IonType,Double>  ionScores = new HashMap<IonType,Double>();
 
     public LowMemoryIonScorer(IonTypeScorer source) {
         numberMatchedPeaks = source.getNumberMatchedPeaks();
         for (IonType byIonType : IonType.BY_ION_TYPES) {
-            ionCounts.put(byIonType,source.getCount(byIonType));
-            ionScores.put(byIonType,source.getScore(byIonType));
+
+            int count = source.getCount(byIonType);
+            if (count > 0) {
+                int index = ionTypeToIndex(byIonType);
+                ionCounts[index] = count;
+                ionScores[index] = source.getScore(byIonType);
+            }
         }
-        }
+    }
+
+    public void setNumberMatchedPeaks(int numberMatchedPeaks) {
+        this.numberMatchedPeaks = numberMatchedPeaks;
+    }
+
+    public int[] getIonCounts() {
+        return ionCounts;
+    }
+
+    public void setIonCounts(int[] ionCounts) {
+        this.ionCounts = ionCounts;
+    }
+
+    public double[] getIonScores() {
+        return ionScores;
+    }
+
+    public void setIonScores(double[] ionScores) {
+        this.ionScores = ionScores;
+    }
 
     /**
      * weak test for equality
@@ -43,7 +82,7 @@ public class LowMemoryIonScorer implements IonTypeScorer,Serializable {
      */
     @Override
     public int getNumberMatchedPeaks() {
-         return numberMatchedPeaks;
+        return numberMatchedPeaks;
     }
 
     /**
@@ -54,7 +93,8 @@ public class LowMemoryIonScorer implements IonTypeScorer,Serializable {
      */
     @Override
     public double getScore(IonType type) {
-         return ionScores.get(type);
+        int index = ionTypeToIndex(type);
+        return ionScores[index];
     }
 
     /**
@@ -65,7 +105,8 @@ public class LowMemoryIonScorer implements IonTypeScorer,Serializable {
      */
     @Override
     public int getCount(IonType type) {
-         return ionCounts.get(type);
+        int index = ionTypeToIndex(type);
+        return ionCounts[index];
     }
 
     /**

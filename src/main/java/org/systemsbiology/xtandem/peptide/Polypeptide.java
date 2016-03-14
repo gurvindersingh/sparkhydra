@@ -222,6 +222,23 @@ public class Polypeptide implements IPolypeptide, Comparable<IPolypeptide> {
         this(pSequence, findMissedCleavages(pSequence));
     }
 
+    /**
+     * copy constructor
+     * @param copy
+     */
+    public Polypeptide(Polypeptide copy) {
+        this( );
+        m_Mass = copy.m_Mass;
+        m_MatchingMass = copy.m_MatchingMass;
+        m_Sequence = copy.m_Sequence;
+        m_SequenceLength = copy.m_SequenceLength;
+        m_RetentionTime = copy.m_RetentionTime;
+        m_Validity = copy.m_Validity;
+        m_MissedCleavages = copy.m_MissedCleavages;
+        m_ContainedInProteins.addAll(copy.m_ContainedInProteins);
+
+    }
+
     public static int findMissedCleavages(String pSequence) {
         int length = pSequence.length();
         if (length < 2)
@@ -889,5 +906,17 @@ public class Polypeptide implements IPolypeptide, Comparable<IPolypeptide> {
 //        result = 31 * result + (m_ParentProtein != null ? m_ParentProtein.hashCode() : 0);
 //        result = 31 * result + m_StartPosition;
         return result;
+    }
+
+    /*  ======================
+      only use for bean stuff
+          ====================== */
+
+    private List<IProteinPosition> getContainedInProteins() {
+        return m_ContainedInProteins;
+    }
+
+    private void setSequenceLength(final int pSequenceLength) {
+        m_SequenceLength = pSequenceLength;
     }
 }

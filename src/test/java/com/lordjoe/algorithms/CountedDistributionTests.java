@@ -26,6 +26,6 @@ public class CountedDistributionTests {
         }
 
         ds = new CountedDistribution(13) ;
-        Assert.assertEquals(16,ds.getMaxValue());
+        Assert.assertEquals(13,ds.getMaxValue());
     }
 }

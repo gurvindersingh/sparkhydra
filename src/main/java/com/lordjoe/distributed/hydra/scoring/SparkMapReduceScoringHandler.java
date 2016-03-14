@@ -280,6 +280,9 @@ public class SparkMapReduceScoringHandler implements Serializable {
         return binMapper.mapMeasuredSpectrumToKeys(inp);
     }
 
+
+
+
     public <T extends IMeasuredSpectrum> JavaPairRDD<BinChargeKey, Tuple2<BinChargeKey, T>> mapMeasuredSpectrumToKeySpectrumPair(JavaRDD<T> inp) {
         inp = SparkUtilities.repartitionIfNeeded(inp);
         JavaPairRDD<BinChargeKey, Tuple2<BinChargeKey, T>> allSpectrumPairs = binMapper.mapMeasuredSpectrumToKeySpectrumPair(inp);

@@ -462,10 +462,10 @@ public class CometScoringAlgorithm extends AbstractScoringAlgorithm {
               double value =  scan.getScoredData(fastScoringMap, fastScoringMapNL,index, peak.charge);
 
 
-            if (Math.abs(value) > 0.0001) {
+            if ( Math.abs(value) > 0.0001) {
                 xcorr += value;
                 scoredPeaks++;
-                System.out.println("1\t" + peak.type + "\t" + index + "\t" + value);
+               // System.out.println("1\t" + peak.type + "\t" + index + "\t" + value);
                 //if (used != null)
                 //    used.add(new XCorrUsedData(peak.charge, peak.type, index, value));
                 pCounter.addCount(peak.type);

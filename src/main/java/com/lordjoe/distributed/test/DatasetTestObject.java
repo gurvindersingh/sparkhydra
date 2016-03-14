@@ -1,6 +1,9 @@
 package com.lordjoe.distributed.test;
 
-import java.io.*;
+import com.lordjoe.distributed.spark.*;
+import scala.*;
+
+import java.lang.Double;
 import java.util.*;
 
 /**
@@ -10,28 +13,42 @@ import java.util.*;
  */
 public class DatasetTestObject implements Serializable {
 
+    public static final int NUMBER_ENTRIES = 150;
+
     public static final Random RND = new Random();
 
-    public static DatasetTestObject generateTestObject()
-    {
+    public static DatasetTestObject generateTestObject() {
         DatasetTestObject ret = new DatasetTestObject();
-        Map<Integer, Double> fastScoringMap = ret.getFastScoringMap();
         // fake a little data
-        for (int i = 0; i < 100; i++) {
-            fastScoringMap.put(RND.nextInt(20000),RND.nextDouble()) ;
-         }
-        return ret;
+        while(ret.findCount() < NUMBER_ENTRIES)
+              ret.addValue(RND.nextInt(20000), RND.nextDouble());
+         return ret;
     }
 
 
     public static final String DEFAULT_ALGORITHM = "Foo";
-     private String m_Version = "Bar";
-     private String m_Algorithm = DEFAULT_ALGORITHM;
-     private boolean normalizationDone;
-     private Map<Integer, Double> fastScoringMap = new HashMap<Integer, Double>();     // not final for dataset - slewis
-
+    private String m_Version = "Bar";
+    private String m_Algorithm = DEFAULT_ALGORITHM;
+    private boolean normalizationDone;
+    private List<KeyValue<Integer, Double>> values;
+    private transient Map<Integer, Double> fastScoringMap;
 
     public DatasetTestObject() {
+    }
+
+
+    public synchronized void addValue(Integer i, Double d) {
+        if (values == null) {
+            setFastScoringMapValues(new ArrayList<KeyValue<Integer, Double>>());
+        }
+        if (!fastScoringMap.containsKey(i)) {
+            fastScoringMap.put(i, d);
+            values.add(new KeyValue<Integer, Double>(i, d));
+        }
+        else {    // unhappy path rebuild
+            fastScoringMap.put(i, d);
+            setFastScoringMapValues(DataSetUtilities.obtainValues(fastScoringMap)) ;
+        }
     }
 
     public String getVersion() {
@@ -58,11 +75,18 @@ public class DatasetTestObject implements Serializable {
         normalizationDone = pNormalizationDone;
     }
 
-    public Map<Integer, Double> getFastScoringMap() {
-        return fastScoringMap;
+
+    public int findCount() {
+        if(values == null) return 0;
+        else return values.size();
     }
 
-    public void setFastScoringMap(final Map<Integer, Double> pFastScoringMap) {
-        fastScoringMap = pFastScoringMap;
+    public List<KeyValue<Integer, Double>> getFastScoringMapValues() {
+        return values;
+    }
+
+    public void setFastScoringMapValues(List<KeyValue<Integer, Double>> items) {
+        values = items;
+        fastScoringMap = DataSetUtilities.obtainMap(items);
     }
 }

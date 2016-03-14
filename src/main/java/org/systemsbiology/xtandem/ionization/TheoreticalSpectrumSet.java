@@ -7,17 +7,17 @@ import java.util.*;
 
 /**
  * org.systemsbiology.xtandem.ionization.TheoreticalSpectrumSet
- *
+ *   2\26 converted to bean
  * @author Steve Lewis
  * @date Feb 21, 2011
  */
 public class TheoreticalSpectrumSet  implements ITheoreticalSpectrumSet
 {
 
-    private final int m_MaxCharge;
-    private final double m_MassPlusH;
-    private final IPolypeptide m_Peptide;
-    private final ITheoreticalSpectrum[] m_Spectra;
+    private   int m_MaxCharge;
+    private   double m_MassPlusH;
+    private   IPolypeptide m_Peptide;
+    private   ITheoreticalSpectrum[] m_Spectra;
 
     public TheoreticalSpectrumSet(int pMaxCharge,double mPlusH, IPolypeptide pPeptide)
     {
@@ -56,6 +56,23 @@ public class TheoreticalSpectrumSet  implements ITheoreticalSpectrumSet
             
         }
            return true;
+    }
+
+
+    public void setMaxCharge(int maxCharge) {
+        m_MaxCharge = maxCharge;
+    }
+
+    public void setMassPlusH(double massPlusH) {
+        m_MassPlusH = massPlusH;
+    }
+
+    public void setPeptide(IPolypeptide peptide) {
+        m_Peptide = peptide;
+    }
+
+    public void setSpectra(ITheoreticalSpectrum[] spectra) {
+        m_Spectra = spectra;
     }
 
     /**

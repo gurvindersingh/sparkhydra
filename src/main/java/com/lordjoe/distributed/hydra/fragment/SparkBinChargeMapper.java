@@ -7,6 +7,7 @@ import com.lordjoe.distributed.hydra.scoring.*;
 import com.lordjoe.distributed.hydra.test.*;
 import com.lordjoe.distributed.spark.accumulators.*;
 import org.apache.spark.api.java.*;
+import org.apache.spark.sql.*;
 import org.systemsbiology.xtandem.*;
 import com.lordjoe.distributed.hydra.comet.*;
 import org.systemsbiology.xtandem.ionization.*;
@@ -43,6 +44,7 @@ public class SparkBinChargeMapper implements Serializable {
     public <T extends IMeasuredSpectrum> JavaPairRDD<BinChargeKey, T> mapMeasuredSpectrumToKeys(JavaRDD<T> inp) {
         return inp.flatMapToPair(new mapMeasuredSpectraToBins());
     }
+
 
     public <T extends IMeasuredSpectrum> JavaPairRDD<BinChargeKey, Tuple2<BinChargeKey, T>> mapMeasuredSpectrumToKeySpectrumPair(JavaRDD<T> inp) {
         inp = SparkUtilities.repartitionIfNeeded(inp);
