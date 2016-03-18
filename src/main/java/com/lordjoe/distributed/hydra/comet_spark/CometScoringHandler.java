@@ -320,7 +320,7 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
     }
 
     /**
-     * spectra are scoreds in multiple bins - this puts them back together
+     * spectra are scored in multiple bins - this puts them back together
      *
      * @param uncombined
      * @return
@@ -446,7 +446,54 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
     }
 
 
+    /**
+     * NOIE This class is REALLY important - ALL Comet scoring happens here
+     */
+    public class
+            ScoreSpectrumAndPeptide extends AbstractLoggingFlatMapFunction<Tuple2<ITheoreticalSpectrumSet, CometScoredScan>, CometScoringResult> {
+        @Override
+        public Iterable<CometScoringResult> doCall(Tuple2<ITheoreticalSpectrumSet, CometScoredScan> toScore) throws Exception {
+            List<CometScoringResult> ret = new ArrayList<CometScoringResult>();
+            CometScoredScan scoring = toScore._2();
+            ITheoreticalSpectrumSet ts = toScore._1();
 
+            XTandemMain application = getApplication();
+            Scorer scorer = application.getScoreRunner();
+            double xcorr = CometScoringAlgorithm.doRealScoring(scoring, scorer, ts, application);
+
+            IPolypeptide peptide = ts.getPeptide();
+
+            if (TestUtilities.isInterestingPeptide(peptide))
+                TestUtilities.breakHere();
+
+            //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
+            String id = scoring.getId();
+
+
+            SpectralMatch scan = new SpectralMatch(peptide, scoring, xcorr, xcorr, xcorr, scoring, null);
+
+            scoring.addSpectralMatch(scan);
+
+            if (TestUtilities.isCaseLogging()) {
+                StringBuilder sb = new StringBuilder();
+                double precursorMass = scoring.getPrecursorMass();
+
+                double matchingMass = peptide.getMatchingMass();
+                double del = precursorMass - matchingMass;
+
+                //noinspection StringConcatenationInsideStringBufferAppend
+                sb.append(scoring.getId() + "\t" + peptide + "\t" + precursorMass + "\t" + matchingMass + "\t" + del + "\t" + xcorr);
+                TestUtilities.logCase(sb.toString());
+            }
+
+
+            CometScoringResult result = new CometScoringResult(scoring.getRaw());
+            result.addSpectralMatch(scan);
+
+            ret.add(result);
+            return ret;
+        }
+    }
 
 //    @Override
 //    public CometScoredScan doCall(final Tuple2<ITheoreticalSpectrumSet, CometScoredScan> v2) throws Exception {
@@ -548,18 +595,11 @@ public class CometScoringHandler extends SparkMapReduceScoringHandler {
         return scores;
     }
 
-    public JavaRDD<IScoredScan> scoreCometBinPairPolypeptide(final JavaPairRDD<IPolypeptide, CometScoredScan> toscore  ) {
-        XTandemMain application = getApplication();
-        JavaRDD<IScoredScan> scores = toscore.flatMap(new ScoreSpectrumAndPeptide(application));
-        return scores;
-    }
-
-    public JavaRDD<? extends IScoredScan> scoreCometPolypeptide(final JavaPairRDD<BinChargeKey, Tuple2<Iterable<CometScoredScan>, Iterable<IPolypeptide>>> binPairs) {
+    public JavaRDD<? extends IScoredScan> scoreCometBinPairPolypeptide(final JavaPairRDD<BinChargeKey, Tuple2<Iterable<CometScoredScan>, Iterable<IPolypeptide>>> binPairs) {
         XTandemMain application = getApplication();
         JavaRDD<? extends IScoredScan> scores = binPairs.flatMap(new ScoreSpectrumAndPeptideWithCogroupWithoutHash(application));
         return scores;
     }
-
 
     public JavaRDD<? extends IScoredScan> scoreCometBinPairsTheoreticals(final JavaPairRDD<BinChargeKey, Tuple2<Iterable<CometScoredScan>, Iterable<CometTheoreticalBinnedSet>>> binPairs) {
         XTandemMain application = getApplication();

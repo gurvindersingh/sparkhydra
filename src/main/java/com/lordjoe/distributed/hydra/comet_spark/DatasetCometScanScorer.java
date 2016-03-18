@@ -877,7 +877,8 @@ public class DatasetCometScanScorer {
                 return new Tuple2<IPolypeptide, CometScoredScan>(v1._2(), v1._1());
             }
         });
-        JavaRDD<IScoredScan> bestScores = handler.scoreCometBinPairPolypeptide(toscore);
+        // throw new UnsupportedOperationException("Fix This"); // ToDo
+        JavaRDD<IScoredScan> bestScores = null; // handler.scoreCometBinPairPolypeptide(toscore);
 
         // this just does a cast
         JavaRDD<CometScoringResult> bestScoreResults = bestScores.map(new Function<IScoredScan, CometScoringResult>() {
