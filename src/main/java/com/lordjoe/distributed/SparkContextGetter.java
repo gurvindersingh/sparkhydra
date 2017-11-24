@@ -46,6 +46,11 @@ public class SparkContextGetter {
         defaultNumberPartitions = pDefaultNumberPartitions;
     }
 
+    public static void reguireDefaultNumberPartitions(final int pDefaultNumberPartitions) {
+        defaultNumberPartitions = Math.max(pDefaultNumberPartitions,defaultNumberPartitions);
+    }
+
+
     public static synchronized SQLContext getCurrentSQLContext() {
         if (sqlContext != null)
             return sqlContext;

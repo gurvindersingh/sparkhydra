@@ -110,14 +110,16 @@ public class SparkUtilities implements Serializable {
     }
 
     private static final int DEFAULT_NUMBER_PARTITIONS_X = 120;
+    private static final int DEFAULT_NUMBER_LOCAL_PARTITIONS = 20;
 
     private static int defaultNumberPartitions = DEFAULT_NUMBER_PARTITIONS_X;
 
     public static int getDefaultNumberPartitions() {
         if (isLocal())
-            return 1;
+            return defaultNumberPartitions;
         SparkConf sparkConf = SparkUtilities.getCurrentContext().getConf();
-        return sparkConf.getInt("spark.default.parallelism", DEFAULT_NUMBER_PARTITIONS_X);
+        final int anInt = sparkConf.getInt("spark.default.parallelism", defaultNumberPartitions);
+        return anInt;
     }
 
     public static void setDefaultNumberPartitions(final int pDefaultNumberPartitions) {
@@ -937,6 +939,23 @@ public class SparkUtilities implements Serializable {
         return inp.coalesce(defaultNumberPartitions1, doShuffle);
     }
 
+    /**
+     * force an RDD to have defaultNumberPartitions - it if is already partitioned do nothing
+     * otherwise force partition and shuffle - NOTE this may be expensive but
+     * is cheaper than a poorly partitioned implementation
+     *
+     * @param inp input rdd
+     * @param <V> value type
+     * @return output rdd of same type and data but partitioned
+     */
+    @Nonnull
+    public static <V extends Serializable> JavaRDD<V> guaranteePartition(@Nonnull final JavaRDD<V> inp,int defaultNumberPartitions1 ) {
+        List<Partition> partitions = inp.partitions();
+         if (partitions.size() >= defaultNumberPartitions1)
+            return inp;
+        boolean doShuffle = true;
+        return inp.coalesce(defaultNumberPartitions1, doShuffle);
+    }
 
     /**
      * force a JavaPairRDD to evaluate then return the results as a JavaPairRDD
@@ -1044,7 +1063,7 @@ public class SparkUtilities implements Serializable {
         throw new UnsupportedOperationException("Fix This"); // ToDo
     }
 
-    public static final StorageLevel DEFAULT_STORAGE_LEVEL = StorageLevel.DISK_ONLY(); //  StorageLevel.MEMORY_AND_DISK(); //StorageLevel.OFF_HEAP(); //
+    public static final StorageLevel DEFAULT_STORAGE_LEVEL = StorageLevel.MEMORY_AND_DISK(); // StorageLevel.DISK_ONLY(); //  StorageLevel.MEMORY_AND_DISK(); //StorageLevel.OFF_HEAP(); //
 
     /**
      * persist in the best way - saves remembering which storage level
@@ -1177,6 +1196,35 @@ public class SparkUtilities implements Serializable {
         long count = ret.count();
         System.err.println(message + " has " + Long_Formatter.format(count));
         countRef[0] = count;
+        return ret;
+    }
+    /**
+     * persist and show count
+     *
+     * @param message message to show
+     * @param inp     rdd
+     * @return
+     */
+    @Nonnull
+    public static <K,V> JavaPairRDD<K,V> persistAndCount(@Nonnull final String message, @Nonnull final JavaPairRDD<K,V> inp, long[] countRef) {
+        JavaPairRDD<K,V> ret = persist(inp);
+        long count = ret.count();
+        System.err.println(message + " has " + Long_Formatter.format(count));
+        countRef[0] = count;
+        return ret;
+    }
+    /**
+     * persist and show count
+     *
+     * @param message message to show
+     * @param inp     rdd
+     * @return
+     */
+    @Nonnull
+    public static <K,V> JavaPairRDD<K,V> persistAndCount(  @Nonnull final JavaPairRDD<K,V> inp, long[] countRef) {
+        JavaPairRDD<K,V> ret = persist(inp);
+        long count = ret.count();
+         countRef[0] = count;
         return ret;
     }
 

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<bioml>
+	<note type="input" label="list path, default parameters">parameters_searchGUI.xml</note>
+	<note type="input" label="list path, taxonomy information">taxonomy_searchGUI.xml</note>
+	<!-- <note type="input" label="protein, taxon">all</note> -->
+	<note type="input" label="protein, taxon">uniprot_sprot.fasta</note>
+	<!-- <note type="input" label="protein, taxon">uniprot_sprot_concatenated_target_decoy.fasta</note> -->
+	<note type="input" label="spectrum, path">eg3.mzXML</note>
+	<note type="input" label="output, path">eg3.out.xml</note>
+	  <note type="input" label="scoring, algorithm">comet</note>
+</bioml>

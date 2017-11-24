@@ -85,7 +85,7 @@ public class SparkCometScanScorer {
     /**
      * return all peptides associated with a key as an ArrayList (so Serializable is implemented)
      *
-     * @param pSparkProperties
+     * @param SparkCometScanScorerpSparkProperties
      * @param pHandler
      * @return
      */
@@ -773,6 +773,8 @@ public class SparkCometScanScorer {
             return;
         }
 
+        SparkContextGetter.reguireDefaultNumberPartitions((int)(totalSpectra / 10000));
+
 //        long[] spectraCounts = new long[1];
 //        spectraToScore = SparkUtilities.persistAndCount("Total Spectra",spectraToScore,spectraCounts);
 //        long numberSpectra = spectraCounts[0];
@@ -907,8 +909,8 @@ public class SparkCometScanScorer {
         //bestScores = bestScores.repartition(SparkUtilities.getDefaultNumberPartitions());
 
 
-//        bestScores = SparkUtilities.persistAndCount("After Scoring",bestScores,counts);
-//        long scoredCounts = counts[0];
+         bestScores = SparkUtilities.persistAndCount("After Scoring",bestScores,counts);
+         long scoredCounts = counts[0];
 
         // combine scores from same scan
         JavaRDD<? extends IScoredScan> cometBestScores = handler.combineScanScores(bestScores);
@@ -1197,6 +1199,7 @@ public class SparkCometScanScorer {
 
         Logger rootLogger = Logger.getRootLogger();
         rootLogger.setLevel(Level.WARN);
+        AccumulatorUtilities.setFunctionsLoggedByDefault(false);
 
 
         //  pairedScoring(args);

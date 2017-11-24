@@ -3,7 +3,10 @@
 	<note type="input" label="list path, default parameters">parameters_searchGUI.xml</note>
 	<note type="input" label="list path, taxonomy information">taxonomy_searchGUI.xml</note>
 	<!-- <note type="input" label="protein, taxon">all</note> -->
-	<note type="input" label="protein, taxon">select_20.fasta</note>
+	 <note type="input" label="protein, taxon">swissSmall.fasta</note>  
+	<!-- <note type="input" label="protein, taxon">uniprot_sprot.fasta</note> -->
+	<!-- <note type="input" label="protein, taxon">swissSmall.fasta</note> -->
+	<!-- <note type="input" label="protein, taxon">select_20.fasta</note> -->
 	<note type="input" label="spectrum, path">eg3_20.mzXML</note>
-	<note type="input" label="output, path">eg3_20.out.xml</note>
+	<note type="input" label="output, path">eg3_20uniprot.out.xml</note>
 </bioml>
